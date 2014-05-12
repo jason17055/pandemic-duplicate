@@ -353,7 +353,9 @@ function init_player_setup_page($pg, shuffle_id)
 	}
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
-		$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
+		if (G.player_names) {
+			$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
+		}
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 		$('.player'+i+' .card_list', $pg).empty();
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
