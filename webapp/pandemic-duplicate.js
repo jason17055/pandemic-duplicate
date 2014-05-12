@@ -140,7 +140,7 @@ function submit_player_names_form()
 	var p4 = f.player4.value;
 	var randomize = f.randomize_order.checked;
 
-	show_page('prepare_deck_page');
+	show_page('deck_setup_page');
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
 		var c = G.player_deck[i];
