@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div class="page">
+<div class="page" id="create_game_page">
 
 <div class="page_header">
 <h1>Pandemic Duplicate</h1>
@@ -14,7 +14,7 @@
 
 <div class="page_body">
 
-<form method="post" onclick="return false">
+<form name="create_game_form" method="post" onsubmit="return submit_create_game_form()">
 <div>Number of players:
 <select name="player_count">
 <option value="2">2</option>
@@ -39,11 +39,39 @@
 </div>
 <div>
 <button type="submit">Generate Game</button>
+</div>
 </form>
 
 </div><!--/page_body-->
 
-</div><!--/page-->
+</div><!--/create_game_page-->
+
+<div class="page" id="player_names_page">
+<div class="page_header">
+<h1>Player Names</h1>
+</div><!--/page_header-->
+<div class="page_body">
+
+<form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
+<table>
+<tr id="player1_row"><td>1</td><td><input type="text" name="player1"></td></tr>
+<tr id="player2_row"><td>2</td><td><input type="text" name="player2"></td></tr>
+<tr id="player3_row"><td>3</td><td><input type="text" name="player3"></td></tr>
+<tr id="player4_row"><td>4</td><td><input type="text" name="player4"></td></tr>
+</table>
+<div>
+<label>
+<input type="checkbox" name="randomize_order">Randomize turn order</label>
+</div>
+
+<div>
+<button type="submit">Continue</button>
+</div>
+
+</form><!--/player_names_form-->
+
+</div><!--/page_body-->
+</div><!--/player_names_page-->
 
 </body>
 </html>
