@@ -173,6 +173,10 @@ function generate_decks()
 
 function load_shuffle(shuffle_id)
 {
+	if (G && G.shuffle_id == shuffle_id) {
+		return G;
+	}
+
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 	if (!s) {
 		console.log('Fatal: shuffle '+shuffle_id+' is not known');
@@ -180,6 +184,7 @@ function load_shuffle(shuffle_id)
 	}
 
 	G = JSON.parse(s);
+	G.shuffle_id = shuffle_id;
 	return G;
 }
 
@@ -253,7 +258,17 @@ function submit_player_names_form()
 		};
 	var randomize = f.randomize_order.checked;
 
-	show_page('deck_setup_page');
+	var u = BASE_URL + '#'+G.shuffle_id+'/deck_setup';
+	history.pushState(null, null, u);
+	on_state_init();
+
+	return false;
+}
+
+function init_deck_setup_page($pg, shuffle_id)
+{
+	load_shuffle(shuffle_id);
+
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
 		var c = G.player_deck[i];
@@ -275,7 +290,16 @@ function submit_player_names_form()
 
 function continue_after_deck_setup()
 {
-	show_page('board_setup_page');
+	var u = BASE_URL + '#'+G.shuffle_id+'/board_setup';
+	history.pushState(null, null, u);
+	on_state_init();
+
+	return false;
+}
+
+function init_board_setup_page($pg, shuffle_id)
+{
+	load_shuffle(shuffle_id);
 
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
@@ -304,9 +328,17 @@ function continue_after_deck_setup()
 
 function continue_after_board_setup()
 {
-	show_page('player_setup_page');
+	var u = BASE_URL + '#'+G.shuffle_id+'/player_setup';
+	history.pushState(null, null, u);
+	on_state_init();
 
-	var $pg = $('#player_setup_page');
+	return false;
+}
+
+function init_player_setup_page($pg, shuffle_id)
+{
+	load_shuffle(shuffle_id);
+
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
@@ -477,6 +509,18 @@ function on_state_init()
 	else if (m = path.match(/^([0-9a-f]+)\/names$/)) {
 		var $pg = show_page('player_names_page');
 		return init_player_names_page($pg, m[1]);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
+		var $pg = show_page('deck_setup_page');
+		return init_deck_setup_page($pg, m[1]);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/board_setup$/)) {
+		var $pg = show_page('board_setup_page');
+		return init_board_setup_page($pg, m[1]);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
+		var $pg = show_page('player_setup_page');
+		return init_player_setup_page($pg, m[1]);
 	}
 }
 
