@@ -167,6 +167,20 @@ function generate_decks()
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_name);
+
+	return G.shuffle_name;
+}
+
+function load_shuffle(shuffle_id)
+{
+	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
+	if (!s) {
+		console.log('Fatal: shuffle '+shuffle_id+' is not known');
+		return;
+	}
+
+	G = JSON.parse(s);
+	return G;
 }
 
 function stringify_rules(R)
@@ -203,10 +217,17 @@ function generate_new_game_clicked()
 {
 	G = {};
 	G.rules = parse_rules(document.pick_game_form.rules.value);
-	generate_decks();
+	var shuffle_id = generate_decks();
 
-	show_page("player_names_page");
-	var $pg = $('#player_names_page');
+	var u = BASE_URL + '#'+shuffle_id+'/names';
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
+function init_player_names_page($pg, shuffle_id)
+{
+	load_shuffle(shuffle_id);
+
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
@@ -219,8 +240,6 @@ function generate_new_game_clicked()
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
 	}
-
-	return false;
 }
 
 function submit_player_names_form()
@@ -398,8 +417,6 @@ function stor_add_to_set(key, value)
 	}
 	a.push(value);
 	localStorage.setItem(key, a.join(','));
-
-	alert(key+': ' + a.join(','));
 	return true;
 }
 
@@ -456,6 +473,10 @@ function on_state_init()
 	else if (m = path.match(/^pick_game\/(.*)$/)) {
 		var $pg = show_page('pick_game_page');
 		return init_pick_game_page($pg, m[1]);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/names$/)) {
+		var $pg = show_page('player_names_page');
+		return init_player_names_page($pg, m[1]);
 	}
 }
 
