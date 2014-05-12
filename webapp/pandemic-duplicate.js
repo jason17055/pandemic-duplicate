@@ -1,3 +1,9 @@
+var PACKAGE = 'pandemic-duplicate';
+var BASE_URL = location.href;
+if (BASE_URL.indexOf('#') != -1) {
+	BASE_URL = BASE_URL.substring(0, BASE_URL.indexOf('#'));
+}
+
 var Roles = [
 	'Dispatcher',
 	'Operations Expert',
@@ -154,16 +160,16 @@ function generate_decks()
 
 function stringify_rules(R)
 {
-	return R.player_count+'-'+R.level+'-'+R.expansion;
+	return R.expansion+'-'+R.player_count+'p-'+R.level+'x';
 }
 
 function parse_rules(s)
 {
 	var ss = s.split(/-/);
 	return {
-	'player_count': +ss[0],
-	'level': +ss[1],
-	'expansion': ss[2]
+	'expansion': ss[0],
+	'player_count': +ss[1].substring(0, ss[1].length-1),
+	'level': +ss[2].substring(0, ss[2].length-1),
 	};
 }
 
@@ -171,20 +177,21 @@ function submit_create_game_form()
 {
 	var f = document.create_game_form;
 	var rules = {
-		'player_count': +f.player_count_value,
+		'player_count': +f.player_count.value,
 		'expansion': f.expansion.value,
 		'level': +f.level.value
 		};
 	var rules_key = stringify_rules(rules);
 
-	var $pg = show_page('pick_game_page');
+	history.pushState(null, null, BASE_URL + '#pick_game/' + rules_key);
+	on_state_init();
 	return false;
 }
 
 function generate_new_game_clicked()
 {
 	G = {};
-	G.rules = rules;
+	G.rules = parse_rules(document.pick_game_form.rules.value);
 	generate_decks();
 
 	show_page("player_names_page");
@@ -369,6 +376,11 @@ function show_page(page_name)
 	return $("#"+page_name).show();
 }
 
+function init_pick_game_page($pg, rulestr)
+{
+	document.pick_game_form.rules.value = rulestr;
+}
+
 function on_state_init()
 {
 	var path = location.hash;
@@ -376,8 +388,13 @@ function on_state_init()
 		path = path.substring(1);
 	}
 
+	var m;
 	if (!path) {
 		return show_page('create_game_page');
+	}
+	else if (m = path.match(/^pick_game\/(.*)$/)) {
+		var $pg = show_page('pick_game_page');
+		return init_pick_game_page($pg, m[1]);
 	}
 }
 
