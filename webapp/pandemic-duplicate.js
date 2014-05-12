@@ -1,3 +1,10 @@
+var Roles = [
+	'Dispatcher',
+	'Operations Expert',
+	'Scientist',
+	'Medic',
+	'Researcher'
+	];
 var Cities = [
 	// Blue cities
 	'Atlanta',
@@ -80,7 +87,14 @@ function generate_decks()
 	var hand_size = G.rules.player_count <= 2 ? 4 :
 		G.rules.player_count == 3 ? 3 : 2;
 
+	var R = [];
+	for (var i = 0; i < Roles.length; i++) {
+		R.push(Roles[i]);
+	}
+	shuffle_array(R);
+
 	G.initial_hands = {};
+	G.roles = {};
 	for (var i = 0; i < G.rules.player_count; i++) {
 		var b = [];
 		for (var j = 0; j < hand_size; j++) {
@@ -88,6 +102,7 @@ function generate_decks()
 			b.push(c);
 		}
 		G.initial_hands[(1+i)] = b;
+		G.roles[(1+i)] = R.pop();
 	}
 
 	var piles = [];
@@ -226,6 +241,7 @@ function continue_after_board_setup()
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
+		$('.player'+i+' .role', $pg).text(G.roles[i]);
 		$('.player'+i+' .card_list', $pg).empty();
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
 			var c = G.initial_hands[i][j];
