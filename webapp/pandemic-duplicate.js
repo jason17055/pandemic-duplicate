@@ -242,10 +242,71 @@ function make_player_card(c)
 	return $x;
 }
 
+function make_infection_card(c)
+{
+	var $x = $('<li></li>');
+	$x.text(c);
+	return $x;
+}
+
+function continue_after_player_setup()
+{
+	G.turn = 1;
+	begin_turn();
+}
+
+function begin_turn()
+{
+	var $pg = show_page('player_turn_page');
+	$('.page_header .player_name', $pg).text(
+			G.player_names[G.turn]
+			);
+}
+
+function continue_after_player_turn()
+{
+	var $pg = show_page('draw_cards_page');
+	$('.player_name', $pg).text(
+			G.player_names[G.turn]
+			);
+
+	$('.card_list', $pg).empty();
+	var c1 = G.player_deck.pop();
+	var c2 = G.player_deck.pop();
+	$('.card_list', $pg).append(make_player_card(c1));
+	$('.card_list', $pg).append(make_player_card(c2));
+}
+
+function continue_after_draw_phase()
+{
+	var $pg = show_page('infection_page');
+
+	var cc = [];
+	cc.push(G.infection_deck.pop());
+	cc.push(G.infection_deck.pop());
+
+	$('.card_list', $pg).empty();
+	for (var i = 0; i < cc.length; i++) {
+		$('.card_list', $pg).append(make_infection_card(cc[i]));
+	}
+
+	$('.player_name', $pg).text(
+		G.player_names[
+			1+(G.turn%G.rules.player_count)
+			]);
+}
+
+function continue_after_infection()
+{
+	var t = +G.turn;
+	G.turn = (t % G.rules.player_count) + 1;
+	begin_turn();
+}
+
 function show_page(page_name)
 {
 	$(".page").hide();
-	$("#"+page_name).show();
+	return $("#"+page_name).show();
 }
 
 function on_state_init()

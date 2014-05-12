@@ -32,7 +32,7 @@
 <div>Challenge:
 <select name="challenge">
 <option value="4">Easy (4 epidemics)</option>
-<option value="5">Normal (5 epidemics)</option>
+<option value="5" selected>Normal (5 epidemics)</option>
 <option value="6">Hard (6 epidemics)</option>
 <option value="7">Legendary (7 epidemics)</option>
 </select>
@@ -54,10 +54,10 @@
 
 <form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
 <table>
-<tr class="player1"><td>1</td><td><input type="text" name="player1"></td></tr>
-<tr class="player2"><td>2</td><td><input type="text" name="player2"></td></tr>
-<tr class="player3"><td>3</td><td><input type="text" name="player3"></td></tr>
-<tr class="player4"><td>4</td><td><input type="text" name="player4"></td></tr>
+<tr class="player1"><td>1</td><td><input type="text" name="player1" value="Player 1"></td></tr>
+<tr class="player2"><td>2</td><td><input type="text" name="player2" value="Player 2"></td></tr>
+<tr class="player3"><td>3</td><td><input type="text" name="player3" value="Player 3"></td></tr>
+<tr class="player4"><td>4</td><td><input type="text" name="player4" value="Player 4"></td></tr>
 </table>
 <div>
 <label>
@@ -137,11 +137,76 @@
 </div>
 
 <div>
-<button type="button">Next</button>
+<button type="button" onclick="continue_after_player_setup()">Next: <small>Begin Game</small></button>
 </div>
 
 </div><!--/page_body-->
 </div><!--/player_setup_page-->
+
+<div id="player_turn_page" class="page">
+<div class="page_header"><h1><span class="player_name"></span> turn</h1></div>
+<div class="page_body">
+
+<p>
+Perform your actions.
+</p>
+
+<div>
+<button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
+</div>
+<div>
+<button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
+</div>
+<div>
+<button type="button" onclick="continue_after_player_turn()">Next: <small>Draw Cards Step</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/player_turn_page-->
+
+<div id="draw_cards_page" class="page">
+<div class="page_header"><h1>Draw Cards</h1></div>
+<div class="page_body">
+
+<div><span class="player_name"></span> draws:</div>
+<ol class="card_list">
+</ol>
+
+<div>
+<button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
+</div>
+<div>
+<button type="button" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
+</div>
+<div>
+<button type="button" onclick="continue_after_draw_phase()">Next: <small>Infection</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/draw_cards_page-->
+
+<div id="infection_page" class="page">
+<div class="page_header"><h1>Infection</h1></div>
+<div class="page_body">
+
+<div>
+The following cities each receive one disease unit.
+</div>
+<ol class="card_list">
+</ol>
+
+<div>
+<button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
+</div>
+<div>
+<button type="button" onclick="admit_defeat_clicked()">Admit Defeat</button>
+</div>
+<div>
+<button type="button" onclick="continue_after_infection()">Next: <small><span class="player_name"></span> turn</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/draw_cards_page-->
 
 </body>
 </html>
