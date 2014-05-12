@@ -152,19 +152,39 @@ function generate_decks()
 	shuffle_array(G.infection_deck);
 }
 
+function stringify_rules(R)
+{
+	return R.player_count+'-'+R.level+'-'+R.expansion;
+}
+
+function parse_rules(s)
+{
+	var ss = s.split(/-/);
+	return {
+	'player_count': +ss[0],
+	'level': +ss[1],
+	'expansion': ss[2]
+	};
+}
+
 function submit_create_game_form()
 {
 	var f = document.create_game_form;
-	var player_count = f.player_count.value;
-	var rules = f.rules.value;
-	var challenge = f.challenge.value;
-
-	G = {};
-	G.rules = {
-		'player_count': player_count,
-		'ruleset': rules,
-		'level': challenge
+	var rules = {
+		'player_count': +f.player_count_value,
+		'expansion': f.expansion.value,
+		'level': +f.level.value
 		};
+	var rules_key = stringify_rules(rules);
+
+	var $pg = show_page('pick_game_page');
+	return false;
+}
+
+function generate_new_game_clicked()
+{
+	G = {};
+	G.rules = rules;
 	generate_decks();
 
 	show_page("player_names_page");

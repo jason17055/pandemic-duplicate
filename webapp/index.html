@@ -22,15 +22,15 @@
 <option value="4">4</option>
 </select></div>
 
-<div>Rules:
-<select name="rules">
-<option value="with_on_the_brink">On The Brink</option>
-<option value="original">Original</option>
+<div>Expansion:
+<select name="expansion">
+<option value="on_the_brink">On The Brink</option>
+<option value="none">Original</option>
 </select>
 </div>
 
-<div>Challenge:
-<select name="challenge">
+<div>Level:
+<select name="level">
 <option value="4">Easy (4 epidemics)</option>
 <option value="5" selected>Normal (5 epidemics)</option>
 <option value="6">Hard (6 epidemics)</option>
@@ -43,8 +43,27 @@
 </form>
 
 </div><!--/page_body-->
-
 </div><!--/create_game_page-->
+
+<div class="page" id="pick_game_page">
+<div class="page_header"><h1>Pick Game</h1></div>
+<div class="page_body">
+
+<div>
+Pick pre-shuffled game:
+</div>
+<table>
+</table>
+
+<div>
+Or generate a new game:
+</div>
+<div>
+<button type="button" onclick="generate_new_game_clicked()">New Shuffle</button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/pick_game_page-->
 
 <div class="page" id="player_names_page">
 <div class="page_header">
