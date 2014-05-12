@@ -54,10 +54,10 @@
 
 <form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
 <table>
-<tr id="player1_row"><td>1</td><td><input type="text" name="player1"></td></tr>
-<tr id="player2_row"><td>2</td><td><input type="text" name="player2"></td></tr>
-<tr id="player3_row"><td>3</td><td><input type="text" name="player3"></td></tr>
-<tr id="player4_row"><td>4</td><td><input type="text" name="player4"></td></tr>
+<tr class="player1"><td>1</td><td><input type="text" name="player1"></td></tr>
+<tr class="player2"><td>2</td><td><input type="text" name="player2"></td></tr>
+<tr class="player3"><td>3</td><td><input type="text" name="player3"></td></tr>
+<tr class="player4"><td>4</td><td><input type="text" name="player4"></td></tr>
 </table>
 <div>
 <label>
@@ -86,11 +86,31 @@
 <ol id="infection_cards_list"></ol>
 
 <div>
-<button type="button" onclick="continue_after_decks_setup()">Continue <small>(Player Setup)</small></button>
+<button type="button" onclick="continue_after_deck_setup()">Continue: <small>Board Setup</small></button>
 </div>
 
 </div><!--/page_body-->
 </div><!--/deck_setup_page-->
+
+<div id="board_setup_page" class="page">
+<div class="page_header"><h1>Board Setup</h1></div>
+<div class="page_body">
+
+<div>Cities w/ 3 cubes:</div>
+<ul class="3cube_cities card_list"></ul>
+
+<div>Cities w/ 2 cubes:</div>
+<ul class="2cube_cities card_list"></ul>
+
+<div>Cities w/ 1 cubes:</div>
+<ul class="1cube_cities card_list"></ul>
+
+<div>
+<button type="button" onclick="continue_after_board_setup()">Continue: <small>Player Setup</small>
+</div>
+
+</div><!--/page_body-->
+</div><!--/board_setup_page-->
 
 <div id="player_setup_page" class="page">
 <div class="page_header"><h1>Player Setup</h1></div>
@@ -114,6 +134,10 @@
 <div class="player4">
 <div>4. <span class="player_name"></span></div>
 <ul class="card_list"></ul>
+</div>
+
+<div>
+<button type="button">Next</button>
 </div>
 
 </div><!--/page_body-->
