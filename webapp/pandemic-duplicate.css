@@ -1,0 +1,89 @@
+body {
+	background-color: #ddddff;
+	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+.page_header {
+	background-color: #000066;
+	color: white;
+	padding: 6pt;
+}
+
+h1 {
+	font-size: 16pt;
+	margin: 0;
+}
+
+.page_body {
+	padding: 6pt;
+}
+
+h2 {
+	color: white;
+}
+
+.toolbar {
+	background-color: #ddc;
+	color: black;
+	padding: 3pt;
+}
+
+.table_listitem {
+	background-color: #b3a5f8;
+	color: black;
+}
+
+.template {
+	display: none;
+}
+
+.floater {
+	display: inline-block;
+}
+
+#dimmer {
+	display: none;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1 !important;
+	background-color: black;
+	filter: alpha(opacity=75);
+	-khtml-opacity: 0.75;
+	-moz-opacity: 0.75;
+	opacity: 0.75;
+}
+
+.dialog_wrapper {
+	display: none;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	position: absolute;
+	z-index: 5;
+}
+.dialog {
+	width: 400px;
+	height: 400px;
+	margin: 200px auto 0 auto;
+	padding; 40px;
+	background-color: #fff;
+	border: 1px solid #ccc;
+	color: #333;
+}
+
+#ajaxErrorInd {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	z-index: 1;
+	padding: 4px 12px;
+	display: none;
+}

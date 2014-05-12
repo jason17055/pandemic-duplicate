@@ -1,0 +1,49 @@
+<html>
+<head>
+<link rel="stylesheet" href="pandemic-duplicate.css" type="text/css">
+<script type="text/javascript" src="jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="pandemic-duplicate.js"></script>
+</head>
+<body>
+
+<div class="page">
+
+<div class="page_header">
+<h1>Pandemic Duplicate</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form method="post" onclick="return false">
+<div>Number of players:
+<select name="player_count">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+</select></div>
+
+<div>Rules:
+<select name="rules">
+<option value="with_on_the_brink">On The Brink</option>
+<option value="original">Original</option>
+</select>
+</div>
+
+<div>Challenge:
+<select name="challenge">
+<option value="4">Easy (4 epidemics)</option>
+<option value="5">Normal (5 epidemics)</option>
+<option value="6">Hard (6 epidemics)</option>
+<option value="7">Legendary (7 epidemics)</option>
+</select>
+</div>
+<div>
+<button type="submit">Generate Game</button>
+</form>
+
+</div><!--/page_body-->
+
+</div><!--/page-->
+
+</body>
+</html>
