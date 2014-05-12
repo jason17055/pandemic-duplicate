@@ -63,6 +63,21 @@ var Cities = [
 	'Sydney'
 
 	];
+var Specials = [
+	'Airlift',
+	'Borrowed Time',
+	'Commercial Travel Ban',
+	'Forecast',
+	'Government Grant',
+	'Mobile Hospital',
+	'New Assignment',
+	'One Quiet Night',
+	'Rapid Vaccine Deployment',
+	'Re-examined Research',
+	'Remote Treatment',
+	'Resilient Population',
+	'Special Orders',
+	];
 var G = null;
 
 function shuffle_array(A)
@@ -77,21 +92,30 @@ function shuffle_array(A)
 
 function generate_decks()
 {
+	var S = [];
+	for (var i = 0; i < Specials.length; i++) {
+		S.push(Specials[i]);
+	}
+	shuffle_array(S);
+
 	var A = [];
 	for (var i = 0; i < Cities.length; i++) {
 		A.push(Cities[i]);
 	}
-	// TODO- add special events
-
-	shuffle_array(A);
-	var hand_size = G.rules.player_count <= 2 ? 4 :
-		G.rules.player_count == 3 ? 3 : 2;
+	for (var i = 0; i < S.length && i < G.rules.player_count*2; i++) {
+		A.push(S[i]);
+	}
 
 	var R = [];
 	for (var i = 0; i < Roles.length; i++) {
 		R.push(Roles[i]);
 	}
 	shuffle_array(R);
+
+	shuffle_array(A);
+	var hand_size = G.rules.player_count <= 2 ? 4 :
+		G.rules.player_count == 3 ? 3 : 2;
+
 
 	G.initial_hands = {};
 	G.roles = {};
