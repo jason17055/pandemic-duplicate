@@ -122,7 +122,6 @@ function generate_decks()
 	var hand_size = G.rules.player_count <= 2 ? 4 :
 		G.rules.player_count == 3 ? 3 : 2;
 
-
 	G.initial_hands = {};
 	G.roles = {};
 	for (var i = 0; i < G.rules.player_count; i++) {
@@ -156,6 +155,18 @@ function generate_decks()
 		G.infection_deck.push(Cities[i]);
 	}
 	shuffle_array(G.infection_deck);
+
+	var XX = JSON.stringify({
+	'initial_hands': G.initial_hands,
+	'roles': G.roles,
+	'player_deck': G.player_deck,
+	'infection_deck': G.infection_deck,
+	'rules': G.rules
+	});
+	G.shuffle_name = CryptoJS.SHA1(XX);
+
+	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
+	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_name);
 }
 
 function stringify_rules(R)
@@ -376,9 +387,59 @@ function show_page(page_name)
 	return $("#"+page_name).show();
 }
 
+function stor_add_to_set(key, value)
+{
+	var a = stor_get_list(key);
+	var found = false;
+	for (var i = 0; i < a.length; i++) {
+		if (a[i] == value) {
+			return false;
+		}
+	}
+	a.push(value);
+	localStorage.setItem(key, a.join(','));
+
+	alert(key+': ' + a.join(','));
+	return true;
+}
+
+function stor_get_list(key)
+{
+	var s = localStorage.getItem(key);
+	if (s) {
+		return s.split(/,/);
+	}
+	else {
+		return [];
+	}
+}
+
+function shuffle_name(shuffle_id)
+{
+	var A = parseInt(shuffle_id.substring(0,6), 16);
+	var i = Math.floor(A * WORDS.length / 0x1000000);
+
+	var B = parseInt(shuffle_id.substring(6,12), 16);
+	var j = Math.floor(B * WORDS.length / 0x1000000);
+
+	var C = parseInt(shuffle_id.substring(12,18), 16);
+	var k = Math.floor(C * WORDS.length / 0x1000000);
+
+	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
+}
+
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
+
+	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
+	for (var i = 0; i < a.length; i++) {
+
+		var $tr = $('.preshuffle_row.template').clone();
+		$tr.removeClass('template');
+		$('button',$tr).text(shuffle_name(a[i]));
+		$('.preshuffle_table', $pg).append($tr);
+	}
 }
 
 function on_state_init()
