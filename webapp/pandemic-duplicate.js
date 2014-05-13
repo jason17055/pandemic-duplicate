@@ -163,7 +163,7 @@ function generate_decks()
 	'infection_deck': G.infection_deck,
 	'rules': G.rules
 	});
-	G.shuffle_name = CryptoJS.SHA1(XX);
+	G.shuffle_name = (""+CryptoJS.SHA1(XX)).substring(0,18);
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_name);
