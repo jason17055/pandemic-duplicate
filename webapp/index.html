@@ -191,7 +191,7 @@ Perform your actions.
 <button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
 </div>
 <div>
-<button type="button" onclick="continue_after_player_turn()">Next: <small>Draw Cards Step</small></button>
+<button type="button" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
 </div>
 
 </div><!--/page_body-->
@@ -226,10 +226,10 @@ Perform your actions.
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
 <div>
-<button type="button" class="goto_epidemic_btn" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
+<button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 </div>
 <div>
-<button type="button" class="goto_infection_btn" onclick="continue_after_draw_phase()">Next: <small>Infection</small></button>
+<button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 </div>
 
 </div><!--/page_body-->
@@ -246,10 +246,10 @@ Perform your actions.
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
 <div>
-<button type="button" class="goto_epidemic_btn" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
+<button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 </div>
 <div>
-<button type="button" class="goto_infection_btn" onclick="continue_after_draw_phase()">Next: <small>Infection</small></button>
+<button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 </div>
 
 
@@ -273,7 +273,7 @@ The following cities each receive one disease unit.
 <button type="button" onclick="admit_defeat_clicked()">Admit Defeat</button>
 </div>
 <div>
-<button type="button" onclick="continue_after_infection()">Next: <small><span class="player_name"></span> turn</small></button>
+<button type="button" onclick="continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
 </div>
 
 </div><!--/page_body-->

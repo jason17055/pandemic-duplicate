@@ -190,6 +190,8 @@ function load_game(game_id)
 			G.hands[i].push(G.initial_hands[i][j]);
 		}
 	}
+
+	G.infection_rate = 2;
 	return G;
 }
 
@@ -439,10 +441,44 @@ function do_move(m)
 		else if (G.step == 'draw_cards') {
 
 			// draw two player cards
-			G.player_deck.pop();
-			G.player_deck.pop();
-			G.step = 'infection';
-			G.time++;
+			var c1 = G.player_deck.pop();
+			var c2 = G.player_deck.pop();
+
+			G.pending_epidemics = 0;
+			if (is_epidemic(c1)) {
+				G.pending_epidemics++;
+			}
+			else {
+				G.hands[G.active_player].push(c1);
+			}
+
+			if (is_epidemic(c2)) {
+				G.pending_epidemics++;
+			}
+			else {
+				G.hands[G.active_player].push(c2);
+			}
+
+			if (G.pending_epidemics > 0) {
+				G.step = 'epidemic';
+				G.time++;
+			}
+			else {
+				G.step = 'infection';
+				G.time++;
+			}
+		}
+		else if (G.step == 'epidemic') {
+
+			G.pending_epidemics--;
+			if (G.pending_epidemics > 0) {
+				G.step = 'epidemic';
+				G.time++;
+			}
+			else {
+				G.step = 'infection';
+				G.time++;
+			}
 		}
 		else {
 
@@ -471,7 +507,7 @@ function begin_turn()
 	init_player_turn_page($pg);
 }
 
-function continue_after_player_turn()
+function continue_player_turn()
 {
 	set_move('pass');
 }
@@ -501,11 +537,8 @@ function init_draw_cards_page($pg)
 	}
 }
 
-function do_epidemic_clicked()
+function init_epidemic_page($pg)
 {
-	G.pending_epidemics--;
-	var $pg = show_page('epidemic_page');
-
 	var c = G.infection_deck.shift();
 	$('.card_list', $pg).empty();
 	$('.card_list', $pg).append(
@@ -527,13 +560,6 @@ function is_epidemic(c)
 	return c == 'Epidemic';
 }
 
-function continue_after_draw_phase()
-{
-	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.time+'/infection';
-	history.pushState(null, null, u);
-	on_state_init();
-}
-
 function init_infection_page($pg)
 {
 	var cc = [];
@@ -549,15 +575,6 @@ function init_infection_page($pg)
 		G.player_names[
 			1+(G.active_player%G.rules.player_count)
 			]);
-}
-
-function continue_after_infection()
-{
-	G.time = 1 + G.time;
-
-	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.time+'/actions';
-	history.pushState(null, null, u);
-	on_state_init();
 }
 
 function show_page(page_name)
@@ -617,7 +634,7 @@ function on_preshuffled_game_clicked(evt)
 
 function navigate_to_current_turn()
 {
-	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time + '/' + G.step;
+	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time;
 	history.pushState(null, null, u);
 	on_state_init();
 	return;
@@ -723,20 +740,24 @@ function on_state_init()
 		var $pg = show_page('player_setup_page');
 		return init_player_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/actions$/)) {
-		load_game_at(m[1], m[2], 'actions');
-		var $pg = show_page('player_turn_page');
-		return init_player_turn_page($pg);
-	}
-	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/draw_cards$/)) {
-		load_game_at(m[1], m[2], 'draw_cards');
-		var $pg = show_page('draw_cards_page');
-		return init_draw_cards_page($pg);
-	}
-	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/infection$/)) {
-		load_game_at(m[1], m[2], 'infection');
-		var $pg = show_page('infection_page');
-		return init_infection_page($pg);
+	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)/)) {
+		load_game_at(m[1], m[2]);
+		if (G.step == 'actions') {
+			var $pg = show_page('player_turn_page');
+			return init_player_turn_page($pg);
+		}
+		else if (G.step == 'draw_cards') {
+			var $pg = show_page('draw_cards_page');
+			return init_draw_cards_page($pg);
+		}
+		else if (G.step == 'epidemic') {
+			var $pg = show_page('epidemic_page');
+			return init_epidemic_page($pg);
+		}
+		else if (G.step == 'infection') {
+			var $pg = show_page('infection_page');
+			return init_infection_page($pg);
+		}
 	}
 }
 
