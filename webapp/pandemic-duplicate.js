@@ -171,6 +171,17 @@ function generate_decks()
 	return G.shuffle_name;
 }
 
+function load_game(game_id)
+{
+	load_shuffle(game_id);
+
+	var s = localStorage.getItem(PACKAGE + '.game.' + game_id + '.player_names');
+	if (s) {
+		G.player_names = JSON.parse(s);
+	}
+	return G;
+}
+
 function load_shuffle(shuffle_id)
 {
 	if (G && G.shuffle_id == shuffle_id) {
@@ -258,6 +269,10 @@ function submit_player_names_form()
 		};
 	var randomize = f.randomize_order.checked;
 
+	localStorage.setItem(PACKAGE+'.game.'+G.shuffle_id+'.player_names',
+		JSON.stringify(G.player_names)
+		);
+
 	var u = BASE_URL + '#'+G.shuffle_id+'/deck_setup';
 	history.pushState(null, null, u);
 	on_state_init();
@@ -299,7 +314,7 @@ function continue_after_deck_setup()
 
 function init_board_setup_page($pg, shuffle_id)
 {
-	load_shuffle(shuffle_id);
+	load_game(shuffle_id);
 
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
@@ -337,7 +352,7 @@ function continue_after_board_setup()
 
 function init_player_setup_page($pg, shuffle_id)
 {
-	load_shuffle(shuffle_id);
+	load_game(shuffle_id);
 
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
