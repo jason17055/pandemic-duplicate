@@ -575,6 +575,15 @@ function on_preshuffled_game_clicked(evt)
 	on_state_init();
 }
 
+function play_special_event_clicked()
+{
+	var $pg = show_page('special_event_page');
+}
+
+function cancel_special_event()
+{
+}
+
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
