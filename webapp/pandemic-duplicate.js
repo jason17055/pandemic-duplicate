@@ -424,8 +424,9 @@ function begin_turn()
 
 function continue_after_player_turn()
 {
-	var $pg = show_page('draw_cards_page');
-	init_draw_cards_page($pg);
+	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.turn+'/draw_cards';
+	history.pushState(null, null, u);
+	on_state_init();
 }
 
 function init_draw_cards_page($pg)
@@ -481,8 +482,13 @@ function is_epidemic(c)
 
 function continue_after_draw_phase()
 {
-	var $pg = show_page('infection_page');
+	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.turn+'/infection';
+	history.pushState(null, null, u);
+	on_state_init();
+}
 
+function init_infection_page($pg)
+{
 	var cc = [];
 	cc.push(G.infection_deck.pop());
 	cc.push(G.infection_deck.pop());
@@ -501,9 +507,10 @@ function continue_after_draw_phase()
 function continue_after_infection()
 {
 	G.turn = 1 + G.turn;
-	var t = +G.active_player;
-	G.active_player = (t % G.rules.player_count) + 1;
-	begin_turn();
+
+	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.turn+'/actions';
+	history.pushState(null, null, u);
+	on_state_init();
 }
 
 function show_page(page_name)
@@ -613,6 +620,16 @@ function on_state_init()
 		load_game_at(m[1], m[2]);
 		var $pg = show_page('player_turn_page');
 		return init_player_turn_page($pg);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/draw_cards$/)) {
+		load_game_at(m[1], m[2]);
+		var $pg = show_page('draw_cards_page');
+		return init_draw_cards_page($pg);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/infection$/)) {
+		load_game_at(m[1], m[2]);
+		var $pg = show_page('infection_page');
+		return init_infection_page($pg);
 	}
 }
 
