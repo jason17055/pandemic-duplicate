@@ -397,16 +397,29 @@ function make_infection_card(c)
 
 function continue_after_player_setup()
 {
-	G.turn = 1;
-	begin_turn();
+	var u = BASE_URL + '#'+G.shuffle_id+'/T1/actions';
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
+function load_game_at(game_id, turn_number)
+{
+	load_game(game_id);
+	G.turn = +turn_number;
+	G.active_player = (G.turn-1) % G.rules.player_count + 1;
+}
+
+function init_player_turn_page($pg)
+{
+	$('.page_header .player_name', $pg).text(
+			G.player_names[G.active_player]
+			);
 }
 
 function begin_turn()
 {
 	var $pg = show_page('player_turn_page');
-	$('.page_header .player_name', $pg).text(
-			G.player_names[G.turn]
-			);
+	init_player_turn_page($pg);
 }
 
 function continue_after_player_turn()
@@ -418,7 +431,7 @@ function continue_after_player_turn()
 function init_draw_cards_page($pg)
 {
 	$('.player_name', $pg).text(
-			G.player_names[G.turn]
+			G.player_names[G.active_player]
 			);
 
 	$('.card_list', $pg).empty();
@@ -481,14 +494,15 @@ function continue_after_draw_phase()
 
 	$('.player_name', $pg).text(
 		G.player_names[
-			1+(G.turn%G.rules.player_count)
+			1+(G.active_player%G.rules.player_count)
 			]);
 }
 
 function continue_after_infection()
 {
-	var t = +G.turn;
-	G.turn = (t % G.rules.player_count) + 1;
+	G.turn = 1 + G.turn;
+	var t = +G.active_player;
+	G.active_player = (t % G.rules.player_count) + 1;
 	begin_turn();
 }
 
@@ -594,6 +608,11 @@ function on_state_init()
 	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
 		var $pg = show_page('player_setup_page');
 		return init_player_setup_page($pg, m[1]);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/actions$/)) {
+		load_game_at(m[1], m[2]);
+		var $pg = show_page('player_turn_page');
+		return init_player_turn_page($pg);
 	}
 }
 
