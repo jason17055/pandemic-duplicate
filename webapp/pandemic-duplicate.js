@@ -402,11 +402,20 @@ function continue_after_player_setup()
 	on_state_init();
 }
 
-function load_game_at(game_id, turn_number)
+function load_game_at(game_id, turn_str)
 {
 	G=null;
 	load_game(game_id);
-	G.turn = +turn_number;
+
+	var m;
+	if (m = turn_str.match(/^(\d+)-(\d+)$/)) {
+		G.turn = +m[1];
+		G.subturn = +m[2];
+	}
+	else {
+		G.turn = +turn_str;
+		G.subturn = 0;
+	}
 	G.active_player = (G.turn-1) % G.rules.player_count + 1;
 
 	for (var i = 1; i < G.turn; i++) {
@@ -575,13 +584,68 @@ function on_preshuffled_game_clicked(evt)
 	on_state_init();
 }
 
+function on_special_event_clicked()
+{
+	var s =  this.getAttribute('data-special-event');
+
+	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.turn + '-' + G.subturn, 'special '+s);
+	G.subturn++;
+
+	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.turn + '-' + G.subturn + '/' + G.page;
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
+function has_special_event(s)
+{
+	var found = false;
+	for (var pid in G.initial_hands) {
+		var h = G.initial_hands[pid];
+		for (var i = 0; i < h.length; i++) {
+			if (h[i] == s) {
+				found = true;
+			}
+		}
+	}
+
+	for (var i = 0; i < G.player_deck.length; i++) {
+		if (i >= 2*G.turn-2) {
+			break;
+		}
+		if (G.player_deck[i] == s) {
+			found = true;
+		}
+	}
+
+	if (!found) {
+		return false;
+	}
+
+	return true;
+}
+
 function play_special_event_clicked()
 {
 	var $pg = show_page('special_event_page');
+
+	$('.special_event_btn_row:not(.template)').remove();
+	for (var i = 0; i < Specials.length; i++) {
+		var s = Specials[i];
+		if (!has_special_event(s)) {
+			continue;
+		}
+		var $s = $('.special_event_btn_row.template').clone();
+		$('button', $s).text(s);
+		$('button', $s).attr('data-special-event', s);
+		$('button', $s).click(on_special_event_clicked);
+		$s.removeClass('template');
+		$('#special_event_none_row').before($s);
+	}
 }
 
 function cancel_special_event()
 {
+	on_state_init();
 }
 
 function init_pick_game_page($pg, rulestr)
@@ -632,18 +696,21 @@ function on_state_init()
 		var $pg = show_page('player_setup_page');
 		return init_player_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/actions$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/actions$/)) {
 		load_game_at(m[1], m[2]);
+		G.page = 'actions';
 		var $pg = show_page('player_turn_page');
 		return init_player_turn_page($pg);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/draw_cards$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/draw_cards$/)) {
 		load_game_at(m[1], m[2]);
+		G.page = 'draw_cards';
 		var $pg = show_page('draw_cards_page');
 		return init_draw_cards_page($pg);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/T(\d+)\/infection$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/infection$/)) {
 		load_game_at(m[1], m[2]);
+		G.page = 'infection';
 		var $pg = show_page('infection_page');
 		return init_infection_page($pg);
 	}
