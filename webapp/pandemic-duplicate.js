@@ -443,6 +443,9 @@ function do_move(m)
 			// draw two player cards
 			var c1 = G.player_deck.pop();
 			var c2 = G.player_deck.pop();
+			G.current = {
+				'cards_drawn': [c1, c2]
+				};
 
 			G.pending_epidemics = 0;
 			if (is_epidemic(c1)) {
@@ -464,6 +467,7 @@ function do_move(m)
 				G.time++;
 			}
 			else {
+				G.pending_infection = G.infection_rate;
 				G.step = 'infection';
 				G.time++;
 			}
@@ -482,9 +486,22 @@ function do_move(m)
 		}
 		else {
 
-			G.active_player = G.active_player % G.rules.player_count + 1;
-			G.step = 'actions';
-			G.time++;
+			var c = G.infection_deck.pop();
+			G.current = {
+			'infection': c
+			};
+
+			G.pending_infection--;
+			if (G.pending_infection > 0) {
+				G.step = 'infection';
+				G.time++;
+			}
+			else {
+
+				G.active_player = G.active_player % G.rules.player_count + 1;
+				G.step = 'actions';
+				G.time++;
+			}
 		}
 	}
 	else {
@@ -562,19 +579,24 @@ function is_epidemic(c)
 
 function init_infection_page($pg)
 {
-	var cc = [];
-	cc.push(G.infection_deck.pop());
-	cc.push(G.infection_deck.pop());
-
 	$('.card_list', $pg).empty();
-	for (var i = 0; i < cc.length; i++) {
-		$('.card_list', $pg).append(make_infection_card(cc[i]));
-	}
+	$('.card_list', $pg).append(
+		make_infection_card(
+			G.current.infection_card
+			));
 
-	$('.player_name', $pg).text(
-		G.player_names[
-			1+(G.active_player%G.rules.player_count)
-			]);
+	if (G.pending_infection > 0) {
+		$('.pending_infection_div').show();
+		$('.pending_infection_count').text(G.pending_infection);
+	}
+	else {
+		$('.pending_infection_div').hide();
+
+		$('.player_name', $pg).text(
+			G.player_names[
+				1+(G.active_player%G.rules.player_count)
+				]);
+	}
 }
 
 function show_page(page_name)
