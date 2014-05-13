@@ -412,6 +412,11 @@ function begin_turn()
 function continue_after_player_turn()
 {
 	var $pg = show_page('draw_cards_page');
+	init_draw_cards_page($pg);
+}
+
+function init_draw_cards_page($pg)
+{
 	$('.player_name', $pg).text(
 			G.player_names[G.turn]
 			);
@@ -421,6 +426,23 @@ function continue_after_player_turn()
 	var c2 = G.player_deck.pop();
 	$('.card_list', $pg).append(make_player_card(c1));
 	$('.card_list', $pg).append(make_player_card(c2));
+
+	G.pending_epidemics =
+		(is_epidemic(c1) ? 1 : 0) +
+		(is_epidemic(c2) ? 1 : 0);
+	if (G.pending_epidemics > 0) {
+		$('.epidemic_btn', $pg).show();
+		$('.goto_infection_btn', $pg).hide();
+	}
+	else {
+		$('.epidemic_btn', $pg).hide();
+		$('.goto_infection_btn', $pg).show();
+	}
+}
+
+function is_epidemic(c)
+{
+	return c == 'Epidemic';
 }
 
 function continue_after_draw_phase()
