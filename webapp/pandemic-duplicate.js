@@ -431,11 +431,32 @@ function init_draw_cards_page($pg)
 		(is_epidemic(c1) ? 1 : 0) +
 		(is_epidemic(c2) ? 1 : 0);
 	if (G.pending_epidemics > 0) {
-		$('.epidemic_btn', $pg).show();
+		$('.goto_epidemic_btn', $pg).show();
 		$('.goto_infection_btn', $pg).hide();
 	}
 	else {
-		$('.epidemic_btn', $pg).hide();
+		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_infection_btn', $pg).show();
+	}
+}
+
+function do_epidemic_clicked()
+{
+	G.pending_epidemics--;
+	var $pg = show_page('epidemic_page');
+
+	var c = G.infection_deck.shift();
+	$('.card_list', $pg).empty();
+	$('.card_list', $pg).append(
+		make_infection_card(c)
+		);
+
+	if (G.pending_epidemics > 0) {
+		$('.goto_epidemic_btn', $pg).show();
+		$('.goto_infection_btn', $pg).hide();
+	}
+	else {
+		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).show();
 	}
 }

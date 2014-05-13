@@ -209,7 +209,7 @@ Perform your actions.
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
 <div>
-<button type="button" class="epidemic_btn" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
+<button type="button" class="goto_epidemic_btn" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
 </div>
 <div>
 <button type="button" class="goto_infection_btn" onclick="continue_after_draw_phase()">Next: <small>Infection</small></button>
@@ -217,6 +217,27 @@ Perform your actions.
 
 </div><!--/page_body-->
 </div><!--/draw_cards_page-->
+
+<div id="epidemic_page" class="page">
+<div class="page_header"><h1>Epidemic!</h1></div>
+<div class="page_body">
+
+<div>Add 3 cubes to:</div>
+<ul class="card_list"></ul>
+
+<div>
+<button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
+</div>
+<div>
+<button type="button" class="goto_epidemic_btn" onclick="do_epidemic_clicked()">Next: <small>Epidemic</small></button>
+</div>
+<div>
+<button type="button" class="goto_infection_btn" onclick="continue_after_draw_phase()">Next: <small>Infection</small></button>
+</div>
+
+
+</div><!--/page_body-->
+</div><!--/epidemic_page-->
 
 <div id="infection_page" class="page">
 <div class="page_header"><h1>Infection</h1></div>
