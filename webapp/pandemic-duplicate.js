@@ -479,16 +479,29 @@ function shuffle_name(shuffle_id)
 	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
 }
 
+function on_preshuffled_game_clicked(evt)
+{
+	var el = this;
+	var shuffle_id = el.getAttribute('data-shuffle-id');
+
+	var u = BASE_URL + '#'+shuffle_id+'/names';
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
+	$('.preshuffle_row[data-shuffle-id]').remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
 
 		var $tr = $('.preshuffle_row.template').clone();
 		$tr.removeClass('template');
 		$('button',$tr).text(shuffle_name(a[i]));
+		$('button',$tr).attr('data-shuffle-id', a[i]);
+		$('button',$tr).click(on_preshuffled_game_clicked);
 		$('.preshuffle_table', $pg).append($tr);
 	}
 }
