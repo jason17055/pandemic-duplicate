@@ -404,9 +404,16 @@ function continue_after_player_setup()
 
 function load_game_at(game_id, turn_number)
 {
+	G=null;
 	load_game(game_id);
 	G.turn = +turn_number;
 	G.active_player = (G.turn-1) % G.rules.player_count + 1;
+
+	for (var i = 1; i < G.turn; i++) {
+		// draw two cards for the player that already went
+		G.player_deck.pop();
+		G.player_deck.pop();
+	}
 }
 
 function init_player_turn_page($pg)
