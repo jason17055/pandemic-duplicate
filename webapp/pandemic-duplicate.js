@@ -179,6 +179,10 @@ function load_game(game_id)
 	if (s) {
 		G.player_names = JSON.parse(s);
 	}
+
+	G.turn = 1;
+	G.play = 0;
+	G.step = 'actions';
 	return G;
 }
 
@@ -397,31 +401,66 @@ function make_infection_card(c)
 
 function continue_after_player_setup()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/T1/actions';
-	history.pushState(null, null, u);
-	on_state_init();
+	navigate_to_current_turn();
 }
 
-function load_game_at(game_id, turn_str)
+function load_game_at(game_id, turn_str, target_step)
 {
 	G=null;
 	load_game(game_id);
 
+	var target_turn;
+	var target_play;
 	var m;
 	if (m = turn_str.match(/^(\d+)-(\d+)$/)) {
-		G.turn = +m[1];
-		G.subturn = +m[2];
+		target_turn = +m[1];
+		target_play = +m[2];
 	}
 	else {
-		G.turn = +turn_str;
-		G.subturn = 0;
+		target_turn = +turn_str;
+		target_play = 0;
 	}
-	G.active_player = (G.turn-1) % G.rules.player_count + 1;
 
-	for (var i = 1; i < G.turn; i++) {
-		// draw two cards for the player that already went
-		G.player_deck.pop();
-		G.player_deck.pop();
+	while (!(
+		G.turn == target_turn &&
+		G.play == target_play &&
+		G.step == target_step
+		)) {
+
+		if (G.turn > target_turn) {
+			console.log('turn number not found');
+			break;
+		}
+
+		var m = localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '/T' + G.turn + '-' + G.play);
+		if (m == null) { m = 'pass'; }
+
+		do_move(m);
+	}
+}
+
+function do_move(m)
+{
+	if (m == 'pass') {
+
+		if (G.step == 'actions') {
+
+			// draw two player cards
+			G.player_deck.pop();
+			G.player_deck.pop();
+			G.step = 'draw_cards';
+		}
+		else {
+
+			G.active_player = G.active_player % G.rules.player_count + 1;
+			G.turn++;
+			G.step = 'actions';
+		}
+	}
+	else {
+
+		console.log("unrecognized move: "+m);
+		G.turn++;
 	}
 }
 
@@ -440,9 +479,7 @@ function begin_turn()
 
 function continue_after_player_turn()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/T'+G.turn+'/draw_cards';
-	history.pushState(null, null, u);
-	on_state_init();
+	set_move('pass');
 }
 
 function init_draw_cards_page($pg)
@@ -584,16 +621,29 @@ function on_preshuffled_game_clicked(evt)
 	on_state_init();
 }
 
+function navigate_to_current_turn()
+{
+	var turn_str = G.turn + (
+		G.play != 0 ? '-'+G.play : '');
+	var u = BASE_URL + '#' + G.shuffle_id + '/T' + turn_str + '/' + G.step;
+	history.pushState(null, null, u);
+	on_state_init();
+	return;
+}
+
+function set_move(m)
+{
+	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.turn + '-' + G.play, m);
+	do_move(m);
+	navigate_to_current_turn();
+	return;
+}
+
 function on_special_event_clicked()
 {
 	var s =  this.getAttribute('data-special-event');
 
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.turn + '-' + G.subturn, 'special '+s);
-	G.subturn++;
-
-	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.turn + '-' + G.subturn + '/' + G.page;
-	history.pushState(null, null, u);
-	on_state_init();
+	return set_move('special '+s);
 }
 
 function has_special_event(s)
@@ -697,20 +747,17 @@ function on_state_init()
 		return init_player_setup_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/actions$/)) {
-		load_game_at(m[1], m[2]);
-		G.page = 'actions';
+		load_game_at(m[1], m[2], 'actions');
 		var $pg = show_page('player_turn_page');
 		return init_player_turn_page($pg);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/draw_cards$/)) {
-		load_game_at(m[1], m[2]);
-		G.page = 'draw_cards';
+		load_game_at(m[1], m[2], 'draw_cards');
 		var $pg = show_page('draw_cards_page');
 		return init_draw_cards_page($pg);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)\/infection$/)) {
-		load_game_at(m[1], m[2]);
-		G.page = 'infection';
+		load_game_at(m[1], m[2], 'infection');
 		var $pg = show_page('infection_page');
 		return init_infection_page($pg);
 	}
