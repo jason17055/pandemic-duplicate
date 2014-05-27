@@ -591,6 +591,8 @@ function init_infection_page($pg)
 	if (G.pending_infection > 0) {
 		$('.pending_infection_div').show();
 		$('.pending_infection_count').text(G.pending_infection);
+		$('.goto_infection_btn').show();
+		$('.goto_player_turn_btn').hide();
 	}
 	else {
 		$('.pending_infection_div').hide();
@@ -599,6 +601,8 @@ function init_infection_page($pg)
 			G.player_names[
 				1+(G.active_player%G.rules.player_count)
 				]);
+		$('.goto_infection_btn').hide();
+		$('.goto_player_turn_btn').show();
 	}
 }
 
