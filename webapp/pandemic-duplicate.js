@@ -446,9 +446,8 @@ function do_epidemic()
 
 }
 
-function start_infection()
+function do_more_infection()
 {
-	G.pending_infection = G.infection_rate;
 	G.step = 'infection';
 	G.time++;
 
@@ -457,6 +456,12 @@ function start_infection()
 		'infection': c
 		};
 	G.pending_infection--;
+}
+
+function start_infection()
+{
+	G.pending_infection = G.infection_rate;
+	do_more_infection();
 }
 
 function do_move(m)
@@ -510,12 +515,11 @@ function do_move(m)
 				start_infection();
 			}
 		}
-		else {
+		else { // infection
 
-			G.pending_infection--;
 			if (G.pending_infection > 0) {
-				G.step = 'infection';
-				G.time++;
+
+				do_more_infection();
 			}
 			else {
 
