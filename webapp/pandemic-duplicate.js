@@ -480,7 +480,7 @@ function load_game_at(game_id, target_time)
 	target_time = +target_time;
 	while (G.time < target_time) {
 
-		var m = localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '/T' + G.time);
+		var m = localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time);
 		if (m == null) { m = 'pass'; }
 
 		do_move(m);
@@ -583,8 +583,8 @@ function start_infection()
 
 function do_move(m)
 {
-	console.log("m["+G.time+"]="+m);
-	debug_infection_discards();
+	//console.log("m["+G.time+"]="+m);
+	//debug_infection_discards();
 
 	var mm = m.split(/ /);
 	if (m == 'pass') {
@@ -661,6 +661,7 @@ function do_special_event(c)
 	}
 	else if (c == 'Commercial Travel Ban') {
 		G.travel_ban = G.rules.player_count;
+		console.log("travel ban in effect");
 	}
 
 	G.time++;
