@@ -457,6 +457,9 @@ function start_epidemic()
 	G.time++;
 
 	G.epidemic_count++;
+	G.infection_rate = G.epidemic_count < 3 ? 2 :
+			G.epidemic_count < 5 ? 3 : 4;
+
 	var c = G.infection_deck.shift();
 	G.current = {
 		'epidemic': c
