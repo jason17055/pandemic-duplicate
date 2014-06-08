@@ -419,6 +419,26 @@ function init_player_setup_page($pg, shuffle_id)
 
 function make_player_card(c)
 {
+	var idx = -1;
+	for (var i = 0; i < Cities.length; i++) {
+		if (Cities[i] == c) {
+			idx = i;
+			break;
+		}
+	}
+	if (idx >= 0 && idx < 12) {
+		c += ' (Blu)';
+	}
+	else if (idx >= 12 && idx < 24) {
+		c += ' (Y)';
+	}
+	else if (idx >= 24 && idx < 36) {
+		c += ' (Bla)';
+	}
+	else if (idx >= 36 && idx < 48) {
+		c += ' (R)';
+	}
+
 	var $x = $('<li></li>');
 	$x.text(c);
 	return $x;
