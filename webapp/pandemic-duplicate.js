@@ -156,13 +156,27 @@ function generate_decks()
 	}
 	shuffle_array(G.infection_deck);
 
-	var XX = JSON.stringify({
+	for (var k = 1; k <= G.rules.level; k++) {
+		var a = [];
+		for (var i = 0; i < Cities.length; i++) {
+			a.push(Cities[i]);
+		}
+		shuffle_array(a);
+		G['epidemic.'+k] = a;
+	}
+
+	var X = {
 	'initial_hands': G.initial_hands,
 	'roles': G.roles,
 	'player_deck': G.player_deck,
 	'infection_deck': G.infection_deck,
 	'rules': G.rules
-	});
+	};
+	for (var k = 1; k <= G.rules.level; k++) {
+		X['epidemic.'+k] = G['epidemic.'+k];
+	}
+
+	var XX = JSON.stringify(X);
 	G.shuffle_name = (""+CryptoJS.SHA1(XX)).substring(0,18);
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
@@ -193,6 +207,7 @@ function load_game(game_id)
 
 	G.infection_rate = 2;
 	G.infection_discards = [];
+	G.epidemic_count = 0;
 
 	G.player_discards = [];
 	return G;
@@ -431,11 +446,12 @@ function load_game_at(game_id, target_time)
 	}
 }
 
-function do_epidemic()
+function start_epidemic()
 {
 	G.step = 'epidemic';
 	G.time++;
 
+	G.epidemic_count++;
 	var c = G.infection_deck.shift();
 	G.current = {
 		'epidemic': c
@@ -443,7 +459,40 @@ function do_epidemic()
 	G.pending_epidemics--;
 
 	G.infection_discards.push(c);
+}
 
+function finish_epidemic()
+{
+	var a = G['epidemic.'+G.epidemic_count];
+	if (!a) {
+		alert('Oops, this game does not have an order defined for epidemic '+G.epidemic_count);
+		return;
+	}
+
+var s = '';
+for (var i = 0; i < G.infection_discards.length; i++) {
+	s += G.infection_discards[i] + ',';
+}
+console.log('infection pile is '+s);
+
+	for (var i = a.length-1; i >= 0; i--) {
+
+		var c = find_and_remove_card(G.infection_discards, a[i]);
+		if (c) {
+			G.infection_deck.push(c);
+		}
+	}
+}
+
+function find_and_remove_card(pile, card_name)
+{
+	for (var i = 0; i < pile.length; i++) {
+		if (pile[i] == card_name) {
+			pile.splice(i, 1);
+			return card_name;
+		}
+	}
+	return null;
 }
 
 function do_more_infection()
@@ -455,6 +504,7 @@ function do_more_infection()
 	G.current = {
 		'infection': c
 		};
+	G.infection_discards.push(c);
 	G.pending_infection--;
 }
 
@@ -500,7 +550,7 @@ function do_move(m)
 		else if (G.step == 'draw_cards') {
 
 			if (G.pending_epidemics > 0) {
-				do_epidemic();
+				start_epidemic();
 			}
 			else {
 				start_infection();
@@ -508,8 +558,9 @@ function do_move(m)
 		}
 		else if (G.step == 'epidemic') {
 
+			finish_epidemic();
 			if (G.pending_epidemics > 0) {
-				do_epidemic();
+				start_epidemic();
 			}
 			else {
 				start_infection();
