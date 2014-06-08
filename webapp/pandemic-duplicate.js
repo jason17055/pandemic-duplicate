@@ -319,7 +319,16 @@ function update_game_score()
 function init_game_completed_page($pg)
 {
 	$('.turns', $pg).text(G.turns);
+	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
 	$('.level', $pg).text(G.rules.level);
+	if (G.result == 'victory') {
+		$('.victory_only', $pg).show();
+		$('.defeat_only', $pg).hide();
+	}
+	else {
+		$('.victory_only', $pg).hide();
+		$('.defeat_only', $pg).show();
+	}
 	update_game_score();
 
 	if (G.rules.player_count <= 2) {
@@ -901,6 +910,11 @@ function has_special_event(s)
 function admit_defeat_clicked()
 {
 	return set_move('give_up');
+}
+
+function declare_victory_clicked()
+{
+	return set_move('claim_victory');
 }
 
 function cancel_show_discards()

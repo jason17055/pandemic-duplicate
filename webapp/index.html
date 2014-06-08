@@ -222,6 +222,14 @@ Perform your actions.
 <div class="page_body">
 
 <form name="game_completed_form">
+<div class="victory_only">
+<p>
+With <span class="level"></span> epidemics,
+you cured all four diseases in <span class="turns"></span> turns
+(<span class="turns_left"></span> turn(s) left).
+</p>
+</div>
+<div class="defeat_only">
 <p>
 With <span class="level"></span> epidemics,
 you survived <span class="turns"></span> turns.
@@ -236,6 +244,7 @@ How many diseases cured?
 <option value="4">4</option>
 </select>
 </p>
+</div>
 <p>
 Score:
 <span class="score_ind"></span>
