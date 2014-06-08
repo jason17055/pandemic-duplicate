@@ -426,21 +426,31 @@ function make_player_card(c)
 			break;
 		}
 	}
+
+	var klass = null;
 	if (idx >= 0 && idx < 12) {
 		c += ' (Blu)';
+		klass = 'blue_card';
 	}
 	else if (idx >= 12 && idx < 24) {
 		c += ' (Y)';
+		klass = 'yellow_card';
 	}
 	else if (idx >= 24 && idx < 36) {
 		c += ' (Bla)';
+		klass = 'black_card';
 	}
 	else if (idx >= 36 && idx < 48) {
 		c += ' (R)';
+		klass = 'red_card';
 	}
 
 	var $x = $('<li></li>');
 	$x.text(c);
+	if (klass) {
+		$x.addClass(klass);
+	}
+
 	return $x;
 }
 

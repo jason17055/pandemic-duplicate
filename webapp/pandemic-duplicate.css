@@ -87,3 +87,16 @@ h2 {
 	padding: 4px 12px;
 	display: none;
 }
+
+.red_card {
+	border: 2px solid red;
+}
+.black_card {
+	border: 2px solid black;
+}
+.yellow_card {
+	border: 2px solid yellow;
+}
+.blue_card {
+	border: 2px solid blue;
+}
