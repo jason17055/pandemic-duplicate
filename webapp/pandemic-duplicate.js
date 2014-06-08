@@ -229,10 +229,6 @@ function load_game(game_id)
 
 function load_shuffle(shuffle_id)
 {
-	if (G && G.shuffle_id == shuffle_id) {
-		return G;
-	}
-
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 	if (!s) {
 		console.log('Fatal: shuffle '+shuffle_id+' is not known');
@@ -508,6 +504,15 @@ function start_epidemic()
 	G.infection_discards.push(c);
 }
 
+function debug_infection_discards()
+{
+var s = '';
+for (var i = 0; i < G.infection_discards.length; i++) {
+	s += G.infection_discards[i] + ',';
+}
+console.log('infection pile is '+s);
+}
+
 function finish_epidemic()
 {
 	var a = G['epidemic.'+G.epidemic_count];
@@ -515,12 +520,6 @@ function finish_epidemic()
 		alert('Oops, this game does not have an order defined for epidemic '+G.epidemic_count);
 		return;
 	}
-
-var s = '';
-for (var i = 0; i < G.infection_discards.length; i++) {
-	s += G.infection_discards[i] + ',';
-}
-console.log('infection pile is '+s);
 
 	for (var i = a.length-1; i >= 0; i--) {
 
@@ -582,6 +581,9 @@ function start_infection()
 
 function do_move(m)
 {
+	console.log("m["+G.time+"]="+m);
+	debug_infection_discards();
+
 	var mm = m.split(/ /);
 	if (m == 'pass') {
 
