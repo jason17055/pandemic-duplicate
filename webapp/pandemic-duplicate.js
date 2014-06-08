@@ -842,6 +842,12 @@ function has_special_event(s)
 	return false;
 }
 
+function admit_defeat_clicked()
+{
+	var $pg = show_page('game_completed_page');
+
+}
+
 function play_special_event_clicked()
 {
 	var $pg = show_page('special_event_page');
