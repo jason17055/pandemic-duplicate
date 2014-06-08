@@ -850,7 +850,8 @@ function has_special_event(s)
 function admit_defeat_clicked()
 {
 	var $pg = show_page('game_completed_page');
-	alert('You survived '+G.turns+' turns');
+	$('.turns', $pg).text(G.turns);
+	$('.level', $pg).text(G.rules.level);
 }
 
 function cancel_show_discards()
