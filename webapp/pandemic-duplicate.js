@@ -1041,3 +1041,9 @@ $(function() {
 $(function() {
 	$('.cure_count').change(update_game_score);
 });
+
+function skip_clicked()
+{
+	history.pushState(null, null, BASE_URL);
+	on_state_init();
+}
