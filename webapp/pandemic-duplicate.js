@@ -205,6 +205,7 @@ function load_game(game_id)
 
 	G.active_player = 1;
 	G.time = 0;
+	G.turns = 1;
 	G.step = 'actions';
 	G.hands = {};
 	for (var i = 1; i <= G.rules.player_count; i++) {
@@ -560,6 +561,7 @@ function do_more_infection()
 		G.active_player = G.active_player % G.rules.player_count + 1;
 		G.step = 'actions';
 		G.time++;
+		G.turns++;
 	}
 }
 
@@ -847,7 +849,7 @@ function has_special_event(s)
 function admit_defeat_clicked()
 {
 	var $pg = show_page('game_completed_page');
-
+	alert('You survived '+G.turns+' turns');
 }
 
 function cancel_show_discards()
