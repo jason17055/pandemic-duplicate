@@ -207,6 +207,11 @@ function load_game(game_id)
 
 	G.infection_rate = 2;
 	G.infection_discards = [];
+	for (var i = 0; i < 9; i++) {
+		var c = G.infection_deck.pop();
+		G.infection_discards.push(c);
+	}
+
 	G.epidemic_count = 0;
 
 	G.player_discards = [];
