@@ -185,6 +185,9 @@ Perform your actions.
 </p>
 
 <div>
+<button type="button" onclick="show_discards_clicked()">Show Discards</button>
+</div>
+<div>
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
 <div>
@@ -223,6 +226,19 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
 
+<div id="show_discards_page" class="page">
+<div class="page_header"><h1>Discarded Infection Cards</h1></div>
+<div class="page_body">
+
+<ul class="infection_discards_list">
+</ul>
+<div>
+<button type="button" onclick="cancel_show_discards()">Go Back</button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/show_discards_page-->
+
 <div id="draw_cards_page" class="page">
 <div class="page_header"><h1>Draw Cards</h1></div>
 <div class="page_body">
@@ -231,6 +247,9 @@ Perform your actions.
 <ol class="card_list">
 </ol>
 
+<div>
+<button type="button" onclick="show_discards_clicked()">Show Discards</button>
+</div>
 <div>
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
@@ -251,6 +270,9 @@ Perform your actions.
 <div>Add 3 cubes to:</div>
 <ul class="card_list"></ul>
 
+<div>
+<button type="button" onclick="show_discards_clicked()">Show Discards</button>
+</div>
 <div>
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
@@ -276,6 +298,9 @@ Perform your actions.
 <span class="pending_infection_count">1</span> more to go!
 </div>
 
+<div>
+<button type="button" onclick="show_discards_clicked()">Show Discards</button>
+</div>
 <div>
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>

@@ -850,6 +850,25 @@ function admit_defeat_clicked()
 
 }
 
+function cancel_show_discards()
+{
+	on_state_init();
+}
+
+function show_discards_clicked()
+{
+	var $pg = show_page('show_discards_page');
+	$('.infection_discards_list', $pg).empty();
+
+	for (var i = 0; i < G.infection_discards.length; i++) {
+		var c = G.infection_discards[i];
+
+		$('.infection_discards_list', $pg).append(
+			make_infection_card(c)
+			);
+	}
+}
+
 function play_special_event_clicked()
 {
 	var $pg = show_page('special_event_page');
