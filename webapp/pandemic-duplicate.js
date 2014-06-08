@@ -505,25 +505,45 @@ function find_and_remove_card(pile, card_name)
 
 function do_more_infection()
 {
-	G.step = 'infection';
-	G.time++;
+	if (G.pending_infection > 0) {
 
-	var c = G.infection_deck.pop();
-	G.current = {
-		'infection': c
-		};
-	G.infection_discards.push(c);
-	G.pending_infection--;
+		G.step = 'infection';
+		G.time++;
+
+		var c = G.infection_deck.pop();
+		G.current = {
+			'infection': c
+			};
+		G.infection_discards.push(c);
+		G.pending_infection--;
+	}
+	else {
+
+		G.active_player = G.active_player % G.rules.player_count + 1;
+		G.step = 'actions';
+		G.time++;
+	}
 }
 
 function start_infection()
 {
-	G.pending_infection = G.infection_rate;
+	if (G.travel_ban) {
+		G.travel_ban--;
+		G.pending_infection = 1;
+	}
+	else if (G.one_quiet_night) {
+		delete G.one_quiet_night;
+		G.pending_infection = 0;
+	}
+	else {
+		G.pending_infection = G.infection_rate;
+	}
 	do_more_infection();
 }
 
 function do_move(m)
 {
+	var mm = m.split(/ /);
 	if (m == 'pass') {
 
 		if (G.step == 'actions') {
@@ -576,23 +596,31 @@ function do_move(m)
 		}
 		else { // infection
 
-			if (G.pending_infection > 0) {
-
-				do_more_infection();
-			}
-			else {
-
-				G.active_player = G.active_player % G.rules.player_count + 1;
-				G.step = 'actions';
-				G.time++;
-			}
+			do_more_infection();
 		}
+	}
+	else if (mm[0] == 'special') {
+		do_special_event(m.substring(8));
 	}
 	else {
 
 		console.log("unrecognized move: "+m);
 		G.time++;
 	}
+}
+
+function do_special_event(c)
+{
+	console.log("special event "+c);
+
+	if (c == 'One Quiet Night') {
+		G.one_quiet_night = 1;
+	}
+	else if (c == 'Commercial Travel Ban') {
+		G.travel_ban = G.rules.player_count;
+	}
+
+	G.time++;
 }
 
 function init_player_turn_page($pg)
