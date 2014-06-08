@@ -300,6 +300,47 @@ function init_player_names_page($pg, shuffle_id)
 	}
 }
 
+function update_game_score()
+{
+	// cure count only used on loss
+	var num_cures = +document.game_completed_form.cure_count.value;
+	var num_turns = +G.turns;
+
+	var score;
+	if (G.result == 'victory') {
+		score = 100+Math.floor(G.player_deck.length/2);
+	}
+	else {
+		score = num_cures*12+num_turns;
+	}
+	$('.score_ind').text(score);
+}
+
+function init_game_completed_page($pg)
+{
+	$('.turns', $pg).text(G.turns);
+	$('.level', $pg).text(G.rules.level);
+	update_game_score();
+
+	if (G.rules.player_count <= 2) {
+		$('.player3', $pg).hide();
+		$('.player4', $pg).hide();
+	}
+	else if (G.rules.player_count == 3) {
+		$('.player3', $pg).show();
+		$('.player4', $pg).hide();
+	}
+	else {
+		$('.player3', $pg).show();
+		$('.player4', $pg).show();
+	}
+
+	for (var i = 1; i <= G.rules.player_count; i++) {
+		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);
+		$('.player'+i+' .role', $pg).text(G.roles[i]);
+	}
+}
+
 function submit_player_names_form()
 {
 	var f = document.player_names_form;
@@ -645,6 +686,16 @@ function do_move(m)
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
 	}
+	else if (m == 'give_up') {
+		G.step = 'end';
+		G.result = 'loss'
+		G.time++;
+	}
+	else if (m == 'claim_victory') {
+		G.step = 'end';
+		G.result = 'victory';
+		G.time++;
+	}
 	else {
 
 		console.log("unrecognized move: "+m);
@@ -849,9 +900,7 @@ function has_special_event(s)
 
 function admit_defeat_clicked()
 {
-	var $pg = show_page('game_completed_page');
-	$('.turns', $pg).text(G.turns);
-	$('.level', $pg).text(G.rules.level);
+	return set_move('give_up');
 }
 
 function cancel_show_discards()
@@ -963,10 +1012,18 @@ function on_state_init()
 			var $pg = show_page('infection_page');
 			return init_infection_page($pg);
 		}
+		else if (G.step == 'end') {
+			var $pg = show_page('game_completed_page');
+			return init_game_completed_page($pg);
+		}
 	}
 }
 
 $(function() {
 	window.addEventListener('popstate', on_state_init);
 	on_state_init();
+});
+
+$(function() {
+	$('.cure_count').change(update_game_score);
 });

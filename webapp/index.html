@@ -221,9 +221,41 @@ Perform your actions.
 <div class="page_header"><h1>Game Completed</h1></div>
 <div class="page_body">
 
-<p>With <span class="level"></span> epidemics,
+<form name="game_completed_form">
+<p>
+With <span class="level"></span> epidemics,
 you survived <span class="turns"></span> turns.
 </p>
+<p>
+How many diseases cured?
+<select name="cure_count" class="cure_count">
+<option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+</select>
+</p>
+<p>
+Score:
+<span class="score_ind"></span>
+</p>
+<table>
+<tr class="player1"><td class="role_col"><span class="role"></span></td><td><input type="text" name="player1" value="Player 1"></td></tr>
+<tr class="player2"><td class="role_col"><span class="role"></span></td><td><input type="text" name="player2" value="Player 2"></td></tr>
+<tr class="player3"><td class="role_col"><span class="role"></span></td><td><input type="text" name="player3" value="Player 3"></td></tr>
+<tr class="player4"><td class="role_col"><span class="role"></span></td><td><input type="text" name="player4" value="Player 4"></td></tr>
+</table>
+
+<p>
+By submitting this result, you agree that you played this game
+without prior knowledge of the sequence of cards shown.
+</p>
+
+<div><button type="button">Submit Result</button></div>
+<div><button type="button">Skip</button></div>
+
+</form>
 
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
