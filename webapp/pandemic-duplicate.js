@@ -5,11 +5,20 @@ if (BASE_URL.indexOf('#') != -1) {
 }
 
 var Roles = [
+	// original roles
 	'Dispatcher',
 	'Operations Expert',
 	'Scientist',
 	'Medic',
-	'Researcher'
+	'Researcher',
+
+	// expansion roles
+	'Field Operative',
+	'Containment Specialist',
+	'Generalist',
+	'Archivist',
+	'Epidemiologist'
+
 	];
 var Cities = [
 	// Blue cities
