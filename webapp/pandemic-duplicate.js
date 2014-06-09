@@ -205,6 +205,7 @@ function generate_decks()
 	G.shuffle_name = (""+CryptoJS.SHA1(XX)).substring(0,18);
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
+	localStorage.setItem(PACKAGE + '.shuffle_version.' + G.shuffle_name, Version);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_name);
 
 	return G.shuffle_name;
@@ -959,6 +960,12 @@ function cancel_special_event()
 	on_state_init();
 }
 
+function check_version(shuffle_id)
+{
+	var v = localStorage.getItem(PACKAGE + '.shuffle_version.' + shuffle_id);
+	return (v == Version);
+}
+
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
@@ -966,6 +973,10 @@ function init_pick_game_page($pg, rulestr)
 	$('.preshuffle_row[data-shuffle-id]').remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
+
+		if (!check_version(a[i])) {
+			continue;
+		}
 
 		var $tr = $('.preshuffle_row.template').clone();
 		$tr.removeClass('template');
