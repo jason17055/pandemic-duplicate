@@ -88,7 +88,6 @@ var Specials = [
 	'Airlift',
 	'Borrowed Time',
 	'Commercial Travel Ban',
-	'Forecast',
 	'Government Grant',
 	'Mobile Hospital',
 	'New Assignment',
@@ -96,8 +95,11 @@ var Specials = [
 	'Rapid Vaccine Deployment',
 	'Re-examined Research',
 	'Remote Treatment',
-	'Resilient Population',
 	'Special Orders',
+
+	//Not yet supported
+	//'Forecast',
+	//'Resilient Population',
 	];
 var G = null;
 
