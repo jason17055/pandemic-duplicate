@@ -4,6 +4,7 @@ if (BASE_URL.indexOf('#') != -1) {
 	BASE_URL = BASE_URL.substring(0, BASE_URL.indexOf('#'));
 }
 
+var Version = 1;
 var Roles = [
 	// original roles
 	'Dispatcher',
@@ -12,7 +13,7 @@ var Roles = [
 	'Medic',
 	'Researcher',
 
-	// expansion roles
+	// expansion roles (those supported, anyway)
 	'Field Operative',
 	'Containment Specialist',
 	'Generalist',
@@ -61,7 +62,7 @@ var Cities = [
 	'Chennai',
 	'Moscow',
 	'Istanbul',
-	'Kalkuta',
+	'Kolkata',
 
 	//Red cities
 	'Hong Kong',
@@ -78,6 +79,11 @@ var Cities = [
 	'Sydney'
 
 	];
+var Translated_City_Names = {
+	'Bogota': 'Bogotá',
+	'Sao Paulo': 'São Paulo'
+	};
+
 var Specials = [
 	'Airlift',
 	'Borrowed Time',
@@ -94,6 +100,16 @@ var Specials = [
 	'Special Orders',
 	];
 var G = null;
+
+var City_Info = {};
+for (var i = 0; i < Cities.length; i++) {
+	var ci = {
+		'id': Cities[i],
+		'name': Translated_City_Names[Cities[i]] || Cities[i],
+		'color': (i < 12 ? 'blue' : i < 24 ? 'yellow' : i < 36 ? 'black' : 'red')
+		};
+	City_Info[ci.id] = ci;
+}
 
 function shuffle_array(A)
 {
@@ -475,36 +491,16 @@ function init_player_setup_page($pg, shuffle_id)
 
 function make_player_card(c)
 {
-	var idx = -1;
-	for (var i = 0; i < Cities.length; i++) {
-		if (Cities[i] == c) {
-			idx = i;
-			break;
-		}
-	}
+	var ci = City_Info[c];
 
-	var klass = null;
-	if (idx >= 0 && idx < 12) {
-		c += ' (Blu)';
-		klass = 'blue_card';
+	var $x = $('<li><img src="" class="card_icon"><span class="card_name"></span></li>');
+	if (ci) {
+		$('.card_name', $x).text(ci.name);
+		$x.addClass(ci.color + '_card');
 	}
-	else if (idx >= 12 && idx < 24) {
-		c += ' (Y)';
-		klass = 'yellow_card';
-	}
-	else if (idx >= 24 && idx < 36) {
-		c += ' (Bla)';
-		klass = 'black_card';
-	}
-	else if (idx >= 36 && idx < 48) {
-		c += ' (R)';
-		klass = 'red_card';
-	}
-
-	var $x = $('<li></li>');
-	$x.text(c);
-	if (klass) {
-		$x.addClass(klass);
+	else {
+		$('.card_name', $x).text(c);
+		$x.addClass('special_card');
 	}
 
 	return $x;
@@ -512,8 +508,11 @@ function make_player_card(c)
 
 function make_infection_card(c)
 {
-	var $x = $('<li></li>');
-	$x.text(c);
+	var ci = City_Info[c];
+
+	var $x = $('<li><span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span></li>');
+	$('.card_name', $x).text(ci.name);
+	$x.addClass(ci.color + '_card');
 	return $x;
 }
 
