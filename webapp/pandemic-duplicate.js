@@ -384,7 +384,8 @@ function submit_player_names_form()
 		JSON.stringify(G.player_names)
 		);
 
-	var u = BASE_URL + '#'+G.shuffle_id+'/deck_setup';
+	//var u = BASE_URL + '#'+G.shuffle_id+'/deck_setup';
+	var u = BASE_URL + '#'+G.shuffle_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 
@@ -454,11 +455,7 @@ function init_board_setup_page($pg, shuffle_id)
 
 function continue_after_board_setup()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/player_setup';
-	history.pushState(null, null, u);
-	on_state_init();
-
-	return false;
+	return navigate_to_current_turn();
 }
 
 function init_player_setup_page($pg, shuffle_id)
@@ -521,7 +518,11 @@ function make_infection_card(c)
 
 function continue_after_player_setup()
 {
-	navigate_to_current_turn();
+	var u = BASE_URL + '#'+G.shuffle_id+'/board_setup';
+	history.pushState(null, null, u);
+	on_state_init();
+
+	return false;
 }
 
 function load_game_at(game_id, target_time)

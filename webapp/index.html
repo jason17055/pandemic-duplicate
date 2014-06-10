@@ -116,7 +116,7 @@ Or generate a new game:
 </div>
 
 <div class="button_container">
-<button type="submit">Continue</button>
+<button type="submit">Next: <small>Player Setup</small></button>
 </div>
 
 </form><!--/player_names_form-->
@@ -137,7 +137,7 @@ Or generate a new game:
 <ol id="infection_cards_list"></ol>
 
 <div class="button_container">
-<button type="button" onclick="continue_after_deck_setup()">Continue: <small>Board Setup</small></button>
+<button type="button" onclick="continue_after_deck_setup()">Next: <small>Board Setup</small></button>
 </div>
 
 </div><!--/page_body-->
@@ -157,7 +157,7 @@ Or generate a new game:
 <ul class="1cube_cities card_list"></ul>
 
 <div class="button_container">
-<button type="button" onclick="continue_after_board_setup()">Continue: <small>Player Setup</small>
+<button type="button" onclick="continue_after_board_setup()">Next: <small>First Turn</small></button>
 </div>
 
 </div><!--/page_body-->
@@ -191,7 +191,7 @@ Or generate a new game:
 <ul class="card_list"></ul>
 </div>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="continue_after_player_setup()">Next: <small>Begin Game</small></button>
 </div>
 
@@ -215,7 +215,7 @@ Perform your actions.
 <div>
 <button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
 </div>
 
@@ -283,8 +283,8 @@ By submitting this result, you agree that you played this game
 without prior knowledge of the sequence of cards shown.
 </p>
 
-<div><button type="button">Submit Result</button></div>
-<div><button type="button" onclick="skip_clicked()">Skip</button></div>
+<div class="button_container"><button type="button">Submit Result</button></div>
+<div class="button_container"><button type="button" onclick="skip_clicked()">Skip</button></div>
 
 </form>
 
