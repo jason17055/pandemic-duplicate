@@ -209,6 +209,9 @@ function generate_decks()
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
 	localStorage.setItem(PACKAGE + '.shuffle_version.' + G.shuffle_id, Version);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
+	stor_add_to_set(PACKAGE + '.pending_deals', G.shuffle_id);
+
+	trigger_sync_process();
 
 	return G.shuffle_id;
 }
@@ -1214,3 +1217,41 @@ function submit_result_clicked()
 	on_state_init();
 	return false;
 }
+
+var sync_started = false;
+function trigger_sync_process()
+{
+	if (sync_started) { return; }
+	sync_started = true;
+
+	console.log("sync: checking for items to upload");
+	var a = stor_get_list(PACKAGE + '.pending_deals');
+	if (a.length) {
+		var shuffle_id = a[0];
+		upload_deal(shuffle_id);
+	}
+}
+
+function upload_deal(shuffle_id)
+{
+	console.log("sync: uploading deal "+shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
+
+	var onSuccess = function(data) {
+		console.log('upload complete');
+		};
+	var onError = function(jqx, status, errMsg) {
+		console.log('an error occurred');
+		};
+
+	$.ajax({
+	type: "POST",
+	url: "s/deals",
+	data: s,
+	contentType: "application/json; charset=utf-8",
+	dataType: "json",
+	success: onSuccess,
+	error: onError
+	});
+}
+$(trigger_sync_process);
