@@ -400,7 +400,25 @@ function submit_player_names_form()
 		'3': f.player3.value,
 		'4': f.player4.value
 		};
-	var randomize = f.randomize_order.checked;
+	var randomize = f.randomize_order.value;
+	if (randomize == 'full') {
+		for (var i = 0; i < G.rules.player_count; i++) {
+			var j = i+Math.floor(Math.random() * (G.rules.player_count-i));
+			var tmp = G.player_names[1+i];
+			G.player_names[1+i] = G.player_names[1+j];
+			G.player_names[1+j] = tmp;
+		}
+	}
+	else if (randomize == 'start_player') {
+		var t = Math.floor(Math.random() * G.rules.player_count);
+		var p = {};
+		for (var i = 0; i < 4; i++) {
+			p[1+i] = i < G.rules.player_count ?
+				G.player_names[1+(i+t)%G.rules.player_count] :
+				G.player_names[1+i];
+		}
+		G.player_names = p;
+	}
 
 	localStorage.setItem(PACKAGE+'.player_names',
 		JSON.stringify(G.player_names)

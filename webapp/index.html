@@ -113,7 +113,12 @@ Or generate a new game:
 </table>
 <div>
 <label>
-<input type="checkbox" name="randomize_order">Randomize turn order</label>
+Randomize:
+<select name="randomize_order">
+<option value="">None</option>
+<option value="start_player" selected="selected">Start player only</option>
+<option value="full">Turn order</option>
+</select></label>
 </div>
 
 <div class="button_container">
