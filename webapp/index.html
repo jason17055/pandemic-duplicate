@@ -8,10 +8,32 @@
 </head>
 <body>
 
-<div class="page" id="create_game_page">
+<div class="page" id="welcome_page">
 
 <div class="page_header">
 <h1>Pandemic Duplicate</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<p>
+Welcome to Pandemic Duplicate!
+</p>
+
+<form name="welcome_form">
+<div class="button_container"><button type="button" onclick="start_game_clicked()">Start Game</button></div>
+<div class="button_container"><button type="button" disabled>Resume Game</button></div>
+<div class="button_container"><button type="button" disabled>Join Network Game</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/welcome_page-->
+
+<div class="page" id="create_game_page">
+
+<div class="page_header">
+<h1>Get Started</h1>
 </div><!--/page_header-->
 
 <div class="page_body">
@@ -39,8 +61,8 @@
 <option value="7">Legendary (7 epidemics)</option>
 </select>
 </div>
-<div>
-<button type="submit">Generate Game</button>
+<div class="button_container">
+<button type="submit">Next: Players</button>
 </div>
 </form>
 
@@ -66,7 +88,7 @@ Pick prepared game:
 Or generate a new game:
 </div>
 <form name="pick_game_form" method="post" onsubmit="return false">
-<div>
+<div class="button_container">
 <input type="hidden" name="rules">
 <button type="button" onclick="generate_new_game_clicked()">New Shuffle</button>
 </div>
@@ -93,7 +115,7 @@ Or generate a new game:
 <input type="checkbox" name="randomize_order">Randomize turn order</label>
 </div>
 
-<div>
+<div class="button_container">
 <button type="submit">Continue</button>
 </div>
 
@@ -114,7 +136,7 @@ Or generate a new game:
 <div>Infection Cards:</div>
 <ol id="infection_cards_list"></ol>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="continue_after_deck_setup()">Continue: <small>Board Setup</small></button>
 </div>
 
@@ -134,7 +156,7 @@ Or generate a new game:
 <div>Cities w/ 1 cubes:</div>
 <ul class="1cube_cities card_list"></ul>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="continue_after_board_setup()">Continue: <small>Player Setup</small>
 </div>
 

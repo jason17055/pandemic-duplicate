@@ -998,6 +998,9 @@ function on_state_init()
 
 	var m;
 	if (!path) {
+		return show_page('welcome_page');
+	}
+	else if (path == 'params') {
 		return show_page('create_game_page');
 	}
 	else if (m = path.match(/^pick_game\/(.*)$/)) {
@@ -1057,5 +1060,11 @@ $(function() {
 function skip_clicked()
 {
 	history.pushState(null, null, BASE_URL);
+	on_state_init();
+}
+
+function start_game_clicked()
+{
+	history.pushState(null, null, BASE_URL + '#params');
 	on_state_init();
 }
