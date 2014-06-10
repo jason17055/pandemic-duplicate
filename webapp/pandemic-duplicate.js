@@ -307,11 +307,23 @@ function generate_new_game_clicked()
 
 function init_player_names_page($pg, rulestr)
 {
-	document.player_names_form.rules.value = rulestr;
-	G = {
-	'rules': parse_rules(rulestr)
-	};
+	G = {};
+	G.rules = parse_rules(rulestr);
+	var s = localStorage.getItem(PACKAGE + '.player_names');
+	if (s) {
+		G.player_names = JSON.parse(s);
+	}
+	else {
+		G.player_names = {};
+	}
 
+	var f = document.player_names_form;
+	f.rules.value = rulestr;
+	f.player1.value = G.player_names[1] || 'Player 1';
+	f.player2.value = G.player_names[2] || 'Player 2';
+	f.player3.value = G.player_names[3] || 'Player 3';
+	f.player4.value = G.player_names[4] || 'Player 4';
+	
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
