@@ -3,3 +3,4 @@ build
 *.war
 tomcat_libs
 .*.swp
+deploy.appengine
