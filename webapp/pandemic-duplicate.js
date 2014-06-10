@@ -1246,7 +1246,7 @@ function upload_deal(shuffle_id)
 
 	$.ajax({
 	type: "POST",
-	url: "s/deals",
+	url: "s/deals?id="+shuffle_id,
 	data: s,
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
