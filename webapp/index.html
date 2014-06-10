@@ -250,6 +250,9 @@ Perform your actions.
 <div class="page_body">
 
 <form name="game_completed_form">
+<input type="hidden" name="score" value="">
+<input type="hidden" name="rules" value="">
+<input type="hidden" name="shuffle_id" value="">
 <div class="victory_only">
 <p>
 With <span class="level"></span> epidemics,
@@ -289,13 +292,39 @@ By submitting this result, you agree that you played this game
 without prior knowledge of the sequence of cards shown.
 </p>
 
-<div class="button_container"><button type="button">Submit Result</button></div>
-<div class="button_container"><button type="button" onclick="skip_clicked()">Skip</button></div>
+<div class="button_container"><button type="button" onclick="submit_result_clicked()">Submit Result</button></div>
+<div class="button_container"><button type="button" onclick="dont_submit_clicked()">Skip</button></div>
 
 </form>
 
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
+
+<div id="results_page" class="page">
+<div class="page_header"><h1>Results for this Game</h1></div>
+<div class="page_body">
+
+<table class="results_table" border="1">
+<tr>
+<th>Pl</th>
+<th>Score</th>
+<th>Players</th>
+<th>Submitted</th>
+</tr>
+<tr class="result_row template">
+<td class="place_col"></td>
+<td class="score_col"></td>
+<td class="players_col"></td>
+<td class="submitted_col"></td>
+</tr>
+</table>
+
+<div class="button_container">
+<button type="button" onclick="go_home_page()">Finish</button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/results_page-->
 
 <div id="show_discards_page" class="page">
 <div class="page_header"><h1>Discarded Infection Cards</h1></div>

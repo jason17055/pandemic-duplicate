@@ -204,13 +204,13 @@ function generate_decks()
 	}
 
 	var XX = JSON.stringify(X);
-	G.shuffle_name = (""+CryptoJS.SHA1(XX)).substring(0,18);
+	G.shuffle_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
 
-	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_name, XX);
-	localStorage.setItem(PACKAGE + '.shuffle_version.' + G.shuffle_name, Version);
-	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_name);
+	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
+	localStorage.setItem(PACKAGE + '.shuffle_version.' + G.shuffle_id, Version);
+	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
 
-	return G.shuffle_name;
+	return G.shuffle_id;
 }
 
 function load_game(game_id)
@@ -351,6 +351,7 @@ function update_game_score()
 	else {
 		score = num_cures*12+num_turns;
 	}
+	document.game_completed_form.score.value = score;
 	$('.score_ind').text(score);
 }
 
@@ -386,6 +387,8 @@ function init_game_completed_page($pg)
 		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 	}
+	document.game_completed_form.rules.value = stringify_rules(G.rules);
+	document.game_completed_form.shuffle_id.value = G.shuffle_id;
 }
 
 function submit_player_names_form()
@@ -523,6 +526,70 @@ function init_player_setup_page($pg, shuffle_id)
 			var $c = make_player_card(c);
 			$('.player'+i+' .card_list', $pg).append($c);
 		}
+	}
+}
+
+function init_results_page($pg, shuffle_id)
+{
+	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
+	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
+	all_result_ids.push(my_result_id);
+
+	var seen = {};
+	var all_results = [];
+	for (var i = 0; i < all_result_ids.length; i++) {
+		if (seen[all_result_ids[i]]) { continue; }
+		seen[all_result_ids[i]] = true;
+
+		var result_id = all_result_ids[i];
+		var r_text = localStorage.getItem(PACKAGE + '.result.' + result_id);
+		var r = JSON.parse(r_text);
+		if (r.version != Version) { continue; }
+		if (r.shuffle_id != shuffle_id) { continue; }
+
+		if (all_result_ids[i] == my_result_id) {
+			r.mine = true;
+		}
+		all_results.push(r);
+	}
+
+	all_results.sort(function(a,b) {
+		return a.score < b.score ? 1 :
+			a.score > b.score ? -1 :
+			a.time < b.time ? -1 :
+			a.time > b.time ? 1 : 0;
+		});
+
+	var place = 0;
+
+	$('.result_row:not(.template)', $pg).remove();
+	for (var i = 0; i < all_results.length; i++) {
+		var r = all_results[i];
+
+		var $tr = $('.result_row.template', $pg).clone();
+		$tr.removeClass('template');
+		$tr.addClass(i%2==0 ? 'even_row' : 'odd_row');
+		if (r.mine) {
+			$tr.addClass('my_result');
+		}
+
+		var rules = parse_rules(r.rules);
+		var players_str = '';
+		for (var j = 1; j <= rules.player_count; j++) {
+			players_str += (j > 1 ? ', ' : '') +
+				r['player'+j];
+		}
+
+		var is_a_tie = (i > 0 && all_results[i-1].score == r.score) ||
+			(i+1 < all_results.length && all_results[i+1].score == r.score);
+		place = (i > 0 && all_results[i-1].score == r.score) ? place : i+1;
+
+		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
+		$('.score_col', $tr).text(r.score);
+		$('.players_col', $tr).text(players_str);
+		$('.submitted_col', $tr).text(r.time);
+
+		$('.result_row.template', $pg).before($tr);
 	}
 }
 
@@ -1061,6 +1128,10 @@ function on_state_init()
 		var $pg = show_page('player_setup_page');
 		return init_player_setup_page($pg, m[1]);
 	}
+	else if (m = path.match(/^([0-9a-f]+)\/results$/)) {
+		var $pg = show_page('results_page');
+		return init_results_page($pg, m[1]);
+	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)/)) {
 		load_game_at(m[1], m[2]);
 		if (G.step == 'actions') {
@@ -1095,7 +1166,7 @@ $(function() {
 	$('.cure_count').change(update_game_score);
 });
 
-function skip_clicked()
+function go_home_page()
 {
 	history.pushState(null, null, BASE_URL);
 	on_state_init();
@@ -1105,4 +1176,41 @@ function start_game_clicked()
 {
 	history.pushState(null, null, BASE_URL + '#params');
 	on_state_init();
+}
+
+function dont_submit_clicked()
+{
+	localStorage.removeItem(PACKAGE + '.my_result.' + G.shuffle_id);
+
+	var u = BASE_URL + '#'+G.shuffle_id+'/results';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function submit_result_clicked()
+{
+	var f = document.game_completed_form;
+
+	var V = {};
+	V.version = Version;
+	V.rules = f.rules.value;
+	V.shuffle_id = f.shuffle_id.value;
+	V.score = f.score.value;
+	for (var i = 1; i <= G.rules.player_count; i++) {
+		V['player'+i] = f['player'+i].value;
+	}
+	V.time = new Date().toISOString();
+
+	var VV = JSON.stringify(V);
+	var result_id = (""+CryptoJS.SHA1(VV)).substring(0,18);
+	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
+	localStorage.setItem(PACKAGE + '.my_result.' + G.shuffle_id, result_id);
+	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
+	stor_add_to_set(PACKAGE + '.pending_results', result_id);
+
+	var u = BASE_URL + '#'+G.shuffle_id+'/results';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
 }
