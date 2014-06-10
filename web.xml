@@ -3,4 +3,14 @@
 <display-name>pandemic-duplicate</display-name>
 <description>Pandemic Duplicate</description>
 
+<servlet-mapping>
+	<url-pattern>/s/deals</url-pattern>
+	<servlet-name>PandemicDeal</servlet-name>
+</servlet-mapping>
+
+<servlet>
+	<servlet-name>PandemicDeal</servlet-name>
+	<servlet-class>pandemic.PandemicDealServlet</servlet-class>
+</servlet>
+
 </web-app>
