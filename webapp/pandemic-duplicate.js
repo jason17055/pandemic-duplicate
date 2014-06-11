@@ -816,14 +816,27 @@ function do_move(m)
 	}
 }
 
+function find_and_remove_card_all_hands(c)
+{
+	for (var i = 1; i <= G.rules.player_count; i++) {
+		var cc = find_and_remove_card(G.hands[i], c);
+		if (cc) {
+			return cc;
+		}
+	}
+	return null;
+}
+
 function do_special_event(c)
 {
 	console.log("special event "+c);
 
 	if (c == 'One Quiet Night') {
+		find_and_remove_card_all_hands(c);
 		G.one_quiet_night = 1;
 	}
 	else if (c == 'Commercial Travel Ban') {
+		find_and_remove_card_all_hands(c);
 		G.travel_ban = G.rules.player_count;
 		console.log("travel ban in effect");
 	}
