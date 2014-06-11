@@ -90,7 +90,7 @@ public class PandemicDealServlet extends HttpServlet
 			@Override
 			public String toString()
 			{
-				return expansion + "-" + playerCount + "-" + level;
+				return expansion + "-" + playerCount + "p-" + level + "x";
 			}
 		}
 		Rules r = new Rules();
