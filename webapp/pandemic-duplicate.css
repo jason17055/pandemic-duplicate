@@ -118,6 +118,14 @@ h2 {
 }
 
 .button_container button {
-	min-width: 200px;
+	width: 100%;
+	/*min-width: 200px;*/
 	min-height: 40px;
+}
+.page_body {
+	max-width: 400px;
+}
+
+#player_count_cb, #expansion_cb, #level_cb {
+	width: 100%;
 }

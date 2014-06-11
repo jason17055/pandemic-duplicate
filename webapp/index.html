@@ -1,5 +1,8 @@
+<!DOCTYPE HTML>
 <html>
 <head>
+<title>Pandemic Duplicate</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link rel="stylesheet" href="pandemic-duplicate.css" type="text/css">
 <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="sha1.js"></script>
@@ -39,30 +42,39 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <form name="create_game_form" method="post" onsubmit="return submit_create_game_form()">
-<div>Number of players:
-<select name="player_count">
+<table width="100%">
+<tr>
+<td><label for="player_count_cb">Players:</label></td>
+<td><select id="player_count_cb" name="player_count">
 <option value="2">2</option>
 <option value="3">3</option>
 <option value="4">4</option>
-</select></div>
+</select></td>
+</tr>
 
-<div>Expansion:
-<select name="expansion">
+<tr>
+<td><label for="expansion_cb">Expansion:</label></td>
+<td><select id="expansion_cb" name="expansion">
 <option value="on_the_brink">On The Brink</option>
 <option value="none">Original</option>
 </select>
-</div>
+</td>
+</tr>
 
-<div>Level:
-<select name="level">
+<tr>
+<td><label for="level_cb">Level:</label></td>
+<td>
+<select id="level_cb" name="level">
 <option value="4">Easy (4 epidemics)</option>
 <option value="5" selected>Normal (5 epidemics)</option>
 <option value="6">Hard (6 epidemics)</option>
 <option value="7">Legendary (7 epidemics)</option>
 </select>
-</div>
+</td>
+</tr>
+</table>
 <div class="button_container">
-<button type="submit">Next: Players</button>
+<button type="submit">Next: <small>Players</small></button>
 </div>
 </form>
 
