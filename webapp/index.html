@@ -224,13 +224,13 @@ Randomize:
 Perform your actions.
 </p>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="show_discards_clicked()">Show Discards</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
 </div>
 <div class="button_container">
@@ -246,10 +246,10 @@ Perform your actions.
 
 
 <div class="special_event_btns_container">
-<div class="template special_event_btn_row">
+<div class="template special_event_btn_row button_container">
 <button type="button"></button>
 </div>
-<div id="special_event_none_row">
+<div id="special_event_none_row" class="button_container">
 <button type="button" onclick="cancel_special_event()">None</button>
 </div>
 </div>
@@ -344,7 +344,7 @@ without prior knowledge of the sequence of cards shown.
 
 <ul class="infection_discards_list">
 </ul>
-<div>
+<div class="button_container">
 <button type="button" onclick="cancel_show_discards()">Go Back</button>
 </div>
 
@@ -359,16 +359,16 @@ without prior knowledge of the sequence of cards shown.
 <ol class="card_list">
 </ol>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="show_discards_clicked()">Show Discards</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 </div>
 
@@ -382,16 +382,16 @@ without prior knowledge of the sequence of cards shown.
 <div>Add 3 cubes to:</div>
 <ul class="card_list"></ul>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="show_discards_clicked()">Show Discards</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 </div>
 
@@ -410,16 +410,16 @@ without prior knowledge of the sequence of cards shown.
 <span class="pending_infection_count">1</span> more to go!
 </div>
 
-<div>
+<div class="button_container">
 <button type="button" onclick="show_discards_clicked()">Show Discards</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" onclick="admit_defeat_clicked()">Admit Defeat</button>
 </div>
-<div>
+<div class="button_container">
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 <button type="button" class="goto_player_turn_btn" onclick="continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
 </div>
