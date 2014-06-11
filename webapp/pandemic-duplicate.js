@@ -946,6 +946,20 @@ function stor_add_to_set(key, value)
 	return true;
 }
 
+function stor_remove_from_set(key, value)
+{
+	var a = stor_get_list(key);
+	var found = false;
+	for (var i = 0; i < a.length; i++) {
+		if (a[i] == value) {
+			a.splice(i, 1);
+			localStorage.setItem(key, a.join(','));
+			return true;
+		}
+	}
+	return false;
+}
+
 function stor_get_list(key)
 {
 	var s = localStorage.getItem(key);
@@ -1225,6 +1239,11 @@ function trigger_sync_process()
 	sync_started = true;
 
 	console.log("sync: checking for items to upload");
+	upload_next_deal();
+}
+
+function upload_next_deal()
+{
 	var a = stor_get_list(PACKAGE + '.pending_deals');
 	if (a.length) {
 		var shuffle_id = a[0];
@@ -1238,7 +1257,9 @@ function upload_deal(shuffle_id)
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 
 	var onSuccess = function(data) {
-		console.log('upload complete');
+		console.log('sync: successful upload of '+shuffle_id);
+		stor_remove_from_set(PACKAGE + '.pending_deals', shuffle_id);
+		return upload_next_deal();
 		};
 	var onError = function(jqx, status, errMsg) {
 		console.log('an error occurred');
