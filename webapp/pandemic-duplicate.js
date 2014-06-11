@@ -1242,6 +1242,15 @@ function trigger_sync_process()
 	upload_next_deal();
 }
 
+function upload_next_result()
+{
+	var a = stor_get_list(PACKAGE + '.pending_results');
+	if (a.length) {
+		var result_id = a[0];
+		upload_result(result_id);
+	}
+}
+
 function upload_next_deal()
 {
 	var a = stor_get_list(PACKAGE + '.pending_deals');
@@ -1249,6 +1258,34 @@ function upload_next_deal()
 		var shuffle_id = a[0];
 		upload_deal(shuffle_id);
 	}
+	else {
+		upload_next_result();
+	}
+}
+
+function upload_result(result_id)
+{
+	console.log("sync: uploading result "+result_id);
+	var s = localStorage.getItem(PACKAGE + '.result.' + result_id);
+
+	var onSuccess = function(data) {
+		console.log('sync: successful upload of '+result_id);
+		stor_remove_from_set(PACKAGE + '.pending_results', result_id);
+		return upload_next_result();
+		};
+	var onError = function(jqx, status, errMsg) {
+		console.log('an error occurred');
+		};
+
+	$.ajax({
+	type: "POST",
+	url: "s/deals?result="+result_id,
+	data: s,
+	contentType: "application/json; charset=utf-8",
+	dataType: "json",
+	success: onSuccess,
+	error: onError
+	});
 }
 
 function upload_deal(shuffle_id)

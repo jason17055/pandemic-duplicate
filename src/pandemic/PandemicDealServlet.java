@@ -61,7 +61,23 @@ public class PandemicDealServlet extends HttpServlet
 		throws IOException
 	{
 		String deal_id = req.getParameter("id");
+		if (deal_id != null) {
+			doPostDeal(req, resp, deal_id);
+			return;
+		}
 
+		String result_id = req.getParameter("result");
+		if (result_id != null) {
+			doPostResult(req, resp, result_id);
+			return;
+		}
+
+		//TODO throw an error
+	}
+
+	void doPostDeal(HttpServletRequest req, HttpServletResponse resp, String deal_id)
+		throws IOException
+	{
 		String content = getRequestContent(req);
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
@@ -138,6 +154,79 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", r.toString());
 			ent.setProperty("playerRoles", playerRoles);
+
+			ent.setProperty("created", createdDate);
+			ent.setProperty("createdBy", creatorIp);
+
+			datastore.put(ent);
+			txn.commit();
+
+			resp.setContentType("text/json;charset=UTF-8");
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
+	void doPostResult(HttpServletRequest req, HttpServletResponse resp, String result_id)
+		throws IOException
+	{
+		String content = getRequestContent(req);
+		JsonParser json = new JsonFactory().
+			createJsonParser(new StringReader(content));
+
+		String versionString = null;
+		String rulesString = null;
+		String shuffleId = null;
+		int score = 0;
+		String [] playerNames = new String[4];
+
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("rules")) {
+				json.nextToken();
+				rulesString = json.getText();
+			}
+			else if (json.getCurrentName().equals("shuffle_id")) {
+				json.nextToken();
+				shuffleId = json.getText();
+			}
+			else if (json.getCurrentName().equals("version")) {
+				json.nextToken();
+				versionString = json.getText();
+			}
+			else if (json.getCurrentName().equals("score")) {
+				json.nextToken();
+				score = json.getCurrentToken() == JsonToken.VALUE_NUMBER_INT ?
+						json.getIntValue() :
+						Integer.parseInt(json.getText());
+			}
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Transaction txn = datastore.beginTransaction();
+
+		try
+		{
+			Key key = KeyFactory.createKey("Deal", shuffleId);
+			Key key1 = KeyFactory.createKey(key, "Result", result_id);
+			Date createdDate = new Date();
+			String creatorIp = req.getRemoteAddr();
+
+			Entity ent = new Entity(key1);
+			ent.setProperty("content", new Text(content));
+			ent.setProperty("version", versionString);
+			ent.setProperty("rules", rulesString);
+			ent.setProperty("score", new Integer(score));
 
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
