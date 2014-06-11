@@ -1094,7 +1094,7 @@ function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
-	$('.preshuffle_row[data-shuffle-id]').remove();
+	$('.preshuffle_row:not(.template)').remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
 
