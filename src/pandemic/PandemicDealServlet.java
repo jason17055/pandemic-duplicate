@@ -15,12 +15,27 @@ public class PandemicDealServlet extends HttpServlet
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("Deal");
+		PreparedQuery pq = datastore.prepare(q);
+
 		resp.setContentType("text/json;charset=UTF-8");
 		JsonGenerator out = new JsonFactory().
 			createJsonGenerator(resp.getWriter()
 			);
 		out.writeStartObject();
 		out.writeStringField("protocolVersion", "1");
+		out.writeFieldName("deals");
+		out.writeStartArray();
+
+		for (Entity ent : pq.asIterable()) {
+			out.writeStartObject();
+			String rules = (String) ent.getProperty("rules");
+			out.writeStringField("rules", rules);
+			out.writeEndObject();
+		}
+
+		out.writeEndArray();
 		out.writeEndObject();
 		out.close();
 	}
@@ -51,19 +66,62 @@ public class PandemicDealServlet extends HttpServlet
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
 
-		String rules = null;
+		class Rules {
+			String expansion;
+			int playerCount;
+			int level;
+
+			@Override
+			public String toString()
+			{
+				return expansion + "-" + playerCount + "-" + level;
+			}
+		}
+		Rules r = new Rules();
 		String versionString = null;
+		String ctx = "";
+		String [] roles = new String[4];
 		while (json.nextToken() != null) {
+			if (json.getCurrentToken() == JsonToken.END_OBJECT) { ctx = ""; }
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
 
 			if (json.getCurrentName().equals("rules")) {
+				ctx = "rules";
 				json.nextToken();
-				rules = json.getText();
+			}
+			else if (json.getCurrentName().equals("roles")) {
+				ctx = "roles";
+				json.nextToken();
 			}
 			else if (json.getCurrentName().equals("version")) {
 				json.nextToken();
 				versionString = json.getText();
 			}
+			else if (ctx.equals("rules") && json.getCurrentName().equals("player_count")) {
+				json.nextToken();
+				r.playerCount = json.getIntValue();
+			}
+			else if (ctx.equals("rules") && json.getCurrentName().equals("level")) {
+				json.nextToken();
+				r.level = json.getIntValue();
+			}
+			else if (ctx.equals("rules") && json.getCurrentName().equals("expansion")) {
+				json.nextToken();
+				r.expansion = json.getText();
+			}
+			else if (ctx.equals("roles")) {
+				int seat = Integer.parseInt(json.getCurrentName());
+				json.nextToken();
+				if (seat >= 1 && seat <= 4) {
+					roles[seat-1] = json.getText();
+				}
+			}
+		}
+
+		String playerRoles = "";
+		for (int i = 0; i < r.playerCount; i++) {
+			if (i != 0) { playerRoles += "/"; }
+			playerRoles += roles[i];
 		}
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -78,7 +136,8 @@ public class PandemicDealServlet extends HttpServlet
 			Entity ent = new Entity(key);
 			ent.setProperty("content", new Text(content));
 			ent.setProperty("version", versionString);
-			ent.setProperty("rules", rules);
+			ent.setProperty("rules", r.toString());
+			ent.setProperty("playerRoles", playerRoles);
 
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
