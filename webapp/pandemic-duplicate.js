@@ -474,25 +474,19 @@ function init_board_setup_page($pg, shuffle_id)
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
 		var c = G.infection_discards[i];
-		var $x = $('<li></li>');
-		$x.text(c);
-		$('.3cube_cities').append($x);
+		$('.3cube_cities').append(make_infection_card(c));
 	}
 
 	$('.2cube_cities').empty();
 	for (var i = 3; i < 6; i++) {
 		var c = G.infection_discards[i];
-		var $x = $('<li></li>');
-		$x.text(c);
-		$('.2cube_cities').append($x);
+		$('.2cube_cities').append(make_infection_card(c));
 	}
 
 	$('.1cube_cities').empty();
 	for (var i = 6; i < G.infection_discards.length; i++) {
 		var c = G.infection_discards[i];
-		var $x = $('<li></li>');
-		$x.text(c);
-		$('.1cube_cities').append($x);
+		$('.1cube_cities').append(make_infection_card(c));
 	}
 }
 
