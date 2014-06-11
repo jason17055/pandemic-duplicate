@@ -111,8 +111,8 @@ h2 {
 }
 .infection_card {
 	display: inline-block;
-	background-color: black;
-	color: #ff8;
+	background-color: #151;
+	color: #ffc;
 	padding: 2px;
 	font-weight: bold;
 }
