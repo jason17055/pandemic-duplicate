@@ -11,10 +11,39 @@ public class PandemicDealServlet extends HttpServlet
 {
 	private static final Logger log = Logger.getLogger(PandemicDealServlet.class.getName());
 
+	void doGetDeal(String deal_id, HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		try {
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey("Deal", deal_id);
+		Entity ent = datastore.get(key);
+
+		Text t = (Text) ent.getProperty("content");
+		
+		resp.setContentType("text/json;charset=UTF-8");
+		Writer out = resp.getWriter();
+		out.write(t.getValue());
+		out.close();
+
+		}
+		catch (EntityNotFoundException e) {
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+	}
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
+		String deal_id = req.getParameter("deal");
+		if (deal_id != null) {
+			doGetDeal(deal_id, req, resp);
+			return;
+		}
+
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Deal");
 		PreparedQuery pq = datastore.prepare(q);
@@ -24,12 +53,14 @@ public class PandemicDealServlet extends HttpServlet
 			createJsonGenerator(resp.getWriter()
 			);
 		out.writeStartObject();
-		out.writeStringField("protocolVersion", "1");
+		out.writeStringField("serverVersion", "1");
 		out.writeFieldName("deals");
 		out.writeStartArray();
 
 		for (Entity ent : pq.asIterable()) {
 			out.writeStartObject();
+			String id = ent.getKey().getName();
+			out.writeStringField("id", id);
 			String rules = (String) ent.getProperty("rules");
 			out.writeStringField("rules", rules);
 			out.writeEndObject();
@@ -72,7 +103,8 @@ public class PandemicDealServlet extends HttpServlet
 			return;
 		}
 
-		//TODO throw an error
+		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return;
 	}
 
 	void doPostDeal(HttpServletRequest req, HttpServletResponse resp, String deal_id)

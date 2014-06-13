@@ -207,7 +207,6 @@ function generate_decks()
 	G.shuffle_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
-	localStorage.setItem(PACKAGE + '.shuffle_version.' + G.shuffle_id, Version);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
 	stor_add_to_set(PACKAGE + '.pending_deals', G.shuffle_id);
 
@@ -1078,12 +1077,6 @@ function cancel_special_event()
 	on_state_init();
 }
 
-function check_version(shuffle_id)
-{
-	var v = localStorage.getItem(PACKAGE + '.shuffle_version.' + shuffle_id);
-	return (v == Version);
-}
-
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
@@ -1091,10 +1084,6 @@ function init_pick_game_page($pg, rulestr)
 	$('.preshuffle_row:not(.template)').remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
-
-		if (!check_version(a[i])) {
-			continue;
-		}
 
 		var $tr = $('.preshuffle_row.template').clone();
 		$tr.removeClass('template');
@@ -1115,6 +1104,10 @@ function on_state_init()
 	var m;
 	if (!path) {
 		return show_page('welcome_page');
+	}
+	else if (path == 'clear') {
+		localStorage.clear();
+		location.href = BASE_URL;
 	}
 	else if (path == 'params') {
 		return show_page('create_game_page');
@@ -1243,6 +1236,10 @@ function upload_next_result()
 		var result_id = a[0];
 		upload_result(result_id);
 	}
+	else {
+		console.log("sync: checking for items to download");
+		check_for_downloads();
+	}
 }
 
 function upload_next_deal()
@@ -1307,3 +1304,69 @@ function upload_deal(shuffle_id)
 	});
 }
 $(trigger_sync_process);
+
+var pending_download_deals=[];
+var pending_download_results=[];
+
+function check_for_downloads()
+{
+	var onSuccess = function(data) {
+		for (var i = 0; i < data.deals.length; i++) {
+			var d = data.deals[i];
+			if (!has_deal(d.id)) {
+				pending_download_deals.push(d.id);
+			}
+		}
+		return download_next_deal();
+		};
+	var onError = function(jqx, status, errMsg) {
+		console.log('an error occurred');
+		};
+
+	$.ajax({
+	type: "GET",
+	url: "s/deals",
+	dataType: "json",
+	success: onSuccess,
+	error: onError
+	});
+}
+
+function has_deal(deal_id)
+{
+	return localStorage.getItem(PACKAGE + '.shuffle.' + deal_id) != null;
+}
+
+function download_next_deal()
+{
+	if (pending_download_deals.length) {
+		var deal_id = pending_download_deals.shift();
+		return download_deal(deal_id);
+	}
+	else {
+		console.log("sync: finished");
+	}
+}
+
+function download_deal(deal_id)
+{
+	var onSuccess = function(data) {
+		console.log('sync: successful download of '+deal_id);
+		var XX = JSON.stringify(data);
+		localStorage.setItem(PACKAGE + '.shuffle.' + deal_id, XX);
+		stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(data.rules), deal_id);
+		return download_next_deal();
+		};
+	var onError = function(jqx, status, errMsg) {
+		console.log('an error occurred');
+		};
+
+	console.log('sync: downloading deal '+deal_id);
+	$.ajax({
+	type: "GET",
+	url: "s/deals?deal="+escape(deal_id),
+	dataType: "json",
+	success: onSuccess,
+	error: onError
+	});
+}
