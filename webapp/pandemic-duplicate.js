@@ -527,9 +527,11 @@ function init_player_setup_page($pg, shuffle_id)
 
 function init_results_page($pg, shuffle_id)
 {
-	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
 	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
-	all_result_ids.push(my_result_id);
+	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
+	if (my_result_id) {
+		all_result_ids.push(my_result_id);
+	}
 
 	var seen = {};
 	var all_results = [];
@@ -660,11 +662,10 @@ function start_epidemic()
 
 function debug_infection_discards()
 {
-var s = '';
-for (var i = 0; i < G.infection_discards.length; i++) {
-	s += G.infection_discards[i] + ',';
-}
-console.log('infection pile is '+s);
+	var s = '';
+	for (var i = 0; i < G.infection_discards.length; i++) {
+		s += G.infection_discards[i] + ',';
+	}
 }
 
 function finish_epidemic()
@@ -1407,6 +1408,12 @@ function download_next_result()
 function save_downloaded_result(result_id, result_data)
 {
 	var deal_id = result_data.shuffle_id;
+	if (!deal_id) {
+		console.log("Warning: deal number not found in result "+result_id);
+		return;
+	}
+
+	console.log('result is for deal '+deal_id);
 
 	var VV = JSON.stringify(result_data);
 	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
@@ -1416,7 +1423,7 @@ function save_downloaded_result(result_id, result_data)
 function download_result(result_b)
 {
 	var onSuccess = function(data) {
-		console.log('sync: successful download of '+result_b.id);
+		console.log('sync: successful download of result '+result_b.id);
 		save_downloaded_result(result_b.id, data);
 		return download_next_result();
 		};
@@ -1456,7 +1463,7 @@ function download_deal(deal_id)
 {
 	var onSuccess = function(data) {
 		console.log('sync: successful download of '+deal_id);
-		save_downloaded_dael(deal_id, data);
+		save_downloaded_deal(deal_id, data);
 		return download_next_deal();
 		};
 	var onError = function(jqx, status, errMsg) {
