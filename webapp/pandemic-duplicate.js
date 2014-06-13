@@ -996,8 +996,39 @@ function navigate_to_current_turn()
 	return;
 }
 
+function deal_finished(deal_id)
+{
+	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished') != null);
+}
+
+function deal_started(deal_id)
+{
+	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played') != null);
+}
+
+function deal_finish_time(deal_id)
+{
+	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished');
+}
+
+function deal_first_played_time(deal_id)
+{
+	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played');
+}
+
+function format_time(timestr)
+{
+	return timestr;
+}
+
 function set_move(m)
 {
+	var timestr = new Date().toISOString();
+	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.last_played', timestr);
+	if (localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played') == null) {
+		localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played', timestr);
+	}
+
 	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time, m);
 	do_move(m);
 	navigate_to_current_turn();
@@ -1024,13 +1055,21 @@ function has_special_event(s)
 	return false;
 }
 
+function record_game_finished()
+{
+	var timestr = new Date().toISOString();
+	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.finished', timestr);
+}
+
 function admit_defeat_clicked()
 {
+	record_game_finished();
 	return set_move('give_up');
 }
 
 function declare_victory_clicked()
 {
+	record_game_finished();
 	return set_move('claim_victory');
 }
 
@@ -1090,6 +1129,12 @@ function init_pick_game_page($pg, rulestr)
 		$('button',$tr).text(shuffle_name(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
+
+		$('.deal_status_col', $tr).text(
+			deal_finished(a[i]) ? ('Completed ' + format_time(deal_finish_time(a[i]))) :
+			deal_started(a[i]) ? ('Started ' + format_time(deal_first_played_time(a[i]))) :
+			'');
+
 		$('.preshuffle_table', $pg).append($tr);
 	}
 }
