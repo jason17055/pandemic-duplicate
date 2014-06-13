@@ -42,7 +42,7 @@ public class PandemicDealServlet extends HttpServlet
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Key key = KeyFactory.createKey("Deal", deal_id);
 		Key key1 = KeyFactory.createKey(key, "Result", result_id);
-		Entity ent = datastore.get(key);
+		Entity ent = datastore.get(key1);
 
 		Text t = (Text) ent.getProperty("content");
 		
