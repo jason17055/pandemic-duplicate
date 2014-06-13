@@ -1362,6 +1362,12 @@ function check_for_downloads()
 				pending_download_deals.push(d.id);
 			}
 		}
+		for (var i = 0; i < data.results.length; i++) {
+			var d = data.results[i];
+			if (!has_result(d.id)) {
+				pending_download_results.push(d);
+			}
+		}
 		return download_next_deal();
 		};
 	var onError = function(jqx, status, errMsg) {
@@ -1382,6 +1388,52 @@ function has_deal(deal_id)
 	return localStorage.getItem(PACKAGE + '.shuffle.' + deal_id) != null;
 }
 
+function has_result(result_id)
+{
+	return localStorage.getItem(PACKAGE + '.result.' + result_id) != null;
+}
+
+function download_next_result()
+{
+	if (pending_download_results.length) {
+		var result_b = pending_download_results.shift();
+		return download_result(result_b);
+	}
+	else {
+		console.log("sync: finished");
+	}
+}
+
+function save_downloaded_result(result_id, result_data)
+{
+	var deal_id = result_data.shuffle_id;
+
+	var VV = JSON.stringify(result_data);
+	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
+	stor_add_to_set(PACKAGE + '.game_results.' + deal_id, result_id);
+}
+
+function download_result(result_b)
+{
+	var onSuccess = function(data) {
+		console.log('sync: successful download of '+result_b.id);
+		save_downloaded_result(result_b.id, data);
+		return download_next_result();
+		};
+	var onError = function(jqx, status, errMsg) {
+		console.log('an error occurred');
+		};
+
+	console.log('sync: downloading result '+result_b.id);
+	$.ajax({
+	type: "GET",
+	url: "s/deals?deal="+escape(result_b.deal)+"&result="+escape(result_b.id),
+	dataType: "json",
+	success: onSuccess,
+	error: onError
+	});
+}
+
 function download_next_deal()
 {
 	if (pending_download_deals.length) {
@@ -1389,17 +1441,22 @@ function download_next_deal()
 		return download_deal(deal_id);
 	}
 	else {
-		console.log("sync: finished");
+		return download_next_result();
 	}
+}
+
+function save_downloaded_deal(deal_id, data)
+{
+	var XX = JSON.stringify(data);
+	localStorage.setItem(PACKAGE + '.shuffle.' + deal_id, XX);
+	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(data.rules), deal_id);
 }
 
 function download_deal(deal_id)
 {
 	var onSuccess = function(data) {
 		console.log('sync: successful download of '+deal_id);
-		var XX = JSON.stringify(data);
-		localStorage.setItem(PACKAGE + '.shuffle.' + deal_id, XX);
-		stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(data.rules), deal_id);
+		save_downloaded_dael(deal_id, data);
 		return download_next_deal();
 		};
 	var onError = function(jqx, status, errMsg) {

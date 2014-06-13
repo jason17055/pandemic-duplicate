@@ -34,16 +34,53 @@ public class PandemicDealServlet extends HttpServlet
 		}
 	}
 
+	void doGetResult(String deal_id, String result_id, HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		try {
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey("Deal", deal_id);
+		Key key1 = KeyFactory.createKey(key, "Result", result_id);
+		Entity ent = datastore.get(key);
+
+		Text t = (Text) ent.getProperty("content");
+		
+		resp.setContentType("text/json;charset=UTF-8");
+		Writer out = resp.getWriter();
+		out.write(t.getValue());
+		out.close();
+
+		}
+		catch (EntityNotFoundException e) {
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+	}
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
 		String deal_id = req.getParameter("deal");
+		String result_id = req.getParameter("result");
+
+		if (deal_id != null && result_id != null) {
+			doGetResult(deal_id, result_id, req, resp);
+			return;
+		}
+
 		if (deal_id != null) {
 			doGetDeal(deal_id, req, resp);
 			return;
 		}
 
+		doGetIndex(req, resp);
+	}
+
+	void doGetIndex(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Deal");
 		PreparedQuery pq = datastore.prepare(q);
@@ -67,6 +104,24 @@ public class PandemicDealServlet extends HttpServlet
 		}
 
 		out.writeEndArray();
+
+		Query q_1 = new Query("Result");
+		PreparedQuery pq_1 = datastore.prepare(q_1);
+
+		out.writeFieldName("results");
+		out.writeStartArray();
+
+		for (Entity ent : pq_1.asIterable()) {
+			out.writeStartObject();
+			String deal_id = ent.getKey().getParent().getName();
+			String result_id = ent.getKey().getName();
+			out.writeStringField("id", result_id);
+			out.writeStringField("deal", deal_id);
+			out.writeEndObject();
+		}
+
+		out.writeEndArray();
+
 		out.writeEndObject();
 		out.close();
 	}
