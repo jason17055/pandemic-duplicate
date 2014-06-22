@@ -1272,6 +1272,8 @@ function submit_result_clicked()
 	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
 	stor_add_to_set(PACKAGE + '.pending_results', result_id);
 
+	trigger_sync_process();
+
 	var u = BASE_URL + '#'+G.shuffle_id+'/results';
 	history.pushState(null, null, u);
 	on_state_init();
@@ -1415,6 +1417,7 @@ function download_next_result()
 	}
 	else {
 		console.log("sync: finished");
+		sync_started = false;
 	}
 }
 
