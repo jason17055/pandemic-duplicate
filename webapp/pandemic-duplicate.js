@@ -598,6 +598,7 @@ function make_player_card(c)
 	var $x = $('<li><img src="" class="card_icon"><span class="card_name"></span></li>');
 	if (ci) {
 		$('.card_name', $x).text(ci.name);
+		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
 		$x.addClass(ci.color + '_card');
 	}
 	else {
@@ -614,6 +615,7 @@ function make_infection_card(c)
 
 	var $x = $('<li><span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span></li>');
 	$('.card_name', $x).text(ci.name);
+	$('.card_icon', $x).attr('src', ci.color+'_icon.png');
 	$x.addClass(ci.color + '_card');
 	return $x;
 }

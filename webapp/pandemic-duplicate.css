@@ -93,19 +93,6 @@ h2 {
 	height: 16px;
 }
 
-.red_card .card_icon {
-	border: 2px solid red;
-}
-.black_card .card_icon {
-	border: 2px solid black;
-}
-.yellow_card .card_icon {
-	border: 2px solid yellow;
-}
-.blue_card .card_icon {
-	border: 2px solid blue;
-}
-
 .card_icon {
 	vertical-align: middle;
 }
