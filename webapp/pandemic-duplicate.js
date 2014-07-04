@@ -1334,62 +1334,72 @@ function on_state_init()
 
 	var m;
 	if (!path) {
-		return show_page('welcome_page');
+		show_page('welcome_page');
 	}
 	else if (path == 'clear') {
 		localStorage.clear();
 		location.href = BASE_URL;
+		return;
 	}
 	else if (path == 'params') {
-		return show_page('create_game_page');
+		show_page('create_game_page');
 	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
-		return init_player_names_page($pg, m[1]);
+		init_player_names_page($pg, m[1]);
 	}
 	else if (m = path.match(/^pick_game\/(.*)$/)) {
 		var $pg = show_page('pick_game_page');
-		return init_pick_game_page($pg, m[1]);
+		init_pick_game_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');
-		return init_deck_setup_page($pg, m[1]);
+		init_deck_setup_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/board_setup$/)) {
 		var $pg = show_page('board_setup_page');
-		return init_board_setup_page($pg, m[1]);
+		init_board_setup_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
 		var $pg = show_page('player_setup_page');
-		return init_player_setup_page($pg, m[1]);
+		init_player_setup_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/results$/)) {
 		var $pg = show_page('results_page');
-		return init_results_page($pg, m[1]);
+		init_results_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)/)) {
 		load_game_at(m[1], m[2]);
 		if (G.step == 'actions') {
 			var $pg = show_page('player_turn_page');
-			return init_player_turn_page($pg);
+			init_player_turn_page($pg);
 		}
 		else if (G.step == 'draw_cards') {
 			var $pg = show_page('player_turn_page');
-			return init_draw_cards_page($pg);
+			init_draw_cards_page($pg);
 		}
 		else if (G.step == 'epidemic') {
 			var $pg = show_page('player_turn_page');
-			return init_epidemic_page($pg);
+			init_epidemic_page($pg);
 		}
 		else if (G.step == 'infection') {
 			var $pg = show_page('player_turn_page');
-			return init_infection_page($pg);
+			init_infection_page($pg);
 		}
 		else if (G.step == 'end') {
 			var $pg = show_page('game_completed_page');
-			return init_game_completed_page($pg);
+			init_game_completed_page($pg);
+		}
+		else {
+			alert('unrecognized game state');
+			return;
 		}
 	}
+	else {
+		alert('unrecognized url');
+		return;
+	}
+	check_screen_size();
 }
 
 $(function() {
@@ -1713,6 +1723,18 @@ function onRenamePlayerClicked()
 	$('.page_header .player_name').text(p_name);
 }
 
+function check_screen_size()
+{
+	var hh = window.innerHeight -
+		$('.end_of_page').offset().top +
+		$('.history_container').height() -
+		16;
+	$('.history_container').css({
+		'min-height': hh+'px'
+		});
+}
+
 $(function() {
 	$('.page_header .role_icon').click(onRenamePlayerClicked);
+	window.onresize = check_screen_size;
 });
