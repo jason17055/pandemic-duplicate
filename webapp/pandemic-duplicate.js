@@ -623,8 +623,14 @@ function make_player_card(c)
 		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
 		$x.addClass(ci.color + '_card');
 	}
+	else if (c == 'Epidemic') {
+		$('.card_name', $x).text('Epidemic!');
+		$('.card_icon', $x).attr('src', 'epidemic_icon.png');
+		$x.addClass('epidemic_card');
+	}
 	else {
 		$('.card_name', $x).text(c);
+		$('.card_icon', $x).attr('src', 'special_event_icon.png');
 		$x.addClass('special_card');
 	}
 

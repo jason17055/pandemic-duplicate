@@ -130,3 +130,8 @@ h2 {
 	width: 18px;
 	height: 25px;
 }
+
+.epidemic_card .card_name {
+	font-weight: bold;
+	font-style: italic;
+}
