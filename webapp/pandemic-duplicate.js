@@ -111,9 +111,9 @@ var Specials = [
 	'Re-examined Research',
 	'Remote Treatment',
 	'Special Orders',
+	'Resilient Population',
 
 	//Not yet supported
-	'Resilient Population',
 	//'Forecast',
 	];
 var G = null;
@@ -169,11 +169,7 @@ function generate_decks()
 	for (var i = 0; i < G.rules.player_count; i++) {
 		var b = [];
 		for (var j = 0; j < hand_size; j++) {
-			if (i == 0 && j == 0) {
-				c = 'Resilient Population';
-			} else {
-				var c = A.pop();
-			}
+			var c = A.pop();
 			b.push(c);
 		}
 		G.initial_hands[(1+i)] = b;
