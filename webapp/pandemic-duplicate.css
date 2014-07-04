@@ -116,3 +116,13 @@ h2 {
 #player_count_cb, #expansion_cb, #level_cb {
 	width: 100%;
 }
+
+.page_header img.role_icon {
+	float: left;
+	margin-top: -4px;
+}
+
+#player_setup_page img.role_icon {
+	width: 18px;
+	height: 25px;
+}
