@@ -20,7 +20,22 @@ var Roles = [
 	'Archivist',
 	'Epidemiologist'
 
+	//, 'Troubleshooter' (disabled at this time)
 	];
+var Role_icons = {
+	'Dispatcher': 'dispatcher_role_icon.png',
+	'Operations Expert': 'operations_expert_role_icon.png',
+	'Scientist': 'scientist_role_icon.png',
+	'Medic': 'medic_role_icon.png',
+	'Researcher': 'researcher_role_icon.png',
+	'Field Operative': 'field_operative_role_icon.png',
+	'Containment Specialist': 'containment_specialist_role_icon.png',
+	'Generalist': 'generalist_role_icon.png',
+	'Archivist': 'archivist_role_icon.png',
+	'Epidemiologist': 'epidemiologist_role_icon.png',
+	'Troubleshooter': 'troubleshooter_role_icon.png'
+	};
+
 var Cities = [
 	// Blue cities
 	'Atlanta',
@@ -387,6 +402,7 @@ function init_game_completed_page($pg)
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);
+		$('.player'+i+' .role_icon', $pg).attr('src', 'images/'+Role_icons[G.roles[i]]);
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 	}
 	document.game_completed_form.rules.value = stringify_rules(G.rules);
@@ -516,6 +532,7 @@ function init_player_setup_page($pg, shuffle_id)
 			$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
 		}
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
+		$('.player'+i+' .role_icon', $pg).attr('src', 'images/'+Role_icons[G.roles[i]]);
 		$('.player'+i+' .card_list', $pg).empty();
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
 			var c = G.initial_hands[i][j];
@@ -848,6 +865,10 @@ function do_special_event(c)
 
 function init_player_turn_page($pg)
 {
+	var r = G.roles[G.active_player];
+	$('.page_header .role_icon', $pg).
+		attr('alt', r).
+		attr('src', 'images/'+Role_icons[r]);
 	$('.page_header .player_name', $pg).text(
 			G.player_names[G.active_player]
 			);
