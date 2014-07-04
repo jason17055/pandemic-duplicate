@@ -441,13 +441,18 @@ function submit_player_names_form()
 		G.player_names = p;
 	}
 
-	localStorage.setItem(PACKAGE+'.player_names',
-		JSON.stringify(G.player_names)
-		);
+	save_player_names();
 
 	history.pushState(null, null, BASE_URL + '#pick_game/' + rules_key);
 	on_state_init();
 	return false;
+}
+
+function save_player_names()
+{
+	localStorage.setItem(PACKAGE+'.player_names',
+		JSON.stringify(G.player_names)
+		);
 }
 
 function init_deck_setup_page($pg, shuffle_id)
@@ -1562,3 +1567,17 @@ function download_deal(deal_id)
 	error: onError
 	});
 }
+
+function onRenamePlayerClicked()
+{
+	var p_name = G.player_names[G.active_player];
+	var p_role = G.roles[G.active_player];
+	p_name = window.prompt('Enter name of '+p_role, p_name);
+	G.player_names[G.active_player] = p_name;
+	save_player_names();
+	$('.page_header .player_name').text(p_name);
+}
+
+$(function() {
+	$('.page_header .role_icon').click(onRenamePlayerClicked);
+});
