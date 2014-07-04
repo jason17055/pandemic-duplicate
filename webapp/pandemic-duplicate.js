@@ -1146,10 +1146,19 @@ function init_pick_game_page($pg, rulestr)
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
-		$('.deal_status_col', $tr).text(
+		var played_by = get_played_by_list(a[i]);
+		var description = 
 			deal_finished(a[i]) ? ('Completed ' + format_time(deal_finish_time(a[i]))) :
 			deal_started(a[i]) ? ('Started ' + format_time(deal_first_played_time(a[i]))) :
-			'');
+			'';
+		if (played_by.length) {
+			description += '; played by';
+			for (var j = 0; j < played_by.length; j++) {
+				description += ' ' + played_by[j];
+			}
+		}
+
+		$('.deal_status_col', $tr).text(description);
 
 		$('.preshuffle_table', $pg).append($tr);
 	}
@@ -1251,6 +1260,41 @@ function dont_submit_clicked()
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
+}
+
+function get_played_by_list(shuffle_id)
+{
+	var names = {};
+
+	var a = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
+	for (var i = 0; i < a.length; i++) {
+
+		var V = load_result(a[i]);
+		for (var i = 1; i < 5; i++) {
+			var nam = V['player'+i];
+			if (nam) {
+				names[nam] = true;
+			}
+		}
+	}
+
+	var names_list = [];
+	for (var nam in names) {
+		names_list.push(nam);
+	}
+
+	return names_list;
+}
+
+function load_result(result_id)
+{
+	var VV = localStorage.getItem(PACKAGE + '.result.' + result_id);
+	if (!VV) {
+		return null;
+	}
+
+	var V = JSON.parse(VV);
+	return V;
 }
 
 function submit_result_clicked()
