@@ -1013,15 +1013,28 @@ function init_draw_cards_page($pg)
 
 function init_epidemic_page($pg)
 {
+	var r = G.roles[G.active_player];
+	$('.page_header .role_icon', $pg).
+		attr('alt', r).
+		attr('src', 'images/'+Role_icons[r]);
+	$('.page_header .player_name', $pg).text(
+			G.player_names[G.active_player]
+			);
+
 	init_history_pane($('.history_container', $pg));
+	$('.in_action_phase', $pg).hide();
+
+	$('.pending_infection_div', $pg).hide();
 
 	if (G.pending_epidemics > 0) {
 		$('.goto_epidemic_btn', $pg).show();
 		$('.goto_infection_btn', $pg).hide();
+		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else {
 		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).show();
+		$('.goto_player_turn_btn', $pg).hide();
 	}
 }
 
@@ -1047,6 +1060,7 @@ function init_infection_page($pg)
 		$('.pending_infection_div', $pg).show();
 		$('.pending_infection_count', $pg).text(G.pending_infection);
 		$('.goto_infection_btn', $pg).show();
+		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else {
@@ -1057,6 +1071,7 @@ function init_infection_page($pg)
 				1+(G.active_player%G.rules.player_count)
 				]);
 		$('.goto_infection_btn').hide();
+		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_player_turn_btn').show();
 	}
 }
@@ -1343,7 +1358,7 @@ function on_state_init()
 			return init_draw_cards_page($pg);
 		}
 		else if (G.step == 'epidemic') {
-			var $pg = show_page('epidemic_page');
+			var $pg = show_page('player_turn_page');
 			return init_epidemic_page($pg);
 		}
 		else if (G.step == 'infection') {
