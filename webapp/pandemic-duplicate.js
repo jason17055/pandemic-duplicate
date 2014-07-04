@@ -960,6 +960,7 @@ function do_special_event(c)
 {
 	console.log("special event "+c);
 
+	var m;
 	if (c == 'One Quiet Night') {
 		find_and_remove_card_all_hands(c);
 		G.one_quiet_night = 1;
@@ -968,6 +969,11 @@ function do_special_event(c)
 		find_and_remove_card_all_hands(c);
 		G.travel_ban = G.rules.player_count;
 		console.log("travel ban in effect");
+	}
+	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
+		if (find_and_remove_card_all_hands("Resilient Population")) {
+			find_and_remove_card(G.infection_discards, m[1]);
+		}
 	}
 
 	G.time++;
