@@ -978,6 +978,8 @@ function init_player_turn_page($pg)
 	$('.page_header .player_name', $pg).text(
 			G.player_names[G.active_player]
 			);
+
+	$('.in_infection_phase', $pg).hide();
 }
 
 function begin_turn()
@@ -1030,16 +1032,25 @@ function is_epidemic(c)
 
 function init_infection_page($pg)
 {
+	var r = G.roles[G.active_player];
+	$('.page_header .role_icon', $pg).
+		attr('alt', r).
+		attr('src', 'images/'+Role_icons[r]);
+	$('.page_header .player_name', $pg).text(
+			G.player_names[G.active_player]
+			);
+
 	init_history_pane($('.history_container', $pg));
+	$('.in_action_phase', $pg).hide();
 
 	if (G.pending_infection > 0) {
-		$('.pending_infection_div').show();
-		$('.pending_infection_count').text(G.pending_infection);
-		$('.goto_infection_btn').show();
-		$('.goto_player_turn_btn').hide();
+		$('.pending_infection_div', $pg).show();
+		$('.pending_infection_count', $pg).text(G.pending_infection);
+		$('.goto_infection_btn', $pg).show();
+		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else {
-		$('.pending_infection_div').hide();
+		$('.pending_infection_div', $pg).hide();
 
 		$('button .player_name', $pg).text(
 			G.player_names[
@@ -1336,7 +1347,7 @@ function on_state_init()
 			return init_epidemic_page($pg);
 		}
 		else if (G.step == 'infection') {
-			var $pg = show_page('infection_page');
+			var $pg = show_page('player_turn_page');
 			return init_infection_page($pg);
 		}
 		else if (G.step == 'end') {
