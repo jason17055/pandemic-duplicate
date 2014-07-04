@@ -120,13 +120,11 @@ h2 {
 .page_header img.role_icon {
 	float: left;
 	margin-top: -4px;
+	width: 24px;
+	height: 33px;
 }
 
-#player_setup_page img.role_icon {
-	width: 18px;
-	height: 25px;
-}
-#game_completed_page img.role_icon {
+img.role_icon {
 	width: 18px;
 	height: 25px;
 }
@@ -134,4 +132,8 @@ h2 {
 .epidemic_card .card_name {
 	font-weight: bold;
 	font-style: italic;
+}
+
+.epidemic_event em {
+	font-weight: bold;
 }

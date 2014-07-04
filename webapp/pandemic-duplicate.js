@@ -240,6 +240,8 @@ function load_game(game_id)
 	}
 
 	G.active_player = 1;
+	G.history = [];
+	G.history.push({'type':'next_turn', 'active_player':1});
 	G.time = 0;
 	G.turns = 1;
 	G.step = 'actions';
@@ -494,19 +496,19 @@ function init_board_setup_page($pg, shuffle_id)
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
 		var c = G.infection_discards[i];
-		$('.3cube_cities').append(make_infection_card(c));
+		$('.3cube_cities').append(make_infection_card_li(c));
 	}
 
 	$('.2cube_cities').empty();
 	for (var i = 3; i < 6; i++) {
 		var c = G.infection_discards[i];
-		$('.2cube_cities').append(make_infection_card(c));
+		$('.2cube_cities').append(make_infection_card_li(c));
 	}
 
 	$('.1cube_cities').empty();
 	for (var i = 6; i < G.infection_discards.length; i++) {
 		var c = G.infection_discards[i];
-		$('.1cube_cities').append(make_infection_card(c));
+		$('.1cube_cities').append(make_infection_card_li(c));
 	}
 }
 
@@ -541,7 +543,7 @@ function init_player_setup_page($pg, shuffle_id)
 		$('.player'+i+' .card_list', $pg).empty();
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
 			var c = G.initial_hands[i][j];
-			var $c = make_player_card(c);
+			var $c = make_player_card_li(c);
 			$('.player'+i+' .card_list', $pg).append($c);
 		}
 	}
@@ -613,11 +615,18 @@ function init_results_page($pg, shuffle_id)
 	}
 }
 
+function make_player_card_li(c)
+{
+	var $x = $('<li></li>');
+	$x.append(make_player_card(c));
+	return $x;
+}
+
 function make_player_card(c)
 {
 	var ci = City_Info[c];
 
-	var $x = $('<li><img src="" class="card_icon"><span class="card_name"></span></li>');
+	var $x = $('<span class="player_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
 	if (ci) {
 		$('.card_name', $x).text(ci.name);
 		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
@@ -641,10 +650,17 @@ function make_infection_card(c)
 {
 	var ci = City_Info[c];
 
-	var $x = $('<li><span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span></li>');
+	var $x = $('<span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
 	$('.card_name', $x).text(ci.name);
 	$('.card_icon', $x).attr('src', ci.color+'_icon.png');
 	$x.addClass(ci.color + '_card');
+	return $x;
+}
+
+function make_infection_card_li(c)
+{
+	var $x = $('<li></li>');
+	$x.append(make_infection_card(c));
 	return $x;
 }
 
@@ -685,6 +701,10 @@ function start_epidemic()
 	G.current = {
 		'epidemic': c
 		};
+	G.history.push({
+		'type': 'epidemic',
+		'epidemic': c
+		});
 	G.pending_epidemics--;
 
 	G.infection_discards.push(c);
@@ -737,16 +757,75 @@ function do_more_infection()
 		G.current = {
 			'infection': c
 			};
+		G.history.push({
+			'type': 'infection',
+			'infection': c
+			});
 		G.infection_discards.push(c);
 		G.pending_infection--;
 	}
 	else {
 
 		G.active_player = G.active_player % G.rules.player_count + 1;
+		G.history.push({
+			'type': 'next_turn',
+			'active_player': G.active_player
+			});
 		G.step = 'actions';
 		G.time++;
 		G.turns++;
 	}
+}
+
+function init_history_pane($h)
+{
+	$h.empty();
+
+	var last = G.history.length;
+	var first = last-1;
+	while (first > 0 && G.history[first].type != 'next_turn') {
+		first--;
+	}
+
+	for (var i = first; i < last; i++) {
+		var evt = G.history[i];
+		if (evt.type == 'infection') {
+			var $e = $('<div class="infection_event"></div>');
+			$e.append(make_infection_card(evt.infection));
+			$e.append(' is infected (add 1 cube)');
+			$h.append($e);
+		}
+		else if (evt.type == 'epidemic') {
+			var $e = $('<div class="epidemic_event"></div>');
+			$e.append(make_infection_card(evt.epidemic));
+			$e.append(' is infected (<em>add 3 cubes!</em>)');
+			$h.append($e);
+		}
+		else if (evt.type == 'draw_card') {
+			var $e = $('<div class="draw_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
+			$('.player_name',$e).text(G.player_names[evt.player]);
+			$('.card_container',$e).append(make_player_card(evt.card));
+			$h.append($e);
+		}
+		else if (evt.type == 'draw_epidemic') {
+			var $e = $('<div class="draw_epidemic_event"><span class="card_container"></span> is triggered</div>');
+			$('.card_container',$e).append(make_player_card('Epidemic'));
+			$h.append($e);
+		}
+		else if (evt.type == 'next_turn') {
+			var $e = $('<div class="next_turn_event">===== <img class="role_icon"><span class="player_name"></span>\'s turn =====</div>');
+			var r = G.roles[evt.active_player];
+			$('.role_icon',$e).attr('alt', r).
+				attr('src', get_role_icon(r));
+			$('.player_name',$e).text(G.player_names[evt.active_player]);
+			$h.append($e);
+		}
+	}
+}
+
+function get_role_icon(r)
+{
+	return 'images/'+Role_icons[r];
 }
 
 function start_infection()
@@ -789,16 +868,32 @@ function do_move(m)
 			G.pending_epidemics = 0;
 			if (is_epidemic(c1)) {
 				G.pending_epidemics++;
+				G.history.push({
+					'type': 'draw_epidemic'
+					});
 			}
 			else {
 				G.hands[G.active_player].push(c1);
+				G.history.push({
+					'type': 'draw_card',
+					'player': G.active_player,
+					'card': c1
+					});
 			}
 
 			if (is_epidemic(c2)) {
 				G.pending_epidemics++;
+				G.history.push({
+					'type': 'draw_epidemic'
+					});
 			}
 			else {
 				G.hands[G.active_player].push(c2);
+				G.history.push({
+					'type': 'draw_card',
+					'player': G.active_player,
+					'card': c2
+					});
 			}
 
 		}
@@ -902,11 +997,7 @@ function init_draw_cards_page($pg)
 			G.player_names[G.active_player]
 			);
 
-	$('.card_list', $pg).empty();
-	var c1 = G.current.cards_drawn[0];
-	var c2 = G.current.cards_drawn[1];
-	$('.card_list', $pg).append(make_player_card(c1));
-	$('.card_list', $pg).append(make_player_card(c2));
+	init_history_pane($('.history_container', $pg));
 
 	if (G.pending_epidemics > 0) {
 		$('.goto_epidemic_btn', $pg).show();
@@ -920,11 +1011,7 @@ function init_draw_cards_page($pg)
 
 function init_epidemic_page($pg)
 {
-	var c = G.current.epidemic;
-	$('.card_list', $pg).empty();
-	$('.card_list', $pg).append(
-		make_infection_card(c)
-		);
+	init_history_pane($('.history_container', $pg));
 
 	if (G.pending_epidemics > 0) {
 		$('.goto_epidemic_btn', $pg).show();
@@ -943,11 +1030,7 @@ function is_epidemic(c)
 
 function init_infection_page($pg)
 {
-	$('.card_list', $pg).empty();
-	$('.card_list', $pg).append(
-		make_infection_card(
-			G.current.infection
-			));
+	init_history_pane($('.history_container', $pg));
 
 	if (G.pending_infection > 0) {
 		$('.pending_infection_div').show();
@@ -958,7 +1041,7 @@ function init_infection_page($pg)
 	else {
 		$('.pending_infection_div').hide();
 
-		$('.player_name', $pg).text(
+		$('button .player_name', $pg).text(
 			G.player_names[
 				1+(G.active_player%G.rules.player_count)
 				]);
@@ -1135,7 +1218,7 @@ function show_discards_clicked()
 		var c = G.infection_discards[i];
 
 		$('.infection_discards_list', $pg).append(
-			make_infection_card(c)
+			make_infection_card_li(c)
 			);
 	}
 }
