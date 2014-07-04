@@ -113,8 +113,8 @@ var Specials = [
 	'Special Orders',
 
 	//Not yet supported
+	'Resilient Population',
 	//'Forecast',
-	//'Resilient Population',
 	];
 var G = null;
 
@@ -169,7 +169,11 @@ function generate_decks()
 	for (var i = 0; i < G.rules.player_count; i++) {
 		var b = [];
 		for (var j = 0; j < hand_size; j++) {
-			var c = A.pop();
+			if (i == 0 && j == 0) {
+				c = 'Resilient Population';
+			} else {
+				var c = A.pop();
+			}
 			b.push(c);
 		}
 		G.initial_hands[(1+i)] = b;
@@ -1212,9 +1216,60 @@ function set_move(m)
 	return;
 }
 
+function order_infection_discards()
+{
+	var A = [];
+	for (var i = 0; i < G.infection_discards.length; i++) {
+		A.push(G.infection_discards[i]);
+	}
+	A.sort(function(a,b) {
+
+		var a_ci = City_Info[a];
+		var b_ci = City_Info[b];
+		if (a_ci.color != b_ci.color) {
+			return a_ci.color > b_ci.color ? 1 : -1;
+		}
+		else {
+			return a_ci.name > b_ci.name ? 1 :
+				a_ci.name < b_ci.name ? -1 : 0;
+		}
+		});
+	return A;
+}
+
+function init_resilient_population_page($pg)
+{
+	var A = order_infection_discards();
+
+	$('.resilient_population_btn_row:not(.template)',$pg).remove();
+	for (var i = 0; i < A.length; i++) {
+		var c = A[i];
+
+		var $s = $('.resilient_population_btn_row.template',$pg).clone();
+		$('button', $s).append(make_infection_card(c));
+		$('button', $s).attr('data-city-name', c);
+		$('button', $s).click(on_resilient_population_selected);
+		$s.removeClass('template');
+		$('.resilient_population_btns_container',$pg).before($s);
+	}
+}
+
+function on_resilient_population_selected()
+{
+	var c = this.getAttribute('data-city-name');
+	return set_move('special "Resilient Population" "'+c+'"');
+}
+
 function on_special_event_clicked()
 {
 	var s =  this.getAttribute('data-special-event');
+
+	if (s == 'Resilient Population') {
+
+		var $pg = show_page('resilient_population_page');
+		init_resilient_population_page($pg);
+		return;
+	}
 
 	return set_move('special '+s);
 }
