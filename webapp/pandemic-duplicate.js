@@ -179,11 +179,11 @@ function generate_decks()
 		piles.push(['Epidemic']);
 	}
 	for (var i = 0; i < A.length; i++) {
-		var j = Math.floor(Math.random()*piles.length);
+		var j = i % piles.length;
 		piles[j].push(A[i]);
 	}
 	G.player_deck = [];
-	for (var i = 0; i < piles.length; i++) {
+	for (var i = piles.length-1; i >= 0; i--) {
 		shuffle_array(piles[i]);
 		for (var j = 0; j < piles[i].length; j++) {
 			G.player_deck.push(piles[i][j]);
