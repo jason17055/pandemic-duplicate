@@ -112,9 +112,7 @@ var Specials = [
 	'Remote Treatment',
 	'Special Orders',
 	'Resilient Population',
-
-	//Not yet supported
-	//'Forecast',
+	'Forecast'
 	];
 var G = null;
 
@@ -661,6 +659,7 @@ function make_infection_card_li(c)
 {
 	var $x = $('<li></li>');
 	$x.append(make_infection_card(c));
+	$x.attr('data-city-name', c);
 	return $x;
 }
 
@@ -924,6 +923,9 @@ function do_move(m)
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
 	}
+	else if (mm[0] == 'forecast') {
+		do_forecast(m.substring(9));
+	}
 	else if (m == 'give_up') {
 		G.step = 'end';
 		G.result = 'loss'
@@ -952,10 +954,29 @@ function find_and_remove_card_all_hands(c)
 	return null;
 }
 
+function do_forecast(s)
+{
+	var cardlist = [];
+	var m;
+	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
+		cardlist.push(m[1]);
+		s = m[2];
+	}
+
+	for (var i = 0; i < cardlist.length; i++) {
+		G.infection_deck.pop();
+	}
+	for (var i = cardlist.length-1; i >= 0; i--) {
+		G.infection_deck.push(cardlist[i]);
+	}
+
+	G.time++;
+	G.step = G.after_forecast_step;
+	delete G.after_forecast_step;
+}
+
 function do_special_event(c)
 {
-	console.log("special event "+c);
-
 	var m;
 	if (c == 'One Quiet Night') {
 		find_and_remove_card_all_hands(c);
@@ -965,6 +986,11 @@ function do_special_event(c)
 		find_and_remove_card_all_hands(c);
 		G.travel_ban = G.rules.player_count;
 		console.log("travel ban in effect");
+	}
+	else if (c == 'Forecast') {
+		find_and_remove_card_all_hands(c);
+		G.after_forecast_step = G.step;
+		G.step = 'forecast';
 	}
 	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
 		if (find_and_remove_card_all_hands("Resilient Population")) {
@@ -1239,6 +1265,75 @@ function order_infection_discards()
 	return A;
 }
 
+function on_forecast_reset_clicked()
+{
+	init_forecast_page($('#forecast_page'));
+}
+
+function on_forecast_confirm_clicked()
+{
+	var sel = [];
+	$('#forecast_page .forecast_cards_list li').each(function(idx,el) {
+		var c = el.getAttribute('data-city-name');
+		sel.push(c);
+		});
+
+	var m = "forecast";
+	for (var i = 0; i < sel.length; i++) {
+		m += ' "' + sel[i] + '"';
+	}
+
+	return set_move(m);
+}
+
+function init_forecast_page($pg)
+{
+	var pick_city = function(c) {
+		$('.forecast_cards_list',$pg).prepend(make_infection_card_li(c));
+	};
+
+	var on_forecast_city_selected = function() {
+		var c = this.getAttribute('data-city-name');
+		pick_city(c);
+
+		var $s = $('.city_btn_row:has([data-city-name="'+c+'"])', $pg);
+		$s.remove();
+
+		var left = $('.city_btn_row:not(.template)', $pg);
+		if (left.length == 1) {
+
+			left.each(function(idx,el) {
+				var c = $('button',el).attr('data-city-name');
+				pick_city(c);
+				});
+			left.remove();
+			$('.choosing', $pg).hide();
+			$('.confirming', $pg).show();
+		}
+
+		$('.reset_btn_container', $pg).show();
+	};
+
+	$('.forecast_cards_list', $pg).empty();
+
+	$('.city_btn_row:not(.template)',$pg).remove();
+	for (var i = 0; i < 6; i++) {
+		var c = G.infection_deck[G.infection_deck.length-1-i];
+		if (!c) { continue; }
+
+		var $s = $('.city_btn_row.template', $pg).clone();
+
+		$('button', $s).append(make_infection_card(c));
+		$('button', $s).attr('data-city-name', c);
+		$('button', $s).click(on_forecast_city_selected);
+		$s.removeClass('template');
+		$('.reset_btn_container', $pg).before($s);
+	}
+	$('.choosing', $pg).show();
+	$('.confirming', $pg).hide();
+	$('.reset_btn_container', $pg).hide();
+}
+
 function init_resilient_population_page($pg)
 {
 	var A = order_infection_discards();
@@ -1442,6 +1537,10 @@ function on_state_init()
 		else if (G.step == 'infection') {
 			var $pg = show_page('player_turn_page');
 			init_infection_page($pg);
+		}
+		else if (G.step == 'forecast') {
+			var $pg = show_page('forecast_page');
+			init_forecast_page($pg);
 		}
 		else if (G.step == 'end') {
 			var $pg = show_page('game_completed_page');

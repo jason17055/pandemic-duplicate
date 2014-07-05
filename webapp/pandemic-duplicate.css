@@ -137,3 +137,7 @@ img.role_icon {
 .epidemic_event em {
 	font-weight: bold;
 }
+
+#forecast_page .reset_btn_container {
+	display: none;
+}
