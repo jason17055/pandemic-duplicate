@@ -776,6 +776,55 @@ function do_more_infection()
 	}
 }
 
+function make_history_item(evt)
+{
+	if (evt.type == 'infection') {
+		var $e = $('<div class="infection_event"></div>');
+		$e.append(make_infection_card(evt.infection));
+		$e.append(' is infected (add 1 cube)');
+		return $e;
+	}
+	else if (evt.type == 'epidemic') {
+		var $e = $('<div class="epidemic_event"></div>');
+		$e.append(make_infection_card(evt.epidemic));
+		$e.append(' is infected (<em>add 3 cubes!</em>)');
+		return $e;
+	}
+	else if (evt.type == 'draw_card') {
+		var $e = $('<div class="draw_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
+		$('.player_name',$e).text(G.player_names[evt.player]);
+		$('.card_container',$e).append(make_player_card(evt.card));
+		return $e;
+	}
+	else if (evt.type == 'draw_epidemic') {
+		var $e = $('<div class="draw_epidemic_event"><span class="card_container"></span> is triggered</div>');
+		$('.card_container',$e).append(make_player_card('Epidemic'));
+		return $e;
+	}
+	else if (evt.type == 'next_turn') {
+		var $e = $('<div class="next_turn_event">===== <img class="role_icon"><span class="player_name"></span>\'s turn =====</div>');
+		var r = G.roles[evt.active_player];
+		$('.role_icon',$e).attr('alt', r).
+			attr('src', get_role_icon(r));
+		$('.player_name',$e).text(G.player_names[evt.active_player]);
+		return $e;
+	}
+	else if (evt.type == 'special_event') {
+		var $e = $('<div class="special_event_event"><span class="player_name"></span> plays <span class="card_container"></span></div>');
+		$('.player_name',$e).text(G.player_names[evt.player]);
+		$('.card_container',$e).append(make_player_card(evt.card));
+		return $e;
+	}
+	else if (evt.type == 'resilient_population') {
+		var $e = $('<div class="resilient_population_event">&nbsp; --> <span class="card_container"></span> is made resilient</div>');
+		$('.card_container',$e).append(make_infection_card(evt.city));
+		return $e;
+	}
+	else {
+		return null;
+	}
+}
+
 function init_history_pane($h)
 {
 	$h.empty();
@@ -788,35 +837,8 @@ function init_history_pane($h)
 
 	for (var i = first; i < last; i++) {
 		var evt = G.history[i];
-		if (evt.type == 'infection') {
-			var $e = $('<div class="infection_event"></div>');
-			$e.append(make_infection_card(evt.infection));
-			$e.append(' is infected (add 1 cube)');
-			$h.append($e);
-		}
-		else if (evt.type == 'epidemic') {
-			var $e = $('<div class="epidemic_event"></div>');
-			$e.append(make_infection_card(evt.epidemic));
-			$e.append(' is infected (<em>add 3 cubes!</em>)');
-			$h.append($e);
-		}
-		else if (evt.type == 'draw_card') {
-			var $e = $('<div class="draw_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
-			$('.player_name',$e).text(G.player_names[evt.player]);
-			$('.card_container',$e).append(make_player_card(evt.card));
-			$h.append($e);
-		}
-		else if (evt.type == 'draw_epidemic') {
-			var $e = $('<div class="draw_epidemic_event"><span class="card_container"></span> is triggered</div>');
-			$('.card_container',$e).append(make_player_card('Epidemic'));
-			$h.append($e);
-		}
-		else if (evt.type == 'next_turn') {
-			var $e = $('<div class="next_turn_event">===== <img class="role_icon"><span class="player_name"></span>\'s turn =====</div>');
-			var r = G.roles[evt.active_player];
-			$('.role_icon',$e).attr('alt', r).
-				attr('src', get_role_icon(r));
-			$('.player_name',$e).text(G.player_names[evt.active_player]);
+		var $e = make_history_item(evt);
+		if ($e) {
 			$h.append($e);
 		}
 	}
@@ -943,12 +965,13 @@ function do_move(m)
 	}
 }
 
-function find_and_remove_card_all_hands(c)
+//returns the player-id of the player who had it
+function find_and_remove_card_any_hand(c)
 {
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		var cc = find_and_remove_card(G.hands[i], c);
 		if (cc) {
-			return cc;
+			return i;
 		}
 	}
 	return null;
@@ -977,25 +1000,46 @@ function do_forecast(s)
 
 function do_special_event(c)
 {
+	var hfun = function(cc) {
+		var pid = find_and_remove_card_any_hand(cc);
+		if (!pid) { return null; }
+
+		G.history.push({
+			'type':'special_event',
+			'player':pid,
+			'card':cc
+			});
+		return pid;
+	};
+
 	var m;
 	if (c == 'One Quiet Night') {
-		find_and_remove_card_all_hands(c);
-		G.one_quiet_night = 1;
+		if (hfun(c)) {
+			G.one_quiet_night = 1;
+		}
 	}
 	else if (c == 'Commercial Travel Ban') {
-		find_and_remove_card_all_hands(c);
-		G.travel_ban = G.rules.player_count;
-		console.log("travel ban in effect");
+		if (hfun(c)) {
+			G.travel_ban = G.rules.player_count;
+		}
 	}
 	else if (c == 'Forecast') {
-		find_and_remove_card_all_hands(c);
-		G.after_forecast_step = G.step;
-		G.step = 'forecast';
+		if (hfun(c)) {
+			G.after_forecast_step = G.step;
+			G.step = 'forecast';
+		}
 	}
 	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
-		if (find_and_remove_card_all_hands("Resilient Population")) {
+		if (hfun("Resilient Population")) {
 			find_and_remove_card(G.infection_discards, m[1]);
+			G.history.push({
+				'type':'resilient_population',
+				'city':m[1]
+				});
 		}
+	}
+	else {
+		hfun(c);
 	}
 
 	G.time++;
