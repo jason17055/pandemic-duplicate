@@ -100,19 +100,22 @@ var Translated_City_Names = {
 	};
 
 var Specials = [
+	// specials from the base game
 	'Airlift',
+	'Forecast',
+	'Government Grant',
+	'One Quiet Night',
+	'Resilient Population',
+
+	// specials from the "On the Brink" expansion
 	'Borrowed Time',
 	'Commercial Travel Ban',
-	'Government Grant',
 	'Mobile Hospital',
 	'New Assignment',
-	'One Quiet Night',
 	'Rapid Vaccine Deployment',
 	'Re-examined Research',
 	'Remote Treatment',
-	'Special Orders',
-	'Resilient Population',
-	'Forecast'
+	'Special Orders'
 	];
 var G = null;
 
@@ -138,8 +141,11 @@ function shuffle_array(A)
 
 function generate_decks()
 {
+	var num_specials = G.rules.expansion == 'none' ? 5 : Specials.length;
+	var num_roles = G.rules.expansion == 'none' ? 5 : Roles.length;
+
 	var S = [];
-	for (var i = 0; i < Specials.length; i++) {
+	for (var i = 0; i < num_specials; i++) {
 		S.push(Specials[i]);
 	}
 	shuffle_array(S);
@@ -148,12 +154,14 @@ function generate_decks()
 	for (var i = 0; i < Cities.length; i++) {
 		A.push(Cities[i]);
 	}
-	for (var i = 0; i < S.length && i < G.rules.player_count*2; i++) {
+
+	var num_specials_avail = G.rules.expansion == 'none' ? 5 : G.rules.player_count*2;
+	for (var i = 0; i < S.length && i < num_specials_avail; i++) {
 		A.push(S[i]);
 	}
 
 	var R = [];
-	for (var i = 0; i < Roles.length; i++) {
+	for (var i = 0; i < num_roles; i++) {
 		R.push(Roles[i]);
 	}
 	shuffle_array(R);
