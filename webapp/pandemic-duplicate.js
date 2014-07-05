@@ -520,6 +520,8 @@ function init_player_setup_page($pg, shuffle_id)
 {
 	load_game(shuffle_id);
 
+	$('.deal_name',$pg).text(shuffle_name(shuffle_id));
+
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
