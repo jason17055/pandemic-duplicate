@@ -1049,6 +1049,16 @@ function do_special_event(c)
 				});
 		}
 	}
+	else if (m = /^"New Assignment" "([^"]*)" "([^"]*)"$/.exec(c)) {
+		if (hfun("New Assignment")) {
+			for (var i = 1; i <= G.rules.player_count; i++) {
+				if (G.roles[i] == m[1]) {
+					G.roles[i] = m[2];
+					break;
+				}
+			}
+		}
+	}
 	else {
 		hfun(c);
 	}
@@ -1390,6 +1400,44 @@ function init_forecast_page($pg)
 	$('.reset_btn_container', $pg).hide();
 }
 
+function init_new_assignment_page($pg)
+{
+	$('select[name=old_role]', $pg).empty();
+	for (var i = 1; i <= G.rules.player_count; i++) {
+		var $o = $('<option></option>');
+		$o.attr('value', G.roles[i]);
+		if (i == G.active_player) { $o.attr('selected','selected'); }
+		$o.text(G.roles[i]);
+		$('select[name=old_role]', $pg).append($o);
+	}
+
+	$('select[name=new_role]', $pg).empty();
+	for (var i = 0; i < Roles.length; i++) {
+		if (role_in_use(Roles[i])) { continue; }
+		var $o = $('<option></option>');
+		$o.attr('value', Roles[i]);
+		$o.text(Roles[i]);
+		$('select[name=new_role]', $pg).append($o);
+	}
+}
+
+function role_in_use(r)
+{
+	for (var i = 1; i <= G.rules.player_count; i++) {
+		if (G.roles[i] == r) { return true; }
+	}
+	return false;
+}
+
+function on_new_assignment_confirmed()
+{
+	var f = document.new_assignment_form;
+	var old_role = f.old_role.value;
+	var new_role = f.new_role.value;
+	set_move('special "New Assignment" "'+old_role+'" "'+new_role+'"');
+	return;
+}
+
 function init_resilient_population_page($pg)
 {
 	var A = order_infection_discards();
@@ -1421,6 +1469,12 @@ function on_special_event_clicked()
 
 		var $pg = show_page('resilient_population_page');
 		init_resilient_population_page($pg);
+		return;
+	}
+	else if (s == 'New Assignment') {
+
+		var $pg = show_page('new_assignment_page');
+		init_new_assignment_page($pg);
 		return;
 	}
 
