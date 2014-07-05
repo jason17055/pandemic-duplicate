@@ -1505,7 +1505,8 @@ function init_pick_game_page($pg, rulestr)
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
-		var played_by = get_played_by_list(a[i]);
+		var results_info = summarize_results_for_deal(a[i]);
+		var played_by = results_info.played_by;
 		var description = 
 			deal_finished(a[i]) ? ('Completed ' + format_time(deal_finish_time(a[i]))) :
 			deal_started(a[i]) ? ('Started ' + format_time(deal_first_played_time(a[i]))) :
@@ -1515,6 +1516,9 @@ function init_pick_game_page($pg, rulestr)
 			for (var j = 0; j < played_by.length; j++) {
 				description += ' ' + played_by[j];
 			}
+		}
+		if (results_info.maximum_score > 0 && deal_finished(a[i])) {
+			description += '; best score: '+results_info.maximum_score;
 		}
 
 		$('.deal_status_col', $tr).text(description);
@@ -1635,9 +1639,10 @@ function dont_submit_clicked()
 	return false;
 }
 
-function get_played_by_list(shuffle_id)
+function summarize_results_for_deal(shuffle_id)
 {
 	var names = {};
+	var best_score = 0;
 
 	var a = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
 	for (var i = 0; i < a.length; i++) {
@@ -1649,6 +1654,10 @@ function get_played_by_list(shuffle_id)
 				names[nam] = true;
 			}
 		}
+
+		if (V.score > best_score) {
+			best_score = V.score;
+		}
 	}
 
 	var names_list = [];
@@ -1656,7 +1665,10 @@ function get_played_by_list(shuffle_id)
 		names_list.push(nam);
 	}
 
-	return names_list;
+	return {
+		'played_by': names_list,
+		'maximum_score': best_score
+		};
 }
 
 function load_result(result_id)
