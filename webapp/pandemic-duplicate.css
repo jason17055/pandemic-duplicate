@@ -141,3 +141,7 @@ img.role_icon {
 #forecast_page .reset_btn_container {
 	display: none;
 }
+
+.game_state_summary_pane {
+	float: right;
+}

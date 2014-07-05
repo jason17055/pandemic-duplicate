@@ -261,6 +261,7 @@ function load_game(game_id)
 	G.epidemic_count = 0;
 
 	G.player_discards = [];
+	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
 	return G;
 }
 
@@ -1045,7 +1046,7 @@ function do_special_event(c)
 	G.time++;
 }
 
-function init_player_turn_page($pg)
+function set_game_state_summary($pg)
 {
 	var r = G.roles[G.active_player];
 	$('.page_header .role_icon', $pg).
@@ -1054,6 +1055,15 @@ function init_player_turn_page($pg)
 	$('.page_header .player_name', $pg).text(
 			G.player_names[G.active_player]
 			);
+
+	$('.game_state_summary_pane .turn_number', $pg).text(
+			G.turns + '/' + G.game_length_in_turns
+			);
+}
+
+function init_player_turn_page($pg)
+{
+	set_game_state_summary($pg);
 
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).show();
@@ -1075,13 +1085,7 @@ function continue_player_turn()
 
 function init_draw_cards_page($pg)
 {
-	var r = G.roles[G.active_player];
-	$('.page_header .role_icon', $pg).
-		attr('alt', r).
-		attr('src', 'images/'+Role_icons[r]);
-	$('.page_header .player_name', $pg).text(
-			G.player_names[G.active_player]
-			);
+	set_game_state_summary($pg);
 
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
@@ -1092,6 +1096,16 @@ function init_draw_cards_page($pg)
 
 function set_continue_btn_caption($pg)
 {
+	if (G.step == 'actions' && G.turns >= G.game_length_in_turns) {
+		$('.defeat_button_container', $pg).show();
+		$('.continue_button_container', $pg).hide();
+		return;
+	}
+	else {
+		$('.defeat_button_container', $pg).hide();
+		$('.continue_button_container', $pg).show();
+	}
+
 	if (G.step == 'actions') {
 		$('.goto_draw_cards_btn', $pg).show();
 		$('.goto_epidemic_btn', $pg).hide();
@@ -1126,13 +1140,7 @@ function set_continue_btn_caption($pg)
 
 function init_epidemic_page($pg)
 {
-	var r = G.roles[G.active_player];
-	$('.page_header .role_icon', $pg).
-		attr('alt', r).
-		attr('src', 'images/'+Role_icons[r]);
-	$('.page_header .player_name', $pg).text(
-			G.player_names[G.active_player]
-			);
+	set_game_state_summary($pg);
 
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
@@ -1149,13 +1157,7 @@ function is_epidemic(c)
 
 function init_infection_page($pg)
 {
-	var r = G.roles[G.active_player];
-	$('.page_header .role_icon', $pg).
-		attr('alt', r).
-		attr('src', 'images/'+Role_icons[r]);
-	$('.page_header .player_name', $pg).text(
-			G.player_names[G.active_player]
-			);
+	set_game_state_summary($pg);
 
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
