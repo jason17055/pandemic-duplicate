@@ -1252,7 +1252,7 @@ function init_resilient_population_page($pg)
 		$('button', $s).attr('data-city-name', c);
 		$('button', $s).click(on_resilient_population_selected);
 		$s.removeClass('template');
-		$('.resilient_population_btns_container',$pg).before($s);
+		$('.resilient_population_btns_container',$pg).append($s);
 	}
 }
 
