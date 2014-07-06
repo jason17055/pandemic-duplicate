@@ -145,3 +145,15 @@ img.role_icon {
 .game_state_summary_pane {
 	float: right;
 }
+
+tr.my_result {
+	background-color: #ffb;
+}
+tr.my_result .place_col, tr.my_result .score_col {
+	font-weight: bold;
+}
+.place_col, .score_col {
+	text-align: center;
+	min-width: 50px;
+}
+
