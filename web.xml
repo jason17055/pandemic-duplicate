@@ -8,9 +8,19 @@
 	<servlet-name>PandemicDeal</servlet-name>
 </servlet-mapping>
 
+<servlet-mapping>
+	<url-pattern>/s/games</url-pattern>
+	<servlet-name>ActivePlay</servlet-name>
+</servlet-mapping>
+
 <servlet>
 	<servlet-name>PandemicDeal</servlet-name>
 	<servlet-class>pandemic.PandemicDealServlet</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>ActivePlay</servlet-name>
+	<servlet-class>pandemic.ActivePlayServlet</servlet-class>
 </servlet>
 
 </web-app>

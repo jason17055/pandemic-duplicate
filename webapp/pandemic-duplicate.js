@@ -325,6 +325,8 @@ function generate_new_game_clicked()
 	G.rules = parse_rules(document.pick_game_form.rules.value);
 	var shuffle_id = generate_decks();
 
+	start_publishing_game(shuffle_id);
+
 	var u = BASE_URL + '#'+shuffle_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
@@ -1306,6 +1308,8 @@ function on_preshuffled_game_clicked(evt)
 	var el = this;
 	var shuffle_id = el.getAttribute('data-shuffle-id');
 
+	start_publishing_game(shuffle_id);
+
 	var u = BASE_URL + '#'+shuffle_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
@@ -1342,6 +1346,14 @@ function deal_first_played_time(deal_id)
 function format_time(timestr)
 {
 	return timestr;
+}
+
+function start_publishing_game(shuffle_id)
+{
+	localStorage.removeItem(PACKAGE + '.current_game');
+	localStorage.setItem(PACKAGE + '.current_game.deal', shuffle_id);
+
+	trigger_sync_process();
 }
 
 function set_move(m)
@@ -1835,6 +1847,46 @@ function trigger_sync_process()
 	upload_next_deal();
 }
 
+function upload_current_game()
+{
+	var game_id = localStorage.getItem(PACKAGE + '.current_game');
+	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
+
+	if (shuffle_id && !game_id) {
+
+		// new game
+		console.log("sync: uploading game information");
+		var s = JSON.stringify({
+			'deal': shuffle_id
+			});
+
+		var onSuccess = function(data) {
+			game_id = data.game_id;
+			console.log('sync: successful upload of current game');
+			console.log('sync: new game id is '+game_id);
+			localStorage.setItem(PACKAGE + '.current_game', game_id);
+			return upload_current_game();
+			};
+		var onError = function(jqx, status, errMsg) {
+			console.log('an error occurred');
+			};
+
+		$.ajax({
+		type: "POST",
+		url: "s/games",
+		data: s,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: onSuccess,
+		error: onError
+		});
+	}
+	else {
+		console.log("sync: checking for items to download");
+		check_for_downloads();
+	}
+}
+
 function upload_next_result()
 {
 	var a = stor_get_list(PACKAGE + '.pending_results');
@@ -1843,8 +1895,7 @@ function upload_next_result()
 		upload_result(result_id);
 	}
 	else {
-		console.log("sync: checking for items to download");
-		check_for_downloads();
+		upload_current_game();
 	}
 }
 
