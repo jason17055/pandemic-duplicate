@@ -1856,9 +1856,14 @@ function upload_current_game()
 
 		// new game
 		console.log("sync: uploading game information");
-		var s = JSON.stringify({
-			'deal': shuffle_id
-			});
+		var st = {
+			'deal': shuffle_id,
+			'player_count': G.rules.player_count
+			};
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			st['player'+pid] = G.player_names[pid];
+		}
+		var s = JSON.stringify(st);
 
 		var onSuccess = function(data) {
 			game_id = data.game_id;
