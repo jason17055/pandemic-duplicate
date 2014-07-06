@@ -1159,7 +1159,6 @@ function set_continue_btn_caption($pg)
 		return;
 	}
 	else {
-		$('.defeat_button_container', $pg).hide();
 		$('.continue_button_container', $pg).show();
 	}
 
