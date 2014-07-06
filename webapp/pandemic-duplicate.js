@@ -559,6 +559,8 @@ function init_player_setup_page($pg, shuffle_id)
 
 function init_results_page($pg, shuffle_id)
 {
+	load_shuffle(shuffle_id);
+	
 	$('.deal_name', $pg).text(shuffle_name(shuffle_id));
 
 	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
@@ -606,10 +608,17 @@ function init_results_page($pg, shuffle_id)
 		}
 
 		var rules = parse_rules(r.rules);
-		var players_str = '';
+		var $pcol = $('.players_col', $tr);
 		for (var j = 1; j <= rules.player_count; j++) {
-			players_str += (j > 1 ? ', ' : '') +
-				r['player'+j];
+			var $p = $('<nobr><img class="role_icon"><span class="player_name"></span></nobr>');
+			$('.role_icon', $p).attr('src', get_role_icon(G.roles[j])).
+				attr('alt', G.roles[j]);
+			$('.player_name', $p).text(r['player'+j]);
+
+			if (j < rules.player_count) {
+				$p.append(', ');
+			}
+			$pcol.append($p);
 		}
 
 		var is_a_tie = (i > 0 && all_results[i-1].score == r.score) ||
@@ -618,7 +627,6 @@ function init_results_page($pg, shuffle_id)
 
 		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
 		$('.score_col', $tr).text(r.score);
-		$('.players_col', $tr).text(players_str);
 		$('.submitted_col', $tr).text(r.time);
 
 		$('.result_row.template', $pg).before($tr);
