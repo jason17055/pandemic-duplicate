@@ -559,6 +559,8 @@ function init_player_setup_page($pg, shuffle_id)
 
 function init_results_page($pg, shuffle_id)
 {
+	$('.deal_name', $pg).text(shuffle_name(shuffle_id));
+
 	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
 	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
 	if (my_result_id) {
