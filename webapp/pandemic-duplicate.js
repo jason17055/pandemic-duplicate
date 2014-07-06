@@ -18,9 +18,8 @@ var Roles = [
 	'Containment Specialist',
 	'Generalist',
 	'Archivist',
-	'Epidemiologist'
-
-	//, 'Troubleshooter' (disabled at this time)
+	'Epidemiologist',
+	'Troubleshooter'
 	];
 var Role_icons = {
 	'Dispatcher': 'dispatcher_role_icon.png',
@@ -1088,6 +1087,22 @@ function init_player_turn_page($pg)
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).show();
 	$('.in_infection_phase', $pg).hide();
+
+	if (G.roles[G.active_player] == 'Troubleshooter') {
+		$('.troubleshooter_only', $pg).show();
+		$('.troubleshooter_card_list', $pg).empty();
+		for (var i = 0; i < G.infection_rate; i++) {
+			var c = G.infection_deck[G.infection_deck.length-1-i];
+			if (c) {
+				$('.troubleshooter_card_list', $pg).append(
+					make_infection_card_li(c)
+				);
+			}
+		}
+	}
+	else {
+		$('.troubleshooter_only', $pg).hide();
+	}
 
 	set_continue_btn_caption($pg);
 }
