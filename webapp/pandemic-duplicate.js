@@ -816,7 +816,11 @@ function make_history_item(evt)
 		return $e;
 	}
 	else if (evt.type == 'draw_epidemic') {
-		var $e = $('<div class="draw_epidemic_event"><span class="card_container"></span> is triggered</div>');
+		var $e = $('<div class="draw_epidemic_event"><span class="first"></span> <span class="card_container"></span> is triggered</div>');
+		$('.first',$e).text(evt.epidemic_count == 1 ? 'First' :
+			evt.epidemic_count == 2 ? 'Second' :
+			evt.epidemic_count == 3 ? 'Third' :
+			(evt.epidemic_count + 'th'));
 		$('.card_container',$e).append(make_player_card('Epidemic'));
 		return $e;
 	}
@@ -909,7 +913,8 @@ function do_move(m)
 			if (is_epidemic(c1)) {
 				G.pending_epidemics++;
 				G.history.push({
-					'type': 'draw_epidemic'
+					'type': 'draw_epidemic',
+					'epidemic_count': G.epidemic_count+G.pending_epidemics
 					});
 			}
 			else {
@@ -924,7 +929,8 @@ function do_move(m)
 			if (is_epidemic(c2)) {
 				G.pending_epidemics++;
 				G.history.push({
-					'type': 'draw_epidemic'
+					'type': 'draw_epidemic',
+					'epidemic_count': G.epidemic_count+G.pending_epidemics
 					});
 			}
 			else {
