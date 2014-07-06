@@ -366,17 +366,21 @@ function init_player_names_page($pg, rulestr)
 function update_game_score()
 {
 	// cure count only used on loss
-	var num_cures = +document.game_completed_form.cure_count.value;
+	var num_cures = G.result == 'victory' ? 4 :
+		+document.game_completed_form.cure_count.value;
 	var num_turns = +G.turns;
 
 	var score;
 	if (G.result == 'victory') {
-		score = 100+Math.floor(G.player_deck.length/2);
+		var turns_left = Math.floor(G.player_deck.length/2);
+		score = 100+turns_left;
 	}
 	else {
 		score = num_cures*12+num_turns;
 	}
 	document.game_completed_form.score.value = score;
+	document.game_completed_form.cures.value = num_cures;
+	document.game_completed_form.turns.value = num_turns;
 	$('.score_ind').text(score);
 }
 
@@ -1799,6 +1803,8 @@ function submit_result_clicked()
 	V.rules = f.rules.value;
 	V.shuffle_id = f.shuffle_id.value;
 	V.score = f.score.value;
+	V.cures = f.cures.value;
+	V.turns = f.turns.value;
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		V['player'+i] = f['player'+i].value;
 	}
