@@ -727,6 +727,15 @@ function debug_infection_discards()
 	}
 }
 
+// Note: this function is called when the user clicks Next after an
+// epidemic is processed.
+// It is *also* called when a Forecast special event is played, as the
+// Forecast is interested in the infection deck after the cards are
+// reshuffled.
+// In the case of Forecast, this function is called MULTIPLE times,
+// the second time the infection discard pile is empty, so it has no
+// effect.
+//
 function finish_epidemic()
 {
 	var a = G['epidemic.'+G.epidemic_count];
@@ -1035,6 +1044,9 @@ function do_special_event(c)
 	}
 	else if (c == 'Forecast') {
 		if (hfun(c)) {
+			if (G.step == 'epidemic') {
+				finish_epidemic();
+			}
 			G.after_forecast_step = G.step;
 			G.step = 'forecast';
 		}
