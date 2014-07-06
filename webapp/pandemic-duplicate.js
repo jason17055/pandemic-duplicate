@@ -1109,7 +1109,9 @@ function init_player_turn_page($pg)
 	if (G.roles[G.active_player] == 'Troubleshooter') {
 		$('.troubleshooter_only', $pg).show();
 		$('.troubleshooter_card_list', $pg).empty();
-		for (var i = 0; i < G.infection_rate; i++) {
+
+		var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
+		for (var i = 0; i < eff_infection_rate; i++) {
 			var c = G.infection_deck[G.infection_deck.length-1-i];
 			if (c) {
 				$('.troubleshooter_card_list', $pg).append(
