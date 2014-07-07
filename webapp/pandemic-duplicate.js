@@ -633,7 +633,7 @@ function init_results_page($pg, shuffle_id)
 
 		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
 		$('.score_col', $tr).text(r.score);
-		$('.submitted_col', $tr).text(r.time);
+		$('.submitted_col', $tr).text(format_time(r.time));
 
 		$('.result_row.template', $pg).before($tr);
 	}
@@ -1345,7 +1345,31 @@ function deal_first_played_time(deal_id)
 
 function format_time(timestr)
 {
-	return timestr;
+	var today = new Date();
+	var d = new Date();
+	d.setTime(Date.parse(timestr));
+	var minutesAgo = Math.ceil((today.getTime() - d.getTime()) / 60000);
+
+	if (minutesAgo <= 1) {
+		return '1 minute ago';
+	}
+	else if (minutesAgo < 75) {
+		return minutesAgo+' minutes ago';
+	}
+
+	var dstr = timestr.substring(0,10);
+	var todaystr = today.toISOString().substring(0,10);
+	if (dstr == todaystr) {
+		return Math.floor(minutesAgo/60) + ' hours ago';
+	}
+
+	// yesterday
+	today.setTime(today.getTime()-86400000);
+	if (today.toISOString().substring(0,10) == dstr) {
+		return "Yesterday";
+	}
+
+	return dstr;
 }
 
 function start_publishing_game(shuffle_id)
