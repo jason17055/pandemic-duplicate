@@ -33,7 +33,7 @@ public class ActivePlayServlet extends HttpServlet
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Play");
 		q = q.setFilter(
-			new Query.FilterPredicate("playerNames", Query.FilterOperator.EQUAL, qry)
+			new Query.FilterPredicate("playerNamesLC", Query.FilterOperator.EQUAL, qry.toLowerCase())
 			);
 		PreparedQuery pq = datastore.prepare(q);
 
@@ -127,6 +127,11 @@ public class ActivePlayServlet extends HttpServlet
 			ent.setProperty("createdBy", creatorIp);
 
 			ent.setProperty("playerNames", Arrays.asList(ngi.player_names).subList(0, ngi.player_count));
+			ArrayList<String> tmp = new ArrayList<String>();
+			for (int i = 0; i < ngi.player_count; i++) {
+				tmp.add(ngi.player_names[i].toLowerCase());
+			}
+			ent.setProperty("playerNamesLC", tmp);
 
 			Key pkey = datastore.put(ent);
 
