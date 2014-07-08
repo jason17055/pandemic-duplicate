@@ -317,12 +317,13 @@ function init_join_game_pick_page($pg, search_results)
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
 
+		$('.expansion', $g).text(G.rules.expansion == 'none' ? 'Original' : G.rules.expansion);
 		$('.epidemic_count', $g).text(G.rules.level);
-		$('.player_count', $g).text(G.rules.player_count);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
-			var $p_name = $('<span><span class="player_name"></span></span>');
+			var $p_name = $('<span><img class="role_icon"><span class="player_name"></span></span>');
+			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
 			$('.player_name',$p_name).text(p_name);
 			$('.player_list', $g).append($p_name);
 			if (pid < G.rules.player_count) {
