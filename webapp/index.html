@@ -26,7 +26,7 @@ Welcome to Pandemic Duplicate!
 <form name="welcome_form">
 <div class="button_container"><button type="button" onclick="start_game_clicked()">Start Game</button></div>
 <div class="button_container"><button type="button" disabled>Resume Game</button></div>
-<div class="button_container"><button type="button" disabled>Join Network Game</button></div>
+<div class="button_container"><button type="button" onclick="join_network_game_clicked()">Join Network Game</button></div>
 
 </form>
 
@@ -80,6 +80,52 @@ Welcome to Pandemic Duplicate!
 
 </div><!--/page_body-->
 </div><!--/create_game_page-->
+
+<div class="page" id="join_game_page">
+
+<div class="page_header">
+<h1>Join Network Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="join_game_form" method="post" onsubmit="return submit_join_game_form()">
+<p>
+Enter your name as it appears in the host's game.
+</p>
+<p>
+<label>Name:
+<input type="text" id="name_entry" name="name" value="">
+</label>
+</p>
+
+<div class="button_container">
+<button type="submit">Find Game</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/join_game_page-->
+
+<div class="page" id="join_game_pick_page">
+
+<div class="page_header">
+<h1>Join Network Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="join_game_pick_form" method="post" onsubmit="return false">
+<div class="button_container join_game_btn template">
+<button type="button"><span class="player_count"></span>P, <span class="epidemic_count"></span><img src="epidemic_icon.png"> with <span class="player_list"></span></button>
+</div>
+<div class="button_container">
+<button type="button" onclick="cancel_join_game_pick()">Go Back</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/join_game_pick_page-->
 
 <div class="page" id="pick_game_page">
 <div class="page_header"><h1>Pick Game</h1></div>

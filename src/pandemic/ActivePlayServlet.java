@@ -18,7 +18,54 @@ public class ActivePlayServlet extends HttpServlet
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
+		String tmp = req.getParameter("search_player");
+		if (tmp != null) {
+			doSearchGames(tmp, req, resp);
+			return;
+		}
+
 		//TODO
+	}
+
+	void doSearchGames(String qry, HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("Play");
+		q = q.setFilter(
+			new Query.FilterPredicate("playerNames", Query.FilterOperator.EQUAL, qry)
+			);
+		PreparedQuery pq = datastore.prepare(q);
+
+		resp.setContentType("text/json;charset=UTF-8");
+		JsonGenerator out = new JsonFactory().
+			createJsonGenerator(resp.getWriter()
+			);
+		out.writeStartObject();
+		out.writeFieldName("results");
+		out.writeStartArray();
+
+		for (Entity ent : pq.asIterable()) {
+			out.writeStartObject();
+			String id = Long.toString(ent.getKey().getId());
+			out.writeStringField("id", id);
+			String deal_id = (String) ent.getProperty("deal");
+			out.writeStringField("deal", deal_id);
+
+			List<?> l = (List<?>) ent.getProperty("playerNames");
+			out.writeFieldName("players");
+			out.writeStartArray();
+			for (Object o : l) {
+				out.writeString((String) o);
+			}
+			out.writeEndArray();
+
+			out.writeEndObject();
+		}
+
+		out.writeEndArray();
+		out.writeEndObject();
+		out.close();
 	}
 
 	@Override

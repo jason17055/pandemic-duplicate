@@ -235,6 +235,11 @@ function generate_decks()
 	return G.shuffle_id;
 }
 
+function handle_ajax_error(jqx, status, errMsg)
+{
+	console.log('Ajax error: '+jqx.status + ' '+status+' '+errMsg);
+}
+
 function load_game(game_id)
 {
 	load_shuffle(game_id);
@@ -298,6 +303,83 @@ function parse_rules(s)
 	'player_count': +ss[1].substring(0, ss[1].length-1),
 	'level': +ss[2].substring(0, ss[2].length-1),
 	};
+}
+
+function init_join_game_pick_page($pg, search_results)
+{
+	var list = search_results.results;
+
+	$('.join_game_btn:not(.template)', $pg).remove();
+	for (var i = 0; i < list.length; i++) {
+		var g = list[i];
+		if (!load_shuffle(g.deal)) { continue; }
+
+		var $g = $('.join_game_btn.template', $pg).clone();
+		$g.removeClass('template');
+
+		$('.epidemic_count', $g).text(G.rules.level);
+		$('.player_count', $g).text(G.rules.player_count);
+
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			var p_name = g.players[pid-1];
+			var $p_name = $('<span><span class="player_name"></span></span>');
+			$('.player_name',$p_name).text(p_name);
+			$('.player_list', $g).append($p_name);
+			if (pid < G.rules.player_count) {
+				$('.player_list',$g).append(', ');
+			}
+		}
+
+		$('button', $g).attr('data-game-id', g.id);
+		$('button', $g).click(on_join_game_picked);
+
+		$('.join_game_btn.template', $pg).before($g);
+	}
+
+	console.log('found '+list.length+' results');
+}
+
+function on_join_game_picked()
+{
+	var game_id = this.getAttribute('data-game-id');
+	alert('want to watch '+game_id);
+}
+
+$(function() {
+	var n = localStorage.getItem(PACKAGE+'.my_player_name');
+	if (n) {
+		document.join_game_form.name.value = n;
+	}
+});
+
+function submit_join_game_form()
+{
+	var f = document.join_game_form;
+	var name = f.name.value;
+
+	localStorage.setItem(PACKAGE+'.my_player_name', name);
+
+	var onSuccess = function(data) {
+		var $pg = show_page('join_game_pick_page');
+		init_join_game_pick_page($pg, data);
+	};
+
+	var u = 's/games?search_player='+escape(name);
+	console.log('getting '+u);
+	$.ajax({
+		type: "GET",
+		url: u,
+		dataType: "json",
+		success: onSuccess,
+		error: handle_ajax_error
+		});
+
+	return false;
+}
+
+function cancel_join_game_pick()
+{
+	on_state_init();
 }
 
 function submit_create_game_form()
@@ -1694,6 +1776,9 @@ function on_state_init()
 	else if (path == 'params') {
 		show_page('create_game_page');
 	}
+	else if (path == 'join_network_game') {
+		show_page('join_game_page');
+	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
 		init_player_names_page($pg, m[1]);
@@ -1774,6 +1859,12 @@ function go_home_page()
 function start_game_clicked()
 {
 	history.pushState(null, null, BASE_URL + '#params');
+	on_state_init();
+}
+
+function join_network_game_clicked()
+{
+	history.pushState(null, null, BASE_URL + '#join_network_game');
 	on_state_init();
 }
 
@@ -1896,9 +1987,6 @@ function upload_current_game()
 			localStorage.setItem(PACKAGE + '.current_game', game_id);
 			return upload_current_game();
 			};
-		var onError = function(jqx, status, errMsg) {
-			console.log('an error occurred');
-			};
 
 		$.ajax({
 		type: "POST",
@@ -1907,7 +1995,7 @@ function upload_current_game()
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",
 		success: onSuccess,
-		error: onError
+		error: handle_ajax_error
 		});
 	}
 	else {
@@ -1950,9 +2038,6 @@ function upload_result(result_id)
 		stor_remove_from_set(PACKAGE + '.pending_results', result_id);
 		return upload_next_result();
 		};
-	var onError = function(jqx, status, errMsg) {
-		console.log('an error occurred');
-		};
 
 	$.ajax({
 	type: "POST",
@@ -1961,7 +2046,7 @@ function upload_result(result_id)
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
 	success: onSuccess,
-	error: onError
+	error: handle_ajax_error
 	});
 }
 
@@ -1975,9 +2060,6 @@ function upload_deal(shuffle_id)
 		stor_remove_from_set(PACKAGE + '.pending_deals', shuffle_id);
 		return upload_next_deal();
 		};
-	var onError = function(jqx, status, errMsg) {
-		console.log('an error occurred');
-		};
 
 	$.ajax({
 	type: "POST",
@@ -1986,7 +2068,7 @@ function upload_deal(shuffle_id)
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
 	success: onSuccess,
-	error: onError
+	error: handle_ajax_error
 	});
 }
 $(trigger_sync_process);
@@ -2011,16 +2093,13 @@ function check_for_downloads()
 		}
 		return download_next_deal();
 		};
-	var onError = function(jqx, status, errMsg) {
-		console.log('an error occurred');
-		};
 
 	$.ajax({
 	type: "GET",
 	url: "s/deals",
 	dataType: "json",
 	success: onSuccess,
-	error: onError
+	error: handle_ajax_error
 	});
 }
 
@@ -2068,9 +2147,6 @@ function download_result(result_b)
 		save_downloaded_result(result_b.id, data);
 		return download_next_result();
 		};
-	var onError = function(jqx, status, errMsg) {
-		console.log('an error occurred');
-		};
 
 	console.log('sync: downloading result '+result_b.id);
 	$.ajax({
@@ -2078,7 +2154,7 @@ function download_result(result_b)
 	url: "s/deals?deal="+escape(result_b.deal)+"&result="+escape(result_b.id),
 	dataType: "json",
 	success: onSuccess,
-	error: onError
+	error: handle_ajax_error
 	});
 }
 
@@ -2107,9 +2183,6 @@ function download_deal(deal_id)
 		save_downloaded_deal(deal_id, data);
 		return download_next_deal();
 		};
-	var onError = function(jqx, status, errMsg) {
-		console.log('an error occurred');
-		};
 
 	console.log('sync: downloading deal '+deal_id);
 	$.ajax({
@@ -2117,7 +2190,7 @@ function download_deal(deal_id)
 	url: "s/deals?deal="+escape(deal_id),
 	dataType: "json",
 	success: onSuccess,
-	error: onError
+	error: handle_ajax_error
 	});
 }
 
