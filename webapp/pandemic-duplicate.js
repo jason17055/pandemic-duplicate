@@ -367,20 +367,14 @@ $(function() {
 	}
 });
 
-function submit_join_game_form()
+function do_search_network_game(name)
 {
-	var f = document.join_game_form;
-	var name = f.name.value;
-
-	localStorage.setItem(PACKAGE+'.my_player_name', name);
-
 	var onSuccess = function(data) {
 		var $pg = show_page('join_game_pick_page');
 		init_join_game_pick_page($pg, data);
 	};
 
 	var u = 's/games?search_player='+escape(name);
-	console.log('getting '+u);
 	$.ajax({
 		type: "GET",
 		url: u,
@@ -388,13 +382,24 @@ function submit_join_game_form()
 		success: onSuccess,
 		error: handle_ajax_error
 		});
+}
 
+function submit_join_game_form()
+{
+	var f = document.join_game_form;
+	var name = f.name.value;
+
+	localStorage.setItem(PACKAGE+'.my_player_name', name);
+
+	var u = BASE_URL + '#join_network_game/' + escape(name);
+	history.pushState(null, null, u);
+	on_state_init();
 	return false;
 }
 
 function cancel_join_game_pick()
 {
-	on_state_init();
+	history.back();
 }
 
 function submit_create_game_form()
@@ -1341,6 +1346,11 @@ function init_infection_page($pg)
 	set_continue_btn_caption($pg);
 }
 
+function show_blank_page()
+{
+	$(".page").hide();
+}
+
 function show_page(page_name)
 {
 	$(".page").hide();
@@ -1793,6 +1803,11 @@ function on_state_init()
 	}
 	else if (path == 'join_network_game') {
 		show_page('join_game_page');
+	}
+	else if (m = path.match(/^join_network_game\/(.*)$/)) {
+		var q = unescape(m[1]);
+		show_blank_page();
+		do_search_network_game(q);
 	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
