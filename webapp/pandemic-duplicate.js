@@ -344,6 +344,20 @@ function on_join_game_picked()
 {
 	var game_id = this.getAttribute('data-game-id');
 	alert('want to watch '+game_id);
+
+	var onSuccess = function(data) {
+		localStorage.setItem(PACKAGE+'.current_game', game_id);
+		localStorage.setItem(PACKAGE+'.current_game.subscriber', data.subscriber_id);
+		alert('successfully subscribed '+data.subscriber_id);
+	};
+
+	$.ajax({
+		type: 'POST',
+		url: 's/games?subscribe='+escape(game_id),
+		dataType: 'json',
+		success: onSuccess,
+		error: handle_ajax_error
+		});
 }
 
 $(function() {

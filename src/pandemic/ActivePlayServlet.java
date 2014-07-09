@@ -68,10 +68,55 @@ public class ActivePlayServlet extends HttpServlet
 		out.close();
 	}
 
+	void doPostSubscribe(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		String play_id = req.getParameter("subscribe");
+		log.info("want to subscribe to "+play_id);
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Transaction txn = datastore.beginTransaction();
+
+		try
+		{
+			Key pkey = KeyFactory.createKey("Play", play_id);
+			Entity ent = new Entity("Subscriber", pkey);
+
+			Date createdDate = new Date();
+			String creatorIp = req.getRemoteAddr();
+
+			ent.setProperty("created", createdDate);
+			ent.setProperty("createdBy", creatorIp);
+
+			Key skey = datastore.put(ent);
+
+			txn.commit();
+
+log.info("created subscription "+skey.getId());
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeStringField("subscriber_id", Long.toString(skey.getId()));
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
 	@Override
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
+		if (req.getParameter("subscribe") != null) {
+			doPostSubscribe(req, resp);
+			return;
+		}
+
 		String content = getRequestContent(req);
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
