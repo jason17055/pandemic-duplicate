@@ -808,11 +808,15 @@ function load_game_at(game_id, target_time)
 	target_time = +target_time;
 	while (G.time < target_time) {
 
-		var m = localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time);
-		if (m == null) { m = 'pass'; }
-
-		do_move(m);
+		var mv = get_move(G.shuffle_id, G.time);
+		do_move(mv);
 	}
+}
+
+function get_move(game_id, time)
+{
+	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);
+	return mv != null ? mv : 'pass';
 }
 
 function start_epidemic()
@@ -1496,6 +1500,8 @@ function set_move(m)
 	}
 
 	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time, m);
+	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.time', 1+G.time);
+
 	do_move(m);
 	navigate_to_current_turn();
 	return;
@@ -1997,7 +2003,12 @@ function upload_current_game()
 	var game_id = localStorage.getItem(PACKAGE + '.current_game');
 	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
 
-	if (shuffle_id && !game_id) {
+	if (shuffle_id && game_id) {
+
+		// update existing game
+		upload_current_game_update(game_id);
+	}
+	else if (shuffle_id) {
 
 		// new game
 		console.log("sync: uploading game information");
@@ -2032,6 +2043,38 @@ function upload_current_game()
 		console.log("sync: checking for items to download");
 		check_for_downloads();
 	}
+}
+
+function upload_current_game_update(game_id)
+{
+	console.log("sync: uploading updated game state");
+
+	var mv_array = [];
+	for (var t = 0; t < G.time; t++) {
+		var mv = get_move(G.shuffle_id, t);
+		mv_array.push(mv);
+	}
+
+	var X = {
+		'time': G.time,
+		'moves': mv_array
+		};
+
+	var onSuccess = function(data) {
+		console.log('sync: successful upload of game state');
+		console.log("sync: checking for items to download");
+		return check_for_downloads();
+		};
+
+	$.ajax({
+	type: "POST",
+	url: "s/games?id="+game_id,
+	data: JSON.stringify(X),
+	contentType: "application/json; charset=utf-8",
+	dataType: "json",
+	success: onSuccess,
+	error: handle_ajax_error
+	});
 }
 
 function upload_next_result()

@@ -68,6 +68,77 @@ public class ActivePlayServlet extends HttpServlet
 		out.close();
 	}
 
+	void doPostGameState(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		String play_id = req.getParameter("id");
+		log.info("new game state received for "+play_id);
+
+		ArrayList<String> moves = new ArrayList<String>();
+		int curTime = 0;
+
+		JsonParser json = new JsonFactory().
+			createJsonParser(new StringReader(
+				getRequestContent(req)));
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("time")) {
+				json.nextToken();
+				curTime = json.getIntValue();
+			}
+			else if (json.getCurrentName().equals("moves")) {
+				json.nextToken(); // expected: start array
+				while (json.nextToken() != JsonToken.END_ARRAY) {
+					String s = json.getText();
+					moves.add(s);
+				}
+			}
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Transaction txn = datastore.beginTransaction();
+
+		try
+		{
+			Key pkey = KeyFactory.createKey("Play", Long.parseLong(play_id));
+			Entity playEnt = datastore.get(pkey);
+
+			//TODO- check whether this client is authorized
+
+			Entity ent = new Entity("GameState", 1, pkey);
+
+			Date createdDate = new Date();
+			String creatorIp = req.getRemoteAddr();
+
+			ent.setProperty("created", createdDate);
+			ent.setProperty("createdBy", creatorIp);
+
+			ent.setProperty("time", curTime);
+			ent.setProperty("moves", moves);
+
+			datastore.put(ent);
+
+			txn.commit();
+
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeEndObject();
+			out.close();
+		}
+		catch (EntityNotFoundException e) {
+			log.info("play "+play_id+" not found");
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
 	void doPostSubscribe(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
@@ -114,6 +185,10 @@ log.info("created subscription "+skey.getId());
 	{
 		if (req.getParameter("subscribe") != null) {
 			doPostSubscribe(req, resp);
+			return;
+		}
+		else if (req.getParameter("id") != null) {
+			doPostGameState(req, resp);
 			return;
 		}
 
