@@ -811,6 +811,12 @@ function load_game_at(game_id, target_time)
 		var mv = get_move(G.shuffle_id, G.time);
 		do_move(mv);
 	}
+
+	var prior_time = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
+	if (G.time != +prior_time) {
+		localStorage.setItem(PACKAGE + '.game.' + game_id + '.time', G.time);
+		trigger_upload_game_state();
+	}
 }
 
 function get_move(game_id, time)
@@ -1500,7 +1506,6 @@ function set_move(m)
 	}
 
 	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time, m);
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.time', 1+G.time);
 
 	do_move(m);
 	navigate_to_current_turn();
@@ -1988,117 +1993,86 @@ function submit_result_clicked()
 	return false;
 }
 
+//
+// BEGIN SYNCHRONIZATION CODE
+//
+
 var sync_started = false;
+var pending_sync = {
+	download_index: true
+	};
+var pending_download_deals=[];
+var pending_download_results=[];
+
+
 function trigger_sync_process()
 {
-	if (sync_started) { return; }
-	sync_started = true;
-
-	console.log("sync: checking for items to upload");
-	upload_next_deal();
+	if (!sync_started) {
+		continue_sync();
+	}
 }
 
-function upload_current_game()
+function trigger_upload_game_state()
 {
-	var game_id = localStorage.getItem(PACKAGE + '.current_game');
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
-
-	if (shuffle_id && game_id) {
-
-		// update existing game
-		upload_current_game_update(game_id);
+	pending_sync.game_state = true;
+	if (!sync_started) {
+		continue_sync();
 	}
-	else if (shuffle_id) {
+}
 
-		// new game
-		console.log("sync: uploading game information");
-		var st = {
-			'deal': shuffle_id,
-			'player_count': G.rules.player_count
-			};
-		for (var pid = 1; pid <= G.rules.player_count; pid++) {
-			st['player'+pid] = G.player_names[pid];
-		}
-		var s = JSON.stringify(st);
+function continue_sync()
+{
+	sync_started = true;
 
-		var onSuccess = function(data) {
-			game_id = data.game_id;
-			console.log('sync: successful upload of current game');
-			console.log('sync: new game id is '+game_id);
-			localStorage.setItem(PACKAGE + '.current_game', game_id);
-			return upload_current_game();
-			};
-
-		$.ajax({
-		type: "POST",
-		url: "s/games",
-		data: s,
-		contentType: "application/json; charset=utf-8",
-		dataType: "json",
-		success: onSuccess,
-		error: handle_ajax_error
-		});
+	// check for pending deals
+	var a = stor_get_list(PACKAGE + '.pending_deals');
+	if (a.length) {
+		var shuffle_id = a[0];
+		return upload_deal(shuffle_id);
 	}
-	else {
+
+	// check for pending results
+	var a = stor_get_list(PACKAGE + '.pending_results');
+	if (a.length) {
+		var result_id = a[0];
+		return upload_result(result_id);
+	}
+
+	// does the current game need uploaded?
+	if (pending_sync.game_state) {
+		return upload_current_game();
+	}
+
+	if (pending_sync.download_index) {
 		console.log("sync: checking for items to download");
 		check_for_downloads();
 	}
+
+	// nothing more to do
+	console.log("sync: finished");
+	sync_started = false;
 }
 
-function upload_current_game_update(game_id)
+function upload_deal(shuffle_id)
 {
-	console.log("sync: uploading updated game state");
-
-	var mv_array = [];
-	for (var t = 0; t < G.time; t++) {
-		var mv = get_move(G.shuffle_id, t);
-		mv_array.push(mv);
-	}
-
-	var X = {
-		'time': G.time,
-		'moves': mv_array
-		};
+	console.log("sync: uploading deal "+shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 
 	var onSuccess = function(data) {
-		console.log('sync: successful upload of game state');
-		console.log("sync: checking for items to download");
-		return check_for_downloads();
+		console.log('sync: successful upload of '+shuffle_id);
+		stor_remove_from_set(PACKAGE + '.pending_deals', shuffle_id);
+		return continue_sync();
 		};
 
 	$.ajax({
 	type: "POST",
-	url: "s/games?id="+game_id,
-	data: JSON.stringify(X),
+	url: "s/deals?id="+shuffle_id,
+	data: s,
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error
 	});
-}
-
-function upload_next_result()
-{
-	var a = stor_get_list(PACKAGE + '.pending_results');
-	if (a.length) {
-		var result_id = a[0];
-		upload_result(result_id);
-	}
-	else {
-		upload_current_game();
-	}
-}
-
-function upload_next_deal()
-{
-	var a = stor_get_list(PACKAGE + '.pending_deals');
-	if (a.length) {
-		var shuffle_id = a[0];
-		upload_deal(shuffle_id);
-	}
-	else {
-		upload_next_result();
-	}
 }
 
 function upload_result(result_id)
@@ -2109,7 +2083,7 @@ function upload_result(result_id)
 	var onSuccess = function(data) {
 		console.log('sync: successful upload of '+result_id);
 		stor_remove_from_set(PACKAGE + '.pending_results', result_id);
-		return upload_next_result();
+		return continue_sync();
 		};
 
 	$.ajax({
@@ -2123,34 +2097,91 @@ function upload_result(result_id)
 	});
 }
 
-function upload_deal(shuffle_id)
+function upload_current_game()
 {
-	console.log("sync: uploading deal "+shuffle_id);
-	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
+	var game_id = localStorage.getItem(PACKAGE + '.current_game');
+	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
+
+	delete pending_sync.game_state;
+
+	if (shuffle_id && game_id) {
+
+		// update existing game
+		upload_current_game_update(game_id);
+	}
+	else if (shuffle_id) {
+
+		// new game
+		console.log("sync: uploading current game metadata");
+		var st = {
+			'deal': shuffle_id,
+			'player_count': G.rules.player_count
+			};
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			st['player'+pid] = G.player_names[pid];
+		}
+		var s = JSON.stringify(st);
+
+		var onSuccess = function(data) {
+			game_id = data.game_id;
+			console.log('sync: successful upload of current game metadata');
+			console.log('sync: new game id is '+game_id);
+			localStorage.setItem(PACKAGE + '.current_game', game_id);
+			return upload_current_game_update(game_id);
+			};
+
+		$.ajax({
+		type: "POST",
+		url: "s/games",
+		data: s,
+		contentType: "application/json; charset=utf-8",
+		dataType: "json",
+		success: onSuccess,
+		error: handle_ajax_error
+		});
+	}
+	else {
+		console.log("Unexpected: in upload_current_game() without a game");
+		return continue_sync();
+	}
+}
+
+function upload_current_game_update(game_id)
+{
+	console.log("sync: uploading current game movelog");
+	delete pending_sync.game_state;
+
+	var mv_array = [];
+	for (var t = 0; t < G.time; t++) {
+		var mv = get_move(G.shuffle_id, t);
+		mv_array.push(mv);
+	}
+
+	var X = {
+		'time': G.time,
+		'moves': mv_array
+		};
 
 	var onSuccess = function(data) {
-		console.log('sync: successful upload of '+shuffle_id);
-		stor_remove_from_set(PACKAGE + '.pending_deals', shuffle_id);
-		return upload_next_deal();
+		console.log('sync: successful upload of current game movelog');
+		return continue_sync();
 		};
 
 	$.ajax({
 	type: "POST",
-	url: "s/deals?id="+shuffle_id,
-	data: s,
+	url: "s/games?id="+game_id,
+	data: JSON.stringify(X),
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error
 	});
 }
-$(trigger_sync_process);
-
-var pending_download_deals=[];
-var pending_download_results=[];
 
 function check_for_downloads()
 {
+	delete pending_sync.download_index;
+
 	var onSuccess = function(data) {
 		for (var i = 0; i < data.deals.length; i++) {
 			var d = data.deals[i];
@@ -2193,8 +2224,7 @@ function download_next_result()
 		return download_result(result_b);
 	}
 	else {
-		console.log("sync: finished");
-		sync_started = false;
+		return continue_sync();
 	}
 }
 
@@ -2266,6 +2296,12 @@ function download_deal(deal_id)
 	error: handle_ajax_error
 	});
 }
+
+$(trigger_sync_process);
+
+//
+// END SYNCHRONIZATION CODE
+//
 
 function onRenamePlayerClicked()
 {
