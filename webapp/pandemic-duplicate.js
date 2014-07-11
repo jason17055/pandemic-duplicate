@@ -419,6 +419,7 @@ function show_watched_game(game_data)
 	G=null;
 	load_game(game_data.deal);
 
+	G.player_names = {};
 	for (var pid = 1; pid <= game_data.players.length; pid++) {
 		G.player_names[pid] = game_data.players[pid-1];
 	}
