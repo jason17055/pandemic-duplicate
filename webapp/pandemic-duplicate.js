@@ -1402,6 +1402,23 @@ function can_play_special_event()
 	return G.has_control;
 }
 
+function can_declare_victory()
+{
+	return G.has_control && G.step == 'actions';
+}
+
+function can_admit_defeat()
+{
+	var at_end_of_game = (
+		G.step == 'actions' &&
+		G.turns >= G.game_length_in_turns);
+	var getting_infected = (
+		G.step == 'infection' || G.step == 'epidemic'
+		);
+
+	return G.has_control && (at_end_of_game || getting_infected);
+}
+
 function set_buttons_visibility($pg)
 {
 	if (can_play_special_event()) {
@@ -1411,12 +1428,24 @@ function set_buttons_visibility($pg)
 		$('.play_special_event_button_container', $pg).hide();
 	}
 
+	if (can_declare_victory()) {
+		$('.victory_button_container', $pg).show();
+	}
+	else {
+		$('.victory_button_container', $pg).hide();
+	}
+
+	if (can_admit_defeat()) {
+		$('.defeat_button_container', $pg).show();
+	}
+	else {
+		$('.defeat_button_container', $pg).hide();
+	}
+
 	if (can_continue()) {
 		$('.continue_button_container', $pg).show();
 	}
 	else {
-		
-		$('.defeat_button_container', $pg).show();
 		$('.continue_button_container', $pg).hide();
 	}
 }
