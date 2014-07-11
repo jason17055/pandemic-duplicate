@@ -353,6 +353,7 @@ function setup_channel(token)
 	channel.sock.onmessage = function(msg) {
 			console.log("channel: message received");
 			console.log(msg.data);
+			handle_channel_message(msg.data);
 		};
 	channel.sock.onerror = function(errObj) {
 			console.log("channel: error "+errObj);
@@ -361,6 +362,14 @@ function setup_channel(token)
 			channel.connected = false;
 			console.log("channel: closed");
 		};
+}
+
+function handle_channel_message(raw_message)
+{
+	var msg = JSON.parse(raw_message);
+	if (msg.moves) {
+		update_watched_game(msg.moves);
+	}
 }
 
 function on_join_game_picked()
@@ -381,7 +390,9 @@ function do_watch_game(game_id)
 		console.log("subscribe: got id "+data.subscriber_id);
 		console.log("subscribe: channel token is "+data.channel);
 		setup_channel(data.channel);
-		show_watched_game(game_id, data.game);
+
+		console.log("got game data "+JSON.stringify(data.game));
+		show_watched_game(data.game);
 	};
 
 	$.ajax({
@@ -393,9 +404,17 @@ function do_watch_game(game_id)
 		});
 }
 
-function show_watched_game(game_id, game_data)
+var watched_game_data = null;
+
+function update_watched_game(moves_array)
 {
-	console.log("got game data "+JSON.stringify(game_data));
+	watched_game_data.moves = moves_array;
+	show_watched_game(watched_game_data);
+}
+
+function show_watched_game(game_data)
+{
+	watched_game_data = game_data;
 
 	G=null;
 	load_game(game_data.deal);
