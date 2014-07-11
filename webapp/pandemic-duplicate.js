@@ -340,15 +340,47 @@ function init_join_game_pick_page($pg, search_results)
 	console.log('found '+list.length+' results');
 }
 
+var channel = {};
+
+function setup_channel(token)
+{
+	channel.channel = new goog.appengine.Channel(token);
+	channel.sock = channel.channel.open();
+	channel.sock.onopen = function() {
+			channel.connected = true;
+			console.log("channel: opened");
+		};
+	channel.sock.onmessage = function(msg) {
+			console.log("channel: message received");
+		};
+	channel.sock.onerror = function(errObj) {
+			console.log("channel: error "+errObj);
+		};
+	channel.sock.onclose = function() {
+			channel.connected = false;
+			console.log("channel: closed");
+		};
+}
+
 function on_join_game_picked()
 {
 	var game_id = this.getAttribute('data-game-id');
-	alert('want to watch '+game_id);
+	var u = BASE_URL + '#watch/' + escape(game_id);
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
 
+function do_watch_game(game_id)
+{
 	var onSuccess = function(data) {
 		localStorage.setItem(PACKAGE+'.current_game', game_id);
 		localStorage.setItem(PACKAGE+'.current_game.subscriber', data.subscriber_id);
-		alert('successfully subscribed '+data.subscriber_id);
+
+		console.log("subscribe: got id "+data.subscriber_id);
+		console.log("subscribe: channel token is "+data.channel);
+		setup_channel(data.channel);
+		show_watched_game(game_id, data.game);
 	};
 
 	$.ajax({
@@ -358,6 +390,61 @@ function on_join_game_picked()
 		success: onSuccess,
 		error: handle_ajax_error
 		});
+}
+
+function show_watched_game(game_id, game_data)
+{
+	console.log("got game data "+JSON.stringify(game_data));
+
+	G=null;
+	load_game(game_data.deal);
+
+	for (var pid = 1; pid <= game_data.players.length; pid++) {
+		G.player_names[pid] = game_data.players[pid-1];
+	}
+
+	while (G.time < game_data.moves.length) {
+
+		var mv = game_data.moves[G.time];
+		do_move(mv);
+	}
+
+	G.has_control = false;
+	show_current_game();
+
+	check_screen_size();
+}
+
+function show_current_game()
+{
+	if (G.step == 'actions') {
+		var $pg = show_page('player_turn_page');
+		init_player_turn_page($pg);
+	}
+	else if (G.step == 'draw_cards') {
+		var $pg = show_page('player_turn_page');
+		init_draw_cards_page($pg);
+	}
+	else if (G.step == 'epidemic') {
+		var $pg = show_page('player_turn_page');
+		init_epidemic_page($pg);
+	}
+	else if (G.step == 'infection') {
+		var $pg = show_page('player_turn_page');
+		init_infection_page($pg);
+	}
+	else if (G.step == 'forecast') {
+		var $pg = show_page('forecast_page');
+		init_forecast_page($pg);
+	}
+	else if (G.step == 'end') {
+		var $pg = show_page('game_completed_page');
+		init_game_completed_page($pg);
+	}
+	else {
+		alert('unrecognized game state');
+		return;
+	}
 }
 
 $(function() {
@@ -812,6 +899,8 @@ function load_game_at(game_id, target_time)
 		do_move(mv);
 	}
 
+	G.has_control = true;
+
 	var prior_time = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
 	if (G.time != +prior_time) {
 		localStorage.setItem(PACKAGE + '.game.' + game_id + '.time', G.time);
@@ -1252,6 +1341,7 @@ function init_player_turn_page($pg)
 		$('.troubleshooter_only', $pg).hide();
 	}
 
+	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 
@@ -1274,20 +1364,45 @@ function init_draw_cards_page($pg)
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).hide();
 
+	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
+}
+
+function can_continue()
+{
+	var at_end_of_game = (
+		G.step == 'actions' &&
+		G.turns >= G.game_length_in_turns);
+
+	return G.has_control && !at_end_of_game;
+}
+
+function can_play_special_event()
+{
+	return G.has_control;
+}
+
+function set_buttons_visibility($pg)
+{
+	if (can_play_special_event()) {
+		$('.play_special_event_button_container', $pg).show();
+	}
+	else {
+		$('.play_special_event_button_container', $pg).hide();
+	}
+
+	if (can_continue()) {
+		$('.continue_button_container', $pg).show();
+	}
+	else {
+		
+		$('.defeat_button_container', $pg).show();
+		$('.continue_button_container', $pg).hide();
+	}
 }
 
 function set_continue_btn_caption($pg)
 {
-	if (G.step == 'actions' && G.turns >= G.game_length_in_turns) {
-		$('.defeat_button_container', $pg).show();
-		$('.continue_button_container', $pg).hide();
-		return;
-	}
-	else {
-		$('.continue_button_container', $pg).show();
-	}
-
 	if (G.step == 'actions') {
 		$('.goto_draw_cards_btn', $pg).show();
 		$('.goto_epidemic_btn', $pg).hide();
@@ -1329,6 +1444,7 @@ function init_epidemic_page($pg)
 	$('.in_infection_phase', $pg).show();
 	$('.pending_infection_div', $pg).hide();
 
+	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 
@@ -1353,6 +1469,7 @@ function init_infection_page($pg)
 		$('.pending_infection_div', $pg).hide();
 	}
 
+	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 
@@ -1494,7 +1611,7 @@ function start_publishing_game(shuffle_id)
 	localStorage.removeItem(PACKAGE + '.current_game');
 	localStorage.setItem(PACKAGE + '.current_game.deal', shuffle_id);
 
-	trigger_sync_process();
+	trigger_upload_game_state();
 }
 
 function set_move(m)
@@ -1820,6 +1937,11 @@ function on_state_init()
 		show_blank_page();
 		do_search_network_game(q);
 	}
+	else if (m = path.match(/^watch\/(.*)$/)) {
+		var game_id = unescape(m[1]);
+		show_blank_page();
+		do_watch_game(game_id);
+	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
 		init_player_names_page($pg, m[1]);
@@ -1846,34 +1968,7 @@ function on_state_init()
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)/)) {
 		load_game_at(m[1], m[2]);
-		if (G.step == 'actions') {
-			var $pg = show_page('player_turn_page');
-			init_player_turn_page($pg);
-		}
-		else if (G.step == 'draw_cards') {
-			var $pg = show_page('player_turn_page');
-			init_draw_cards_page($pg);
-		}
-		else if (G.step == 'epidemic') {
-			var $pg = show_page('player_turn_page');
-			init_epidemic_page($pg);
-		}
-		else if (G.step == 'infection') {
-			var $pg = show_page('player_turn_page');
-			init_infection_page($pg);
-		}
-		else if (G.step == 'forecast') {
-			var $pg = show_page('forecast_page');
-			init_forecast_page($pg);
-		}
-		else if (G.step == 'end') {
-			var $pg = show_page('game_completed_page');
-			init_game_completed_page($pg);
-		}
-		else {
-			alert('unrecognized game state');
-			return;
-		}
+		show_current_game();
 	}
 	else {
 		alert('unrecognized url');

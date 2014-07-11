@@ -7,6 +7,7 @@
 <script type="text/javascript" src="jquery-1.10.2.min.js"></script>
 <script type="text/javascript" src="sha1.js"></script>
 <script type="text/javascript" src="words.js"></script>
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <script type="text/javascript" src="pandemic-duplicate.js" charset="utf-8"></script>
 </head>
 <body>
@@ -293,7 +294,7 @@ Perform your actions.
 <div class="button_container">
 <button type="button" onclick="show_discards_clicked()">Show Discards</button>
 </div>
-<div class="button_container">
+<div class="button_container play_special_event_button_container">
 <button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
 </div>
 <div class="button_container in_action_phase">
@@ -302,11 +303,13 @@ Perform your actions.
 <div class="button_container in_infection_phase defeat_button_container">
 <button type="button" onclick="admit_defeat_clicked()">Admit Defeat</button>
 </div>
-<div class="button_container continue_button_container">
+<div class="continue_button_container">
+<div class="button_container">
 <button type="button" class="goto_draw_cards_btn" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
 <button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 <button type="button" class="goto_player_turn_btn" onclick="continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
+</div>
 </div>
 <div class="end_of_page"></div>
 

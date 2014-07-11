@@ -3,6 +3,7 @@ package pandemic;
 import java.io.*;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
+import com.google.appengine.api.channel.*;
 import com.google.appengine.api.datastore.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -145,12 +146,51 @@ public class ActivePlayServlet extends HttpServlet
 		String play_id = req.getParameter("subscribe");
 		log.info("want to subscribe to "+play_id);
 
+		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Transaction txn = datastore.beginTransaction();
+
+		Key pkey = KeyFactory.createKey("Play", Long.parseLong(play_id));
+		String dealId;
+		List<String> playerNames;
+		try {
+			Entity pEnt = datastore.get(pkey);
+			dealId = (String) pEnt.getProperty("deal");
+
+			@SuppressWarnings("unchecked")
+			List<String> tmpList = (List<String>) pEnt.getProperty("playerNames");
+			playerNames = tmpList;
+		}
+		catch (EntityNotFoundException e) {
+			// can't subscribe to a play that doesn't exist
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+
+		@SuppressWarnings("unchecked")
+		List<String> moves = Collections.emptyList();
+		boolean gameFound;
 
 		try
 		{
-			Key pkey = KeyFactory.createKey("Play", play_id);
+			Key gskey = KeyFactory.createKey(pkey, "GameState", 1);
+			Entity gsEnt = datastore.get(gskey);
+			gameFound = true;
+
+			if (gsEnt.hasProperty("moves")) {
+				@SuppressWarnings("unchecked")
+				List<String> tmpList = (List<String>) gsEnt.getProperty("moves");
+				moves = tmpList;
+			}
+		}
+		catch (EntityNotFoundException e) {
+			// ok; the game exists, but no moves have been
+			// uploaded yet
+			gameFound = false;
+		}
+
+		Transaction txn = datastore.beginTransaction();
+		try
+		{
 			Entity ent = new Entity("Subscriber", pkey);
 
 			Date createdDate = new Date();
@@ -164,12 +204,36 @@ public class ActivePlayServlet extends HttpServlet
 			txn.commit();
 
 log.info("created subscription "+skey.getId());
+
+			String channelToken = channelService.createChannel(Long.toString(skey.getId()));
+
 			JsonGenerator out = new JsonFactory().
 				createJsonGenerator(resp.getWriter());
 			out.writeStartObject();
 			out.writeStringField("status", "ok");
 			out.writeStringField("subscriber_id", Long.toString(skey.getId()));
-			out.writeEndObject();
+			out.writeStringField("channel", channelToken);
+
+			out.writeFieldName("game");
+			out.writeStartObject();
+
+			out.writeStringField("deal", dealId);
+			out.writeFieldName("players");
+			out.writeStartArray();
+			for (String nm : playerNames) {
+				out.writeString(nm);
+			}
+			out.writeEndArray();
+
+			out.writeBooleanField("started", gameFound);
+			out.writeFieldName("moves");
+			out.writeStartArray();
+			for (String mv : moves) {
+				out.writeString(mv);
+			}
+			out.writeEndArray(); //end "moves" array
+			out.writeEndObject(); //end "game" object
+			out.writeEndObject(); //end response object
 			out.close();
 		}
 		finally {
