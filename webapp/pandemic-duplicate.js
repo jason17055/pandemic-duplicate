@@ -352,6 +352,7 @@ function setup_channel(token)
 		};
 	channel.sock.onmessage = function(msg) {
 			console.log("channel: message received");
+			console.log(msg.data);
 		};
 	channel.sock.onerror = function(errObj) {
 			console.log("channel: error "+errObj);

@@ -97,6 +97,7 @@ public class ActivePlayServlet extends HttpServlet
 			}
 		}
 
+		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction txn = datastore.beginTransaction();
 
@@ -120,6 +121,18 @@ public class ActivePlayServlet extends HttpServlet
 
 			datastore.put(ent);
 
+			Query q = new Query("Subscriber");
+			q = q.setAncestor(pkey);
+			PreparedQuery pq = datastore.prepare(q);
+
+			String msgString = makeChannelMessage(moves);
+			for (Entity subscriberEnt : pq.asIterable()) {
+				String channelKey = Long.toString(subscriberEnt.getKey().getId());
+				channelService.sendMessage(
+					new ChannelMessage(channelKey, msgString)
+					);
+			}
+
 			txn.commit();
 
 			JsonGenerator out = new JsonFactory().
@@ -132,12 +145,33 @@ public class ActivePlayServlet extends HttpServlet
 		catch (EntityNotFoundException e) {
 			log.info("play "+play_id+" not found");
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
 		}
 		finally {
 			if (txn.isActive()) {
 				txn.rollback();
 			}
 		}
+	}
+
+	String makeChannelMessage(List<String> moves)
+		throws IOException
+	{
+		StringWriter sw = new StringWriter();
+		JsonGenerator out = new JsonFactory().
+			createJsonGenerator(sw);
+
+		out.writeStartObject();
+		out.writeFieldName("moves");
+		out.writeStartArray();
+		for (String mv : moves) {
+			out.writeString(mv);
+		}
+		out.writeEndArray();
+		out.writeEndObject();
+		out.close();
+
+		return sw.toString();
 	}
 
 	void doPostSubscribe(HttpServletRequest req, HttpServletResponse resp)
@@ -205,7 +239,8 @@ public class ActivePlayServlet extends HttpServlet
 
 log.info("created subscription "+skey.getId());
 
-			String channelToken = channelService.createChannel(Long.toString(skey.getId()));
+			String channelKey = Long.toString(skey.getId());
+			String channelToken = channelService.createChannel(channelKey);
 
 			JsonGenerator out = new JsonFactory().
 				createJsonGenerator(resp.getWriter());
