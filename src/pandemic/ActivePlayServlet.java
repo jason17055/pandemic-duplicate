@@ -213,7 +213,10 @@ public class ActivePlayServlet extends HttpServlet
 			if (gsEnt.hasProperty("moves")) {
 				@SuppressWarnings("unchecked")
 				List<String> tmpList = (List<String>) gsEnt.getProperty("moves");
-				moves = tmpList;
+				if (tmpList != null) {
+					moves = tmpList;
+					log.info("found "+moves.size()+" moves");
+				}
 			}
 		}
 		catch (EntityNotFoundException e) {
