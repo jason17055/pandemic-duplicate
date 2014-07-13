@@ -2051,6 +2051,9 @@ $(function() {
 
 function go_home_page()
 {
+	localStorage.removeItem(PACKAGE + '.current_game');
+	localStorage.removeItem(PACKAGE + '.current_game.deal');
+
 	history.pushState(null, null, BASE_URL);
 	on_state_init();
 }
