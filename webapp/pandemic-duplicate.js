@@ -2498,13 +2498,17 @@ function onRenamePlayerClicked()
 
 function check_screen_size()
 {
-	var hh = window.innerHeight -
-		$('.end_of_page').offset().top +
-		$('.history_container').height() -
-		16;
-	$('.history_container').css({
-		'min-height': hh+'px'
-		});
+	$('.page').each(function(idx, el) {
+
+		var $f = $('.flex_container', el);
+		if ($f.length == 0) { return; }
+
+		var h = $(el).height();
+		var hh = window.innerHeight - h + $f.height() - 16;
+		$('.flex_container', el).css({
+			'min-height': hh+'px'
+			});
+	});
 }
 
 $(function() {

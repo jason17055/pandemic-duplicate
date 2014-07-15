@@ -44,6 +44,7 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <form name="create_game_form" method="post" onsubmit="return submit_create_game_form()">
+<div class="flex_container">
 <table width="100%">
 <tr>
 <td><label for="player_count_cb">Players:</label></td>
@@ -75,6 +76,8 @@ Welcome to Pandemic Duplicate!
 </td>
 </tr>
 </table>
+</div><!--/flex_container-->
+
 <div class="button_container">
 <button type="submit">Next: <small>Players</small></button>
 </div>
@@ -164,6 +167,7 @@ Or generate a new game:
 <div class="page_body">
 
 <form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
+<div class="flex_container">
 <input type="hidden" name="rules">
 <table>
 <tr class="player1"><td>1</td><td><input type="text" name="player1" value="Player 1"></td></tr>
@@ -180,6 +184,7 @@ Randomize:
 <option value="full">Turn order</option>
 </select></label>
 </div>
+</div><!--/flex_container-->
 
 <div class="button_container">
 <button type="submit">Next: <small>Pick Game</small></button>
@@ -213,6 +218,7 @@ Randomize:
 <div class="page_header"><h1>Board Setup</h1></div>
 <div class="page_body">
 
+<div class="flex_container">
 <div>Cities w/ 3 cubes:</div>
 <ul class="3cube_cities card_list"></ul>
 
@@ -221,6 +227,7 @@ Randomize:
 
 <div>Cities w/ 1 cubes:</div>
 <ul class="1cube_cities card_list"></ul>
+</div><!--/flex_container-->
 
 <div class="button_container">
 <button type="button" onclick="continue_after_board_setup()">Next: <small>First Turn</small></button>
@@ -232,6 +239,8 @@ Randomize:
 <div id="player_setup_page" class="page">
 <div class="page_header"><h1>Player Setup</h1></div>
 <div class="page_body">
+
+<div class="flex_container">
 
 <p>Deal: "<span class="deal_name"></span>"</p>
 
@@ -258,6 +267,7 @@ Randomize:
 <div>Role: <img src="" alt="" class="role_icon"><span class="role"></span></div>
 <ul class="card_list"></ul>
 </div>
+</div><!--/flex_container-->
 
 <div class="button_container">
 <button type="button" onclick="continue_after_player_setup()">Next: <small>Board Setup</small></button>
@@ -274,7 +284,7 @@ Randomize:
 </div>
 <div class="page_body">
 
-<div class="history_container"></div>
+<div class="history_container flex_container"></div>
 <div class="in_action_phase">
 <div class="troubleshooter_only">
 <div>
@@ -470,6 +480,7 @@ without prior knowledge of the sequence of cards shown.
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
 
+<div class="flex_container">
 <p>Deal: "<span class="deal_name"></span>"</p>
 
 <table class="results_table" border="1">
@@ -486,6 +497,8 @@ without prior knowledge of the sequence of cards shown.
 <td class="submitted_col"></td>
 </tr>
 </table>
+
+</div><!--/flex_container-->
 
 <div class="button_container">
 <button type="button" onclick="go_home_page()">Finish</button>
