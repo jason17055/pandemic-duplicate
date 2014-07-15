@@ -860,6 +860,7 @@ function init_results_page($pg, shuffle_id)
 
 		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
 		$('.score_col', $tr).text(r.score);
+		$('.location_col', $tr).text(r.location);
 		$('.submitted_col', $tr).text(format_time(r.time));
 
 		$('.result_row.template', $pg).before($tr);
