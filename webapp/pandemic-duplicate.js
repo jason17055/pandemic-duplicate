@@ -567,6 +567,7 @@ function init_player_names_page($pg, rulestr)
 	}
 
 	var f = document.player_names_form;
+	f.location.value = localStorage.getItem(PACKAGE+'.game_location');
 	f.rules.value = rulestr;
 	f.player1.value = G.player_names[1] || 'Player 1';
 	f.player2.value = G.player_names[2] || 'Player 2';
@@ -641,8 +642,11 @@ function init_game_completed_page($pg)
 		$('.player'+i+' .role_icon', $pg).attr('src', 'images/'+Role_icons[G.roles[i]]);
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 	}
-	document.game_completed_form.rules.value = stringify_rules(G.rules);
-	document.game_completed_form.shuffle_id.value = G.shuffle_id;
+
+	var f = document.game_completed_form;
+	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
+	f.rules.value = stringify_rules(G.rules);
+	f.shuffle_id.value = G.shuffle_id;
 }
 
 function submit_player_names_form()
@@ -677,6 +681,7 @@ function submit_player_names_form()
 		G.player_names = p;
 	}
 
+	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
 	history.pushState(null, null, BASE_URL + '#pick_game/' + rules_key);
@@ -2149,6 +2154,8 @@ function submit_result_clicked()
 {
 	var f = document.game_completed_form;
 
+	localStorage.setItem(PACKAGE + '.game_location', f.location.value);
+
 	var V = {};
 	V.version = Version;
 	V.rules = f.rules.value;
@@ -2156,6 +2163,7 @@ function submit_result_clicked()
 	V.score = f.score.value;
 	V.cures = f.cures.value;
 	V.turns = f.turns.value;
+	V.location = f.location.value;
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		V['player'+i] = f['player'+i].value;
 	}

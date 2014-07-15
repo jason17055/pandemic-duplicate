@@ -168,6 +168,10 @@ Or generate a new game:
 
 <form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
 <div class="flex_container">
+
+<div><label>Location:
+<input type="text" name="location"></label></div>
+
 <input type="hidden" name="rules">
 <table>
 <tr class="player1"><td>1</td><td><input type="text" name="player1" value="Player 1"></td></tr>
@@ -462,6 +466,10 @@ Score:
 <tr class="player3"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player3" value="Player 3"></td></tr>
 <tr class="player4"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player4" value="Player 4"></td></tr>
 </table>
+
+<p>
+<label>Location: <input type="text" name="location"></label>
+</p>
 
 <p>
 By submitting this result, you agree that you played this game
