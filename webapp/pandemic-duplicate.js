@@ -2021,7 +2021,7 @@ function init_pick_game_page($pg, rulestr)
 
 		var $tr = $('.preshuffle_row.template').clone();
 		$tr.removeClass('template');
-		$('button',$tr).text(shuffle_name(a[i]));
+		$('.shuffle_name_container',$tr).append(make_shuffle_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
@@ -2043,7 +2043,7 @@ function init_pick_game_page($pg, rulestr)
 
 		$('.deal_status_col', $tr).text(description);
 
-		$('.preshuffle_table', $pg).append($tr);
+		$('.prepared_games_list', $pg).append($tr);
 	}
 }
 
