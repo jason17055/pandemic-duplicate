@@ -532,7 +532,7 @@ function submit_create_game_form()
 		};
 	var rules_key = stringify_rules(rules);
 
-	//history.pushState(null, null, BASE_URL + '#pick_game/' + rules_key);
+	//history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
 	//on_state_init();
 	//return false;
 	var u = BASE_URL + '#names/' + rules_key;
@@ -684,7 +684,7 @@ function submit_player_names_form()
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
-	history.pushState(null, null, BASE_URL + '#pick_game/' + rules_key);
+	history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
 	on_state_init();
 	return false;
 }
@@ -2011,7 +2011,7 @@ function on_review_result_game_clicked()
 	on_state_init();
 }
 
-function init_pick_game_page($pg, rulestr)
+function init_pick_scenario_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
@@ -2088,9 +2088,9 @@ function on_state_init()
 		var $pg = show_page('player_names_page');
 		init_player_names_page($pg, m[1]);
 	}
-	else if (m = path.match(/^pick_game\/(.*)$/)) {
-		var $pg = show_page('pick_game_page');
-		init_pick_game_page($pg, m[1]);
+	else if (m = path.match(/^pick_scenario\/(.*)$/)) {
+		var $pg = show_page('pick_scenario_page');
+		init_pick_scenario_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');

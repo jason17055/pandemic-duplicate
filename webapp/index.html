@@ -132,12 +132,12 @@ Enter your name as it appears in the host's game.
 </div><!--/page_body-->
 </div><!--/join_game_pick_page-->
 
-<div class="page" id="pick_game_page">
-<div class="page_header"><h1>Pick Game</h1></div>
+<div class="page" id="pick_scenario_page">
+<div class="page_header"><h1>Pick Scenario</h1></div>
 <div class="page_body">
 
 <div>
-Pick prepared game:
+Pick existing scenario:
 </div>
 <div class="prepared_games_list">
 <div class="preshuffle_row template">
@@ -149,17 +149,17 @@ Pick prepared game:
 </div><!--/prepared_games_list-->
 
 <div>
-Or generate a new game:
+Or generate new scenario:
 </div>
 <form name="pick_game_form" method="post" onsubmit="return false">
 <div class="button_container">
 <input type="hidden" name="rules">
-<button type="button" onclick="generate_new_game_clicked()">New Shuffle</button>
+<button type="button" onclick="generate_new_game_clicked()">Generate</button>
 </div>
 </form>
 
 </div><!--/page_body-->
-</div><!--/pick_game_page-->
+</div><!--/pick_scenario_page-->
 
 <div class="page" id="review_results_page">
 <div class="page_header"><h1>Review Results</h1></div>
