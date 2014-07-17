@@ -2165,6 +2165,7 @@ function submit_result_clicked()
 	V.cures = f.cures.value;
 	V.turns = f.turns.value;
 	V.location = f.location.value;
+	V.comments = f.comments.value;
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		V['player'+i] = f['player'+i].value;
 	}
