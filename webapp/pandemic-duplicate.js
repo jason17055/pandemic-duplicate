@@ -2015,11 +2015,11 @@ function init_pick_scenario_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
-	$('.preshuffle_row:not(.template)', $pg).remove();
+	$('.scenario_row:not(.template)', $pg).remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
 
-		var $tr = $('.preshuffle_row.template').clone();
+		var $tr = $('.scenario_row.template').clone();
 		$tr.removeClass('template');
 		$('.shuffle_name_container',$tr).append(make_shuffle_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
@@ -2043,7 +2043,7 @@ function init_pick_scenario_page($pg, rulestr)
 
 		$('.deal_status_col', $tr).text(description);
 
-		$('.prepared_games_list', $pg).append($tr);
+		$('.scenarios_list', $pg).append($tr);
 	}
 }
 
