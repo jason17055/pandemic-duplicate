@@ -809,9 +809,8 @@ function init_results_page($pg, shuffle_id)
 		seen[all_result_ids[i]] = true;
 
 		var result_id = all_result_ids[i];
-		var r_text = localStorage.getItem(PACKAGE + '.result.' + result_id);
-		var r = JSON.parse(r_text);
-		if (r.version != Version) { continue; }
+		var r = load_result(result_id);
+		if (!r || r.version != Version) { continue; }
 		if (r.shuffle_id != shuffle_id) { continue; }
 
 		if (all_result_ids[i] == my_result_id) {
@@ -1591,6 +1590,17 @@ function stor_get_list(key)
 	}
 }
 
+function make_shuffle_label(shuffle_id)
+{
+	var parts = shuffle_name(shuffle_id).split(/ /);
+	var $s = $('<span class="shuffle_name"></span>');
+	for (var i = 0; i < parts.length; i++) {
+		if (i!=0) { $s.append('<br>'); }
+		$s.append(parts[i]);
+	}
+	return $s;
+}
+
 function shuffle_name(shuffle_id)
 {
 	var A = parseInt(shuffle_id.substring(0,6), 16);
@@ -1942,11 +1952,70 @@ function cancel_special_event()
 	on_state_init();
 }
 
+function load_result(result_id)
+{
+	var r_text = localStorage.getItem(PACKAGE + '.result.' + result_id);
+	if (r_text) {
+		return JSON.parse(r_text);
+	}
+	else {
+		return null;
+	}
+}
+
+function init_review_results_page($pg)
+{
+	$('.results_game_row:not(.template)', $pg).remove();
+
+	var lis = stor_get_list(PACKAGE + '.my_results');
+	for (var i = 0; i < lis.length; i++) {
+		var result_id = lis[i];
+		var r = load_result(result_id);
+		if (!r || r.version != Version) { continue; }
+
+		var shuffle_id = r.shuffle_id;
+		load_shuffle(shuffle_id);
+
+		var $g = $('.results_game_row.template', $pg).clone();
+		$g.removeClass('template');
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			var p_name = r['player'+pid];
+			var $p_name = $('<span><img class="role_icon"><span class="player_name"></span></span>');
+			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
+			$('.player_name',$p_name).text(p_name);
+			$('.player_list',$g).append($p_name);
+			if (pid < G.rules.player_count) {
+				$('.player_list',$g).append(', ');
+			}
+		}
+
+		$('.shuffle_name_container', $g).append(make_shuffle_label(shuffle_id));
+		$('.epidemic_count', $g).text(G.rules.level);
+		$('.location', $g).text(r.location);
+		$('.submitted', $g).text(format_time(r.time));
+
+		$('button', $g).attr('data-game-id', shuffle_id);
+		$('button', $g).attr('data-result-id', result_id);
+		$('button', $g).click(on_review_result_game_clicked);
+
+		$('.results_game_row.template', $pg).before($g);
+	}
+}
+
+function on_review_result_game_clicked()
+{
+	var shuffle_id = this.getAttribute('data-game-id');
+
+	var u = BASE_URL + '#'+shuffle_id+'/results';
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
 function init_pick_game_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
-	$('.preshuffle_row:not(.template)').remove();
+	$('.preshuffle_row:not(.template)', $pg).remove();
 	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
 
@@ -1997,6 +2066,10 @@ function on_state_init()
 	}
 	else if (path == 'params') {
 		show_page('create_game_page');
+	}
+	else if (path == 'review_results') {
+		var $pg = show_page('review_results_page');
+		init_review_results_page($pg);
 	}
 	else if (path == 'join_network_game') {
 		show_page('join_game_page');
@@ -2092,6 +2165,12 @@ function resume_game_clicked()
 	return;
 }
 
+function review_results_clicked()
+{
+	history.pushState(null, null, BASE_URL + '#review_results');
+	on_state_init();
+}
+
 function join_network_game_clicked()
 {
 	history.pushState(null, null, BASE_URL + '#join_network_game');
@@ -2177,6 +2256,7 @@ function submit_result_clicked()
 	localStorage.setItem(PACKAGE + '.my_result.' + G.shuffle_id, result_id);
 	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
 	stor_add_to_set(PACKAGE + '.pending_results', result_id);
+	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
 	trigger_sync_process();
 

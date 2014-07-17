@@ -160,6 +160,37 @@ Or generate a new game:
 </div><!--/page_body-->
 </div><!--/pick_game_page-->
 
+<div class="page" id="review_results_page">
+<div class="page_header"><h1>Review Results</h1></div>
+<div class="page_body">
+
+<form name="search_results_form" method="post" onsubmit="return false">
+<div>Pick from games played on this device:</div>
+<div class="results_games_list">
+<div class="results_game_row button_container template">
+<button type="button">
+	<span class="shuffle_name_container"></span>
+	<span class="epidemic_count"></span><img src="epidemic_icon.png">
+	<span class="player_list"></span>
+	(<span class="submitted"></span>; <span class="location"></span>)
+</button>
+</div>
+</div>
+
+<div>
+Or search for a game:
+</div>
+<div>
+<label>Name: <input type="text" name="q" value=""></label>
+</div>
+<div class="button_container">
+<button type="button" onclick="search_results_clicked()">Find Game Result</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/review_results_page-->
+
 <div class="page" id="player_names_page">
 <div class="page_header">
 <h1>Player Names</h1>
