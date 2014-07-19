@@ -2051,7 +2051,7 @@ function init_pick_scenario_page($pg, rulestr)
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
-		var results_info = summarize_results_for_deal(a[i]);
+		var results_info = summarize_results_for_scenario(a[i]);
 		var played_by = results_info.played_by;
 		var description = 
 			deal_finished(a[i]) ? ('Completed ' + format_time(deal_finish_time(a[i]))) :
@@ -2203,7 +2203,7 @@ function join_network_game_clicked()
 	on_state_init();
 }
 
-function summarize_results_for_deal(shuffle_id)
+function summarize_results_for_scenario(shuffle_id)
 {
 	var names = {};
 	var best_score = 0;
@@ -2212,8 +2212,8 @@ function summarize_results_for_deal(shuffle_id)
 	for (var i = 0; i < a.length; i++) {
 
 		var V = load_result(a[i]);
-		for (var i = 1; i < 5; i++) {
-			var nam = V['player'+i];
+		for (var pid = 1; pid < 5; pid++) {
+			var nam = V['player'+pid];
 			if (nam) {
 				names[nam] = true;
 			}
@@ -2228,6 +2228,7 @@ function summarize_results_for_deal(shuffle_id)
 	for (var nam in names) {
 		names_list.push(nam);
 	}
+	names_list.sort();
 
 	return {
 		'played_by': names_list,
