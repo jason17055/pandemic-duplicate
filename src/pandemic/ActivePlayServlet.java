@@ -33,9 +33,13 @@ public class ActivePlayServlet extends HttpServlet
 	{
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Play");
+		Query.Filter f1 = new Query.FilterPredicate("playerNamesLC", Query.FilterOperator.EQUAL, qry.toLowerCase());
+		Query.Filter f2 = new Query.FilterPredicate("created", Query.FilterOperator.GREATER_THAN_OR_EQUAL, new Date(
+			System.currentTimeMillis()-60*60*1000));
 		q = q.setFilter(
-			new Query.FilterPredicate("playerNamesLC", Query.FilterOperator.EQUAL, qry.toLowerCase())
+			Query.CompositeFilterOperator.and(f1, f2)
 			);
+		q = q.addSort("created", Query.SortDirection.DESCENDING);
 		PreparedQuery pq = datastore.prepare(q);
 
 		resp.setContentType("text/json;charset=UTF-8");
