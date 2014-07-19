@@ -442,6 +442,10 @@ function show_current_game(xtra)
 		var $pg = show_page('show_discards_page');
 		return init_show_discards_page($pg);
 	}
+	else if (xtra == '/specials') {
+		var $pg = show_page('special_event_page');
+		return init_special_event_page($pg);
+	}
 
 	if (G.step == 'actions') {
 		var $pg = show_page('player_turn_page');
@@ -1940,10 +1944,8 @@ function init_show_discards_page($pg)
 	}
 }
 
-function play_special_event_clicked()
+function init_special_event_page($pg)
 {
-	var $pg = show_page('special_event_page');
-
 	$('.special_event_btn_row:not(.template)').remove();
 	for (var i = 0; i < Specials.length; i++) {
 		var s = Specials[i];
@@ -1959,9 +1961,17 @@ function play_special_event_clicked()
 	}
 }
 
+function play_special_event_clicked()
+{
+	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time + '/specials';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
 function cancel_special_event()
 {
-	on_state_init();
+	history.back();
 }
 
 function load_result(result_id)
