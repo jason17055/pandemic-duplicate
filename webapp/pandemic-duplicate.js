@@ -760,7 +760,7 @@ function init_player_setup_page($pg, shuffle_id)
 {
 	load_game(shuffle_id);
 
-	$('.deal_name',$pg).text(shuffle_name(shuffle_id));
+	$('.scenario_name',$pg).text(scenario_name(shuffle_id));
 
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
@@ -794,7 +794,7 @@ function init_results_page($pg, shuffle_id)
 {
 	load_shuffle(shuffle_id);
 	
-	$('.deal_name', $pg).text(shuffle_name(shuffle_id));
+	$('.scenario_name', $pg).text(scenario_name(shuffle_id));
 
 	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
 	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
@@ -1590,10 +1590,10 @@ function stor_get_list(key)
 	}
 }
 
-function make_shuffle_label(shuffle_id)
+function make_scenario_label(shuffle_id)
 {
-	var parts = shuffle_name(shuffle_id).split(/ /);
-	var $s = $('<span class="shuffle_name"></span>');
+	var parts = scenario_name(shuffle_id).split(/ /);
+	var $s = $('<span class="scenario_name"></span>');
 	for (var i = 0; i < parts.length; i++) {
 		if (i!=0) { $s.append('<br>'); }
 		$s.append(parts[i]);
@@ -1601,7 +1601,7 @@ function make_shuffle_label(shuffle_id)
 	return $s;
 }
 
-function shuffle_name(shuffle_id)
+function scenario_name(shuffle_id)
 {
 	var A = parseInt(shuffle_id.substring(0,6), 16);
 	var i = Math.floor(A * WORDS.length / 0x1000000);
@@ -1989,7 +1989,7 @@ function init_review_results_page($pg)
 			}
 		}
 
-		$('.shuffle_name_container', $g).append(make_shuffle_label(shuffle_id));
+		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
 		$('.epidemic_count', $g).text(G.rules.level);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
@@ -2021,7 +2021,7 @@ function init_pick_scenario_page($pg, rulestr)
 
 		var $tr = $('.scenario_row.template').clone();
 		$tr.removeClass('template');
-		$('.shuffle_name_container',$tr).append(make_shuffle_label(a[i]));
+		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 

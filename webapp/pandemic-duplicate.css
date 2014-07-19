@@ -157,7 +157,7 @@ tr.my_result .place_col, tr.my_result .score_col {
 	min-width: 50px;
 }
 
-.shuffle_name_container {
+.scenario_name_container {
 	float: left;
 	border-left: 3px solid green;
 	border-right: 3px solid green;
