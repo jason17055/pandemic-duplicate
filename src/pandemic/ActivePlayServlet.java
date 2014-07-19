@@ -65,6 +65,11 @@ public class ActivePlayServlet extends HttpServlet
 			}
 			out.writeEndArray();
 
+			if (ent.hasProperty("location")) {
+				String location = ent.getProperty("location").toString();
+				out.writeStringField("location", location);
+			}
+
 			out.writeEndObject();
 		}
 
@@ -306,6 +311,7 @@ log.info("created subscription "+skey.getId());
 			String deal_id;
 			int player_count;
 			String [] player_names = new String[MAX_PLAYERS];
+			String location;
 		}
 		NewGameInfo ngi = new NewGameInfo();
 		while (json.nextToken() != null) {
@@ -314,6 +320,10 @@ log.info("created subscription "+skey.getId());
 			if (json.getCurrentName().equals("deal")) {
 				json.nextToken();
 				ngi.deal_id = json.getText();
+			}
+			else if (json.getCurrentName().equals("location")) {
+				json.nextToken();
+				ngi.location = json.getText();
 			}
 			else if (json.getCurrentName().equals("player_count")) {
 				json.nextToken();
@@ -351,6 +361,9 @@ log.info("created subscription "+skey.getId());
 			ent.setProperty("player_count", new Integer(ngi.player_count));
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
+			if (ngi.location != null) {
+				ent.setProperty("location", ngi.location);
+			}
 
 			ent.setProperty("playerNames", Arrays.asList(ngi.player_names).subList(0, ngi.player_count));
 			ArrayList<String> tmp = new ArrayList<String>();

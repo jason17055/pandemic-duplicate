@@ -331,6 +331,11 @@ function init_join_game_pick_page($pg, search_results)
 			}
 		}
 
+		if (g.location) {
+			$('.location', $g).text(g.location);
+			$('.location_container',$g).show();
+		}
+
 		$('button', $g).attr('data-game-id', g.id);
 		$('button', $g).click(on_join_game_picked);
 
@@ -2434,6 +2439,7 @@ function upload_current_game()
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			st['player'+pid] = G.player_names[pid];
 		}
+		st.location = localStorage.getItem(PACKAGE+'.game_location');
 		var s = JSON.stringify(st);
 
 		var onSuccess = function(data) {
