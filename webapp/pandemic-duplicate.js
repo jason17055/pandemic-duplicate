@@ -869,7 +869,11 @@ function init_results_page($pg, shuffle_id)
 		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
 		$('.score_col', $tr).text(r.score);
 		$('.location_col', $tr).text(r.location);
-		$('.submitted_col', $tr).text(format_time(r.time));
+		if (r.localOnly) {
+			$('.submitted_col', $tr).text('no');
+		} else if (r.time) {
+			$('.submitted_col', $tr).text(format_time(r.time));
+		}
 
 		$('.result_row.template', $pg).before($tr);
 	}
@@ -2199,16 +2203,6 @@ function join_network_game_clicked()
 	on_state_init();
 }
 
-function dont_submit_clicked()
-{
-	localStorage.removeItem(PACKAGE + '.my_result.' + G.shuffle_id);
-
-	var u = BASE_URL + '#'+G.shuffle_id+'/results';
-	history.pushState(null, null, u);
-	on_state_init();
-	return false;
-}
-
 function summarize_results_for_deal(shuffle_id)
 {
 	var names = {};
@@ -2252,7 +2246,7 @@ function load_result(result_id)
 	return V;
 }
 
-function submit_result_clicked()
+function save_current_result(for_submission)
 {
 	var f = document.game_completed_form;
 
@@ -2271,16 +2265,40 @@ function submit_result_clicked()
 		V['player'+i] = f['player'+i].value;
 	}
 	V.time = new Date().toISOString();
+	if (!for_submission) {
+		V.localOnly = true;
+	}
 
 	var VV = JSON.stringify(V);
 	var result_id = (""+CryptoJS.SHA1(VV)).substring(0,18);
 	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
 	localStorage.setItem(PACKAGE + '.my_result.' + G.shuffle_id, result_id);
+
+	return result_id;
+}
+
+function submit_result_clicked()
+{
+	var result_id = save_current_result(true);
+
 	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
 	stor_add_to_set(PACKAGE + '.pending_results', result_id);
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
 	trigger_sync_process();
+
+	var u = BASE_URL + '#'+G.shuffle_id+'/results';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function dont_submit_clicked()
+{
+	var result_id = save_current_result(false);
+
+	// this makes this game show up in the "Review Results" page
+	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
 	var u = BASE_URL + '#'+G.shuffle_id+'/results';
 	history.pushState(null, null, u);
