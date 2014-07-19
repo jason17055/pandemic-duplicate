@@ -431,13 +431,18 @@ function show_watched_game(game_data)
 	}
 
 	G.has_control = false;
-	show_current_game();
+	show_current_game(null);
 
 	check_screen_size();
 }
 
-function show_current_game()
+function show_current_game(xtra)
 {
+	if (xtra == '/discards') {
+		var $pg = show_page('show_discards_page');
+		return init_show_discards_page($pg);
+	}
+
 	if (G.step == 'actions') {
 		var $pg = show_page('player_turn_page');
 		init_player_turn_page($pg);
@@ -1911,12 +1916,19 @@ function declare_victory_clicked()
 
 function cancel_show_discards()
 {
-	on_state_init();
+	history.back();
 }
 
 function show_discards_clicked()
 {
-	var $pg = show_page('show_discards_page');
+	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time + '/discards';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function init_show_discards_page($pg)
+{
 	$('.infection_discards_list', $pg).empty();
 
 	for (var i = 0; i < G.infection_discards.length; i++) {
@@ -2108,9 +2120,9 @@ function on_state_init()
 		var $pg = show_page('results_page');
 		init_results_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)(\/.*)?$/)) {
 		load_game_at(m[1], m[2]);
-		show_current_game();
+		show_current_game(m[3]);
 	}
 	else {
 		alert('unrecognized url');
