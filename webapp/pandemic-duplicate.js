@@ -829,8 +829,8 @@ function init_results_page($pg, shuffle_id)
 	}
 
 	all_results.sort(function(a,b) {
-		return a.score < b.score ? 1 :
-			a.score > b.score ? -1 :
+		return +a.score < +b.score ? 1 :
+			+a.score > +b.score ? -1 :
 			a.time < b.time ? -1 :
 			a.time > b.time ? 1 : 0;
 		});
