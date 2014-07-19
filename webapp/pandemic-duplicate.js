@@ -242,7 +242,7 @@ function handle_ajax_error(jqx, status, errMsg)
 
 function load_game(game_id)
 {
-	load_shuffle(game_id);
+	load_scenario(game_id);
 
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
@@ -277,7 +277,7 @@ function load_game(game_id)
 	return G;
 }
 
-function load_shuffle(shuffle_id)
+function load_scenario(shuffle_id)
 {
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 	if (!s) {
@@ -312,7 +312,7 @@ function init_join_game_pick_page($pg, search_results)
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
 		var g = list[i];
-		if (!load_shuffle(g.deal)) { continue; }
+		if (!load_scenario(g.deal)) { continue; }
 
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
@@ -698,7 +698,7 @@ function save_player_names()
 
 function init_deck_setup_page($pg, shuffle_id)
 {
-	load_shuffle(shuffle_id);
+	load_scenario(shuffle_id);
 
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
@@ -792,7 +792,7 @@ function init_player_setup_page($pg, shuffle_id)
 
 function init_results_page($pg, shuffle_id)
 {
-	load_shuffle(shuffle_id);
+	load_scenario(shuffle_id);
 	
 	$('.scenario_name', $pg).text(scenario_name(shuffle_id));
 
@@ -1974,7 +1974,7 @@ function init_review_results_page($pg)
 		if (!r || r.version != Version) { continue; }
 
 		var shuffle_id = r.shuffle_id;
-		load_shuffle(shuffle_id);
+		load_scenario(shuffle_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
