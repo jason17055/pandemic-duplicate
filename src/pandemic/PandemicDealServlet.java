@@ -352,7 +352,7 @@ public class PandemicDealServlet extends HttpServlet
 			out.writeEndObject();
 			out.close();
 
-			notifyCustomers();
+			notifyCustomers(ent);
 		}
 		finally {
 			if (txn.isActive()) {
@@ -361,8 +361,10 @@ public class PandemicDealServlet extends HttpServlet
 		}
 	}
 
-	void notifyCustomers()
+	void notifyCustomers(Entity resultEntity)
 	{
+		String msgBody = "Rules: "+(String)resultEntity.getProperty("rules");
+
 		try {
 
 		Session mailSession = Session.getDefaultInstance(new Properties(), null);
@@ -371,7 +373,7 @@ public class PandemicDealServlet extends HttpServlet
 		msg.addRecipient(Message.RecipientType.TO,
 			new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
 		msg.setSubject("Pandemic - New Result Posted");
-		msg.setText("Hello");
+		msg.setText(msgBody);
 		Transport.send(msg);
 
 		}
