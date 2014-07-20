@@ -2505,8 +2505,8 @@ function check_for_downloads()
 	delete pending_sync.download_index;
 
 	var onSuccess = function(data) {
-		for (var i = 0; i < data.deals.length; i++) {
-			var d = data.deals[i];
+		for (var i = 0; i < data.scenarios.length; i++) {
+			var d = data.scenarios[i];
 			if (!has_deal(d.id)) {
 				pending_download_deals.push(d.id);
 			}
@@ -2576,7 +2576,7 @@ function download_result(result_b)
 	console.log('sync: downloading result '+result_b.id);
 	$.ajax({
 	type: "GET",
-	url: "s/deals?deal="+escape(result_b.deal)+"&result="+escape(result_b.id),
+	url: "s/deals?deal="+escape(result_b.scenario)+"&result="+escape(result_b.id),
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error

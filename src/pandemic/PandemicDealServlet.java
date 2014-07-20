@@ -91,7 +91,7 @@ public class PandemicDealServlet extends HttpServlet
 			);
 		out.writeStartObject();
 		out.writeStringField("serverVersion", "1");
-		out.writeFieldName("deals");
+		out.writeFieldName("scenarios");
 		out.writeStartArray();
 
 		for (Entity ent : pq.asIterable()) {
@@ -105,6 +105,23 @@ public class PandemicDealServlet extends HttpServlet
 
 		out.writeEndArray();
 
+	// BEGIN - backward compatibility
+		out.writeFieldName("deals");
+		out.writeStartArray();
+
+		pq = datastore.prepare(q);
+		for (Entity ent : pq.asIterable()) {
+			out.writeStartObject();
+			String id = ent.getKey().getName();
+			out.writeStringField("id", id);
+			String rules = (String) ent.getProperty("rules");
+			out.writeStringField("rules", rules);
+			out.writeEndObject();
+		}
+
+		out.writeEndArray();
+	// END - backward compatibility
+
 		Query q_1 = new Query("Result");
 		PreparedQuery pq_1 = datastore.prepare(q_1);
 
@@ -116,7 +133,10 @@ public class PandemicDealServlet extends HttpServlet
 			String deal_id = ent.getKey().getParent().getName();
 			String result_id = ent.getKey().getName();
 			out.writeStringField("id", result_id);
+			out.writeStringField("scenario", deal_id);
+	// BEGIN - backward compatibility
 			out.writeStringField("deal", deal_id);
+	// END - backward compatibility
 			out.writeEndObject();
 		}
 
