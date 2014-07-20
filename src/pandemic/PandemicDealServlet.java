@@ -5,7 +5,10 @@ import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
 import java.util.Date;
+import java.util.Properties;
 import java.util.logging.Logger;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 public class PandemicDealServlet extends HttpServlet
 {
@@ -348,11 +351,32 @@ public class PandemicDealServlet extends HttpServlet
 			out.writeStringField("status", "ok");
 			out.writeEndObject();
 			out.close();
+
+			notifyCustomers();
 		}
 		finally {
 			if (txn.isActive()) {
 				txn.rollback();
 			}
+		}
+	}
+
+	void notifyCustomers()
+	{
+		try {
+
+		Session mailSession = Session.getDefaultInstance(new Properties(), null);
+		Message msg = new MimeMessage(mailSession);
+		msg.setFrom(new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
+		msg.addRecipient(Message.RecipientType.TO,
+			new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
+		msg.setSubject("Pandemic - New Result Posted");
+		msg.setText("Hello");
+		Transport.send(msg);
+
+		}
+		catch (Exception e) {
+			log.warning("Mail exception: " + e);
 		}
 	}
 }
