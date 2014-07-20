@@ -2290,6 +2290,7 @@ function submit_result_clicked()
 	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
 	stor_add_to_set(PACKAGE + '.pending_results', result_id);
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
+	stor_add_to_set(PACKAGE + '.my_games', G.shuffle_id);
 
 	trigger_sync_process();
 
@@ -2305,6 +2306,7 @@ function dont_submit_clicked()
 
 	// this makes this game show up in the "Review Results" page
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
+	stor_add_to_set(PACKAGE + '.my_games', G.shuffle_id);
 
 	var u = BASE_URL + '#'+G.shuffle_id+'/results';
 	history.pushState(null, null, u);
