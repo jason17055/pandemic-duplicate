@@ -361,8 +361,11 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", rulesString);
 			ent.setProperty("score", new Integer(score));
-			ent.setProperty("location", location);
-			ent.setProperty("locationLC", location.toLowerCase());
+
+			if (location != null && location.length() != 0) {
+				ent.setProperty("location", location);
+				ent.setProperty("locationLC", location.toLowerCase());
+			}
 
 			ArrayList<String> names1 = new ArrayList<String>();
 			ArrayList<String> names2 = new ArrayList<String>();
