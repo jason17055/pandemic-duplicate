@@ -303,23 +303,29 @@ public class PandemicDealServlet extends HttpServlet
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
 
-			if (json.getCurrentName().equals("rules")) {
+			String k = json.getCurrentName();
+			if (k.equals("rules")) {
 				json.nextToken();
 				rulesString = json.getText();
 			}
-			else if (json.getCurrentName().equals("shuffle_id")) {
+			else if (k.equals("shuffle_id")) {
 				json.nextToken();
 				shuffleId = json.getText();
 			}
-			else if (json.getCurrentName().equals("version")) {
+			else if (k.equals("version")) {
 				json.nextToken();
 				versionString = json.getText();
 			}
-			else if (json.getCurrentName().equals("score")) {
+			else if (k.equals("score")) {
 				json.nextToken();
 				score = json.getCurrentToken() == JsonToken.VALUE_NUMBER_INT ?
 						json.getIntValue() :
 						Integer.parseInt(json.getText());
+			}
+			else {
+				// unrecognized
+				json.nextToken();
+				json.skipChildren();
 			}
 		}
 
