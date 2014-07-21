@@ -4,7 +4,9 @@ import java.io.*;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 import javax.mail.*;
@@ -299,6 +301,7 @@ public class PandemicDealServlet extends HttpServlet
 		String shuffleId = null;
 		int score = 0;
 		String [] playerNames = new String[MAX_PLAYERS];
+		String location = null;
 
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
@@ -322,6 +325,17 @@ public class PandemicDealServlet extends HttpServlet
 						json.getIntValue() :
 						Integer.parseInt(json.getText());
 			}
+			else if (k.matches("^player\\d+$")) {
+				int pid = Integer.parseInt(k.substring(6));
+				json.nextToken();
+				if (pid >= 1 && pid <= MAX_PLAYERS) {
+					playerNames[pid-1] = json.getText();
+				}
+			}
+			else if (k.equals("location")) {
+				json.nextToken();
+				location = json.getText();
+			}
 			else {
 				// unrecognized
 				json.nextToken();
@@ -344,6 +358,19 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", rulesString);
 			ent.setProperty("score", new Integer(score));
+			ent.setProperty("location", location);
+			ent.setProperty("locationLC", location.toLowerCase());
+
+			ArrayList<String> names1 = new ArrayList<String>();
+			ArrayList<String> names2 = new ArrayList<String>();
+			for (String s : playerNames) {
+				if (s != null) {
+					names1.add(s);
+					names2.add(s.toLowerCase());
+				}
+			}
+			ent.setProperty("playerNames", names1);
+			ent.setProperty("playerNamesLC", names2);
 
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
@@ -371,7 +398,18 @@ public class PandemicDealServlet extends HttpServlet
 	void notifyCustomers(Entity resultEntity)
 	{
 		String msgBody = "Rules: "+(String)resultEntity.getProperty("rules");
+		msgBody += "\n";
+		msgBody += "Location: "+(String)resultEntity.getProperty("location");
+		msgBody += "\n";
+		msgBody += "Players:\n";
 
+		List<?> l = (List<?>) resultEntity.getProperty("playerNames");
+		for (Object o : l) {
+			msgBody += "*"+(String)o + "\n";
+		}
+		msgBody += "\n";
+
+	log.info("body "+msgBody);
 		try {
 
 		Session mailSession = Session.getDefaultInstance(new Properties(), null);
