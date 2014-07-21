@@ -13,6 +13,7 @@ import javax.mail.internet.*;
 public class PandemicDealServlet extends HttpServlet
 {
 	private static final Logger log = Logger.getLogger(PandemicDealServlet.class.getName());
+	static final int MAX_PLAYERS = 4;
 
 	void doGetDeal(String deal_id, HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
@@ -206,7 +207,7 @@ public class PandemicDealServlet extends HttpServlet
 		Rules r = new Rules();
 		String versionString = null;
 		String ctx = "";
-		String [] roles = new String[4];
+		String [] roles = new String[MAX_PLAYERS];
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() == JsonToken.END_OBJECT) { ctx = ""; }
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
@@ -238,7 +239,7 @@ public class PandemicDealServlet extends HttpServlet
 			else if (ctx.equals("roles")) {
 				int seat = Integer.parseInt(json.getCurrentName());
 				json.nextToken();
-				if (seat >= 1 && seat <= 4) {
+				if (seat >= 1 && seat <= MAX_PLAYERS) {
 					roles[seat-1] = json.getText();
 				}
 			}
@@ -297,7 +298,7 @@ public class PandemicDealServlet extends HttpServlet
 		String rulesString = null;
 		String shuffleId = null;
 		int score = 0;
-		String [] playerNames = new String[4];
+		String [] playerNames = new String[MAX_PLAYERS];
 
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
