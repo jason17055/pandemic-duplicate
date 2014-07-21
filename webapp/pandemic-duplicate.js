@@ -1983,17 +1983,6 @@ function cancel_special_event()
 	history.back();
 }
 
-function load_result(result_id)
-{
-	var r_text = localStorage.getItem(PACKAGE + '.result.' + result_id);
-	if (r_text) {
-		return JSON.parse(r_text);
-	}
-	else {
-		return null;
-	}
-}
-
 function init_review_results_page($pg)
 {
 	$('.results_game_row:not(.template)', $pg).remove();
