@@ -492,8 +492,8 @@ $(function() {
 function do_search_results(q)
 {
 	var onSuccess = function(data) {
-		//TODO
-		console.log(JSON.stringify(data));
+		var $pg = show_page('found_completed_games_page');
+		init_found_completed_games_page($pg, data);
 	};
 
 	var u = 's/results?q='+escape(q);
@@ -2009,6 +2009,45 @@ function play_special_event_clicked()
 function cancel_special_event()
 {
 	history.back();
+}
+
+function init_found_completed_games_page($pg, search_results)
+{
+	$('.results_game_row:not(.template)', $pg).remove();
+
+	var lis = search_results.results;
+	for (var i = 0; i < lis.length; i++) {
+		var result_id = lis[i].id;
+		var r = load_result(result_id);
+		if (!r || r.version != Version) { continue; }
+
+		var shuffle_id = r.shuffle_id;
+		load_scenario(shuffle_id);
+
+		var $g = $('.results_game_row.template', $pg).clone();
+		$g.removeClass('template');
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			var p_name = r['player'+pid];
+			var $p_name = $('<span><img class="role_icon"><span class="player_name"></span></span>');
+			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
+			$('.player_name',$p_name).text(p_name);
+			$('.player_list',$g).append($p_name);
+			if (pid < G.rules.player_count) {
+				$('.player_list',$g).append(', ');
+			}
+		}
+
+		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.epidemic_count', $g).text(G.rules.level);
+		$('.location', $g).text(r.location);
+		$('.submitted', $g).text(format_time(r.time));
+
+		$('button', $g).attr('data-game-id', shuffle_id);
+		$('button', $g).attr('data-result-id', result_id);
+		$('button', $g).click(on_review_result_game_clicked);
+
+		$('.results_game_row.template', $pg).before($g);
+	}
 }
 
 function init_review_results_page($pg)
