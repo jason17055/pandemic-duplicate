@@ -2058,7 +2058,7 @@ function init_found_completed_games_page($pg, search_results)
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-game-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', shuffle_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
@@ -2097,7 +2097,7 @@ function init_review_results_page($pg)
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-game-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', shuffle_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
@@ -2107,9 +2107,13 @@ function init_review_results_page($pg)
 
 function on_review_result_game_clicked()
 {
-	var shuffle_id = this.getAttribute('data-game-id');
+	var scenario_id = this.getAttribute('data-scenario-id');
+	var result_id = this.getAttribute('data-result-id');
 
-	var u = BASE_URL + '#'+shuffle_id+'/results';
+	// so that the correct row is highlighted
+	localStorage.setItem(PACKAGE + '.my_result.' + scenario_id, result_id);
+
+	var u = BASE_URL + '#'+scenario_id+'/results';
 	history.pushState(null, null, u);
 	on_state_init();
 }
