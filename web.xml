@@ -9,6 +9,11 @@
 </servlet-mapping>
 
 <servlet-mapping>
+	<url-pattern>/s/results</url-pattern>
+	<servlet-name>PandemicResult</servlet-name>
+</servlet-mapping>
+
+<servlet-mapping>
 	<url-pattern>/s/games</url-pattern>
 	<servlet-name>ActivePlay</servlet-name>
 </servlet-mapping>
@@ -16,6 +21,11 @@
 <servlet>
 	<servlet-name>PandemicDeal</servlet-name>
 	<servlet-class>pandemic.PandemicDealServlet</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>PandemicResult</servlet-name>
+	<servlet-class>pandemic.PandemicResultServlet</servlet-class>
 </servlet>
 
 <servlet>

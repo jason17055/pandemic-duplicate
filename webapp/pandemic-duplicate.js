@@ -489,6 +489,23 @@ $(function() {
 	}
 });
 
+function do_search_results(q)
+{
+	var onSuccess = function(data) {
+		//TODO
+		console.log(JSON.stringify(data));
+	};
+
+	var u = 's/results?q='+escape(q);
+	$.ajax({
+		type: "GET",
+		url: u,
+		dataType: "json",
+		success: onSuccess,
+		error: handle_ajax_error
+		});
+}
+
 function do_search_network_game(name)
 {
 	var onSuccess = function(data) {
@@ -522,6 +539,17 @@ function submit_join_game_form()
 function cancel_join_game_pick()
 {
 	history.back();
+}
+
+function submit_search_results_form()
+{
+	var f = document.search_results_form;
+	var q = f.q.value;
+
+	var u = BASE_URL + '#search_results/' + escape(q);
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
 }
 
 function init_welcome_page($pg)
@@ -2098,6 +2126,11 @@ function on_state_init()
 		var q = unescape(m[1]);
 		show_blank_page();
 		do_search_network_game(q);
+	}
+	else if (m = path.match(/^search_results\/(.*)$/)) {
+		var q = unescape(m[1]);
+		show_blank_page();
+		do_search_results(q);
 	}
 	else if (m = path.match(/^watch\/(.*)$/)) {
 		var game_id = unescape(m[1]);

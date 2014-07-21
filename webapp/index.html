@@ -167,7 +167,6 @@ Or generate new scenario:
 <div class="page_header"><h1>Review Results</h1></div>
 <div class="page_body">
 
-<form name="search_results_form" method="post" onsubmit="return false">
 <div>Pick from games played on this device:</div>
 <div class="results_games_list">
 <div class="results_game_row button_container template">
@@ -180,6 +179,7 @@ Or generate new scenario:
 </div>
 </div>
 
+<form name="search_results_form" method="post" onsubmit="return submit_search_results_form()">
 <div>
 Or search for a game:
 </div>
@@ -187,7 +187,7 @@ Or search for a game:
 <label>Name: <input type="text" name="q" value=""></label>
 </div>
 <div class="button_container">
-<button type="button" onclick="search_results_clicked()">Find Game Result</button>
+<button type="submit">Find Game Result</button>
 </div>
 </form>
 
