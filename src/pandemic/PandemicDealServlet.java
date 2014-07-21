@@ -247,10 +247,11 @@ public class PandemicDealServlet extends HttpServlet
 			}
 		}
 
-		String playerRoles = "";
-		for (int i = 0; i < r.playerCount; i++) {
-			if (i != 0) { playerRoles += "/"; }
-			playerRoles += roles[i];
+		ArrayList<String> playerRoles = new ArrayList<String>();
+		for (String s : roles) {
+			if (s != null) {
+				playerRoles.add(s);
+			}
 		}
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -266,6 +267,8 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("content", new Text(content));
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", r.toString());
+
+		// WARNING: older version of playerRoles is /-separated string
 			ent.setProperty("playerRoles", playerRoles);
 
 			ent.setProperty("created", createdDate);
