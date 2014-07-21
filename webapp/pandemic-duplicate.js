@@ -1718,16 +1718,32 @@ function format_time(timestr)
 	var dstr = timestr.substring(0,10);
 	var todaystr = today.toISOString().substring(0,10);
 	if (dstr == todaystr) {
-		return Math.floor(minutesAgo/60) + ' hours ago';
+		var hoursAgo = Math.round(minutesAgo/60);
+		if (hoursAgo < 2) {
+			return "1 hour ago";
+		} else {
+			return hoursAgo + " hours ago";
+		}
 	}
 
-	// yesterday
-	today.setTime(today.getTime()-86400000);
-	if (today.toISOString().substring(0,10) == dstr) {
+	// drop the time components
+	today.setSeconds(0);
+	today.setMinutes(0);
+	today.setHours(12);
+	d.setSeconds(0);
+	d.setMinutes(0);
+	d.setHours(12);
+
+	var daysAgo = Math.round((today.getTime() - d.getTime()) / 1000 / 86400);
+	if (daysAgo == 1) {
 		return "Yesterday";
 	}
-
-	return dstr;
+	else if (daysAgo < 5) {
+		return daysAgo + " days ago";
+	}
+	else {
+		return dstr;
+	}
 }
 
 function start_publishing_game(shuffle_id)
