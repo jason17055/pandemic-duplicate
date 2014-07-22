@@ -45,6 +45,28 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <form name="options_form">
+<div class="button_container"><button type="button" onclick="go_subscription_page()">Subscription</button></div>
+<div class="button_container"><button type="button" onclick="history.back()">Back</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/options_page-->
+
+<div class="page" id="subscription_page">
+
+<div class="page_header">
+<h1>Subscription</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<p>
+There is a cost in hosting Pandemic-Duplicate.
+Support us by buying a subscription.
+</p>
+
+<form name="subscription_form">
 <div class="user_info">You are logged in as <b><span class="user_name"></span></b>.</div>
 <div class="button_container login_btn"><button type="button" onclick="login_clicked()">Login</button></div>
 <div class="button_container logout_btn"><button type="button" onclick="logout_clicked()">Logout</button></div>
@@ -53,7 +75,7 @@ Welcome to Pandemic Duplicate!
 </form>
 
 </div><!--/page_body-->
-</div><!--/options_page-->
+</div><!--/subscription_page-->
 
 <div class="page" id="create_game_page">
 

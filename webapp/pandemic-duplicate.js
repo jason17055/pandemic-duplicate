@@ -306,7 +306,7 @@ function parse_rules(s)
 	};
 }
 
-function init_options_page($pg)
+function init_subscription_page($pg)
 {
 	if (S.userName) {
 		$('.user_info', $pg).show();
@@ -2200,7 +2200,10 @@ function on_state_init()
 	}
 	else if (path == 'options') {
 		var $pg = show_page('options_page');
-		init_options_page($pg);
+	}
+	else if (path == 'subscription') {
+		var $pg = show_page('subscription_page');
+		init_subscription_page($pg);
 	}
 	else if (m = path.match(/^join_network_game\/(.*)$/)) {
 		var q = unescape(m[1]);
@@ -2313,6 +2316,12 @@ function join_network_game_clicked()
 function options_clicked()
 {
 	history.pushState(null, null, BASE_URL + '#options');
+	on_state_init();
+}
+
+function go_subscription_page()
+{
+	history.pushState(null, null, BASE_URL + '#subscription');
 	on_state_init();
 }
 
