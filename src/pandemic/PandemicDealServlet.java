@@ -4,6 +4,7 @@ import java.io.*;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.users.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,6 +98,23 @@ public class PandemicDealServlet extends HttpServlet
 			);
 		out.writeStartObject();
 		out.writeStringField("serverVersion", "1");
+
+		UserService userService = UserServiceFactory.getUserService();
+		if (req.getUserPrincipal() == null) {
+			// not signed in
+
+			String loginUrl = userService.createLoginURL(
+				getBaseUrl(req));
+			out.writeStringField("loginUrl", loginUrl);
+		}
+		else {
+			out.writeStringField("userName",
+				req.getUserPrincipal().getName());
+			String logoutUrl = userService.createLogoutURL(
+				getBaseUrl(req));
+			out.writeStringField("logoutUrl", logoutUrl);
+		}
+
 		out.writeFieldName("scenarios");
 		out.writeStartArray();
 
@@ -150,6 +168,16 @@ public class PandemicDealServlet extends HttpServlet
 
 		out.writeEndObject();
 		out.close();
+	}
+
+	static String getBaseUrl(HttpServletRequest req)
+	{
+		String scheme = req.getScheme();
+		int port = req.getServerPort();
+		int defaultPort = scheme.equals("https") ? 443 : 80;
+
+		String myUrl = scheme + "://" + req.getServerName() + (port == defaultPort ? "" : ":"+port) + req.getContextPath();
+		return myUrl;
 	}
 
 	static String getRequestContent(HttpServletRequest req)

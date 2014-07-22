@@ -117,6 +117,7 @@ var Specials = [
 	'Special Orders'
 	];
 var G = null;
+var S = {}; //server settings
 
 var City_Info = {};
 for (var i = 0; i < Cities.length; i++) {
@@ -303,6 +304,21 @@ function parse_rules(s)
 	'player_count': +ss[1].substring(0, ss[1].length-1),
 	'level': +ss[2].substring(0, ss[2].length-1),
 	};
+}
+
+function init_options_page($pg)
+{
+	if (S.userName) {
+		$('.user_info', $pg).show();
+		$('.user_name', $pg).text(S.userName);
+		$('.login_btn', $pg).hide();
+		$('.logout_btn', $pg).show();
+	}
+	else {
+		$('.user_info', $pg).hide();
+		$('.login_btn', $pg).show();
+		$('.logout_btn', $pg).hide();
+	}
 }
 
 function init_join_game_pick_page($pg, search_results)
@@ -1593,6 +1609,7 @@ function show_blank_page()
 
 function show_page(page_name)
 {
+	S.currentPage = page_name;
 	$(".page").hide();
 	return $("#"+page_name).show();
 }
@@ -2182,7 +2199,8 @@ function on_state_init()
 		show_page('join_game_page');
 	}
 	else if (path == 'options') {
-		show_page('options_page');
+		var $pg = show_page('options_page');
+		init_options_page($pg);
 	}
 	else if (m = path.match(/^join_network_game\/(.*)$/)) {
 		var q = unescape(m[1]);
@@ -2595,6 +2613,14 @@ function check_for_downloads()
 	delete pending_sync.download_index;
 
 	var onSuccess = function(data) {
+		S.loginUrl = data.loginUrl;
+		S.logoutUrl = data.logoutUrl;
+		S.userName = data.userName;
+
+		if (S.currentPage == 'options_page') {
+			on_state_init();
+		}
+
 		for (var i = 0; i < data.scenarios.length; i++) {
 			var d = data.scenarios[i];
 			if (!has_deal(d.id)) {
@@ -2745,3 +2771,17 @@ $(function() {
 	$('.page_header .role_icon').click(onRenamePlayerClicked);
 	window.onresize = check_screen_size;
 });
+
+function login_clicked()
+{
+	if (S.loginUrl) {
+		location.href = S.loginUrl;
+	}
+}
+
+function logout_clicked()
+{
+	if (S.logoutUrl) {
+		location.href = S.logoutUrl;
+	}
+}
