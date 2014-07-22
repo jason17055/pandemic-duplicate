@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="true">
+
+    <datastore-index kind="Play" ancestor="false">
+        <property name="playerNamesLC" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Result" ancestor="false">
+        <property name="locationLC" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+
+    <datastore-index kind="Result" ancestor="false">
+        <property name="playerNamesLC" direction="asc"/>
+        <property name="created" direction="desc"/>
+    </datastore-index>
+
+</datastore-indexes>
