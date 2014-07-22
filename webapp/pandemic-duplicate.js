@@ -309,15 +309,13 @@ function parse_rules(s)
 function init_subscription_page($pg)
 {
 	if (S.userName) {
-		$('.user_info', $pg).show();
+		$('.not_logged_in', $pg).hide();
+		$('.logged_in', $pg).show();
 		$('.user_name', $pg).text(S.userName);
-		$('.login_btn', $pg).hide();
-		$('.logout_btn', $pg).show();
 	}
 	else {
-		$('.user_info', $pg).hide();
-		$('.login_btn', $pg).show();
-		$('.logout_btn', $pg).hide();
+		$('.not_logged_in', $pg).show();
+		$('.logged_in', $pg).hide();
 	}
 }
 
@@ -2626,7 +2624,7 @@ function check_for_downloads()
 		S.logoutUrl = data.logoutUrl;
 		S.userName = data.userName;
 
-		if (S.currentPage == 'options_page') {
+		if (S.currentPage == 'subscription_page') {
 			on_state_init();
 		}
 
@@ -2785,6 +2783,10 @@ function login_clicked()
 {
 	if (S.loginUrl) {
 		location.href = S.loginUrl;
+	}
+	else {
+		console.log("no login url");
+		console.log(JSON.stringify(S));
 	}
 }
 

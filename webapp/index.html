@@ -62,14 +62,25 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <p>
-There is a cost in hosting Pandemic-Duplicate.
-Support us by buying a subscription.
+Subscriptions keep Pandemic-Duplicate alive on the Internet.
+Subscribers get these privileges:
 </p>
+<ul><li>TODO</li></ul>
 
 <form name="subscription_form">
-<div class="user_info">You are logged in as <b><span class="user_name"></span></b>.</div>
-<div class="button_container login_btn"><button type="button" onclick="login_clicked()">Login</button></div>
-<div class="button_container logout_btn"><button type="button" onclick="logout_clicked()">Logout</button></div>
+
+<div class="not_logged_in">
+You must log in (using a Gmail/Google account)
+to purchase or use a subscription.
+</div>
+<div class="button_container not_logged_in"><button type="button" onclick="login_clicked()">Login</button></div>
+
+<div class="logged_in">You are logged in as <b><span class="user_name"></span></b>.</div>
+<div class="logged_in">Subscription level: <span class="subscription_level">None</span></div>
+<div class="logged_in subscribed">Good until: <span class="subscription_date">N/A</span></div>
+
+<div class="button_container logged_in"><button type="button" onclick="logout_clicked()">Logout</button></div>
+
 <div class="button_container"><button type="button" onclick="history.back()">Back</button></div>
 
 </form>

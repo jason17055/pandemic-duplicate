@@ -169,3 +169,10 @@ tr.my_result .place_col, tr.my_result .score_col {
 #pick_scenario_page .scenarios_list {
 	margin-bottom: 0.75em;
 }
+
+#subscription_page p {
+	margin-bottom: 0;
+}
+#subscription_page ul {
+	margin-top: 0;
+}
