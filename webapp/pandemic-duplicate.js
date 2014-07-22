@@ -2181,6 +2181,9 @@ function on_state_init()
 	else if (path == 'join_network_game') {
 		show_page('join_game_page');
 	}
+	else if (path == 'options') {
+		show_page('options_page');
+	}
 	else if (m = path.match(/^join_network_game\/(.*)$/)) {
 		var q = unescape(m[1]);
 		show_blank_page();
@@ -2286,6 +2289,12 @@ function review_results_clicked()
 function join_network_game_clicked()
 {
 	history.pushState(null, null, BASE_URL + '#join_network_game');
+	on_state_init();
+}
+
+function options_clicked()
+{
+	history.pushState(null, null, BASE_URL + '#options');
 	on_state_init();
 }
 
