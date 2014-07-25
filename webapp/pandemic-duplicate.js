@@ -229,7 +229,7 @@ function generate_decks()
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
-	stor_add_to_set(PACKAGE + '.pending_deals', G.shuffle_id);
+	stor_add_to_set(PACKAGE + '.pending_scenario_uploads', G.shuffle_id);
 
 	trigger_sync_process();
 
@@ -2460,8 +2460,8 @@ function continue_sync()
 {
 	sync_started = true;
 
-	// check for pending deals
-	var a = stor_get_list(PACKAGE + '.pending_deals');
+	// check for pending scenarios
+	var a = stor_get_list(PACKAGE + '.pending_scenario_uploads');
 	if (a.length) {
 		var shuffle_id = a[0];
 		return upload_deal(shuffle_id);
@@ -2496,7 +2496,7 @@ function upload_deal(shuffle_id)
 
 	var onSuccess = function(data) {
 		console.log('sync: successful upload of '+shuffle_id);
-		stor_remove_from_set(PACKAGE + '.pending_deals', shuffle_id);
+		stor_remove_from_set(PACKAGE + '.pending_scenario_uploads', shuffle_id);
 		return continue_sync();
 		};
 
