@@ -2464,7 +2464,7 @@ function continue_sync()
 	var a = stor_get_list(PACKAGE + '.pending_scenario_uploads');
 	if (a.length) {
 		var shuffle_id = a[0];
-		return upload_deal(shuffle_id);
+		return upload_scenario(shuffle_id);
 	}
 
 	// check for pending results
@@ -2489,9 +2489,9 @@ function continue_sync()
 	sync_started = false;
 }
 
-function upload_deal(shuffle_id)
+function upload_scenario(shuffle_id)
 {
-	console.log("sync: uploading deal "+shuffle_id);
+	console.log("sync: uploading scenario "+shuffle_id);
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 
 	var onSuccess = function(data) {
