@@ -372,13 +372,12 @@ function submit_create_game_form()
 
 function generate_new_game_clicked()
 {
-	G = {};
-	G.rules = parse_rules(document.pick_game_form.rules.value);
-	var shuffle_id = generate_decks();
+	var rules_str = document.pick_game_form.rules.value;
+	G = generate_scenario(parse_rules(rules_str));
 
-	start_publishing_game(shuffle_id);
+	start_publishing_game(G.shuffle_id);
 
-	var u = BASE_URL + '#'+shuffle_id+'/player_setup';
+	var u = BASE_URL + '#'+G.shuffle_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 }

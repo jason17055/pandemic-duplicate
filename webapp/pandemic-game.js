@@ -123,8 +123,11 @@ function shuffle_array(A)
 	}
 }
 
-function generate_decks()
+function generate_scenario(rules)
 {
+	var G = {};
+	G.rules = rules;
+
 	var num_specials = G.rules.expansion == 'none' ? 5 : Specials.length;
 	var num_roles = G.rules.expansion == 'none' ? 5 : Roles.length;
 
@@ -217,5 +220,5 @@ function generate_decks()
 
 	trigger_sync_process();
 
-	return G.shuffle_id;
+	return G;
 }
