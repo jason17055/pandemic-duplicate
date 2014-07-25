@@ -55,7 +55,7 @@ function load_scenario(shuffle_id)
 {
 	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
 	if (!s) {
-		console.log('Fatal: shuffle '+shuffle_id+' is not known');
+		console.log('Fatal: scenario '+shuffle_id+' is not known');
 		return;
 	}
 
