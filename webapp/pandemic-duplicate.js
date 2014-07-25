@@ -695,7 +695,7 @@ function init_game_completed_page($pg)
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);
-		$('.player'+i+' .role_icon', $pg).attr('src', 'images/'+Role_icons[G.roles[i]]);
+		$('.player'+i+' .role_icon', $pg).attr('src', get_role_icon(G.roles[i]));
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 	}
 
@@ -836,7 +836,7 @@ function init_player_setup_page($pg, shuffle_id)
 			$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
 		}
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
-		$('.player'+i+' .role_icon', $pg).attr('src', 'images/'+Role_icons[G.roles[i]]);
+		$('.player'+i+' .role_icon', $pg).attr('src', get_role_icon(G.roles[i]));
 		$('.player'+i+' .card_list', $pg).empty();
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
 			var c = G.initial_hands[i][j];
@@ -1403,7 +1403,7 @@ function set_game_state_summary($pg)
 	var r = G.roles[G.active_player];
 	$('.page_header .role_icon', $pg).
 		attr('alt', r).
-		attr('src', 'images/'+Role_icons[r]);
+		attr('src', get_role_icon(r));
 	$('.page_header .player_name', $pg).text(
 			G.player_names[G.active_player]
 			);
