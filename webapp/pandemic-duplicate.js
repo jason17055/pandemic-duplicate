@@ -5,236 +5,9 @@ if (BASE_URL.indexOf('#') != -1) {
 }
 
 var Version = 1;
-var Roles = [
-	// original roles
-	'Dispatcher',
-	'Operations Expert',
-	'Scientist',
-	'Medic',
-	'Researcher',
-
-	// expansion roles (those supported, anyway)
-	'Field Operative',
-	'Containment Specialist',
-	'Generalist',
-	'Archivist',
-	'Epidemiologist',
-	'Troubleshooter'
-	];
-var Role_icons = {
-	'Dispatcher': 'dispatcher_role_icon.png',
-	'Operations Expert': 'operations_expert_role_icon.png',
-	'Scientist': 'scientist_role_icon.png',
-	'Medic': 'medic_role_icon.png',
-	'Researcher': 'researcher_role_icon.png',
-	'Field Operative': 'field_operative_role_icon.png',
-	'Containment Specialist': 'containment_specialist_role_icon.png',
-	'Generalist': 'generalist_role_icon.png',
-	'Archivist': 'archivist_role_icon.png',
-	'Epidemiologist': 'epidemiologist_role_icon.png',
-	'Troubleshooter': 'troubleshooter_role_icon.png'
-	};
-
-var Cities = [
-	// Blue cities
-	'Atlanta',
-	'New York',
-	'Chicago',
-	'Toronto',
-	'San Francisco',
-	'Washington',
-	'London',
-	'Madrid',
-	'Paris',
-	'Essen',
-	'Milan',
-	'St. Petersburg',
-
-	// Yellow cities
-	'Los Angeles',
-	'Mexico City',
-	'Miami',
-	'Bogota',
-	'Lima',
-	'Santiago',
-	'Sao Paulo',
-	'Buenos Aires',
-	'Lagos',
-	'Johannesburg',
-	'Kinshasa',
-	'Khartoum',
-
-	//Black cities
-	'Delhi',
-	'Karachi',
-	'Tehran',
-	'Mumbai',
-	'Riyadh',
-	'Cairo',
-	'Algiers',
-	'Baghdad',
-	'Chennai',
-	'Moscow',
-	'Istanbul',
-	'Kolkata',
-
-	//Red cities
-	'Hong Kong',
-	'Bangkok',
-	'Shanghai',
-	'Beijing',
-	'Seoul',
-	'Tokyo',
-	'Osaka',
-	'Taipei',
-	'Jakarta',
-	'Ho Chi Minh City',
-	'Manila',
-	'Sydney'
-
-	];
-var Translated_City_Names = {
-	'Bogota': 'Bogotá',
-	'Sao Paulo': 'São Paulo'
-	};
-
-var Specials = [
-	// specials from the base game
-	'Airlift',
-	'Forecast',
-	'Government Grant',
-	'One Quiet Night',
-	'Resilient Population',
-
-	// specials from the "On the Brink" expansion
-	'Borrowed Time',
-	'Commercial Travel Ban',
-	'Mobile Hospital',
-	'New Assignment',
-	'Rapid Vaccine Deployment',
-	'Re-examined Research',
-	'Remote Treatment',
-	'Special Orders'
-	];
 var G = null;
 var S = {}; //server settings
 
-var City_Info = {};
-for (var i = 0; i < Cities.length; i++) {
-	var ci = {
-		'id': Cities[i],
-		'name': Translated_City_Names[Cities[i]] || Cities[i],
-		'color': (i < 12 ? 'blue' : i < 24 ? 'yellow' : i < 36 ? 'black' : 'red')
-		};
-	City_Info[ci.id] = ci;
-}
-
-function shuffle_array(A)
-{
-	for (var i = 0; i < A.length; i++) {
-		var j = i + Math.floor(Math.random() * (A.length-i));
-		var tmp = A[i];
-		A[i] = A[j];
-		A[j] = tmp;
-	}
-}
-
-function generate_decks()
-{
-	var num_specials = G.rules.expansion == 'none' ? 5 : Specials.length;
-	var num_roles = G.rules.expansion == 'none' ? 5 : Roles.length;
-
-	var S = [];
-	for (var i = 0; i < num_specials; i++) {
-		S.push(Specials[i]);
-	}
-	shuffle_array(S);
-
-	var A = [];
-	for (var i = 0; i < Cities.length; i++) {
-		A.push(Cities[i]);
-	}
-
-	var num_specials_avail = G.rules.expansion == 'none' ? 5 : G.rules.player_count*2;
-	for (var i = 0; i < S.length && i < num_specials_avail; i++) {
-		A.push(S[i]);
-	}
-
-	var R = [];
-	for (var i = 0; i < num_roles; i++) {
-		R.push(Roles[i]);
-	}
-	shuffle_array(R);
-
-	shuffle_array(A);
-	var hand_size = G.rules.player_count <= 2 ? 4 :
-		G.rules.player_count == 3 ? 3 : 2;
-
-	G.initial_hands = {};
-	G.roles = {};
-	for (var i = 0; i < G.rules.player_count; i++) {
-		var b = [];
-		for (var j = 0; j < hand_size; j++) {
-			var c = A.pop();
-			b.push(c);
-		}
-		G.initial_hands[(1+i)] = b;
-		G.roles[(1+i)] = R.pop();
-	}
-
-	var piles = [];
-	for (var i = 0; i < G.rules.level; i++) {
-		piles.push(['Epidemic']);
-	}
-	for (var i = 0; i < A.length; i++) {
-		var j = i % piles.length;
-		piles[j].push(A[i]);
-	}
-	G.player_deck = [];
-	for (var i = piles.length-1; i >= 0; i--) {
-		shuffle_array(piles[i]);
-		for (var j = 0; j < piles[i].length; j++) {
-			G.player_deck.push(piles[i][j]);
-		}
-	}
-
-	G.infection_deck = [];
-	for (var i = 0; i < Cities.length; i++) {
-		G.infection_deck.push(Cities[i]);
-	}
-	shuffle_array(G.infection_deck);
-
-	for (var k = 1; k <= G.rules.level; k++) {
-		var a = [];
-		for (var i = 0; i < Cities.length; i++) {
-			a.push(Cities[i]);
-		}
-		shuffle_array(a);
-		G['epidemic.'+k] = a;
-	}
-
-	var X = {
-	'initial_hands': G.initial_hands,
-	'roles': G.roles,
-	'player_deck': G.player_deck,
-	'infection_deck': G.infection_deck,
-	'rules': G.rules
-	};
-	for (var k = 1; k <= G.rules.level; k++) {
-		X['epidemic.'+k] = G['epidemic.'+k];
-	}
-
-	var XX = JSON.stringify(X);
-	G.shuffle_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
-
-	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
-	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
-	stor_add_to_set(PACKAGE + '.pending_scenario_uploads', G.shuffle_id);
-
-	trigger_sync_process();
-
-	return G.shuffle_id;
-}
 
 function handle_ajax_error(jqx, status, errMsg)
 {
@@ -935,7 +708,7 @@ function make_player_card_li(c)
 
 function make_player_card(c)
 {
-	var ci = City_Info[c];
+	var ci = Pandemic.Cities[c];
 
 	var $x = $('<span class="player_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
 	if (ci) {
@@ -959,7 +732,7 @@ function make_player_card(c)
 
 function make_infection_card(c)
 {
-	var ci = City_Info[c];
+	var ci = Pandemic.Cities[c];
 
 	var $x = $('<span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
 	$('.card_name', $x).text(ci.name);
@@ -1182,6 +955,19 @@ function init_history_pane($h)
 	}
 }
 
+var Role_icons = {
+	'Dispatcher': 'dispatcher_role_icon.png',
+	'Operations Expert': 'operations_expert_role_icon.png',
+	'Scientist': 'scientist_role_icon.png',
+	'Medic': 'medic_role_icon.png',
+	'Researcher': 'researcher_role_icon.png',
+	'Field Operative': 'field_operative_role_icon.png',
+	'Containment Specialist': 'containment_specialist_role_icon.png',
+	'Generalist': 'generalist_role_icon.png',
+	'Archivist': 'archivist_role_icon.png',
+	'Epidemiologist': 'epidemiologist_role_icon.png',
+	'Troubleshooter': 'troubleshooter_role_icon.png'
+	};
 function get_role_icon(r)
 {
 	return 'images/'+Role_icons[r];
@@ -1792,8 +1578,8 @@ function order_infection_discards()
 	}
 	A.sort(function(a,b) {
 
-		var a_ci = City_Info[a];
-		var b_ci = City_Info[b];
+		var a_ci = Pandemic.Cities[a];
+		var b_ci = Pandemic.Cities[b];
 		if (a_ci.color != b_ci.color) {
 			return a_ci.color > b_ci.color ? 1 : -1;
 		}
@@ -1886,11 +1672,12 @@ function init_new_assignment_page($pg)
 	}
 
 	$('select[name=new_role]', $pg).empty();
-	for (var i = 0; i < Roles.length; i++) {
-		if (role_in_use(Roles[i])) { continue; }
+	for (var i = 0; i < Pandemic.Roles.length; i++) {
+		var r = Pandemic.Roles[i];
+		if (role_in_use(r)) { continue; }
 		var $o = $('<option></option>');
-		$o.attr('value', Roles[i]);
-		$o.text(Roles[i]);
+		$o.attr('value', r);
+		$o.text(r);
 		$('select[name=new_role]', $pg).append($o);
 	}
 }
@@ -2015,8 +1802,8 @@ function init_show_discards_page($pg)
 function init_special_event_page($pg)
 {
 	$('.special_event_btn_row:not(.template)').remove();
-	for (var i = 0; i < Specials.length; i++) {
-		var s = Specials[i];
+	for (var i = 0; i < Pandemic.Specials.length; i++) {
+		var s = Pandemic.Specials[i];
 		if (!has_special_event(s)) {
 			continue;
 		}
