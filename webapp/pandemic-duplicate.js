@@ -61,6 +61,7 @@ function load_scenario(shuffle_id)
 
 	G = JSON.parse(s);
 	G.shuffle_id = shuffle_id;
+	G.scenario_id = shuffle_id;
 	return G;
 }
 
@@ -2163,6 +2164,7 @@ function save_current_result(for_submission)
 	V.version = Version;
 	V.rules = f.rules.value;
 	V.shuffle_id = f.shuffle_id.value;
+	V.scenario_id = f.shuffle_id.value;
 	V.score = f.score.value;
 	V.cures = f.cures.value;
 	V.turns = f.turns.value;

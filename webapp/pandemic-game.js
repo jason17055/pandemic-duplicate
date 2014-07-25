@@ -212,7 +212,8 @@ function generate_scenario(rules)
 	}
 
 	var XX = JSON.stringify(X);
-	G.shuffle_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
+	G.scenario_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
+	G.shuffle_id = G.scenario_id;
 
 	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
