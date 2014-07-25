@@ -807,14 +807,6 @@ function start_epidemic()
 	G.infection_discards.push(c);
 }
 
-function debug_infection_discards()
-{
-	var s = '';
-	for (var i = 0; i < G.infection_discards.length; i++) {
-		s += G.infection_discards[i] + ',';
-	}
-}
-
 // Note: this function is called when the user clicks Next after an
 // epidemic is processed.
 // It is *also* called when a Forecast special event is played, as the
