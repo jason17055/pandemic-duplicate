@@ -110,7 +110,8 @@ for (var i = 0; i < Cities.length; i++) {
 Pandemic = {
 	'Roles': Roles,
 	'Specials': Specials,
-	'Cities': City_Info
+	'Cities': City_Info,
+	'MAX_PLAYERS': 5
 	};
 
 function shuffle_array(A)

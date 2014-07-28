@@ -402,18 +402,27 @@ function init_player_names_page($pg, rulestr)
 	f.player2.value = G.player_names[2] || 'Player 2';
 	f.player3.value = G.player_names[3] || 'Player 3';
 	f.player4.value = G.player_names[4] || 'Player 4';
+	f.player5.value = G.player_names[5] || 'Player 5';
 	
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
 	}
 	else if (G.rules.player_count == 3) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
+	}
+	else if (G.rules.player_count == 4) {
+		$('.player3', $pg).show();
+		$('.player4', $pg).show();
+		$('.player5', $pg).hide();
 	}
 	else {
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
+		$('.player5', $pg).show();
 	}
 }
 
@@ -456,14 +465,22 @@ function init_game_completed_page($pg)
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
 	}
 	else if (G.rules.player_count == 3) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
+	}
+	else if (G.rules.player_count == 4) {
+		$('.player3', $pg).show();
+		$('.player4', $pg).show();
+		$('.player5', $pg).hide();
 	}
 	else {
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
+		$('.player5', $pg).show();
 	}
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
@@ -488,7 +505,8 @@ function submit_player_names_form()
 		'1': f.player1.value,
 		'2': f.player2.value,
 		'3': f.player3.value,
-		'4': f.player4.value
+		'4': f.player4.value,
+		'5': f.player5.value
 		};
 	var randomize = f.randomize_order.value;
 	if (randomize == 'full') {
@@ -502,7 +520,7 @@ function submit_player_names_form()
 	else if (randomize == 'start_player') {
 		var t = Math.floor(Math.random() * G.rules.player_count);
 		var p = {};
-		for (var i = 0; i < 4; i++) {
+		for (var i = 0; i < Pandemic.MAX_PLAYERS; i++) {
 			p[1+i] = i < G.rules.player_count ?
 				G.player_names[1+(i+t)%G.rules.player_count] :
 				G.player_names[1+i];
@@ -594,14 +612,22 @@ function init_player_setup_page($pg, shuffle_id)
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
 	}
 	else if (G.rules.player_count == 3) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).hide();
+		$('.player5', $pg).hide();
+	}
+	else if (G.rules.player_count == 4) {
+		$('.player3', $pg).show();
+		$('.player4', $pg).show();
+		$('.player5', $pg).hide();
 	}
 	else {
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
+		$('.player5', $pg).show();
 	}
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
