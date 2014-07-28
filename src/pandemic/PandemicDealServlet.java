@@ -16,7 +16,7 @@ import javax.mail.internet.*;
 public class PandemicDealServlet extends HttpServlet
 {
 	private static final Logger log = Logger.getLogger(PandemicDealServlet.class.getName());
-	static final int MAX_PLAYERS = 4;
+	static final int MAX_PLAYERS = 5;
 
 	void doGetDeal(String deal_id, HttpServletRequest req, HttpServletResponse resp)
 		throws IOException

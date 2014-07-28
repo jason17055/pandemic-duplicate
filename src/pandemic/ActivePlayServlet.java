@@ -9,11 +9,11 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import static pandemic.PandemicDealServlet.getRequestContent;
+import static pandemic.PandemicDealServlet.MAX_PLAYERS;
 
 public class ActivePlayServlet extends HttpServlet
 {
 	private static final Logger log = Logger.getLogger(ActivePlayServlet.class.getName());
-	static final int MAX_PLAYERS = 4;
 
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -327,7 +327,9 @@ log.info("created subscription "+skey.getId());
 			}
 			else if (json.getCurrentName().equals("player_count")) {
 				json.nextToken();
-				ngi.player_count = json.getIntValue();
+				if (json.getIntValue() <= MAX_PLAYERS) {
+					ngi.player_count = json.getIntValue();
+				}
 			}
 			else if (json.getCurrentName().equals("player1")) {
 				json.nextToken();
@@ -344,6 +346,10 @@ log.info("created subscription "+skey.getId());
 			else if (json.getCurrentName().equals("player4")) {
 				json.nextToken();
 				ngi.player_names[3] = json.getText();
+			}
+			else if (json.getCurrentName().equals("player5")) {
+				json.nextToken();
+				ngi.player_names[4] = json.getText();
 			}
 		}
 
