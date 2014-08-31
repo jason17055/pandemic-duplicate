@@ -124,6 +124,21 @@ function shuffle_array(A)
 	}
 }
 
+function stringify_rules(R)
+{
+	return R.expansion+'-'+R.player_count+'p-'+R.level+'x';
+}
+
+function parse_rules(s)
+{
+	var ss = s.split(/-/);
+	return {
+	'expansion': ss[0],
+	'player_count': +ss[1].substring(0, ss[1].length-1),
+	'level': +ss[2].substring(0, ss[2].length-1),
+	};
+}
+
 function generate_scenario(rules)
 {
 	var G = {};
