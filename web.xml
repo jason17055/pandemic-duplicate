@@ -18,6 +18,11 @@
 	<servlet-name>ActivePlay</servlet-name>
 </servlet-mapping>
 
+<servlet-mapping>
+	<url-pattern>/s/cron/generate_scenario</url-pattern>
+	<servlet-name>GenerateScenario</servlet-name>
+</servlet-mapping>
+
 <servlet>
 	<servlet-name>PandemicDeal</servlet-name>
 	<servlet-class>pandemic.PandemicDealServlet</servlet-class>
@@ -31,6 +36,11 @@
 <servlet>
 	<servlet-name>ActivePlay</servlet-name>
 	<servlet-class>pandemic.ActivePlayServlet</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>GenerateScenario</servlet-name>
+	<servlet-class>pandemic.GenerateScenarioServlet</servlet-class>
 </servlet>
 
 </web-app>

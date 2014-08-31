@@ -2,6 +2,7 @@ Create a 'extlib' subdirectory, and copy into it:
  * jackson-core-2.1.0.jar
  * tomcat-servlet-api.jar
  * appengine-api.jar
+ * js.jar (Rhino javascript engine)
 
 
 For the `ant deploy' target, create a tomcat_libs subdirectory and
