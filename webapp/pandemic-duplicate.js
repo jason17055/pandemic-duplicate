@@ -2436,7 +2436,7 @@ function check_for_downloads()
 
 	$.ajax({
 	type: "GET",
-	url: "s/deals",
+	url: "s/scenarios",
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error
@@ -2519,14 +2519,14 @@ function download_scenario(scenario_id)
 {
 	var onSuccess = function(data) {
 		console.log('sync: successful download of '+scenario_id);
-		save_downloaded_deal(deal_id, data);
+		save_downloaded_deal(scenario_id, data);
 		return download_next_deal();
 		};
 
 	console.log('sync: downloading deal '+scenario_id);
 	$.ajax({
 	type: "GET",
-	url: "s/deals?deal="+escape(scenario_id),
+	url: "s/scenarios?id="+escape(scenario_id),
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error
