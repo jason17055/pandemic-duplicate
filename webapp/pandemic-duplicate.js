@@ -2421,7 +2421,7 @@ function check_for_downloads()
 
 		for (var i = 0; i < data.scenarios.length; i++) {
 			var d = data.scenarios[i];
-			if (!has_deal(d.id)) {
+			if (!has_scenario(d.id)) {
 				pending_download_scenarios.push(d.id);
 			}
 		}
@@ -2431,7 +2431,7 @@ function check_for_downloads()
 				pending_download_results.push(d);
 			}
 		}
-		return download_next_deal();
+		return download_next_scenario();
 		};
 
 	$.ajax({
@@ -2443,7 +2443,7 @@ function check_for_downloads()
 	});
 }
 
-function has_deal(deal_id)
+function has_scenario(deal_id)
 {
 	return localStorage.getItem(PACKAGE + '.shuffle.' + deal_id) != null;
 }
@@ -2497,7 +2497,7 @@ function download_result(result_b)
 	});
 }
 
-function download_next_deal()
+function download_next_scenario()
 {
 	if (pending_download_scenarios.length) {
 		var scenario_id = pending_download_scenarios.shift();
@@ -2508,7 +2508,7 @@ function download_next_deal()
 	}
 }
 
-function save_downloaded_deal(deal_id, data)
+function save_downloaded_scenario(deal_id, data)
 {
 	var XX = JSON.stringify(data);
 	localStorage.setItem(PACKAGE + '.shuffle.' + deal_id, XX);
@@ -2519,11 +2519,11 @@ function download_scenario(scenario_id)
 {
 	var onSuccess = function(data) {
 		console.log('sync: successful download of '+scenario_id);
-		save_downloaded_deal(scenario_id, data);
-		return download_next_deal();
+		save_downloaded_scenario(scenario_id, data);
+		return download_next_scenario();
 		};
 
-	console.log('sync: downloading deal '+scenario_id);
+	console.log('sync: downloading scenario '+scenario_id);
 	$.ajax({
 	type: "GET",
 	url: "s/scenarios?id="+escape(scenario_id),
