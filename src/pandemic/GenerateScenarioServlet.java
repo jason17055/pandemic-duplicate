@@ -28,7 +28,7 @@ public class GenerateScenarioServlet extends HttpServlet
 
 		String suffix = req.getParameter("suffix");
 		if (suffix != null && suffix.length() <= 10) {
-			name += suffix;
+			name += "." + suffix;
 		}
 
 		try {
