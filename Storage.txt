@@ -1,0 +1,61 @@
+Documents what localStorage keys are used client-side.
+
+.current_game
+	the game id currently selected
+
+.current_game.scenario
+	scenario id
+
+.current_game.subscriber
+	subscriber id
+
+.game.X.time
+	integer, where X is a game id
+
+.game.X.T#
+	a move string, X is a game id, # is an integer
+
+.game.X.finished
+	time string
+
+.game.X.first_played
+	time string
+
+.game.X.last_played
+	time string
+
+.game_results.X
+	List of result ids, where X is a scenario id
+
+.game_location
+	the location given by the user
+
+.my_games
+	List of scenario ids
+
+.my_player_name
+	the name given by the user
+
+.my_result.X
+	result id, where X is the name of a scenario
+
+.my_results
+	List of result ids
+
+.pending_results
+	List of result ids
+
+.pending_scenarios
+	List of scenario ids
+
+.player_names
+	JSON-encoded names of players
+
+.result.X
+	JSON-encoded result, where X is a result id
+
+.scenario.X
+	JSON-encoded scenario, where X is the name of the scenario
+
+.scenarios_by_rules.X
+	List of scenario ids, where X is a rules string

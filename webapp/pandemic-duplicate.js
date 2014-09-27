@@ -53,7 +53,7 @@ function load_game(game_id)
 
 function load_scenario(shuffle_id)
 {
-	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
 	if (!s) {
 		console.log('Fatal: scenario '+shuffle_id+' is not known');
 		return;
@@ -327,7 +327,7 @@ function submit_search_results_form()
 
 function init_welcome_page($pg)
 {
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
+	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 
 	if (shuffle_id == null) {
 		$('.resume_game_btn', $pg).attr('disabled', 'disabled');
@@ -1928,7 +1928,7 @@ function init_pick_scenario_page($pg, rulestr)
 	document.pick_game_form.rules.value = rulestr;
 
 	$('.scenario_row:not(.template)', $pg).remove();
-	var a = stor_get_list(PACKAGE + '.deals_by_rules.' + rulestr);
+	var a = stor_get_list(PACKAGE + '.scenarios_by_rules.' + rulestr);
 	for (var i = 0; i < a.length; i++) {
 
 		var $tr = $('.scenario_row.template').clone();
@@ -2055,7 +2055,7 @@ $(function() {
 function go_home_page()
 {
 	localStorage.removeItem(PACKAGE + '.current_game');
-	localStorage.removeItem(PACKAGE + '.current_game.deal');
+	localStorage.removeItem(PACKAGE + '.current_game.scenario');
 
 	history.pushState(null, null, BASE_URL);
 	on_state_init();
@@ -2069,7 +2069,7 @@ function start_game_clicked()
 
 function resume_game_clicked()
 {
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
+	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 	if (shuffle_id == null) {
 		return false;
 	}
@@ -2252,7 +2252,7 @@ function continue_sync()
 	sync_started = true;
 
 	// check for pending scenarios
-	var a = stor_get_list(PACKAGE + '.pending_scenario_uploads');
+	var a = stor_get_list(PACKAGE + '.pending_scenarios');
 	if (a.length) {
 		var shuffle_id = a[0];
 		return upload_scenario(shuffle_id);
@@ -2283,11 +2283,11 @@ function continue_sync()
 function upload_scenario(shuffle_id)
 {
 	console.log("sync: uploading scenario "+shuffle_id);
-	var s = localStorage.getItem(PACKAGE + '.shuffle.' + shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
 
 	var onSuccess = function(data) {
 		console.log('sync: successful upload of '+shuffle_id);
-		stor_remove_from_set(PACKAGE + '.pending_scenario_uploads', shuffle_id);
+		stor_remove_from_set(PACKAGE + '.pending_scenarios', shuffle_id);
 		return continue_sync();
 		};
 
@@ -2327,7 +2327,7 @@ function upload_result(result_id)
 function upload_current_game()
 {
 	var game_id = localStorage.getItem(PACKAGE + '.current_game');
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.deal');
+	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 
 	delete pending_sync.game_state;
 
@@ -2445,7 +2445,7 @@ function check_for_downloads()
 
 function has_scenario(deal_id)
 {
-	return localStorage.getItem(PACKAGE + '.shuffle.' + deal_id) != null;
+	return localStorage.getItem(PACKAGE + '.scenario.' + deal_id) != null;
 }
 
 function has_result(result_id)
@@ -2511,8 +2511,8 @@ function download_next_scenario()
 function save_downloaded_scenario(deal_id, data)
 {
 	var XX = JSON.stringify(data);
-	localStorage.setItem(PACKAGE + '.shuffle.' + deal_id, XX);
-	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(data.rules), deal_id);
+	localStorage.setItem(PACKAGE + '.scenario.' + deal_id, XX);
+	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(data.rules), deal_id);
 }
 
 function download_scenario(scenario_id)
