@@ -23,16 +23,22 @@ public class GenerateScenarioServlet extends HttpServlet
 			return;
 		}
 
-		String nameStr = req.getParameter("name");
-		if (nameStr == null) {
-			resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+		Date d = new Date();
+		String name = String.format("%1$tY-%1$tm-%1$td", d);
+
+		String suffix = req.getParameter("suffix");
+		if (suffix != null && suffix.length() <= 10) {
+			name += suffix;
 		}
 
 		try {
-			generateScenario(nameStr, rulesStr);
+			generateScenario(name, rulesStr);
 			resp.setStatus(HttpServletResponse.SC_OK);
-			resp.getWriter().println("Ok");
+			resp.getWriter().println("Ok "+name);
+		}
+		catch (AlreadyExists e) {
+			resp.setStatus(HttpServletResponse.SC_OK);
+			resp.getWriter().println("Exists "+name);
 		}
 		catch (Exception e) {
 
