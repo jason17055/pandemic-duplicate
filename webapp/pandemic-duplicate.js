@@ -1442,6 +1442,19 @@ function stor_get_list(key)
 
 function make_scenario_label(shuffle_id)
 {
+	var m;
+	if (m = shuffle_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+		var $s = $('<span class="scenario_name new_scenario_name"></span>');
+		$s.append(m[2]);
+		$s.append('<br>');
+		$s.append(m[1]);
+		if (m[3]) {
+			$s.append('<br>');
+			$s.append(m[3]);
+		}
+		return $s;
+	}
+
 	var parts = scenario_name(shuffle_id).split(/ /);
 	var $s = $('<span class="scenario_name"></span>');
 	for (var i = 0; i < parts.length; i++) {
