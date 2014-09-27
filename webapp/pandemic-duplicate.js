@@ -1818,7 +1818,7 @@ function cancel_show_discards()
 
 function show_discards_clicked()
 {
-	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time + '/discards';
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discards';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -1856,7 +1856,7 @@ function init_special_event_page($pg)
 
 function play_special_event_clicked()
 {
-	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time + '/specials';
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/specials';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
