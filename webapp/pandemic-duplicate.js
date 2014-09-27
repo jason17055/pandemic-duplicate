@@ -1950,6 +1950,9 @@ function init_pick_scenario_page($pg, rulestr)
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
+		var g = load_scenario(a[i]);
+		$('.epidemic_count', $tr).text(g.rules.level);
+
 		var results_info = summarize_results_for_scenario(a[i]);
 		var played_by = results_info.played_by;
 		var description = 
