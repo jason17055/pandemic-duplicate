@@ -29,6 +29,7 @@ function load_game(game_id)
 		G.player_names = JSON.parse(s);
 	}
 
+	G.game_id = game_id;
 	G.active_player = 1;
 	G.history = [];
 	G.history.push({'type':'next_turn', 'active_player':1});
@@ -768,7 +769,7 @@ function make_infection_card_li(c)
 
 function continue_after_player_setup()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/board_setup';
+	var u = BASE_URL + '#'+G.game_id+'/board_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 
