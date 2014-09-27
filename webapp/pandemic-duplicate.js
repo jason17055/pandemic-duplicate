@@ -2032,15 +2032,15 @@ function on_state_init()
 		var $pg = show_page('pick_scenario_page');
 		init_pick_scenario_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
+	else if (m = path.match(/^([0-9a-z.-]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');
 		init_deck_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/board_setup$/)) {
+	else if (m = path.match(/^([0-9a-z.-]+)\/board_setup$/)) {
 		var $pg = show_page('board_setup_page');
 		init_board_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
+	else if (m = path.match(/^([0-9a-z.-]+)\/player_setup$/)) {
 		var $pg = show_page('player_setup_page');
 		init_player_setup_page($pg, m[1]);
 	}
