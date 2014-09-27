@@ -2066,7 +2066,7 @@ function on_state_init()
 		var $pg = show_page('player_setup_page');
 		init_player_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-f]+)\/results$/)) {
+	else if (m = path.match(/^([0-9a-z.-]+)\/results$/)) {
 		var $pg = show_page('results_page');
 		init_results_page($pg, m[1]);
 	}
