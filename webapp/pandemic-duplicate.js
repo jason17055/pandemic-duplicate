@@ -2107,19 +2107,19 @@ function start_game_clicked()
 
 function resume_game_clicked()
 {
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
-	if (shuffle_id == null) {
+	var game_id = localStorage.getItem(PACKAGE + '.current_game');
+	if (game_id == null) {
 		return false;
 	}
 
-	var time_str = localStorage.getItem(PACKAGE + '.game.' + shuffle_id + '.time');
+	var time_str = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
 	if (time_str != null) {
-		var u = BASE_URL + '#' + shuffle_id + '/T' + time_str;
+		var u = BASE_URL + '#' + game_id + '/T' + time_str;
 		history.pushState(null, null, u);
 		on_state_init();
 	}
 	else {
-		var u = BASE_URL + '#' + shuffle_id + '/player_setup';
+		var u = BASE_URL + '#' + game_id + '/player_setup';
 		history.pushState(null, null, u);
 		on_state_init();
 	}
