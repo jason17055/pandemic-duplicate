@@ -16,7 +16,13 @@ function handle_ajax_error(jqx, status, errMsg)
 
 function load_game(game_id)
 {
-	load_scenario(game_id);
+	var sid = localStorage.getItem(PACKAGE + '.game.' + game_id + '.scenario');
+	if (!sid) {
+		console.log('Fatal: game '+game_id+' is not known');
+		return;
+	}
+
+	load_scenario(sid);
 
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
@@ -560,9 +566,9 @@ function continue_after_deck_setup()
 	return false;
 }
 
-function init_board_setup_page($pg, shuffle_id)
+function init_board_setup_page($pg, game_id)
 {
-	load_game(shuffle_id);
+	load_game(game_id);
 
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
@@ -588,11 +594,11 @@ function continue_after_board_setup()
 	return navigate_to_current_turn();
 }
 
-function init_player_setup_page($pg, shuffle_id)
+function init_player_setup_page($pg, game_id)
 {
-	load_game(shuffle_id);
+	load_game(game_id);
 
-	$('.scenario_name',$pg).text(scenario_name(shuffle_id));
+	$('.scenario_name',$pg).text(scenario_name(G.scenario_id));
 
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
@@ -1478,21 +1484,36 @@ function scenario_name(shuffle_id)
 	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
 }
 
+function generate_new_game_id(scenario_id)
+{
+	var tmp = Math.random()+'-'+Math.random()+'-'+
+		JSON.stringify(G.player_names)+'-'+
+		scenario_id;
+	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
+}
+
 function on_preshuffled_game_clicked(evt)
 {
 	var el = this;
 	var shuffle_id = el.getAttribute('data-shuffle-id');
 
+	G.game_id = generate_new_game_id(shuffle_id);
+	console.log("new game id is "+G.game_id);
+
+	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
+	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
+
+	//TODO use game_id
 	start_publishing_game(shuffle_id);
 
-	var u = BASE_URL + '#'+shuffle_id+'/player_setup';
+	var u = BASE_URL + '#'+G.game_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 }
 
 function navigate_to_current_turn()
 {
-	var u = BASE_URL + '#' + G.shuffle_id + '/T' + G.time;
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time;
 	history.pushState(null, null, u);
 	on_state_init();
 	return;
@@ -2032,15 +2053,15 @@ function on_state_init()
 		var $pg = show_page('pick_scenario_page');
 		init_pick_scenario_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-z.-]+)\/deck_setup$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');
 		init_deck_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-z.-]+)\/board_setup$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/board_setup$/)) {
 		var $pg = show_page('board_setup_page');
 		init_board_setup_page($pg, m[1]);
 	}
-	else if (m = path.match(/^([0-9a-z.-]+)\/player_setup$/)) {
+	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
 		var $pg = show_page('player_setup_page');
 		init_player_setup_page($pg, m[1]);
 	}

@@ -9,6 +9,9 @@ Documents what localStorage keys are used client-side.
 .current_game.subscriber
 	subscriber id
 
+.game.X.scenario
+	scenario id
+
 .game.X.time
 	integer, where X is a game id
 
@@ -56,6 +59,9 @@ Documents what localStorage keys are used client-side.
 
 .scenario.X
 	JSON-encoded scenario, where X is the name of the scenario
+
+.scenario.X.current_game
+	Game id.
 
 .scenarios_by_rules.X
 	List of scenario ids, where X is a rules string
