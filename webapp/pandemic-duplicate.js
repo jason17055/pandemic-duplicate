@@ -2228,7 +2228,7 @@ var sync_started = false;
 var pending_sync = {
 	download_index: true
 	};
-var pending_download_deals=[];
+var pending_download_scenarios=[];
 var pending_download_results=[];
 
 
@@ -2422,7 +2422,7 @@ function check_for_downloads()
 		for (var i = 0; i < data.scenarios.length; i++) {
 			var d = data.scenarios[i];
 			if (!has_deal(d.id)) {
-				pending_download_deals.push(d.id);
+				pending_download_scenarios.push(d.id);
 			}
 		}
 		for (var i = 0; i < data.results.length; i++) {
@@ -2499,9 +2499,9 @@ function download_result(result_b)
 
 function download_next_deal()
 {
-	if (pending_download_deals.length) {
-		var deal_id = pending_download_deals.shift();
-		return download_deal(deal_id);
+	if (pending_download_scenarios.length) {
+		var scenario_id = pending_download_scenarios.shift();
+		return download_scenario(scenario_id);
 	}
 	else {
 		return download_next_result();
@@ -2515,18 +2515,18 @@ function save_downloaded_deal(deal_id, data)
 	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(data.rules), deal_id);
 }
 
-function download_deal(deal_id)
+function download_scenario(scenario_id)
 {
 	var onSuccess = function(data) {
-		console.log('sync: successful download of '+deal_id);
+		console.log('sync: successful download of '+scenario_id);
 		save_downloaded_deal(deal_id, data);
 		return download_next_deal();
 		};
 
-	console.log('sync: downloading deal '+deal_id);
+	console.log('sync: downloading deal '+scenario_id);
 	$.ajax({
 	type: "GET",
-	url: "s/deals?deal="+escape(deal_id),
+	url: "s/deals?deal="+escape(scenario_id),
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error
