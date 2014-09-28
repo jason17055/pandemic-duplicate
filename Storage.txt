@@ -65,3 +65,6 @@ Documents what localStorage keys are used client-side.
 
 .scenarios_by_rules.X
 	List of scenario ids, where X is a rules string
+
+.scenarios_by_player_count.#
+	List of scenario ids, where # is a player count

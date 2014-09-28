@@ -1969,8 +1969,10 @@ function init_pick_scenario_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
 
+	var rules = parse_rules(rulestr);
+
 	$('.scenario_row:not(.template)', $pg).remove();
-	var a = stor_get_list(PACKAGE + '.scenarios_by_rules.' + rulestr);
+	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + rules.player_count);
 	for (var i = 0; i < a.length; i++) {
 
 		var $tr = $('.scenario_row.template').clone();
@@ -2553,11 +2555,12 @@ function download_next_scenario()
 	}
 }
 
-function save_downloaded_scenario(deal_id, data)
+function save_downloaded_scenario(scenario_id, data)
 {
 	var XX = JSON.stringify(data);
-	localStorage.setItem(PACKAGE + '.scenario.' + deal_id, XX);
-	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(data.rules), deal_id);
+	localStorage.setItem(PACKAGE + '.scenario.' + scenario_id, XX);
+	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(data.rules), scenario_id);
+	stor_add_to_set(PACKAGE + '.scenarios_by_player_count.' + data.rules.player_count, scenario_id);
 }
 
 function download_scenario(scenario_id)
