@@ -368,9 +368,16 @@ function generate_new_game_clicked()
 	var rules_str = document.pick_game_form.rules.value;
 	G = generate_scenario(parse_rules(rules_str));
 
-	start_publishing_game(G.shuffle_id);
+	// create game
+	G.game_id = generate_new_game_id(G.scenario_id);
+	console.log("new game id is "+G.game_id);
 
-	var u = BASE_URL + '#'+G.shuffle_id+'/player_setup';
+	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
+	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
+
+	start_publishing_game(G.game_id);
+
+	var u = BASE_URL + '#'+G.scenario_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 }
@@ -1498,14 +1505,14 @@ function on_preshuffled_game_clicked(evt)
 	var el = this;
 	var shuffle_id = el.getAttribute('data-shuffle-id');
 
+	// create game
 	G.game_id = generate_new_game_id(shuffle_id);
 	console.log("new game id is "+G.game_id);
 
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
-	//TODO use game_id
-	start_publishing_game(shuffle_id);
+	start_publishing_game(G.game_id);
 
 	var u = BASE_URL + '#'+G.game_id+'/player_setup';
 	history.pushState(null, null, u);
@@ -1585,10 +1592,10 @@ function format_time(timestr)
 	}
 }
 
-function start_publishing_game(shuffle_id)
+function start_publishing_game(game_id)
 {
-	localStorage.removeItem(PACKAGE + '.current_game');
-	localStorage.setItem(PACKAGE + '.current_game.deal', shuffle_id);
+	localStorage.setItem(PACKAGE + '.current_game', game_id);
+	localStorage.setItem(PACKAGE + '.current_game.scenario', G.scenario_id);
 
 	trigger_upload_game_state();
 }
