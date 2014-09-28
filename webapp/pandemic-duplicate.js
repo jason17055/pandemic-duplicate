@@ -377,7 +377,7 @@ function generate_new_game_clicked()
 
 	start_publishing_game(G.game_id);
 
-	var u = BASE_URL + '#'+G.scenario_id+'/player_setup';
+	var u = BASE_URL + '#'+G.game_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 }

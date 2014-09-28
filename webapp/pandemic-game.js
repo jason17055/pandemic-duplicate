@@ -216,6 +216,13 @@ function generate_scenario_real(rules)
 		G['epidemic.'+k] = a;
 	}
 
+	return G;
+}
+
+function generate_scenario(rules)
+{
+	var G = generate_scenario_real(rules);
+
 	var X = {
 	'initial_hands': G.initial_hands,
 	'roles': G.roles,
@@ -227,20 +234,14 @@ function generate_scenario_real(rules)
 		X['epidemic.'+k] = G['epidemic.'+k];
 	}
 
-	return G;
-}
-
-function generate_scenario(rules)
-{
-	var G = generate_scenario_real(rules);
-
 	var XX = JSON.stringify(X);
 	G.scenario_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
 	G.shuffle_id = G.scenario_id;
 
-	localStorage.setItem(PACKAGE + '.shuffle.' + G.shuffle_id, XX);
-	stor_add_to_set(PACKAGE + '.deals_by_rules.' + stringify_rules(G.rules), G.shuffle_id);
-	stor_add_to_set(PACKAGE + '.pending_scenario_uploads', G.shuffle_id);
+console.log('saving scenario ' + G.scenario_id);
+	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id, XX);
+	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(G.rules), G.scenario_id);
+	stor_add_to_set(PACKAGE + '.pending_scenario_uploads', G.scenario_id);
 
 	trigger_sync_process();
 
