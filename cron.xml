@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-2p-6x</url>
+	<schedule>every sunday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-3p-6x</url>
+	<schedule>every monday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-4p-6x</url>
+	<schedule>every tuesday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-5p-6x</url>
+	<schedule>every wednesday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-2p-6x</url>
+	<schedule>every thursday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-3p-6x</url>
+	<schedule>every friday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+<cron>
+	<url>/s/cron/generate_scenario?rules=on_the_brink-4p-6x</url>
+	<schedule>every saturday 06:00</schedule>
+	<timezone>America/New_York</timezone>
+</cron>
+</cronentries>
