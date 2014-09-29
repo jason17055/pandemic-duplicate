@@ -99,6 +99,12 @@ function init_join_game_pick_page($pg, search_results)
 
 		$('.expansion', $g).text(G.rules.expansion == 'none' ? 'Original' : G.rules.expansion);
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.epidemic_level_caption', $g).text(
+			G.rules.level == 4 ? 'Intro' :
+			G.rules.level == 5 ? 'Normal' :
+			G.rules.level == 6 ? 'Heroic' :
+			G.rules.level == 7 ? 'Legendary' : ''
+			);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
@@ -1902,6 +1908,12 @@ function init_found_completed_games_page($pg, search_results)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.epidemic_level_caption', $g).text(
+			G.rules.level == 4 ? 'Intro' :
+			G.rules.level == 5 ? 'Normal' :
+			G.rules.level == 6 ? 'Heroic' :
+			G.rules.level == 7 ? 'Legendary' : ''
+			);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -1941,6 +1953,12 @@ function init_review_results_page($pg)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.epidemic_level_caption', $g).text(
+			G.rules.level == 4 ? 'Intro' :
+			G.rules.level == 5 ? 'Normal' :
+			G.rules.level == 6 ? 'Heroic' :
+			G.rules.level == 7 ? 'Legendary' : ''
+			);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -1981,21 +1999,40 @@ function init_pick_scenario_page($pg, rulestr)
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
-		var g = load_scenario(a[i]);
-		$('.epidemic_count', $tr).text(g.rules.level);
+		var $g = $tr;
+		G = load_scenario(a[i]);
+		$('.epidemic_count', $g).text(G.rules.level);
+		$('.epidemic_level_caption', $g).text(
+			G.rules.level == 4 ? 'Intro' :
+			G.rules.level == 5 ? 'Normal' :
+			G.rules.level == 6 ? 'Heroic' :
+			G.rules.level == 7 ? 'Legendary' : ''
+			);
+
+		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+			var $p_name = $('<span><img class="role_icon"></span>');
+			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
+			$('.player_list', $g).append($p_name);
+		}
 
 		var results_info = summarize_results_for_scenario(a[i]);
+		var description = 'Played '+(
+			results_info.play_count == 1 ? '1 time' :
+			(results_info.play_count+' times')
+			);
 		var played_by = results_info.played_by;
-		var description = 
-			deal_finished(a[i]) ? ('Completed ' + format_time(deal_finish_time(a[i]))) :
-			deal_started(a[i]) ? ('Started ' + format_time(deal_first_played_time(a[i]))) :
-			'';
 		if (played_by.length) {
-			description += '; played by';
+			description += ' (by';
 			for (var j = 0; j < played_by.length; j++) {
 				description += ' ' + played_by[j];
 			}
+			description += ')';
 		}
+
+		description +=
+			deal_finished(a[i]) ? ('; Completed ' + format_time(deal_finish_time(a[i]))) :
+			deal_started(a[i]) ? ('; Started ' + format_time(deal_first_played_time(a[i]))) :
+			'';
 		if (results_info.maximum_score > 0 && deal_finished(a[i])) {
 			description += '; best score: '+results_info.maximum_score;
 		}
@@ -2189,7 +2226,8 @@ function summarize_results_for_scenario(shuffle_id)
 
 	return {
 		'played_by': names_list,
-		'maximum_score': best_score
+		'maximum_score': best_score,
+		'play_count': a.length
 		};
 }
 

@@ -164,6 +164,8 @@ tr.my_result .place_col, tr.my_result .score_col {
 	padding-left: 4px;
 	padding-right: 4px;
 	font-size: 10px;
+	text-align: center;
+	margin-right: 4px;
 }
 
 #pick_scenario_page .scenarios_list {
@@ -175,4 +177,8 @@ tr.my_result .place_col, tr.my_result .score_col {
 }
 #subscription_page ul {
 	margin-top: 0;
+}
+
+.scenario_row button {
+	text-align: left;
 }
