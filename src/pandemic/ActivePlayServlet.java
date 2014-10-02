@@ -53,7 +53,7 @@ public class ActivePlayServlet extends HttpServlet
 
 		for (Entity ent : pq.asIterable()) {
 			out.writeStartObject();
-			String id = Long.toString(ent.getKey().getId());
+			String id = ent.getKey().getName();
 			out.writeStringField("id", id);
 			String deal_id = (String) ent.getProperty("deal");
 			out.writeStringField("deal", deal_id);
@@ -194,7 +194,7 @@ public class ActivePlayServlet extends HttpServlet
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-		Key pkey = KeyFactory.createKey("Play", Long.parseLong(play_id));
+		Key pkey = KeyFactory.createKey("Play", play_id);
 		String dealId;
 		List<String> playerNames;
 		try {
