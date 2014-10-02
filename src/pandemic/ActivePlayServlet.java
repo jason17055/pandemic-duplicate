@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import static pandemic.PandemicDealServlet.getRequestContent;
 import static pandemic.PandemicDealServlet.MAX_PLAYERS;
+import static pandemic.HelperFunctions.*;
 
 public class ActivePlayServlet extends HttpServlet
 {
@@ -329,6 +330,7 @@ log.info("created subscription "+skey.getId());
 			int player_count;
 			String [] player_names = new String[MAX_PLAYERS];
 			String location;
+			String secret;
 		}
 		NewGameInfo ngi = new NewGameInfo();
 		while (json.nextToken() != null) {
@@ -345,6 +347,10 @@ log.info("created subscription "+skey.getId());
 			else if (json.getCurrentName().equals("location")) {
 				json.nextToken();
 				ngi.location = json.getText();
+			}
+			else if (json.getCurrentName().equals("secret")) {
+				json.nextToken();
+				ngi.secret = json.getText();
 			}
 			else if (json.getCurrentName().equals("player_count")) {
 				json.nextToken();
@@ -379,13 +385,19 @@ log.info("created subscription "+skey.getId());
 
 		try
 		{
-			Entity ent = new Entity("Play", gameId);
+			Key pkey = KeyFactory.createKey("Play", gameId);
+			if (checkEntityExists(datastore, pkey)) {
+				throw new AlreadyExists();
+			}
+
+			Entity ent = new Entity(pkey);
 
 			Date createdDate = new Date();
 			String creatorIp = req.getRemoteAddr();
 
 			ent.setProperty("deal", ngi.deal_id);
 			ent.setProperty("scenario", ngi.deal_id);
+			ent.setProperty("secret", ngi.secret);
 			ent.setProperty("player_count", new Integer(ngi.player_count));
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
@@ -400,7 +412,7 @@ log.info("created subscription "+skey.getId());
 			}
 			ent.setProperty("playerNamesLC", tmp);
 
-			Key pkey = datastore.put(ent);
+			datastore.put(ent);
 
 			txn.commit();
 
@@ -409,6 +421,16 @@ log.info("created subscription "+skey.getId());
 			out.writeStartObject();
 			out.writeStringField("status", "ok");
 			out.writeStringField("game_id", gameId);
+			out.writeEndObject();
+			out.close();
+		}
+		catch (AlreadyExists e) {
+			resp.setStatus(HttpServletResponse.SC_CONFLICT);
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "err");
+			out.writeStringField("error", "Already exists.");
 			out.writeEndObject();
 			out.close();
 		}

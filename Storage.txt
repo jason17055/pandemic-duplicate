@@ -27,6 +27,9 @@ Documents what localStorage keys are used client-side.
 .game.X.last_played
 	time string
 
+.game.X.owner_secret
+	secret given to server when game data is uploaded
+
 .game_results.X
 	List of result ids, where X is a scenario id
 

@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.logging.Logger;
 import com.google.appengine.api.datastore.*;
 import static pandemic.PandemicDealServlet.MAX_PLAYERS;
+import static pandemic.HelperFunctions.*;
 
 public class GenerateScenarioServlet extends HttpServlet
 {
@@ -136,22 +137,6 @@ public class GenerateScenarioServlet extends HttpServlet
 				txn.rollback();
 			}
 		}
-	}
-
-	boolean checkEntityExists(DatastoreService datastore, Key key)
-	{
-		try {
-			Entity ent = datastore.get(key);
-			return true;
-		}
-		catch (EntityNotFoundException e) {
-			return false;
-		}
-	}
-
-	static class AlreadyExists extends Exception
-	{
-		AlreadyExists() { super("Scenario already exists."); }
 	}
 
 	static class ScenarioInfo

@@ -1601,11 +1601,19 @@ function format_time(timestr)
 	}
 }
 
+function generate_secret(indata)
+{
+	var tmp = (indata ? indata : '')+Math.random();
+	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
+}
+
 function start_publishing_game(game_id)
 {
 	localStorage.setItem(PACKAGE + '.current_game', game_id);
 	localStorage.setItem(PACKAGE + '.current_game.scenario', G.scenario_id);
 	localStorage.removeItem(PACKAGE + '.current_game.published');
+
+	localStorage.setItem(PACKAGE + '.game.'+game_id+'.owner_secret', generate_secret(game_id));
 
 	trigger_upload_game_state();
 }
@@ -2415,23 +2423,30 @@ function upload_result(result_id)
 
 function upload_current_game()
 {
+	delete pending_sync.game_state;
+
 	var game_id = localStorage.getItem(PACKAGE + '.current_game');
+	if (!game_id) {
+		console.log("Unexpected: in upload_current_game() without a game");
+		return continue_sync();
+	}
+
 	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 	var published = localStorage.getItem(PACKAGE + '.current_game.published');
-
-	delete pending_sync.game_state;
+	var secret = localStorage.getItem(PACKAGE + '.game.' + game_id + '.owner_secret');
 
 	if (published) {
 
 		// update existing game
 		upload_current_game_update(game_id);
 	}
-	else if (game_id && shuffle_id) {
+	else if (secret) {
 
 		// new game
 		console.log("sync: uploading current game metadata");
 		var st = {
 			'scenario': shuffle_id,
+			'secret': secret,
 			'player_count': G.rules.player_count
 			};
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
@@ -2457,10 +2472,6 @@ function upload_current_game()
 		success: onSuccess,
 		error: handle_ajax_error
 		});
-	}
-	else {
-		console.log("Unexpected: in upload_current_game() without a game");
-		return continue_sync();
 	}
 }
 
