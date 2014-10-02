@@ -25,7 +25,8 @@ public class ActivePlayServlet extends HttpServlet
 			return;
 		}
 
-		//TODO
+		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return;
 	}
 
 	void doSearchGames(String qry, HttpServletRequest req, HttpServletResponse resp)
@@ -56,6 +57,7 @@ public class ActivePlayServlet extends HttpServlet
 			out.writeStringField("id", id);
 			String deal_id = (String) ent.getProperty("deal");
 			out.writeStringField("deal", deal_id);
+			out.writeStringField("scenario", deal_id);
 
 			List<?> l = (List<?>) ent.getProperty("playerNames");
 			out.writeFieldName("players");
@@ -318,6 +320,10 @@ log.info("created subscription "+skey.getId());
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
 
 			if (json.getCurrentName().equals("deal")) {
+				json.nextToken();
+				ngi.deal_id = json.getText();
+			}
+			else if (json.getCurrentName().equals("scenario")) {
 				json.nextToken();
 				ngi.deal_id = json.getText();
 			}
