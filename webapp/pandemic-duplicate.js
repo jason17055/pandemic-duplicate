@@ -2438,7 +2438,7 @@ function upload_current_game()
 	if (published) {
 
 		// update existing game
-		upload_current_game_update(game_id);
+		upload_current_game_moves(game_id, secret);
 	}
 	else if (secret) {
 
@@ -2460,7 +2460,7 @@ function upload_current_game()
 			console.log('sync: successful upload of current game metadata');
 			console.log('sync: new game id is '+game_id);
 			localStorage.setItem(PACKAGE + '.current_game.published', game_id);
-			return upload_current_game_update(game_id);
+			return upload_current_game_moves(game_id);
 			};
 
 		$.ajax({
@@ -2475,7 +2475,7 @@ function upload_current_game()
 	}
 }
 
-function upload_current_game_update(game_id)
+function upload_current_game_moves(game_id, secret)
 {
 	console.log("sync: uploading current game movelog");
 	delete pending_sync.game_state;
@@ -2487,6 +2487,7 @@ function upload_current_game_update(game_id)
 	}
 
 	var X = {
+		'secret': secret,
 		'time': G.time,
 		'moves': mv_array
 		};

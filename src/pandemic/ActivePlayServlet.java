@@ -89,6 +89,7 @@ public class ActivePlayServlet extends HttpServlet
 
 		ArrayList<String> moves = new ArrayList<String>();
 		int curTime = 0;
+		String givenSecret = "";
 
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(
@@ -107,6 +108,10 @@ public class ActivePlayServlet extends HttpServlet
 					moves.add(s);
 				}
 			}
+			else if (json.getCurrentName().equals("secret")) {
+				json.nextToken();
+				givenSecret = json.getText();
+			}
 		}
 
 		ChannelService channelService = ChannelServiceFactory.getChannelService();
@@ -118,7 +123,15 @@ public class ActivePlayServlet extends HttpServlet
 			Key pkey = KeyFactory.createKey("Play", game_id);
 			Entity playEnt = datastore.get(pkey);
 
-			//TODO- check whether this client is authorized
+			// check whether this client is authorized
+			String expectedSecret = (String) playEnt.getProperty("secret");
+			if (!givenSecret.equals(expectedSecret)) {
+				writeErrorResponse(resp,
+					HttpServletResponse.SC_UNAUTHORIZED,
+					"Not authorized"
+					);
+				return;
+			}
 
 			Entity ent = new Entity("GameState", 1, pkey);
 
@@ -425,14 +438,9 @@ log.info("created subscription "+skey.getId());
 			out.close();
 		}
 		catch (AlreadyExists e) {
-			resp.setStatus(HttpServletResponse.SC_CONFLICT);
-			JsonGenerator out = new JsonFactory().
-				createJsonGenerator(resp.getWriter());
-			out.writeStartObject();
-			out.writeStringField("status", "err");
-			out.writeStringField("error", "Already exists.");
-			out.writeEndObject();
-			out.close();
+			writeErrorResponse(resp,
+				HttpServletResponse.SC_CONFLICT,
+				"Already exists.");
 		}
 		finally {
 			if (txn.isActive()) {
