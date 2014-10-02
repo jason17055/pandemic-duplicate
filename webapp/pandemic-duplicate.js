@@ -381,6 +381,7 @@ function generate_new_game_clicked()
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
+	load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
 	var u = BASE_URL + '#'+G.game_id+'/player_setup';
@@ -1512,12 +1513,14 @@ function on_preshuffled_game_clicked(evt)
 	var shuffle_id = el.getAttribute('data-shuffle-id');
 
 	// create game
+	load_scenario(shuffle_id);
 	G.game_id = generate_new_game_id(shuffle_id);
 	console.log("new game id is "+G.game_id);
 
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
+	load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
 	var u = BASE_URL + '#'+G.game_id+'/player_setup';
@@ -1602,6 +1605,7 @@ function start_publishing_game(game_id)
 {
 	localStorage.setItem(PACKAGE + '.current_game', game_id);
 	localStorage.setItem(PACKAGE + '.current_game.scenario', G.scenario_id);
+	localStorage.removeItem(PACKAGE + '.current_game.published');
 
 	trigger_upload_game_state();
 }
@@ -2413,20 +2417,21 @@ function upload_current_game()
 {
 	var game_id = localStorage.getItem(PACKAGE + '.current_game');
 	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
+	var published = localStorage.getItem(PACKAGE + '.current_game.published');
 
 	delete pending_sync.game_state;
 
-	if (shuffle_id && game_id) {
+	if (published) {
 
 		// update existing game
 		upload_current_game_update(game_id);
 	}
-	else if (shuffle_id) {
+	else if (game_id && shuffle_id) {
 
 		// new game
 		console.log("sync: uploading current game metadata");
 		var st = {
-			'deal': shuffle_id,
+			'scenario': shuffle_id,
 			'player_count': G.rules.player_count
 			};
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
@@ -2439,13 +2444,13 @@ function upload_current_game()
 			game_id = data.game_id;
 			console.log('sync: successful upload of current game metadata');
 			console.log('sync: new game id is '+game_id);
-			localStorage.setItem(PACKAGE + '.current_game', game_id);
+			localStorage.setItem(PACKAGE + '.current_game.published', game_id);
 			return upload_current_game_update(game_id);
 			};
 
 		$.ajax({
 		type: "POST",
-		url: "s/games",
+		url: "s/games?id="+escape(game_id)+'&post=meta',
 		data: s,
 		contentType: "application/json; charset=utf-8",
 		dataType: "json",

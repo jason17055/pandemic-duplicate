@@ -83,8 +83,8 @@ public class ActivePlayServlet extends HttpServlet
 	void doPostGameState(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
-		String play_id = req.getParameter("id");
-		log.info("new game state received for "+play_id);
+		String game_id = req.getParameter("id");
+		log.info("new game state received for "+game_id);
 
 		ArrayList<String> moves = new ArrayList<String>();
 		int curTime = 0;
@@ -114,7 +114,7 @@ public class ActivePlayServlet extends HttpServlet
 
 		try
 		{
-			Key pkey = KeyFactory.createKey("Play", Long.parseLong(play_id));
+			Key pkey = KeyFactory.createKey("Play", game_id);
 			Entity playEnt = datastore.get(pkey);
 
 			//TODO- check whether this client is authorized
@@ -154,7 +154,7 @@ public class ActivePlayServlet extends HttpServlet
 			out.close();
 		}
 		catch (EntityNotFoundException e) {
-			log.info("play "+play_id+" not found");
+			log.info("play "+game_id+" not found");
 			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
@@ -301,9 +301,24 @@ log.info("created subscription "+skey.getId());
 			return;
 		}
 		else if (req.getParameter("id") != null) {
-			doPostGameState(req, resp);
+			String post = req.getParameter("post");
+			if (post != null && post.equals("meta")) {
+				doPostGameMeta(req, resp);
+			}
+			else {
+				doPostGameState(req, resp);
+			}
 			return;
 		}
+
+		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		return;
+	}
+
+	void doPostGameMeta(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		String gameId = req.getParameter("id");
 
 		String content = getRequestContent(req);
 		JsonParser json = new JsonFactory().
@@ -364,12 +379,13 @@ log.info("created subscription "+skey.getId());
 
 		try
 		{
-			Entity ent = new Entity("Play");
+			Entity ent = new Entity("Play", gameId);
 
 			Date createdDate = new Date();
 			String creatorIp = req.getRemoteAddr();
 
 			ent.setProperty("deal", ngi.deal_id);
+			ent.setProperty("scenario", ngi.deal_id);
 			ent.setProperty("player_count", new Integer(ngi.player_count));
 			ent.setProperty("created", createdDate);
 			ent.setProperty("createdBy", creatorIp);
@@ -392,7 +408,7 @@ log.info("created subscription "+skey.getId());
 				createJsonGenerator(resp.getWriter());
 			out.writeStartObject();
 			out.writeStringField("status", "ok");
-			out.writeStringField("game_id", Long.toString(pkey.getId()));
+			out.writeStringField("game_id", gameId);
 			out.writeEndObject();
 			out.close();
 		}
