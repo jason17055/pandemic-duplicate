@@ -273,7 +273,26 @@ $(function() {
 	if (n) {
 		document.join_game_form.name.value = n;
 	}
+
+	$('#logging_option_btn').click(toggle_logging_option);
+	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
+	if (logging_enabled) {
+		$('.full_logging_feature').show();
+		$('#logging_option_btn').text('Disable Full Logging');
+	}
 });
+
+function toggle_logging_option()
+{
+	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
+	if (logging_enabled) {
+		localStorage.removeItem(PACKAGE+'.enable_logging');
+	}
+	else {
+		localStorage.setItem(PACKAGE+'.enable_logging','true');
+	}
+	location.reload();
+}
 
 function do_search_results(q)
 {
