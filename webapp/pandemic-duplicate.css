@@ -182,3 +182,7 @@ tr.my_result .place_col, tr.my_result .score_col {
 .scenario_row button {
 	text-align: left;
 }
+
+.full_logging_feature {
+	display: none;
+}

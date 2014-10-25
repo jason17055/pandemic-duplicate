@@ -1855,6 +1855,11 @@ function declare_victory_clicked()
 	return set_move('claim_victory');
 }
 
+function discover_cure_clicked()
+{
+	console.log('discover cure clicked');
+}
+
 function cancel_show_discards()
 {
 	history.back();
