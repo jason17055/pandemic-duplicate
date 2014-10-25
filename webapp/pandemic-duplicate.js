@@ -237,6 +237,10 @@ function show_current_game(xtra)
 		var $pg = show_page('special_event_page');
 		return init_special_event_page($pg);
 	}
+	else if (xtra == '/discover_cure') {
+		var $pg = show_page('discover_cure_page');
+		return init_discover_cure_page($pg);
+	}
 
 	if (G.step == 'actions') {
 		var $pg = show_page('player_turn_page');
@@ -1857,7 +1861,10 @@ function declare_victory_clicked()
 
 function discover_cure_clicked()
 {
-	console.log('discover cure clicked');
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discover_cure';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
 }
 
 function cancel_show_discards()
@@ -1884,6 +1891,15 @@ function init_show_discards_page($pg)
 			make_infection_card_li(c)
 			);
 	}
+}
+
+function discover_cure(disease_color)
+{
+	console.log("want to discover cure "+disease_color);
+}
+
+function init_discover_cure_page($pg)
+{
 }
 
 function init_special_event_page($pg)
