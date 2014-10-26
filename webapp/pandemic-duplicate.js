@@ -282,7 +282,8 @@ $(function() {
 	$('#logging_option_btn').click(toggle_logging_option);
 	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
 	if (logging_enabled) {
-		$('.full_logging_feature').show();
+		$('.detail_level_1').show();
+		$('.no_detail_level_1').hide();
 		$('#logging_option_btn').text('Disable Full Logging');
 	}
 });
