@@ -973,6 +973,13 @@ function make_history_item(evt)
 		$('.card_container',$e).append(make_player_card(evt.card));
 		return $e;
 	}
+	else if (evt.type == 'discover_cure') {
+		var $e = $('<div class="discover_cure_event"><span class="player_name"></span> cures <span class="disease_name_container"><img src="" class="card_icon" alt=""></span></div>');
+		$('.player_name',$e).text(G.player_names[evt.player]);
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Disease_Names[evt.disease]);
+		return $e;
+	}
 	else if (evt.type == 'resilient_population') {
 		var $e = $('<div class="resilient_population_event">&nbsp; --> <span class="card_container"></span> is made resilient</div>');
 		$('.card_container',$e).append(make_infection_card(evt.city));
@@ -1117,6 +1124,9 @@ function do_move(m)
 	}
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
+	}
+	else if (mm[0] == 'discover') {
+		do_discover_cure(mm[1]);
 	}
 	else if (mm[0] == 'forecast') {
 		do_forecast(m.substring(9));
@@ -1893,9 +1903,19 @@ function init_show_discards_page($pg)
 	}
 }
 
-function discover_cure(disease_color)
+function on_discover_cure_clicked(disease_color)
 {
-	console.log("want to discover cure "+disease_color);
+	return set_move('discover '+disease_color);
+}
+
+function do_discover_cure(disease_color)
+{
+	G.history.push({
+		'type':'discover_cure',
+		'player': G.active_player,
+		'disease':disease_color
+		});
+	G.time++;
 }
 
 function init_discover_cure_page($pg)

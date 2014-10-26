@@ -77,6 +77,12 @@ var Translated_City_Names = {
 	'Bogota': 'Bogotá',
 	'Sao Paulo': 'São Paulo'
 	};
+var Disease_Names = {
+	'black': 'Black',
+	'blue': 'Blue',
+	'red': 'Red',
+	'yellow': 'Yellow'
+	};
 
 var Specials = [
 	// specials from the base game
