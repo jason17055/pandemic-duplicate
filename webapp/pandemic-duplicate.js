@@ -979,7 +979,7 @@ function make_history_item(evt)
 		var $e = $('<div class="discover_cure_event"><span class="player_name"></span> cures <span class="disease_name_container"><img src="" class="card_icon" alt=""></span></div>');
 		$('.player_name',$e).text(G.player_names[evt.player]);
 		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
-		$('.disease_name_container',$e).append(Disease_Names[evt.disease]);
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
 		return $e;
 	}
 	else if (evt.type == 'resilient_population') {
@@ -1929,7 +1929,7 @@ function do_discover_cure(disease_color)
 function count_uncured_diseases(G)
 {
 	var count = 0;
-	for (var disease_color in Disease_Names) {
+	for (var disease_color in Pandemic.Diseases) {
 		if (!G.diseases[disease_color]) {
 			count++;
 		}

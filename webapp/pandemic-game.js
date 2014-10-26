@@ -117,6 +117,7 @@ Pandemic = {
 	'Roles': Roles,
 	'Specials': Specials,
 	'Cities': City_Info,
+	'Diseases': Disease_Names,
 	'MAX_PLAYERS': 5
 	};
 
