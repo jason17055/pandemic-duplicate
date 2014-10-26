@@ -51,6 +51,7 @@ function load_game(game_id)
 		G.infection_discards.push(c);
 	}
 
+	G.diseases = {}; //identifies cured/eradicated diseases
 	G.epidemic_count = 0;
 
 	G.player_discards = [];
@@ -1910,16 +1911,42 @@ function on_discover_cure_clicked(disease_color)
 
 function do_discover_cure(disease_color)
 {
+	G.diseases[disease_color] = 'cured';
 	G.history.push({
 		'type':'discover_cure',
 		'player': G.active_player,
 		'disease':disease_color
 		});
+
+	if (count_uncured_diseases(G) == 0) {
+		G.step = 'end';
+		G.result = 'victory';
+	}
 	G.time++;
+}
+
+function count_uncured_diseases(G)
+{
+	var count = 0;
+	for (var disease_color in Disease_Names) {
+		if (!G.diseases[disease_color]) {
+			count++;
+		}
+	}
+	return count;
 }
 
 function init_discover_cure_page($pg)
 {
+	$('.discover_cure_btn', $pg).each(function(idx,el) {
+		var disease_color = el.getAttribute('data-disease');
+		if (G.diseases[disease_color]) {
+			$(el).hide();
+		}
+		else {
+			$(el).show();
+		}
+		});
 }
 
 function init_special_event_page($pg)
