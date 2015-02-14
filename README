@@ -1,11 +1,32 @@
-Create a 'extlib' subdirectory, and copy into it:
- * jackson-core-2.1.0.jar
- * tomcat-servlet-api.jar
- * appengine-api.jar
+==================
+Pandemic Duplicate
+==================
+
+Pandemic Duplicate is an HTML5 mobile application that facilitates
+playing duplicate games of the Pandemic board game. It is designed
+to be hosted on the Google App Engine public cloud.
+
+You'll need the following:
+ * JDK1.7 or better
+ * Apache Ant (ant.apache.org)
+ * Google App Engine SDK for Java
+
+Git clone the source code onto your development workstation, then
+create a 'extlib' subdirectory, and copy into it these jar files:
+ * jackson-core-2.1.0.jar (wiki.fasterxml.com/JacksonHome)
+ * servlet-api.jar (from Google App Engine SDK)
+ * appengine-api.jar (from Google App Engine SDK)
  * js.jar (Rhino javascript engine)
 
+Now run `ant deploy-appengine'.
 
-For the `ant deploy' target, create a tomcat_libs subdirectory and
-copy into it:
- * all the jars from the Tomcat 'lib' directory
- * tomcat-juli.jar from the Tomcat 'bin' directory
+If successful, this will create a subdirectory named deploy.appengine,
+which you can use for testing the application or to deploy it
+directly to the cloud.
+
+To test the application, run this command from the Google App Engine
+SDK's bin directory:
+
+ ./dev_appserver.sh /path/to/pandemic/deploy.appengine
+
+Then connect to your test application at http://localhost:8080/.
