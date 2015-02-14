@@ -46,7 +46,7 @@
 <war destfile="${warfile}" webxml="web.xml">
 	<fileset dir="webapp" />
 	<classes dir="build/classes" />
-	<lib dir="extlib" excludes="tomcat-servlet-api.jar" />
+	<lib dir="extlib" excludes="servlet-api.jar,tomcat-servlet-api.jar" />
 </war>
 </target>
 
