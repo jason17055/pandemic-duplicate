@@ -2013,6 +2013,7 @@ function init_discover_cure_page($pg)
 
 function init_play_special_event_page($pg)
 {
+	$('.special_action_name').text("Play");
 	$('.special_event_btn_row:not(.template)').remove();
 	for (var i = 0; i < Pandemic.Specials.length; i++) {
 		var s = Pandemic.Specials[i];
@@ -2038,6 +2039,7 @@ function play_special_event_clicked()
 
 function init_retrieve_special_event_page($pg)
 {
+	$('.special_action_name').text("Retrieve");
 	$('.special_event_btn_row:not(.template)').remove();
 	for (var i = 0; i < Pandemic.Specials.length; i++) {
 		var s = Pandemic.Specials[i];
