@@ -1022,7 +1022,11 @@ var Role_icons = {
 	'Generalist': 'generalist_role_icon.png',
 	'Archivist': 'archivist_role_icon.png',
 	'Epidemiologist': 'epidemiologist_role_icon.png',
-	'Troubleshooter': 'troubleshooter_role_icon.png'
+	'Troubleshooter': 'troubleshooter_role_icon.png',
+	'Field Director': 'field_director_role_icon.png',
+	'Virologist': 'virologist_role_icon.png',
+	'Local Liaison': 'local_liaison_role_icon.png',
+	'Pilot': 'pilot_role_icon.png'
 	};
 function get_role_icon(r)
 {

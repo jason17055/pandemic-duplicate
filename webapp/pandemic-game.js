@@ -6,13 +6,19 @@ var Roles = [
 	'Medic',
 	'Researcher',
 
-	// expansion roles (those supported, anyway)
+	// expansion roles from "On The Brink" (those supported, anyway)
 	'Field Operative',
 	'Containment Specialist',
 	'Generalist',
 	'Archivist',
 	'Epidemiologist',
-	'Troubleshooter'
+	'Troubleshooter',
+
+	// expansion roles from "In The Lab"
+	'Pilot',
+	'Local Liaison',
+	'Field Director',
+	'Virologist'
 	];
 
 var Cities = [
@@ -100,8 +106,27 @@ var Specials = [
 	'Rapid Vaccine Deployment',
 	'Re-examined Research',
 	'Remote Treatment',
-	'Special Orders'
+	'Special Orders',
+
+	// specials from the "In the Lab" expansion
+	'Infection Zone Ban',
+	'Sequencing Breakthrough',
+	'Improved Sanitation'
 	];
+
+var Counts = [];
+Counts['none'] = {
+	'num_specials': 5,
+	'num_roles': 5
+}
+Counts['on_the_brink'] = {
+	'num_specials': 13,
+	'num_roles': 11
+}
+Counts['in_the_lab'] = {
+	'num_specials': 16,
+	'num_roles': 15
+}
 
 var City_Info = {};
 for (var i = 0; i < Cities.length; i++) {
@@ -151,8 +176,8 @@ function generate_scenario_real(rules)
 	var G = {};
 	G.rules = rules;
 
-	var num_specials = G.rules.expansion == 'none' ? 5 : Specials.length;
-	var num_roles = G.rules.expansion == 'none' ? 5 : Roles.length;
+	var num_specials = Counts[G.rules.expansion].num_specials || Specials.length;
+	var num_roles = Counts[G.rules.expansion].num_roles || Roles.length;
 
 	var S = [];
 	for (var i = 0; i < num_specials; i++) {
