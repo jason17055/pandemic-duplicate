@@ -234,9 +234,13 @@ function show_current_game(xtra)
 		var $pg = show_page('show_discards_page');
 		return init_show_discards_page($pg);
 	}
-	else if (xtra == '/specials') {
+	else if (xtra == '/play_special') {
 		var $pg = show_page('special_event_page');
-		return init_special_event_page($pg);
+		return init_play_special_event_page($pg);
+	}
+	else if (xtra == '/retrieve_special') {
+		var $pg = show_page('special_event_page');
+		return init_retrieve_special_event_page($pg);
 	}
 	else if (xtra == '/discover_cure') {
 		var $pg = show_page('discover_cure_page');
@@ -975,6 +979,12 @@ function make_history_item(evt)
 		$('.card_container',$e).append(make_player_card(evt.card));
 		return $e;
 	}
+	else if (evt.type == 'retrieve_special_event') {
+		var $e = $('<div class="special_event_event"><span class="player_name"></span> retrieves <span class="card_container"></span></div>');
+		$('.player_name',$e).text(G.player_names[evt.player]);
+		$('.card_container',$e).append(make_player_card(evt.card));
+		return $e;
+	}
 	else if (evt.type == 'discover_cure') {
 		var $e = $('<div class="discover_cure_event"><span class="player_name"></span> cures <span class="disease_name_container"><img src="" class="card_icon" alt=""></span></div>');
 		$('.player_name',$e).text(G.player_names[evt.player]);
@@ -1027,8 +1037,8 @@ var Role_icons = {
 	'Virologist': 'virologist_role_icon.png',
 	'Local Liaison': 'local_liaison_role_icon.png',
 	'Pilot': 'pilot_role_icon.png',
-    'Contingency Planner': 'contingency_planner_role_icon.png',
-    'Quarantine Specialist': 'quarantine_specialist_role_icon.png'
+	'Contingency Planner': 'contingency_planner_role_icon.png',
+	'Quarantine Specialist': 'quarantine_specialist_role_icon.png'
 	};
 function get_role_icon(r)
 {
@@ -1133,6 +1143,9 @@ function do_move(m)
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
 	}
+	else if (mm[0] == 'retrieve') {
+		do_retrieve_special_event(m.substring(9));
+	}
 	else if (mm[0] == 'discover') {
 		do_discover_cure(mm[1]);
 	}
@@ -1162,6 +1175,7 @@ function find_and_remove_card_any_hand(c)
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		var cc = find_and_remove_card(G.hands[i], c);
 		if (cc) {
+			G.player_discards.push(cc);
 			return i;
 		}
 	}
@@ -1249,6 +1263,23 @@ function do_special_event(c)
 	G.time++;
 }
 
+function do_retrieve_special_event(c)
+{
+	var pid = G.active_player;
+	if (!find_and_remove_card(G.player_discards, c))
+		return null;
+
+	G.hands[pid].push(c);
+
+	G.history.push({
+		'type':'retrieve_special_event',
+		'player':pid,
+		'card':c
+		});
+
+	G.time++;
+}
+
 function set_game_state_summary($pg)
 {
 	var r = G.roles[G.active_player];
@@ -1288,6 +1319,13 @@ function init_player_turn_page($pg)
 	}
 	else {
 		$('.troubleshooter_only', $pg).hide();
+	}
+
+	if (G.roles[G.active_player] == 'Contingency Planner') {
+		$('.contingency_planner_only', $pg).show();
+	}
+	else {
+		$('.contingency_planner_only', $pg).hide();
 	}
 
 	set_buttons_visibility($pg);
@@ -1846,6 +1884,13 @@ function on_special_event_clicked()
 	return set_move('special '+s);
 }
 
+function on_special_event_retrieve_clicked()
+{
+	var s =  this.getAttribute('data-special-event');
+
+	return set_move('retrieve '+s);
+}
+
 function has_special_event(s)
 {
 	for (var pid in G.hands) {
@@ -1854,6 +1899,16 @@ function has_special_event(s)
 			if (h[i] == s) {
 				return true;
 			}
+		}
+	}
+	return false;
+}
+
+function discarded_special_event(s)
+{
+	for (var i = 0; i < G.player_discards.length; i++) {
+		if (G.player_discards[i] == s) {
+			return true;
 		}
 	}
 	return false;
@@ -1956,7 +2011,7 @@ function init_discover_cure_page($pg)
 		});
 }
 
-function init_special_event_page($pg)
+function init_play_special_event_page($pg)
 {
 	$('.special_event_btn_row:not(.template)').remove();
 	for (var i = 0; i < Pandemic.Specials.length; i++) {
@@ -1975,7 +2030,32 @@ function init_special_event_page($pg)
 
 function play_special_event_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/specials';
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/play_special';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function init_retrieve_special_event_page($pg)
+{
+	$('.special_event_btn_row:not(.template)').remove();
+	for (var i = 0; i < Pandemic.Specials.length; i++) {
+		var s = Pandemic.Specials[i];
+		if (!discarded_special_event(s)) {
+			continue;
+		}
+		var $s = $('.special_event_btn_row.template').clone();
+		$('button', $s).text(s);
+		$('button', $s).attr('data-special-event', s);
+		$('button', $s).click(on_special_event_retrieve_clicked);
+		$s.removeClass('template');
+		$('#special_event_none_row').before($s);
+	}
+}
+
+function retrieve_special_event_clicked()
+{
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/retrieve_special';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;

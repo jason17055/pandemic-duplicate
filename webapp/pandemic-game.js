@@ -6,6 +6,10 @@ var Roles = [
 	'Medic',
 	'Researcher',
 
+	// 2nd edition roles
+	'Quarantine Specialist',
+	'Contingency Planner',
+
 	// expansion roles from "On The Brink" (those supported, anyway)
 	'Field Operative',
 	'Containment Specialist',
@@ -117,15 +121,15 @@ var Specials = [
 var Counts = [];
 Counts['none'] = {
 	'num_specials': 5,
-	'num_roles': 5
+	'num_roles': 7
 }
 Counts['on_the_brink'] = {
 	'num_specials': 13,
-	'num_roles': 11
+	'num_roles': 13
 }
 Counts['in_the_lab'] = {
 	'num_specials': 16,
-	'num_roles': 15
+	'num_roles': 17
 }
 
 var City_Info = {};
@@ -239,6 +243,8 @@ function generate_scenario_real(rules)
 	}
 	shuffle_array(G.infection_deck);
 
+	G.player_discards = [];
+
 	for (var k = 1; k <= G.rules.level; k++) {
 		var a = [];
 		for (var i = 0; i < Cities.length; i++) {
@@ -260,6 +266,7 @@ function generate_scenario(rules)
 	'roles': G.roles,
 	'player_deck': G.player_deck,
 	'infection_deck': G.infection_deck,
+	'player_discards': G.player_discards,
 	'rules': G.rules
 	};
 	for (var k = 1; k <= G.rules.level; k++) {
