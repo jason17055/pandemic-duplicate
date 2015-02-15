@@ -266,7 +266,6 @@ function generate_scenario(rules)
 	'roles': G.roles,
 	'player_deck': G.player_deck,
 	'infection_deck': G.infection_deck,
-	'player_discards': G.player_discards,
 	'rules': G.rules
 	};
 	for (var k = 1; k <= G.rules.level; k++) {
