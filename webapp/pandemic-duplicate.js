@@ -1026,7 +1026,9 @@ var Role_icons = {
 	'Field Director': 'field_director_role_icon.png',
 	'Virologist': 'virologist_role_icon.png',
 	'Local Liaison': 'local_liaison_role_icon.png',
-	'Pilot': 'pilot_role_icon.png'
+	'Pilot': 'pilot_role_icon.png',
+    'Contingency Planner': 'contingency_planner_role_icon.png',
+    'Quarantine Specialist': 'quarantine_specialist_role_icon.png'
 	};
 function get_role_icon(r)
 {
