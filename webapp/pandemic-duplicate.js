@@ -1369,6 +1369,11 @@ function can_play_special_event()
 	return G.has_control;
 }
 
+function can_retrieve_special_event()
+{
+	return G.has_control && G.step == 'actions';
+}
+
 function can_declare_victory()
 {
 	return G.has_control && G.step == 'actions';
@@ -1393,6 +1398,13 @@ function set_buttons_visibility($pg)
 	}
 	else {
 		$('.play_special_event_button_container', $pg).hide();
+	}
+
+	if (can_retrieve_special_event()) {
+		$('.retrieve_special_event_button_container', $pg).show();
+	}
+	else {
+		$('.retrieve_special_event_button_container', $pg).hide();
 	}
 
 	if (can_declare_victory()) {
