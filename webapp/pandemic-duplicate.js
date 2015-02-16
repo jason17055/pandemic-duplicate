@@ -37,6 +37,7 @@ function load_game(game_id)
 	G.turns = 1;
 	G.step = 'actions';
 	G.hands = {};
+	G.contingency_event = null;
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		G.hands[i] = [];
 		for (var j = 0; j < G.initial_hands[i].length; j++) {
@@ -1206,7 +1207,21 @@ function do_forecast(s)
 function do_special_event(c)
 {
 	var hfun = function(cc) {
-		var pid = find_and_remove_card_any_hand(cc);
+		var pid = null;
+		if (G.contingency_event == cc) {
+			for (var i = 1; i <= G.rules.player_count; i++) {
+				if (G.roles[i] == 'Contingency Planner') {
+					pid = i;
+					break;
+				}
+			}
+			if (pid) {
+				G.contingency_event = null;
+			}
+		}
+		else {
+			pid = find_and_remove_card_any_hand(cc);
+		}
 		if (!pid) { return null; }
 
 		G.history.push({
@@ -1254,6 +1269,10 @@ function do_special_event(c)
 					break;
 				}
 			}
+			if (m[1] == 'Contingency Planner' && G.contingency_event) {
+				G.player_discards.push(G.contingency_event);
+				G.contingency_event = null;
+			}
 		}
 	}
 	else {
@@ -1268,8 +1287,10 @@ function do_retrieve_special_event(c)
 	var pid = G.active_player;
 	if (!find_and_remove_card(G.player_discards, c))
 		return null;
+	if (G.contingency_event)
+		return null;
 
-	G.hands[pid].push(c);
+	G.contingency_event = c;
 
 	G.history.push({
 		'type':'retrieve_special_event',
@@ -1321,13 +1342,6 @@ function init_player_turn_page($pg)
 		$('.troubleshooter_only', $pg).hide();
 	}
 
-	if (G.roles[G.active_player] == 'Contingency Planner') {
-		$('.contingency_planner_only', $pg).show();
-	}
-	else {
-		$('.contingency_planner_only', $pg).hide();
-	}
-
 	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
@@ -1371,7 +1385,7 @@ function can_play_special_event()
 
 function can_retrieve_special_event()
 {
-	return G.has_control && G.step == 'actions';
+	return G.has_control && !G.contingency_event && G.roles[G.active_player] == 'Contingency Planner' && G.step == 'actions';
 }
 
 function can_declare_victory()
@@ -1905,6 +1919,9 @@ function on_special_event_retrieve_clicked()
 
 function has_special_event(s)
 {
+	if (G.contingency_event == s)
+		return true;
+
 	for (var pid in G.hands) {
 		var h = G.hands[pid];
 		for (var i = 0; i < h.length; i++) {
