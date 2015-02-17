@@ -118,18 +118,37 @@ var Specials = [
 	'Improved Sanitation'
 	];
 
+var Epidemics = [
+    // virulent strain epidemics from "On the Brink" expansion
+    'Chronic Effect',
+    'Complex Molecular Structure',
+    'Government Interference',
+    'Hidden Pocket',
+    'Rate Effect',
+    'Slippery Slope',
+    'Unacceptable Loss',
+    'Uncounted Populations',
+
+    // virulent strain epidemics from "In the Lab" expansion
+    'Highly Contagious',
+    'Resistant to Treatment'
+    ];
+
 var Counts = [];
 Counts['none'] = {
 	'num_specials': 5,
-	'num_roles': 7
+	'num_roles': 7,
+    'num_epidemics': 0
 }
 Counts['on_the_brink'] = {
 	'num_specials': 13,
-	'num_roles': 13
+	'num_roles': 13,
+    'num_epidemics': 8
 }
 Counts['in_the_lab'] = {
 	'num_specials': 16,
-	'num_roles': 17
+	'num_roles': 17,
+    'num_epidemics': 10
 }
 
 var City_Info = {};
@@ -207,6 +226,7 @@ function generate_scenario_real(rules)
 
 	var num_specials = Counts[G.rules.expansion].num_specials || Specials.length;
 	var num_roles = Counts[G.rules.expansion].num_roles || Roles.length;
+	var num_epidemics = G.rules.virulent_strain ? Counts[G.rules.expansion].num_epidemics || Epidemics.length : 0;
 
 	var S = [];
 	for (var i = 0; i < num_specials; i++) {
@@ -246,9 +266,19 @@ function generate_scenario_real(rules)
 		G.roles[(1+i)] = R.pop();
 	}
 
+	var E = [];
+	for (var i = 0; i < num_epidemics; i++) {
+		E.push('Epidemic: ' + Epidemics[i]);
+	}
+	shuffle_array(E);
+
+    while (E.length < G.rules.level) {
+        E.push('Epidemic');
+    }
+
 	var piles = [];
 	for (var i = 0; i < G.rules.level; i++) {
-		piles.push(['Epidemic']);
+		piles.push([E.shift()]);
 	}
 	for (var i = 0; i < A.length; i++) {
 		var j = i % piles.length;

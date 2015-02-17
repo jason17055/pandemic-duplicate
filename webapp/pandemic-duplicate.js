@@ -789,6 +789,11 @@ function make_player_card(c)
 		$('.card_icon', $x).attr('src', 'epidemic_icon.png');
 		$x.addClass('epidemic_card');
 	}
+	else if (is_epidemic(c)) {
+		$('.card_name', $x).text(c + '!');
+		$('.card_icon', $x).attr('src', 'virulent_epidemic_icon.png');
+		$x.addClass('epidemic_card');
+	}
 	else {
 		$('.card_name', $x).text(c);
 		$('.card_icon', $x).attr('src', 'special_event_icon.png');
@@ -969,7 +974,7 @@ function make_history_item(evt)
 			evt.epidemic_count == 2 ? 'Second' :
 			evt.epidemic_count == 3 ? 'Third' :
 			(evt.epidemic_count + 'th'));
-		$('.card_container',$e).append(make_player_card('Epidemic'));
+		$('.card_container',$e).append(make_player_card(evt.card));
 		return $e;
 	}
 	else if (evt.type == 'next_turn') {
@@ -1094,7 +1099,8 @@ function do_move(m)
 				G.pending_epidemics++;
 				G.history.push({
 					'type': 'draw_epidemic',
-					'epidemic_count': G.epidemic_count+G.pending_epidemics
+					'epidemic_count': G.epidemic_count+G.pending_epidemics,
+                    'card': c1
 					});
 			}
 			else {
@@ -1110,7 +1116,8 @@ function do_move(m)
 				G.pending_epidemics++;
 				G.history.push({
 					'type': 'draw_epidemic',
-					'epidemic_count': G.epidemic_count+G.pending_epidemics
+					'epidemic_count': G.epidemic_count+G.pending_epidemics,
+                    'card': c2
 					});
 			}
 			else {
@@ -1498,7 +1505,7 @@ function init_epidemic_page($pg)
 
 function is_epidemic(c)
 {
-	return c == 'Epidemic';
+	return (/^Epidemic/).test(c);
 }
 
 function init_infection_page($pg)
