@@ -237,19 +237,19 @@ public class GenerateScenarioServlet extends HttpServlet
 				json.nextToken();
 				r.expansion = json.getText();
 			}
-			else if (fieldequals("virulent_strain")) {
+			else if (field.equals("virulent_strain")) {
 				json.nextToken();
 				r.virulentStrain = json.getText().equals("true");
 			}
-			else if (fieldequals("mutation_challenge")) {
+			else if (field.equals("mutation_challenge")) {
 				json.nextToken();
 				r.mutationChallenge = json.getText().equals("true");
 			}
-			else if (fieldequals("worldwide_panic")) {
+			else if (field.equals("worldwide_panic")) {
 				json.nextToken();
 				r.worldwidePanic = json.getText().equals("true");
 			}
-			else if (fieldequals("lab_challenge")) {
+			else if (field.equals("lab_challenge")) {
 				json.nextToken();
 				r.labChallenge = json.getText().equals("true");
 			}
