@@ -624,19 +624,34 @@ function init_board_setup_page($pg, game_id)
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
 		var c = G.infection_discards[i];
-		$('.3cube_cities').append(make_infection_card_li(c));
+        if (G.rules.worldwide_panic && i == 0) {
+            $('.3cube_cities').append(make_infection_card_li(c).append(' (plus 1 purple cube)'));
+        }
+        else {
+            $('.3cube_cities').append(make_infection_card_li(c));
+        }
 	}
 
 	$('.2cube_cities').empty();
 	for (var i = 3; i < 6; i++) {
 		var c = G.infection_discards[i];
-		$('.2cube_cities').append(make_infection_card_li(c));
+        if (G.rules.worldwide_panic && i == 3) {
+            $('.2cube_cities').append(make_infection_card_li(c).append(' (plus 2 purple cubes)'));
+        }
+        else {
+            $('.2cube_cities').append(make_infection_card_li(c));
+        }
 	}
 
 	$('.1cube_cities').empty();
 	for (var i = 6; i < G.infection_discards.length; i++) {
 		var c = G.infection_discards[i];
-		$('.1cube_cities').append(make_infection_card_li(c));
+        if (G.rules.worldwide_panic && i == 6) {
+            $('.1cube_cities').append(make_infection_card_li(c).append(' (plus 3 purple cubes)'));
+        }
+        else {
+            $('.1cube_cities').append(make_infection_card_li(c));
+        }
 	}
 }
 
