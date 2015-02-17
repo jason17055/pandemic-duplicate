@@ -162,17 +162,42 @@ function shuffle_array(A)
 
 function stringify_rules(R)
 {
-	return R.expansion+'-'+R.player_count+'p-'+R.level+'x';
+	return R.expansion+'-'+R.player_count+'p-'+R.level+'x' +
+        (R.virulent_strain ? '-vs' : '') +
+        (R.mutation_challenge ? '-mut' : '') +
+        (R.worldwide_panic ? '-wp' : '') +
+        (R.lab_challenge ? '-lab' : '');
 }
 
 function parse_rules(s)
 {
 	var ss = s.split(/-/);
-	return {
+    var ret = {
 	'expansion': ss[0],
 	'player_count': +ss[1].substring(0, ss[1].length-1),
 	'level': +ss[2].substring(0, ss[2].length-1),
+    'virulent_strain': false,
+    'mutation_challenge': false,
+    'worldwide_panic': false,
+    'lab_challenge': false,
 	};
+    for (var i = 3; i < ss.length; i++) {
+        switch (ss[i]) {
+            case 'lab':
+                ret.lab_challenge = true;
+                break;
+            case 'vs':
+                ret.virulent_strain = true;
+                break;
+            case 'mut':
+                ret.mutation_challenge = true;
+                break;
+            case 'wp':
+                ret.worldwide_panic = true;
+                break;
+        }
+    }
+    return ret;
 }
 
 function generate_scenario_real(rules)

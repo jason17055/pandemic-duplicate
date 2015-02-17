@@ -151,10 +151,18 @@ public class GenerateScenarioServlet extends HttpServlet
 		String expansion;
 		int playerCount;
 		int level;
+		boolean virulentStrain;
+		boolean mutationChallenge;
+		boolean worldwidePanic;
+		boolean labChallenge;
 
 		@Override
 		public String toString() {
-			return expansion + "-" + playerCount + "p-" + level + "x";
+			return expansion + "-" + playerCount + "p-" + level + "x" +
+				(virulentStrain ? "-vs" : "") +
+				(mutationChallenge ? "-mut" : "") +
+				(worldwidePanic ? "-wp" : "") +
+				(labChallenge ? "-lab" : "");
 		}
 	}
 
@@ -228,6 +236,22 @@ public class GenerateScenarioServlet extends HttpServlet
 			else if (field.equals("expansion")) {
 				json.nextToken();
 				r.expansion = json.getText();
+			}
+			else if (fieldequals("virulent_strain")) {
+				json.nextToken();
+				r.virulentStrain = json.getText().equals("true");
+			}
+			else if (fieldequals("mutation_challenge")) {
+				json.nextToken();
+				r.mutationChallenge = json.getText().equals("true");
+			}
+			else if (fieldequals("worldwide_panic")) {
+				json.nextToken();
+				r.worldwidePanic = json.getText().equals("true");
+			}
+			else if (fieldequals("lab_challenge")) {
+				json.nextToken();
+				r.labChallenge = json.getText().equals("true");
 			}
 		}
 		return r;

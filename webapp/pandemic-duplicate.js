@@ -386,9 +386,15 @@ function submit_create_game_form()
 	var rules = {
 		'player_count': +f.player_count.value,
 		'expansion': f.expansion.value,
-		'level': +f.level.value
+		'level': +f.level.value,
+        'virulent_strain': f.virulent_strain.checked,
+        'lab_challenge': f.lab_challenge.checked,
+        'mutation_challenge': f.mutation_challenge.checked,
+        'worldwide_panic': f.worldwide_panic.checked
 		};
 	var rules_key = stringify_rules(rules);
+    // debug line
+    console.log(rules);
 
 	//history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
 	//on_state_init();
