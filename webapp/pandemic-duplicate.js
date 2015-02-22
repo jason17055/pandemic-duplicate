@@ -447,9 +447,8 @@ function submit_generate_game_form()
 
 function generate_game_clicked()
 {
-	var rules_str = document.pick_game_form.rules.value;
-	var rules = parse_rules(rules_str);
-	var u = BASE_URL + '#generate_game/' + rules.player_count + 'p';
+	var pcount = document.pick_scenario_form.player_count.value;
+	var u = BASE_URL + '#generate_game/' + pcount + 'p';
 	history.pushState(null, null, u);
 	on_state_init();
 }
@@ -602,7 +601,8 @@ function submit_player_names_form()
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
-	history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
+	var pcount = G.rules.player_count;
+	history.pushState(null, null, BASE_URL + '#pick_scenario/' + pcount + 'p');
 	on_state_init();
 	return false;
 }
@@ -2262,14 +2262,18 @@ function init_generate_game_page($pg, xtra)
 	document.generate_game_form.player_count.value = pcount;
 }
 
-function init_pick_scenario_page($pg, rulestr)
+function init_pick_scenario_page($pg, xtra)
 {
-	document.pick_game_form.rules.value = rulestr;
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = m[1];
+	}
 
-	var rules = parse_rules(rulestr);
+	document.pick_scenario_form.player_count.value = pcount;
 
 	$('.scenario_row:not(.template)', $pg).remove();
-	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + rules.player_count);
+	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + pcount);
 	for (var i = 0; i < a.length; i++) {
 
 		var $tr = $('.scenario_row.template').clone();
