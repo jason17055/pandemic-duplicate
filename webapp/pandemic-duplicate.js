@@ -21,8 +21,14 @@ function load_options()
 	else {
 		Pandemic.Cities['Toronto'].name = 'Montreal';
 	}
+
+	CFG.game_detail_level = +localStorage.getItem(PACKAGE+'.game_detail_level');
+	if (CFG.game_detail_level >= 1) {
+		$('.detail_level_1').show();
+		$('.no_detail_level_1').hide();
+	}
 }
-load_options();
+$(load_options);
 
 function handle_ajax_error(jqx, status, errMsg)
 {
@@ -102,6 +108,9 @@ function init_options_page($pg)
 
 	f.has_on_the_brink.checked = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
 	f.has_in_the_lab.checked = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
+
+	var tmp1 = localStorage.getItem(PACKAGE+'.game_detail_level');
+	f.game_detail_level.value = tmp1 || '0';
 }
 
 function save_options_form()
@@ -110,6 +119,7 @@ function save_options_form()
 	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
 	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
 	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+	localStorage.setItem(PACKAGE+'.game_detail_level', f.game_detail_level.value);
 	load_options();
 }
 
@@ -118,6 +128,7 @@ $(function() {
 	f.base_game_version.onchange = save_options_form;
 	f.has_on_the_brink.onchange = save_options_form;
 	f.has_in_the_lab.onchange = save_options_form;
+	f.game_detail_level.onchange = save_options_form;
 });
 function init_subscription_page($pg)
 {
@@ -343,27 +354,7 @@ $(function() {
 	if (n) {
 		document.join_game_form.name.value = n;
 	}
-
-	$('#logging_option_btn').click(toggle_logging_option);
-	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
-	if (logging_enabled) {
-		$('.detail_level_1').show();
-		$('.no_detail_level_1').hide();
-		$('#logging_option_btn').text('Disable Full Logging');
-	}
 });
-
-function toggle_logging_option()
-{
-	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
-	if (logging_enabled) {
-		localStorage.removeItem(PACKAGE+'.enable_logging');
-	}
-	else {
-		localStorage.setItem(PACKAGE+'.enable_logging','true');
-	}
-	location.reload();
-}
 
 function do_search_results(q)
 {

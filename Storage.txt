@@ -72,8 +72,10 @@ Documents what localStorage keys are used client-side.
 .scenarios_by_player_count.#
 	List of scenario ids, where # is a player count
 
-.enable_logging
-	'true' if user wants full logging
+.game_detail_level
+	What level of detail the user wants to enter into the app.
+	0: minimal
+	1: when cures are discovered
 
 .has_on_the_brink
 	'true' if user indicated they have the On The Brink expansion
