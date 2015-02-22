@@ -210,7 +210,7 @@ function show_watched_game(game_data)
 	watched_game_data = game_data;
 
 	G=null;
-	load_game(game_data.deal);
+	load_scenario(game_data.deal);
 
 	G.player_names = {};
 	for (var pid = 1; pid <= game_data.players.length; pid++) {
