@@ -403,13 +403,6 @@ function init_welcome_page($pg)
 function submit_create_game_form()
 {
 	var f = document.create_game_form;
-	var rules = {
-		'player_count': +f.player_count.value,
-		'expansion': f.expansion.value,
-		'level': +f.level.value
-		};
-	var rules_key = stringify_rules(rules);
-
 	var pcount = f.player_count.value;
 	var u = BASE_URL + '#names/' + pcount + 'p';
 	history.pushState(null, null, u);
