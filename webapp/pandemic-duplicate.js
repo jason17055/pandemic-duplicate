@@ -9,6 +9,27 @@ var G = null;
 var S = {}; //server settings
 
 
+// load options
+var CFG;
+function load_options()
+{
+	CFG = {};
+	CFG.base_game_version = localStorage.getItem(PACKAGE+'.base_game_version')||'2007';
+	if (CFG.base_game_version == '2007') {
+		Pandemic.Cities['Toronto'].name = 'Toronto';
+	}
+	else {
+		Pandemic.Cities['Toronto'].name = 'Montreal';
+	}
+
+	CFG.game_detail_level = +localStorage.getItem(PACKAGE+'.game_detail_level');
+	if (CFG.game_detail_level >= 1) {
+		$('.detail_level_1').show();
+		$('.no_detail_level_1').hide();
+	}
+}
+$(load_options);
+
 function handle_ajax_error(jqx, status, errMsg)
 {
 	console.log('Ajax error: '+jqx.status + ' '+status+' '+errMsg);
@@ -30,6 +51,12 @@ function load_game(game_id)
 	}
 
 	G.game_id = game_id;
+	init_game();
+	return G;
+}
+
+function init_game()
+{
 	G.active_player = 1;
 	G.history = [];
 	G.history.push({'type':'next_turn', 'active_player':1});
@@ -63,7 +90,6 @@ function load_game(game_id)
 
 	G.player_discards = [];
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
-	return G;
 }
 
 function load_scenario(shuffle_id)
@@ -80,6 +106,36 @@ function load_scenario(shuffle_id)
 	return G;
 }
 
+function init_options_page($pg)
+{
+	var f = document.options_form;
+	var tmp = localStorage.getItem(PACKAGE+'.base_game_version');
+	f.base_game_version.value = tmp || '2007';
+
+	f.has_on_the_brink.checked = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
+	f.has_in_the_lab.checked = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
+
+	var tmp1 = localStorage.getItem(PACKAGE+'.game_detail_level');
+	f.game_detail_level.value = tmp1 || '0';
+}
+
+function save_options_form()
+{
+	var f = document.options_form;
+	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
+	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
+	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+	localStorage.setItem(PACKAGE+'.game_detail_level', f.game_detail_level.value);
+	load_options();
+}
+
+$(function() {
+	var f = document.options_form;
+	f.base_game_version.onchange = save_options_form;
+	f.has_on_the_brink.onchange = save_options_form;
+	f.has_in_the_lab.onchange = save_options_form;
+	f.game_detail_level.onchange = save_options_form;
+});
 function init_subscription_page($pg)
 {
 	if (S.userName) {
@@ -96,6 +152,8 @@ function init_subscription_page($pg)
 function init_join_game_pick_page($pg, search_results)
 {
 	var list = search_results.results;
+
+	$('.no_results_found').toggle(list.length == 0);
 
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
@@ -174,13 +232,13 @@ function handle_channel_message(raw_message)
 function on_join_game_picked()
 {
 	var game_id = this.getAttribute('data-game-id');
-	var u = BASE_URL + '#watch/' + escape(game_id);
+	var u = BASE_URL + '#' + escape(game_id) + '/watch';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
 }
 
-function do_watch_game(game_id)
+function do_watch_game(game_id, xtra)
 {
 	var onSuccess = function(data) {
 		localStorage.setItem(PACKAGE+'.current_game', game_id);
@@ -191,7 +249,7 @@ function do_watch_game(game_id)
 		setup_channel(data.channel);
 
 		console.log("got game data "+JSON.stringify(data.game));
-		show_watched_game(data.game);
+		show_watched_game(game_id, data.game, xtra);
 	};
 
 	$.ajax({
@@ -203,26 +261,39 @@ function do_watch_game(game_id)
 		});
 }
 
+var watched_game_info = {};
 var watched_game_data = null;
 
 function update_watched_game(moves_array)
 {
 	watched_game_data.moves = moves_array;
-	show_watched_game(watched_game_data);
+	reload_watched_game();
 }
 
-function show_watched_game(game_data)
+function show_watched_game(game_id, game_data, xtra)
 {
+	watched_game_info = {
+		'game_id': game_id,
+		'xtra': xtra
+		};
 	watched_game_data = game_data;
+	reload_watched_game();
+}
+
+function reload_watched_game()
+{
+	var game_data = watched_game_data;
 
 	G=null;
-	load_game(game_data.deal);
+	load_scenario(game_data.deal);
 
 	G.player_names = {};
 	for (var pid = 1; pid <= game_data.players.length; pid++) {
 		G.player_names[pid] = game_data.players[pid-1];
 	}
 
+	G.game_id = watched_game_info.game_id;
+	init_game();
 	while (G.time < game_data.moves.length) {
 
 		var mv = game_data.moves[G.time];
@@ -230,7 +301,7 @@ function show_watched_game(game_data)
 	}
 
 	G.has_control = false;
-	show_current_game(null);
+	show_current_game(watched_game_info.xtra);
 
 	check_screen_size();
 }
@@ -289,27 +360,7 @@ $(function() {
 	if (n) {
 		document.join_game_form.name.value = n;
 	}
-
-	$('#logging_option_btn').click(toggle_logging_option);
-	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
-	if (logging_enabled) {
-		$('.detail_level_1').show();
-		$('.no_detail_level_1').hide();
-		$('#logging_option_btn').text('Disable Full Logging');
-	}
 });
-
-function toggle_logging_option()
-{
-	var logging_enabled = localStorage.getItem(PACKAGE+'.enable_logging');
-	if (logging_enabled) {
-		localStorage.removeItem(PACKAGE+'.enable_logging');
-	}
-	else {
-		localStorage.setItem(PACKAGE+'.enable_logging','true');
-	}
-	location.reload();
-}
 
 function do_search_results(q)
 {
@@ -389,6 +440,16 @@ function init_welcome_page($pg)
 function submit_create_game_form()
 {
 	var f = document.create_game_form;
+	var pcount = f.player_count.value;
+	var u = BASE_URL + '#names/' + pcount + 'p';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function submit_generate_game_form()
+{
+	var f = document.generate_game_form;
 	var rules = {
 		'player_count': +f.player_count.value,
 		'expansion': f.expansion.value,
@@ -398,21 +459,7 @@ function submit_create_game_form()
 		'mutation_challenge': f.mutation_challenge.checked,
 		'worldwide_panic': f.worldwide_panic.checked
 		};
-	var rules_key = stringify_rules(rules);
-
-	//history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
-	//on_state_init();
-	//return false;
-	var u = BASE_URL + '#names/' + rules_key;
-	history.pushState(null, null, u);
-	on_state_init();
-	return false;
-}
-
-function generate_new_game_clicked()
-{
-	var rules_str = document.pick_game_form.rules.value;
-	G = generate_scenario(parse_rules(rules_str));
+	G = generate_scenario(rules);
 
 	// create game
 	G.game_id = generate_new_game_id(G.scenario_id);
@@ -427,12 +474,26 @@ function generate_new_game_clicked()
 	var u = BASE_URL + '#'+G.game_id+'/player_setup';
 	history.pushState(null, null, u);
 	on_state_init();
+	return false;
 }
 
-function init_player_names_page($pg, rulestr)
+function generate_game_clicked()
 {
+	var pcount = document.pick_scenario_form.player_count.value;
+	var u = BASE_URL + '#generate_game/' + pcount + 'p';
+	history.pushState(null, null, u);
+	on_state_init();
+}
+
+function init_player_names_page($pg, xtra)
+{
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = +m[1];
+	}
+
 	G = {};
-	G.rules = parse_rules(rulestr);
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
 		G.player_names = JSON.parse(s);
@@ -443,24 +504,24 @@ function init_player_names_page($pg, rulestr)
 
 	var f = document.player_names_form;
 	f.location.value = localStorage.getItem(PACKAGE+'.game_location');
-	f.rules.value = rulestr;
+	f.player_count.value = pcount;
 	f.player1.value = G.player_names[1] || 'Player 1';
 	f.player2.value = G.player_names[2] || 'Player 2';
 	f.player3.value = G.player_names[3] || 'Player 3';
 	f.player4.value = G.player_names[4] || 'Player 4';
 	f.player5.value = G.player_names[5] || 'Player 5';
 	
-	if (G.rules.player_count <= 2) {
+	if (pcount <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
 		$('.player5', $pg).hide();
 	}
-	else if (G.rules.player_count == 3) {
+	else if (pcount == 3) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).hide();
 		$('.player5', $pg).hide();
 	}
-	else if (G.rules.player_count == 4) {
+	else if (pcount == 4) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
 		$('.player5', $pg).hide();
@@ -544,9 +605,9 @@ function init_game_completed_page($pg)
 function submit_player_names_form()
 {
 	var f = document.player_names_form;
-	var rules_key = f.rules.value;
+	var pcount = +f.player_count.value;
 	G = {};
-	G.rules = parse_rules(rules_key);
+	G.rules = { 'player_count': pcount };
 	G.player_names = {
 		'1': f.player1.value,
 		'2': f.player2.value,
@@ -577,7 +638,7 @@ function submit_player_names_form()
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
-	history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
+	history.pushState(null, null, BASE_URL + '#pick_scenario/' + pcount + 'p');
 	on_state_init();
 	return false;
 }
@@ -1662,10 +1723,10 @@ function stor_get_list(key)
 	}
 }
 
-function make_scenario_label(shuffle_id)
+function make_scenario_label(scenario_id)
 {
 	var m;
-	if (m = shuffle_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
 		var $s = $('<span class="scenario_name new_scenario_name"></span>');
 		$s.append(m[2]);
 		$s.append('<br>');
@@ -1677,7 +1738,7 @@ function make_scenario_label(shuffle_id)
 		return $s;
 	}
 
-	var parts = scenario_name(shuffle_id).split(/ /);
+	var parts = scenario_name(scenario_id).split(/ /);
 	var $s = $('<span class="scenario_name"></span>');
 	for (var i = 0; i < parts.length; i++) {
 		if (i!=0) { $s.append('<br>'); }
@@ -1686,15 +1747,20 @@ function make_scenario_label(shuffle_id)
 	return $s;
 }
 
-function scenario_name(shuffle_id)
+function scenario_name(scenario_id)
 {
-	var A = parseInt(shuffle_id.substring(0,6), 16);
+	var m;
+	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+		return scenario_id;
+	}
+
+	var A = parseInt(scenario_id.substring(0,6), 16);
 	var i = Math.floor(A * WORDS.length / 0x1000000);
 
-	var B = parseInt(shuffle_id.substring(6,12), 16);
+	var B = parseInt(scenario_id.substring(6,12), 16);
 	var j = Math.floor(B * WORDS.length / 0x1000000);
 
-	var C = parseInt(shuffle_id.substring(12,18), 16);
+	var C = parseInt(scenario_id.substring(12,18), 16);
 	var k = Math.floor(C * WORDS.length / 0x1000000);
 
 	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
@@ -2070,9 +2136,19 @@ function cancel_show_discards()
 	history.back();
 }
 
+function get_current_game_url()
+{
+	if (G.has_control) {
+		return BASE_URL + '#' + G.game_id + '/T' + G.time;
+	}
+	else {
+		return BASE_URL + '#' + G.game_id + '/watch';
+	}
+}
+
 function show_discards_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discards';
+	var u = get_current_game_url() + '/discards';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -2301,14 +2377,30 @@ function on_review_result_game_clicked()
 	on_state_init();
 }
 
-function init_pick_scenario_page($pg, rulestr)
+function init_generate_game_page($pg, xtra)
 {
-	document.pick_game_form.rules.value = rulestr;
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = m[1];
+	}
 
-	var rules = parse_rules(rulestr);
+	$('.player_count', $pg).text(pcount);
+	document.generate_game_form.player_count.value = pcount;
+}
+
+function init_pick_scenario_page($pg, xtra)
+{
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = m[1];
+	}
+
+	document.pick_scenario_form.player_count.value = pcount;
 
 	$('.scenario_row:not(.template)', $pg).remove();
-	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + rules.player_count);
+	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + pcount);
 	for (var i = 0; i < a.length; i++) {
 
 		var $tr = $('.scenario_row.template').clone();
@@ -2390,6 +2482,7 @@ function on_state_init()
 	}
 	else if (path == 'options') {
 		var $pg = show_page('options_page');
+		init_options_page($pg);
 	}
 	else if (path == 'subscription') {
 		var $pg = show_page('subscription_page');
@@ -2405,10 +2498,16 @@ function on_state_init()
 		show_blank_page();
 		do_search_results(q);
 	}
-	else if (m = path.match(/^watch\/(.*)$/)) {
+	else if (m = path.match(/^watch\/(.*)$/)) { //old-style watch url
 		var game_id = unescape(m[1]);
 		show_blank_page();
-		do_watch_game(game_id);
+		do_watch_game(game_id, null);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/watch(\/.*)?$/)) { //new-style watch url
+		var game_id = unescape(m[1]);
+		var xtra = m[2];
+		show_blank_page();
+		do_watch_game(game_id, xtra);
 	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
@@ -2417,6 +2516,10 @@ function on_state_init()
 	else if (m = path.match(/^pick_scenario\/(.*)$/)) {
 		var $pg = show_page('pick_scenario_page');
 		init_pick_scenario_page($pg, m[1]);
+	}
+	else if (m = path.match(/^generate_game\/(.*)$/)) {
+		var $pg = show_page('generate_game_page');
+		init_generate_game_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');
@@ -2766,7 +2869,7 @@ function upload_current_game()
 			console.log('sync: successful upload of current game metadata');
 			console.log('sync: new game id is '+game_id);
 			localStorage.setItem(PACKAGE + '.current_game.published', game_id);
-			return upload_current_game_moves(game_id);
+			return upload_current_game_moves(game_id, secret);
 			};
 
 		$.ajax({
@@ -2953,10 +3056,12 @@ function onRenamePlayerClicked()
 	var p_name = G.player_names[G.active_player];
 	var p_role = G.roles[G.active_player];
 	p_name = window.prompt('Enter name of '+p_role, p_name);
-	G.player_names[G.active_player] = p_name;
-	save_player_names();
-	$('.page_header .player_name').text(p_name);
-	on_state_init();
+	if (p_name) {
+		G.player_names[G.active_player] = p_name;
+		save_player_names();
+		$('.page_header .player_name').text(p_name);
+		on_state_init();
+	}
 }
 
 function check_screen_size()

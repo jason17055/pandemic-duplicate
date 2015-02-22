@@ -126,6 +126,16 @@ public class ActivePlayServlet extends HttpServlet
 			// check whether this client is authorized
 			String expectedSecret = (String) playEnt.getProperty("secret");
 			if (!givenSecret.equals(expectedSecret)) {
+				if (givenSecret.length() != 0 && expectedSecret != null && expectedSecret.length() != 0) {
+					log.info("wrong secret given");
+				}
+				else if (givenSecret.length() != 0) {
+					log.info("datastore does not have a secret for this game");
+				}
+				else {
+					log.info("no secret provided");
+				}
+
 				writeErrorResponse(resp,
 					HttpServletResponse.SC_UNAUTHORIZED,
 					"Not authorized"

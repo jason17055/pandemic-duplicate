@@ -1,3 +1,5 @@
+game subscription messages: should include game_id
+
 pick_game: show how many results are recorded for each deal
 
 think about handling 2nd edition new roles:

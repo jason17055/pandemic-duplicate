@@ -47,8 +47,31 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <form name="options_form">
+
+<p>
+<label>Base Game Version:
+<select name="base_game_version">
+<option value="2007">2007 Original</option>
+<option value="2013">2013 Reprint</option>
+</select>
+</label>
+</p>
+
+<p>Expansions:
+<label><input type="checkbox" name="has_on_the_brink">On The Brink</label>
+<label><input type="checkbox" name="has_in_the_lab">In The Lab</label>
+</p>
+
+<p>
+<label>Detail Level:
+<select name="game_detail_level">
+<option value="0">Minimal</option>
+<option value="1">Cure Discoveries</option>
+</select>
+</label>
+</p>
+
 <div class="button_container"><button type="button" onclick="go_subscription_page()">Subscription</button></div>
-<div class="button_container"><button type="button" id="logging_option_btn">Enable Full Logging</button></div>
 <div class="button_container"><button type="button" onclick="history.back()">Back</button></div>
 
 </form>
@@ -113,6 +136,34 @@ to purchase or use a subscription.
 </select></td>
 </tr>
 
+</table>
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="submit">Next: <small>Players</small></button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/create_game_page-->
+
+<div class="page" id="generate_game_page">
+
+<div class="page_header">
+<h1>Generate Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
+<input type="hidden" name="player_count">
+<div class="flex_container">
+<table width="100%">
+<tr>
+<td><label>Players:</label></td>
+<td><span class="player_count"></span></td>
+</tr>
+
 <tr>
 <td><label for="expansion_cb">Expansion:</label></td>
 <td><select id="expansion_cb" name="expansion">
@@ -151,12 +202,12 @@ to purchase or use a subscription.
 </div><!--/flex_container-->
 
 <div class="button_container">
-<button type="submit">Next: <small>Players</small></button>
+<button type="submit">Generate Game</button>
 </div>
 </form>
 
 </div><!--/page_body-->
-</div><!--/create_game_page-->
+</div><!--/generate_game_page-->
 
 <div class="page" id="join_game_page">
 
@@ -193,6 +244,9 @@ Enter your name as it appears in the host's game.
 <div class="page_body">
 
 <form name="join_game_pick_form" method="post" onsubmit="return false">
+
+<p class="no_results_found">Sorry, no games found.</p>
+
 <div class="button_container join_game_btn template">
 <button type="button"><span class="expansion"></span> / <span class="epidemic_count"></span><img src="epidemic_icon.png"> with <span class="player_list"></span>
 	<span class="location_container" style="display:none"> (<span class="location"></span>)</span>
@@ -228,10 +282,10 @@ Choose a scenario to play:
 <div>
 Or generate a new game:
 </div>
-<form name="pick_game_form" method="post" onsubmit="return false">
+<form name="pick_scenario_form" method="post" onsubmit="return false">
 <div class="button_container">
-<input type="hidden" name="rules">
-<button type="button" onclick="generate_new_game_clicked()">Generate</button>
+<input type="hidden" name="player_count">
+<button type="button" onclick="generate_game_clicked()">Generate</button>
 </div>
 </form>
 
@@ -304,7 +358,7 @@ Or search for a game:
 <div><label>Location:
 <input type="text" name="location"></label></div>
 
-<input type="hidden" name="rules">
+<input type="hidden" name="player_count">
 <table>
 <tr class="player1"><td>1</td><td><input type="text" name="player1" value="Player 1"></td></tr>
 <tr class="player2"><td>2</td><td><input type="text" name="player2" value="Player 2"></td></tr>
