@@ -410,10 +410,8 @@ function submit_create_game_form()
 		};
 	var rules_key = stringify_rules(rules);
 
-	//history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
-	//on_state_init();
-	//return false;
-	var u = BASE_URL + '#names/' + rules_key;
+	var pcount = f.player_count.value;
+	var u = BASE_URL + '#names/' + pcount + 'p';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -453,10 +451,15 @@ function generate_game_clicked()
 	on_state_init();
 }
 
-function init_player_names_page($pg, rulestr)
+function init_player_names_page($pg, xtra)
 {
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = +m[1];
+	}
+
 	G = {};
-	G.rules = parse_rules(rulestr);
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
 		G.player_names = JSON.parse(s);
@@ -467,24 +470,24 @@ function init_player_names_page($pg, rulestr)
 
 	var f = document.player_names_form;
 	f.location.value = localStorage.getItem(PACKAGE+'.game_location');
-	f.rules.value = rulestr;
+	f.player_count.value = pcount;
 	f.player1.value = G.player_names[1] || 'Player 1';
 	f.player2.value = G.player_names[2] || 'Player 2';
 	f.player3.value = G.player_names[3] || 'Player 3';
 	f.player4.value = G.player_names[4] || 'Player 4';
 	f.player5.value = G.player_names[5] || 'Player 5';
 	
-	if (G.rules.player_count <= 2) {
+	if (pcount <= 2) {
 		$('.player3', $pg).hide();
 		$('.player4', $pg).hide();
 		$('.player5', $pg).hide();
 	}
-	else if (G.rules.player_count == 3) {
+	else if (pcount == 3) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).hide();
 		$('.player5', $pg).hide();
 	}
-	else if (G.rules.player_count == 4) {
+	else if (pcount == 4) {
 		$('.player3', $pg).show();
 		$('.player4', $pg).show();
 		$('.player5', $pg).hide();
@@ -568,9 +571,9 @@ function init_game_completed_page($pg)
 function submit_player_names_form()
 {
 	var f = document.player_names_form;
-	var rules_key = f.rules.value;
+	var pcount = +f.player_count.value;
 	G = {};
-	G.rules = parse_rules(rules_key);
+	G.rules = { 'player_count': pcount };
 	G.player_names = {
 		'1': f.player1.value,
 		'2': f.player2.value,
@@ -601,7 +604,6 @@ function submit_player_names_form()
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
-	var pcount = G.rules.player_count;
 	history.pushState(null, null, BASE_URL + '#pick_scenario/' + pcount + 'p');
 	on_state_init();
 	return false;
