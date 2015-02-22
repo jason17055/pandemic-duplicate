@@ -858,7 +858,7 @@ function make_sequence_card(c)
 {
 	var $x = $('<span class="sequence_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
     $('.card_name', $x).text(c);
-    // $('.card_icon', $x).attr('src', 'special_event_icon.png');
+    $('.card_icon', $x).attr('src', 'sequence_card_icon.png');
 
 	return $x;
 }
@@ -1024,6 +1024,12 @@ function make_history_item(evt)
 		$('.role_icon',$e).attr('alt', r).
 			attr('src', get_role_icon(r));
 		$('.player_name',$e).text(G.player_names[evt.active_player]);
+		return $e;
+	}
+	else if (evt.type == 'draw_sequence_card') {
+		var $e = $('<div class="draw_sequence_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
+		$('.player_name',$e).text(G.player_names[evt.player]);
+		$('.card_container',$e).append(make_sequence_card(evt.card));
 		return $e;
 	}
 	else if (evt.type == 'special_event') {
@@ -1195,6 +1201,9 @@ function do_move(m)
 			do_more_infection();
 		}
 	}
+	else if (mm[0] == 'draw_sequence_card') {
+		do_draw_sequence(G.sequence_deck.shift());
+	}
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
 	}
@@ -1332,6 +1341,19 @@ function do_special_event(c)
 	else {
 		hfun(c);
 	}
+
+	G.time++;
+}
+
+function do_draw_sequence(c)
+{
+	var pid = G.active_player;
+
+	G.history.push({
+		'type':'draw_sequence_card',
+		'player':pid,
+		'card':c
+		});
 
 	G.time++;
 }
@@ -2148,6 +2170,11 @@ function init_retrieve_special_event_page($pg)
 		$s.removeClass('template');
 		$('#special_event_none_row').before($s);
 	}
+}
+
+function draw_sequence_card_clicked()
+{
+	return set_move('draw_sequence_card');
 }
 
 function retrieve_special_event_clicked()
