@@ -1406,6 +1406,11 @@ function can_continue()
 	return G.has_control && !at_end_of_game;
 }
 
+function can_draw_sequence_card()
+{
+    return G.has_control && G.rules.lab_challenge && G.step == 'actions';
+}
+
 function can_play_special_event()
 {
 	return G.has_control;
@@ -1435,6 +1440,13 @@ function can_admit_defeat()
 
 function set_buttons_visibility($pg)
 {
+	if (can_draw_sequence_card()) {
+		$('.draw_sequence_card_button_container', $pg).show();
+	}
+	else {
+		$('.draw_sequence_card_button_container', $pg).hide();
+	}
+
 	if (can_play_special_event()) {
 		$('.play_special_event_button_container', $pg).show();
 	}
