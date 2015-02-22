@@ -84,8 +84,8 @@ var Cities = [
 
 	];
 var Translated_City_Names = {
-	'Bogota': 'Bogotá',
-	'Sao Paulo': 'São Paulo'
+	'Bogota': 'Bogot\u00e1',      //Bogotá
+	'Sao Paulo': 'S\u00e3o Paulo' //São Paulo
 	};
 var Disease_Names = {
 	'black': 'Black',
