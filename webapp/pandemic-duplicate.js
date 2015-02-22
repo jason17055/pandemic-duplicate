@@ -448,7 +448,8 @@ function submit_generate_game_form()
 function generate_game_clicked()
 {
 	var rules_str = document.pick_game_form.rules.value;
-	var u = BASE_URL + '#generate_game/' + rules_str;
+	var rules = parse_rules(rules_str);
+	var u = BASE_URL + '#generate_game/' + rules.player_count + 'p';
 	history.pushState(null, null, u);
 	on_state_init();
 }
@@ -2249,11 +2250,16 @@ function on_review_result_game_clicked()
 	on_state_init();
 }
 
-function init_generate_game_page($pg, rulestr)
+function init_generate_game_page($pg, xtra)
 {
-	var rules = parse_rules(rulestr);
-	$('.player_count', $pg).text(rules.player_count);
-	document.generate_game_form.player_count.value = rules.player_count;
+	var pcount = 2;
+	var m = xtra.match(/^(\d+)p$/);
+	if (m) {
+		pcount = m[1];
+	}
+
+	$('.player_count', $pg).text(pcount);
+	document.generate_game_form.player_count.value = pcount;
 }
 
 function init_pick_scenario_page($pg, rulestr)
