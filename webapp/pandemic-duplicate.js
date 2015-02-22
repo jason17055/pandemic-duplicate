@@ -52,6 +52,12 @@ function load_game(game_id)
 		G.infection_discards.push(c);
 	}
 
+	G.sequence_discards = [];
+	if (G.rules.lab_challenge) {
+		var c = G.sequence_deck.shift();
+		G.sequence_discards.push(c);
+	}
+
 	G.diseases = {}; //identifies cured/eradicated diseases
 	G.epidemic_count = 0;
 
@@ -387,14 +393,12 @@ function submit_create_game_form()
 		'player_count': +f.player_count.value,
 		'expansion': f.expansion.value,
 		'level': +f.level.value,
-        'virulent_strain': f.virulent_strain.checked,
-        'lab_challenge': f.lab_challenge.checked,
-        'mutation_challenge': f.mutation_challenge.checked,
-        'worldwide_panic': f.worldwide_panic.checked
+		'virulent_strain': f.virulent_strain.checked,
+		'lab_challenge': f.lab_challenge.checked,
+		'mutation_challenge': f.mutation_challenge.checked,
+		'worldwide_panic': f.worldwide_panic.checked
 		};
 	var rules_key = stringify_rules(rules);
-    // debug line
-    console.log(rules);
 
 	//history.pushState(null, null, BASE_URL + '#pick_scenario/' + rules_key);
 	//on_state_init();
@@ -624,45 +628,45 @@ function init_board_setup_page($pg, game_id)
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
 		var c = G.infection_discards[i];
-        if (G.rules.worldwide_panic && i == 0) {
-            $('.3cube_cities').append(make_infection_card_li(c).append(' (plus 1 purple cube)'));
-        }
-        else {
-            $('.3cube_cities').append(make_infection_card_li(c));
-        }
+		if (G.rules.worldwide_panic && i == 0) {
+			$('.3cube_cities').append(make_infection_card_li(c).append(' (plus 1 purple cube)'));
+		}
+		else {
+			$('.3cube_cities').append(make_infection_card_li(c));
+		}
 	}
 
 	$('.2cube_cities').empty();
 	for (var i = 3; i < 6; i++) {
 		var c = G.infection_discards[i];
-        if (G.rules.worldwide_panic && i == 3) {
-            $('.2cube_cities').append(make_infection_card_li(c).append(' (plus 2 purple cubes)'));
-        }
-        else {
-            $('.2cube_cities').append(make_infection_card_li(c));
-        }
+		if (G.rules.worldwide_panic && i == 3) {
+			$('.2cube_cities').append(make_infection_card_li(c).append(' (plus 2 purple cubes)'));
+		}
+		else {
+			$('.2cube_cities').append(make_infection_card_li(c));
+		}
 	}
 
 	$('.1cube_cities').empty();
 	for (var i = 6; i < G.infection_discards.length; i++) {
 		var c = G.infection_discards[i];
-        if (G.rules.worldwide_panic && i == 6) {
-            $('.1cube_cities').append(make_infection_card_li(c).append(' (plus 3 purple cubes)'));
-        }
-        else {
-            $('.1cube_cities').append(make_infection_card_li(c));
-        }
+		if (G.rules.worldwide_panic && i == 6) {
+			$('.1cube_cities').append(make_infection_card_li(c).append(' (plus 3 purple cubes)'));
+		}
+		else {
+			$('.1cube_cities').append(make_infection_card_li(c));
+		}
 	}
 
-    if (G.rules.lab_challenge) {
-        var c = G.sequence_deck.shift();
-        $('.initial_lab_sequence_card').show();
-        $('.sequence_card').empty();
-        $('.sequence_card').append(make_sequence_card_li(c));
-    }
-    else {
-        $('.initial_lab_sequence_card').hide();
-    }
+	if (G.rules.lab_challenge) {
+		var c = G.sequence_discards[0];
+		$('.initial_lab_sequence_card').show();
+		$('.sequence_card').empty();
+		$('.sequence_card').append(make_sequence_card_li(c));
+	}
+	else {
+		$('.initial_lab_sequence_card').hide();
+	}
 }
 
 function continue_after_board_setup()
@@ -857,8 +861,8 @@ function make_sequence_card_li(c)
 function make_sequence_card(c)
 {
 	var $x = $('<span class="sequence_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
-    $('.card_name', $x).text(c);
-    $('.card_icon', $x).attr('src', 'sequence_card_icon.png');
+	$('.card_name', $x).text(c);
+	$('.card_icon', $x).attr('src', 'sequence_card_icon.png');
 
 	return $x;
 }
@@ -1147,7 +1151,7 @@ function do_move(m)
 				G.history.push({
 					'type': 'draw_epidemic',
 					'epidemic_count': G.epidemic_count+G.pending_epidemics,
-                    'card': c1
+					'card': c1
 					});
 			}
 			else {
@@ -1164,7 +1168,7 @@ function do_move(m)
 				G.history.push({
 					'type': 'draw_epidemic',
 					'epidemic_count': G.epidemic_count+G.pending_epidemics,
-                    'card': c2
+					'card': c2
 					});
 			}
 			else {
@@ -1202,7 +1206,7 @@ function do_move(m)
 		}
 	}
 	else if (mm[0] == 'draw_sequence_card') {
-		do_draw_sequence(G.sequence_deck.shift());
+		do_draw_sequence();
 	}
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
@@ -1345,15 +1349,19 @@ function do_special_event(c)
 	G.time++;
 }
 
-function do_draw_sequence(c)
+function do_draw_sequence()
 {
 	var pid = G.active_player;
+
+	var c = G.sequence_deck.shift();
 
 	G.history.push({
 		'type':'draw_sequence_card',
 		'player':pid,
 		'card':c
 		});
+
+	G.sequence_discards.push(c);
 
 	G.time++;
 }
@@ -1456,7 +1464,7 @@ function can_continue()
 
 function can_draw_sequence_card()
 {
-    return G.has_control && G.rules.lab_challenge && G.step == 'actions';
+	return G.has_control && G.rules.lab_challenge && G.step == 'actions';
 }
 
 function can_play_special_event()
