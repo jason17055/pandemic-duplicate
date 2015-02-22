@@ -173,13 +173,13 @@ function handle_channel_message(raw_message)
 function on_join_game_picked()
 {
 	var game_id = this.getAttribute('data-game-id');
-	var u = BASE_URL + '#watch/' + escape(game_id);
+	var u = BASE_URL + '#' + escape(game_id) + '/watch';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
 }
 
-function do_watch_game(game_id)
+function do_watch_game(game_id, xtra)
 {
 	var onSuccess = function(data) {
 		localStorage.setItem(PACKAGE+'.current_game', game_id);
@@ -190,7 +190,7 @@ function do_watch_game(game_id)
 		setup_channel(data.channel);
 
 		console.log("got game data "+JSON.stringify(data.game));
-		show_watched_game(data.game);
+		show_watched_game(game_id, data.game, xtra);
 	};
 
 	$.ajax({
@@ -202,17 +202,28 @@ function do_watch_game(game_id)
 		});
 }
 
+var watched_game_info = {};
 var watched_game_data = null;
 
 function update_watched_game(moves_array)
 {
 	watched_game_data.moves = moves_array;
-	show_watched_game(watched_game_data);
+	reload_watched_game();
 }
 
-function show_watched_game(game_data)
+function show_watched_game(game_id, game_data, xtra)
 {
+	watched_game_info = {
+		'game_id': game_id,
+		'xtra': xtra
+		};
 	watched_game_data = game_data;
+	reload_watched_game();
+}
+
+function reload_watched_game()
+{
+	var game_data = watched_game_data;
 
 	G=null;
 	load_scenario(game_data.deal);
@@ -222,6 +233,7 @@ function show_watched_game(game_data)
 		G.player_names[pid] = game_data.players[pid-1];
 	}
 
+	G.game_id = watched_game_info.game_id;
 	init_game();
 	while (G.time < game_data.moves.length) {
 
@@ -230,7 +242,7 @@ function show_watched_game(game_data)
 	}
 
 	G.has_control = false;
-	show_current_game(null);
+	show_current_game(watched_game_info.xtra);
 
 	check_screen_size();
 }
@@ -1985,9 +1997,19 @@ function cancel_show_discards()
 	history.back();
 }
 
+function get_current_game_url()
+{
+	if (G.has_control) {
+		return BASE_URL + '#' + G.game_id + '/T' + G.time;
+	}
+	else {
+		return BASE_URL + '#' + G.game_id + '/watch';
+	}
+}
+
 function show_discards_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discards';
+	var u = get_current_game_url() + '/discards';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -2315,10 +2337,16 @@ function on_state_init()
 		show_blank_page();
 		do_search_results(q);
 	}
-	else if (m = path.match(/^watch\/(.*)$/)) {
+	else if (m = path.match(/^watch\/(.*)$/)) { //old-style watch url
 		var game_id = unescape(m[1]);
 		show_blank_page();
-		do_watch_game(game_id);
+		do_watch_game(game_id, null);
+	}
+	else if (m = path.match(/^([0-9a-f]+)\/watch(\/.*)?$/)) { //new-style watch url
+		var game_id = unescape(m[1]);
+		var xtra = m[2];
+		show_blank_page();
+		do_watch_game(game_id, xtra);
 	}
 	else if (m = path.match(/^names\/(.*)$/)) {
 		var $pg = show_page('player_names_page');
