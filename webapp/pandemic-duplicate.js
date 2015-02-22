@@ -30,6 +30,12 @@ function load_game(game_id)
 	}
 
 	G.game_id = game_id;
+	init_game();
+	return G;
+}
+
+function init_game()
+{
 	G.active_player = 1;
 	G.history = [];
 	G.history.push({'type':'next_turn', 'active_player':1});
@@ -57,7 +63,6 @@ function load_game(game_id)
 
 	G.player_discards = [];
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
-	return G;
 }
 
 function load_scenario(shuffle_id)
@@ -217,6 +222,7 @@ function show_watched_game(game_data)
 		G.player_names[pid] = game_data.players[pid-1];
 	}
 
+	init_game();
 	while (G.time < game_data.moves.length) {
 
 		var mv = game_data.moves[G.time];
