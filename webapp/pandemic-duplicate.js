@@ -1566,10 +1566,10 @@ function stor_get_list(key)
 	}
 }
 
-function make_scenario_label(shuffle_id)
+function make_scenario_label(scenario_id)
 {
 	var m;
-	if (m = shuffle_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
 		var $s = $('<span class="scenario_name new_scenario_name"></span>');
 		$s.append(m[2]);
 		$s.append('<br>');
@@ -1581,7 +1581,7 @@ function make_scenario_label(shuffle_id)
 		return $s;
 	}
 
-	var parts = scenario_name(shuffle_id).split(/ /);
+	var parts = scenario_name(scenario_id).split(/ /);
 	var $s = $('<span class="scenario_name"></span>');
 	for (var i = 0; i < parts.length; i++) {
 		if (i!=0) { $s.append('<br>'); }
@@ -1590,20 +1590,20 @@ function make_scenario_label(shuffle_id)
 	return $s;
 }
 
-function scenario_name(shuffle_id)
+function scenario_name(scenario_id)
 {
 	var m;
-	if (m = shuffle_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
-		return shuffle_id;
+	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+		return scenario_id;
 	}
 
-	var A = parseInt(shuffle_id.substring(0,6), 16);
+	var A = parseInt(scenario_id.substring(0,6), 16);
 	var i = Math.floor(A * WORDS.length / 0x1000000);
 
-	var B = parseInt(shuffle_id.substring(6,12), 16);
+	var B = parseInt(scenario_id.substring(6,12), 16);
 	var j = Math.floor(B * WORDS.length / 0x1000000);
 
-	var C = parseInt(shuffle_id.substring(12,18), 16);
+	var C = parseInt(scenario_id.substring(12,18), 16);
 	var k = Math.floor(C * WORDS.length / 0x1000000);
 
 	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
