@@ -47,6 +47,21 @@ Welcome to Pandemic Duplicate!
 <div class="page_body">
 
 <form name="options_form">
+
+<p>
+<label>Base Game Version:
+<select name="base_game_version">
+<option value="2007">2007 Original</option>
+<option value="2013">2013 Reprint</option>
+</select>
+</label>
+</p>
+
+<p>Expansions:
+<label><input type="checkbox" name="has_on_the_brink">On The Brink</label>
+<label><input type="checkbox" name="has_in_the_lab">In The Lab</label>
+</p>
+
 <div class="button_container"><button type="button" onclick="go_subscription_page()">Subscription</button></div>
 <div class="button_container"><button type="button" id="logging_option_btn">Enable Full Logging</button></div>
 <div class="button_container"><button type="button" onclick="history.back()">Back</button></div>

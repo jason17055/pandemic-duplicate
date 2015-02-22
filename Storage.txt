@@ -71,3 +71,15 @@ Documents what localStorage keys are used client-side.
 
 .scenarios_by_player_count.#
 	List of scenario ids, where # is a player count
+
+.enable_logging
+	'true' if user wants full logging
+
+.has_on_the_brink
+	'true' if user indicated they have the On The Brink expansion
+
+.has_in_the_lab
+	'true' if user indicated they have the In The Lab expansion
+
+.base_game_version
+	either '2007' or '2013' to indicate which version of base game user has

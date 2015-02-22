@@ -79,6 +79,32 @@ function load_scenario(shuffle_id)
 	return G;
 }
 
+function init_options_page($pg)
+{
+	var f = document.options_form;
+	var tmp = localStorage.getItem(PACKAGE+'.base_game_version');
+	f.base_game_version.value = tmp || '2007';
+
+	f.has_on_the_brink.checked = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
+	f.has_in_the_lab.checked = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
+}
+
+function save_options_form()
+{
+	console.log('in save_options_form()');
+
+	var f = document.options_form;
+	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
+	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
+	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+}
+
+$(function() {
+	var f = document.options_form;
+	f.base_game_version.onchange = save_options_form;
+	f.has_on_the_brink.onchange = save_options_form;
+	f.has_in_the_lab.onchange = save_options_form;
+});
 function init_subscription_page($pg)
 {
 	if (S.userName) {
@@ -2350,6 +2376,7 @@ function on_state_init()
 	}
 	else if (path == 'options') {
 		var $pg = show_page('options_page');
+		init_options_page($pg);
 	}
 	else if (path == 'subscription') {
 		var $pg = show_page('subscription_page');
