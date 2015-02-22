@@ -2251,6 +2251,9 @@ function on_review_result_game_clicked()
 
 function init_generate_game_page($pg, rulestr)
 {
+	var rules = parse_rules(rulestr);
+	$('.player_count', $pg).text(rules.player_count);
+	document.generate_game_form.player_count.value = rules.player_count;
 }
 
 function init_pick_scenario_page($pg, rulestr)

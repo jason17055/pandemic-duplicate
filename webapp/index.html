@@ -154,16 +154,12 @@ to purchase or use a subscription.
 <div class="page_body">
 
 <form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
+<input type="hidden" name="player_count">
 <div class="flex_container">
 <table width="100%">
 <tr>
-<td><label for="player_count_cb">Players:</label></td>
-<td><select id="player_count_cb" name="player_count">
-<option value="2">2</option>
-<option value="3">3</option>
-<option value="4">4</option>
-<option value="5">5</option>
-</select></td>
+<td><label>Players:</label></td>
+<td><span class="player_count"></span></td>
 </tr>
 
 <tr>
