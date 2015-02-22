@@ -1592,6 +1592,11 @@ function make_scenario_label(shuffle_id)
 
 function scenario_name(shuffle_id)
 {
+	var m;
+	if (m = shuffle_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+		return shuffle_id;
+	}
+
 	var A = parseInt(shuffle_id.substring(0,6), 16);
 	var i = Math.floor(A * WORDS.length / 0x1000000);
 
