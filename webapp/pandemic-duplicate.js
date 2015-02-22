@@ -9,6 +9,21 @@ var G = null;
 var S = {}; //server settings
 
 
+// load options
+var CFG;
+function load_options()
+{
+	CFG = {};
+	CFG.base_game_version = localStorage.getItem(PACKAGE+'.base_game_version')||'2007';
+	if (CFG.base_game_version == '2007') {
+		Pandemic.Cities['Toronto'].name = 'Toronto';
+	}
+	else {
+		Pandemic.Cities['Toronto'].name = 'Montreal';
+	}
+}
+load_options();
+
 function handle_ajax_error(jqx, status, errMsg)
 {
 	console.log('Ajax error: '+jqx.status + ' '+status+' '+errMsg);
@@ -91,12 +106,11 @@ function init_options_page($pg)
 
 function save_options_form()
 {
-	console.log('in save_options_form()');
-
 	var f = document.options_form;
 	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
 	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
 	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+	load_options();
 }
 
 $(function() {
