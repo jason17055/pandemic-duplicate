@@ -134,23 +134,43 @@ var Epidemics = [
     'Resistant to Treatment'
     ];
 
+var Sequences = [
+    '4 black cubes',
+    '4 red cubes',
+    '4 yellow cubes',
+    '4 blue cubes',
+    '6 cubes with 3 black and 1 red',
+    '6 cubes with 3 blue and 1 black',
+    '6 cubes with 3 red and 1 yellow',
+    '6 cubes with 3 red and 1 blue',
+    '6 cubes with 3 yellow and 1 blue',
+    '6 cubes with 3 black and 1 yellow',
+    '8 cubes with 4 black',
+    '8 cubes with 4 yellow',
+    '8 cubes with 4 red',
+    '8 cubes with 4 blue'
+    ];
+
 var Counts = [];
 Counts['none'] = {
 	'num_specials': 5,
 	'num_roles': 7,
-    'num_epidemics': 0
+    'num_epidemics': 0,
+    'num_sequences': 0
 }
 Counts['on_the_brink'] = {
 	'num_specials': 13,
 	'num_roles': 13,
 //    'num_epidemics': 8
-    'num_epidemics': 7
+    'num_epidemics': 7,
+    'num_sequences': 0
 }
 Counts['in_the_lab'] = {
 	'num_specials': 16,
 	'num_roles': 17,
 //    'num_epidemics': 10
-    'num_epidemics': 9
+    'num_epidemics': 9,
+    'num_sequences': 14
 }
 
 var City_Info = {};
@@ -229,6 +249,7 @@ function generate_scenario_real(rules)
 	var num_specials = Counts[G.rules.expansion].num_specials || Specials.length;
 	var num_roles = Counts[G.rules.expansion].num_roles || Roles.length;
 	var num_epidemics = G.rules.virulent_strain ? Counts[G.rules.expansion].num_epidemics || Epidemics.length : 0;
+	var num_sequences = G.rules.lab_challenge ? Counts[G.rules.expansion].num_sequences || Sequences.length : 0;
 
 	var S = [];
 	for (var i = 0; i < num_specials; i++) {
@@ -294,6 +315,12 @@ function generate_scenario_real(rules)
 		}
 	}
 
+    G.sequence_deck = [];
+    for (var i = 0; i < num_sequences; i++) {
+        G.sequence_deck.push(Sequences[i]);
+    }
+    shuffle_array(G.sequence_deck);
+
 	G.infection_deck = [];
 	for (var i = 0; i < Cities.length; i++) {
 		G.infection_deck.push(Cities[i]);
@@ -323,6 +350,7 @@ function generate_scenario(rules)
 	'roles': G.roles,
 	'player_deck': G.player_deck,
 	'infection_deck': G.infection_deck,
+	'sequence_deck': G.sequence_deck,
 	'rules': G.rules
 	};
 	for (var k = 1; k <= G.rules.level; k++) {

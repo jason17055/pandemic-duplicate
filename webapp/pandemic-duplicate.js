@@ -653,6 +653,16 @@ function init_board_setup_page($pg, game_id)
             $('.1cube_cities').append(make_infection_card_li(c));
         }
 	}
+
+    if (G.rules.lab_challenge) {
+        var c = G.sequence_deck.shift();
+        $('.initial_lab_sequence_card').show();
+        $('.sequence_card').empty();
+        $('.sequence_card').append(make_sequence_card_li(c));
+    }
+    else {
+        $('.initial_lab_sequence_card').hide();
+    }
 }
 
 function continue_after_board_setup()
@@ -834,6 +844,22 @@ function make_infection_card_li(c)
 	var $x = $('<li></li>');
 	$x.append(make_infection_card(c));
 	$x.attr('data-city-name', c);
+	return $x;
+}
+
+function make_sequence_card_li(c)
+{
+	var $x = $('<li></li>');
+	$x.append(make_sequence_card(c));
+	return $x;
+}
+
+function make_sequence_card(c)
+{
+	var $x = $('<span class="sequence_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
+    $('.card_name', $x).text(c);
+    // $('.card_icon', $x).attr('src', 'special_event_icon.png');
+
 	return $x;
 }
 
