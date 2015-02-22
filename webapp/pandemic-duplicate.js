@@ -419,10 +419,15 @@ function submit_create_game_form()
 	return false;
 }
 
-function generate_new_game_clicked()
+function submit_generate_game_form()
 {
-	var rules_str = document.pick_game_form.rules.value;
-	G = generate_scenario(parse_rules(rules_str));
+	var f = document.generate_game_form;
+	var rules = {
+		'player_count': +f.player_count.value,
+		'expansion': f.expansion.value,
+		'level': +f.level.value
+		};
+	G = generate_scenario(rules);
 
 	// create game
 	G.game_id = generate_new_game_id(G.scenario_id);
@@ -435,6 +440,15 @@ function generate_new_game_clicked()
 	start_publishing_game(G.game_id);
 
 	var u = BASE_URL + '#'+G.game_id+'/player_setup';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
+function generate_game_clicked()
+{
+	var rules_str = document.pick_game_form.rules.value;
+	var u = BASE_URL + '#generate_game/' + rules_str;
 	history.pushState(null, null, u);
 	on_state_init();
 }
@@ -2235,6 +2249,10 @@ function on_review_result_game_clicked()
 	on_state_init();
 }
 
+function init_generate_game_page($pg, rulestr)
+{
+}
+
 function init_pick_scenario_page($pg, rulestr)
 {
 	document.pick_game_form.rules.value = rulestr;
@@ -2357,6 +2375,10 @@ function on_state_init()
 	else if (m = path.match(/^pick_scenario\/(.*)$/)) {
 		var $pg = show_page('pick_scenario_page');
 		init_pick_scenario_page($pg, m[1]);
+	}
+	else if (m = path.match(/^generate_game\/(.*)$/)) {
+		var $pg = show_page('generate_game_page');
+		init_generate_game_page($pg, m[1]);
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
 		var $pg = show_page('deck_setup_page');

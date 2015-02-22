@@ -145,6 +145,59 @@ to purchase or use a subscription.
 </div><!--/page_body-->
 </div><!--/create_game_page-->
 
+<div class="page" id="generate_game_page">
+
+<div class="page_header">
+<h1>Generate Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
+<div class="flex_container">
+<table width="100%">
+<tr>
+<td><label for="player_count_cb">Players:</label></td>
+<td><select id="player_count_cb" name="player_count">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select></td>
+</tr>
+
+<tr>
+<td><label for="expansion_cb">Expansion:</label></td>
+<td><select id="expansion_cb" name="expansion">
+<option value="in_the_lab">In The Lab</option>
+<option value="on_the_brink">On The Brink</option>
+<option value="none">Original</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td><label for="level_cb">Level:</label></td>
+<td>
+<select id="level_cb" name="level">
+<option value="4">Introductory (4 epidemics)</option>
+<option value="5" selected>Normal (5 epidemics)</option>
+<option value="6">Heroic (6 epidemics)</option>
+<option value="7">Legendary (7 epidemics)</option>
+</select>
+</td>
+</tr>
+</table>
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="submit">Generate Game</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/generate_game_page-->
+
 <div class="page" id="join_game_page">
 
 <div class="page_header">
@@ -221,7 +274,7 @@ Or generate a new game:
 <form name="pick_game_form" method="post" onsubmit="return false">
 <div class="button_container">
 <input type="hidden" name="rules">
-<button type="button" onclick="generate_new_game_clicked()">Generate</button>
+<button type="button" onclick="generate_game_clicked()">Generate</button>
 </div>
 </form>
 
