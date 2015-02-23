@@ -36,4 +36,84 @@ public class HelperFunctions
 		out.writeEndObject();
 		out.close();
 	}
+
+	public static class Rules
+	{
+		String expansion;
+		int playerCount;
+		int level;
+		boolean virulentStrain;
+		boolean mutationChallenge;
+		boolean worldwidePanic;
+		boolean labChallenge;
+
+		@Override
+		public String toString()
+		{
+			return expansion + "-" + playerCount + "p-" + level + "x" +
+				(virulentStrain ? "-vs" : "") +
+				(mutationChallenge ? "-mut" : "") +
+				(worldwidePanic ? "-wp" : "") +
+				(labChallenge ? "-lab" : "");
+		}
+		
+		public boolean parseCurrentToken(JsonParser json)
+			throws IOException
+		{
+			if (json.getCurrentName().equals("player_count")) {
+				json.nextToken();
+				playerCount = json.getIntValue();
+				return true;
+			}
+			else if (json.getCurrentName().equals("level")) {
+				json.nextToken();
+				level = json.getIntValue();
+				return true;
+			}
+			else if (json.getCurrentName().equals("expansion")) {
+				json.nextToken();
+				expansion = json.getText();
+				return true;
+			}
+			else if (json.getCurrentName().equals("virulent_strain")) {
+				json.nextToken();
+				virulentStrain = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("mutation_challenge")) {
+				json.nextToken();
+				mutationChallenge = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("worldwide_panic")) {
+				json.nextToken();
+				worldwidePanic = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("lab_challenge")) {
+				json.nextToken();
+				labChallenge = json.getText().equals("true");
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+	}
+
+	public static Rules parseRules(JsonParser json)
+		throws IOException
+	{
+		if (json.nextToken() != JsonToken.START_OBJECT) {
+			throw new Error("Expected start of object");
+		}
+
+		Rules r = new Rules();
+
+		while (json.nextToken() != JsonToken.END_OBJECT) {
+			assert json.getCurrentToken() == JsonToken.FIELD_NAME;
+			r.parseCurrentToken(json);
+		}
+		return r;
+	}
 }

@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 import javax.mail.*;
 import javax.mail.internet.*;
+import static pandemic.HelperFunctions.*;
 
 public class PandemicDealServlet extends HttpServlet
 {
@@ -224,25 +225,6 @@ public class PandemicDealServlet extends HttpServlet
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
 
-		class Rules {
-			String expansion;
-			int playerCount;
-			int level;
-			boolean virulentStrain;
-			boolean mutationChallenge;
-			boolean worldwidePanic;
-			boolean labChallenge;
-
-			@Override
-			public String toString()
-			{
-				return expansion + "-" + playerCount + "p-" + level + "x" +
-					(virulentStrain ? "-vs" : "") +
-					(mutationChallenge ? "-mut" : "") +
-					(worldwidePanic ? "-wp" : "") +
-					(labChallenge ? "-lab" : "");
-			}
-		}
 		Rules r = new Rules();
 		String versionString = null;
 		String ctx = "";
@@ -263,33 +245,8 @@ public class PandemicDealServlet extends HttpServlet
 				json.nextToken();
 				versionString = json.getText();
 			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("player_count")) {
-				json.nextToken();
-				r.playerCount = json.getIntValue();
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("level")) {
-				json.nextToken();
-				r.level = json.getIntValue();
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("expansion")) {
-				json.nextToken();
-				r.expansion = json.getText();
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("virulent_strain")) {
-				json.nextToken();
-				r.virulentStrain = json.getText().equals("true");
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("mutation_challenge")) {
-				json.nextToken();
-				r.mutationChallenge = json.getText().equals("true");
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("worldwide_panic")) {
-				json.nextToken();
-				r.worldwidePanic = json.getText().equals("true");
-			}
-			else if (ctx.equals("rules") && json.getCurrentName().equals("lab_challenge")) {
-				json.nextToken();
-				r.labChallenge = json.getText().equals("true");
+			else if (ctx.equals("rules")) {
+				r.parseCurrentToken(json);
 			}
 			else if (ctx.equals("roles")) {
 				int seat = Integer.parseInt(json.getCurrentName());

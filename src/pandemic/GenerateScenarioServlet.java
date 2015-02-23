@@ -146,26 +146,6 @@ public class GenerateScenarioServlet extends HttpServlet
 		String [] roles;
 	}
 
-	static class Rules
-	{
-		String expansion;
-		int playerCount;
-		int level;
-		boolean virulentStrain;
-		boolean mutationChallenge;
-		boolean worldwidePanic;
-		boolean labChallenge;
-
-		@Override
-		public String toString() {
-			return expansion + "-" + playerCount + "p-" + level + "x" +
-				(virulentStrain ? "-vs" : "") +
-				(mutationChallenge ? "-mut" : "") +
-				(worldwidePanic ? "-wp" : "") +
-				(labChallenge ? "-lab" : "");
-		}
-	}
-
 	static ScenarioInfo parseScenario(String scenarioData)
 		throws IOException
 	{
@@ -208,50 +188,6 @@ public class GenerateScenarioServlet extends HttpServlet
 			json.nextToken();
 			if (seat >= 1 && seat <= MAX_PLAYERS) {
 				r[seat-1] = json.getText();
-			}
-		}
-		return r;
-	}
-
-	static Rules parseRules(JsonParser json)
-		throws IOException
-	{
-		if (json.nextToken() != JsonToken.START_OBJECT) {
-			throw new Error("Expected start of object");
-		}
-
-		Rules r = new Rules();
-
-		while (json.nextToken() != JsonToken.END_OBJECT) {
-			assert json.getCurrentToken() == JsonToken.FIELD_NAME;
-			String field = json.getCurrentName();
-			if (field.equals("player_count")) {
-				json.nextToken();
-				r.playerCount = json.getIntValue();
-			}
-			else if (field.equals("level")) {
-				json.nextToken();
-				r.level = json.getIntValue();
-			}
-			else if (field.equals("expansion")) {
-				json.nextToken();
-				r.expansion = json.getText();
-			}
-			else if (field.equals("virulent_strain")) {
-				json.nextToken();
-				r.virulentStrain = json.getText().equals("true");
-			}
-			else if (field.equals("mutation_challenge")) {
-				json.nextToken();
-				r.mutationChallenge = json.getText().equals("true");
-			}
-			else if (field.equals("worldwide_panic")) {
-				json.nextToken();
-				r.worldwidePanic = json.getText().equals("true");
-			}
-			else if (field.equals("lab_challenge")) {
-				json.nextToken();
-				r.labChallenge = json.getText().equals("true");
 			}
 		}
 		return r;
