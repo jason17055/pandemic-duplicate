@@ -279,7 +279,8 @@ function generate_scenario(rules)
 console.log('saving scenario ' + G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id, XX);
 	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(G.rules), G.scenario_id);
-	stor_add_to_set(PACKAGE + '.pending_scenario_uploads', G.scenario_id);
+	stor_add_to_set(PACKAGE + '.scenarios_by_player_count.' + G.rules.player_count, G.scenario_id);
+	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
 
 	trigger_sync_process();
 
