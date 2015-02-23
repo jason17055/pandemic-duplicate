@@ -51,10 +51,10 @@ public class HelperFunctions
 		public String toString()
 		{
 			return expansion + "-" + playerCount + "p-" + level + "x" +
-				(virulentStrain ? "-vs" : "") +
-				(mutationChallenge ? "-mut" : "") +
-				(worldwidePanic ? "-wp" : "") +
-				(labChallenge ? "-lab" : "");
+				(virulentStrain ? "-virulent_strain" : "") +
+				(labChallenge ? "-lab_challenge" : "") +
+				(mutationChallenge ? "-mutation_challenge" : "") +
+				(worldwidePanic ? "-worldwide_panic" : "");
 		}
 		
 		public boolean parseCurrentToken(JsonParser json)

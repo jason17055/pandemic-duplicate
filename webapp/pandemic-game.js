@@ -204,10 +204,10 @@ function shuffle_array(A)
 function stringify_rules(R)
 {
 	return R.expansion+'-'+R.player_count+'p-'+R.level+'x' +
-		(R.virulent_strain ? '-vs' : '') +
-		(R.mutation_challenge ? '-mut' : '') +
-		(R.worldwide_panic ? '-wp' : '') +
-		(R.lab_challenge ? '-lab' : '');
+		(R.virulent_strain ? '-virulent_strain' : '') +
+		(R.lab_challenge ? '-lab_challenge' : '') +
+		(R.mutation_challenge ? '-mutation_challenge' : '') +
+		(R.worldwide_panic ? '-worldwide_panic' : '');
 }
 
 function parse_rules(s)
@@ -224,16 +224,16 @@ function parse_rules(s)
 	};
 	for (var i = 3; i < ss.length; i++) {
 		switch (ss[i]) {
-			case 'lab':
+			case 'lab_challenge':
 				ret.lab_challenge = true;
 				break;
-			case 'vs':
+			case 'virulent_strain':
 				ret.virulent_strain = true;
 				break;
-			case 'mut':
+			case 'mutation_challenge':
 				ret.mutation_challenge = true;
 				break;
-			case 'wp':
+			case 'worldwide_panic':
 				ret.worldwide_panic = true;
 				break;
 		}
