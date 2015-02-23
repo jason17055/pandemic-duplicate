@@ -158,13 +158,15 @@ function init_join_game_pick_page($pg, search_results)
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
 		var g = list[i];
-		if (!load_scenario(g.deal)) { continue; }
+		var r = load_scenario(g.deal);
+		if (!r) { continue; }
 
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
 
 		$('.expansion', $g).text(G.rules.expansion == 'none' ? 'Original' : G.rules.expansion);
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.module_list', $g).text(make_module_list(r.rules));
 		$('.epidemic_level_caption', $g).text(
 			G.rules.level == 4 ? 'Intro' :
 			G.rules.level == 5 ? 'Normal' :
@@ -2302,6 +2304,7 @@ function init_found_completed_games_page($pg, search_results)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.module_list', $g).text(make_module_list(parse_rules(r.rules)));
 		$('.epidemic_level_caption', $g).text(
 			G.rules.level == 4 ? 'Intro' :
 			G.rules.level == 5 ? 'Normal' :
@@ -2316,6 +2319,29 @@ function init_found_completed_games_page($pg, search_results)
 		$('button', $g).click(on_review_result_game_clicked);
 
 		$('.results_game_row.template', $pg).before($g);
+	}
+}
+
+function make_module_list(rules)
+{
+	var modules = [];
+	if (rules.virulent_strain) {
+		modules.push('Virulent Strain');
+	}
+	if (rules.mutation_challenge) {
+		modules.push('Mutation Challenge');
+	}
+	if (rules.worldwide_panic) {
+		modules.push('Worldwide Panic');
+	}
+	if (rules.lab_challenge) {
+		modules.push('Lab Challenge');
+	}
+	if (modules.length == 0) {
+		return '';
+	}
+	else {
+		return '(' + modules.join(', ') + ') ';
 	}
 }
 
@@ -2347,6 +2373,7 @@ function init_review_results_page($pg)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.module_list', $g).text(make_module_list(parse_rules(r.rules)));
 		$('.epidemic_level_caption', $g).text(
 			G.rules.level == 4 ? 'Intro' :
 			G.rules.level == 5 ? 'Normal' :
