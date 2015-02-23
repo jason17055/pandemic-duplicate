@@ -164,15 +164,9 @@ function init_join_game_pick_page($pg, search_results)
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
 
-		$('.expansion', $g).text(G.rules.expansion == 'none' ? 'Original' : G.rules.expansion);
+		$('.scenario_name_container', $g).append(make_scenario_label(g.deal));
+		$('.module_list_container', $g).append(make_modules_label(r.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
-		$('.module_list', $g).text(make_module_list(r.rules));
-		$('.epidemic_level_caption', $g).text(
-			G.rules.level == 4 ? 'Intro' :
-			G.rules.level == 5 ? 'Normal' :
-			G.rules.level == 6 ? 'Heroic' :
-			G.rules.level == 7 ? 'Legendary' : ''
-			);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
@@ -1725,6 +1719,32 @@ function stor_get_list(key)
 	}
 }
 
+function make_modules_label(rules)
+{
+	var $m = $('<span class="module list"></span>');
+	$m.append(rules.level == 4 ? 'Intro' :
+			  rules.level == 5 ? 'Normal' :
+			  rules.level == 6 ? 'Heroic' :
+			  rules.level == 7 ? 'Legendary' : '');
+	if (rules.lab_challenge) {
+		$m.append('<br>');
+		$m.append('Lab Challenge');
+	}
+	if (rules.mutation_challenge) {
+		$m.append('<br>');
+		$m.append('Mutation Challenge');
+	}
+	if (rules.worldwide_panic) {
+		$m.append('<br>');
+		$m.append('Worldwide Panic');
+	}
+	if (rules.virulent_strain) {
+		$m.append('<br>');
+		$m.append('Virulent Strain');
+	}
+	return $m;
+}
+
 function make_scenario_label(scenario_id)
 {
 	var m;
@@ -2303,14 +2323,8 @@ function init_found_completed_games_page($pg, search_results)
 		}
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.module_list_container', $g).append(make_modules_label(parse_rules(r.rules)));
 		$('.epidemic_count', $g).text(G.rules.level);
-		$('.module_list', $g).text(make_module_list(parse_rules(r.rules)));
-		$('.epidemic_level_caption', $g).text(
-			G.rules.level == 4 ? 'Intro' :
-			G.rules.level == 5 ? 'Normal' :
-			G.rules.level == 6 ? 'Heroic' :
-			G.rules.level == 7 ? 'Legendary' : ''
-			);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -2319,29 +2333,6 @@ function init_found_completed_games_page($pg, search_results)
 		$('button', $g).click(on_review_result_game_clicked);
 
 		$('.results_game_row.template', $pg).before($g);
-	}
-}
-
-function make_module_list(rules)
-{
-	var modules = [];
-	if (rules.virulent_strain) {
-		modules.push('Virulent Strain');
-	}
-	if (rules.mutation_challenge) {
-		modules.push('Mutation Challenge');
-	}
-	if (rules.worldwide_panic) {
-		modules.push('Worldwide Panic');
-	}
-	if (rules.lab_challenge) {
-		modules.push('Lab Challenge');
-	}
-	if (modules.length == 0) {
-		return '';
-	}
-	else {
-		return '(' + modules.join(', ') + ') ';
 	}
 }
 
@@ -2372,14 +2363,8 @@ function init_review_results_page($pg)
 		}
 
 		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.module_list_container', $g).append(make_modules_label(G.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
-		$('.module_list', $g).text(make_module_list(parse_rules(r.rules)));
-		$('.epidemic_level_caption', $g).text(
-			G.rules.level == 4 ? 'Intro' :
-			G.rules.level == 5 ? 'Normal' :
-			G.rules.level == 6 ? 'Heroic' :
-			G.rules.level == 7 ? 'Legendary' : ''
-			);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -2438,13 +2423,8 @@ function init_pick_scenario_page($pg, xtra)
 
 		var $g = $tr;
 		G = load_scenario(a[i]);
+		$('.module_list_container',$tr).append(make_modules_label(G.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
-		$('.epidemic_level_caption', $g).text(
-			G.rules.level == 4 ? 'Intro' :
-			G.rules.level == 5 ? 'Normal' :
-			G.rules.level == 6 ? 'Heroic' :
-			G.rules.level == 7 ? 'Legendary' : ''
-			);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var $p_name = $('<span><img class="role_icon"></span>');
