@@ -271,6 +271,10 @@ function generate_scenario_real(rules)
 	for (var i = 0; i < num_roles; i++) {
 		R.push(Roles[i]);
 	}
+
+	if (G.rules.lab_challenge) {
+		find_and_remove_card(R, 'Field Operative');
+	}
 	shuffle_array(R);
 
 	shuffle_array(A);
