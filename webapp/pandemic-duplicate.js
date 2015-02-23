@@ -19,7 +19,7 @@ function load_options()
 		Pandemic.Cities['Toronto'].name = 'Toronto';
 	}
 	else {
-		Pandemic.Cities['Toronto'].name = 'Montreal';
+		Pandemic.Cities['Toronto'].name = 'Montr\u00e9al';
 	}
 
 	CFG.game_detail_level = +localStorage.getItem(PACKAGE+'.game_detail_level');
