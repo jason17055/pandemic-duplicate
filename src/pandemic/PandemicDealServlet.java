@@ -219,6 +219,7 @@ public class PandemicDealServlet extends HttpServlet
 	void doPostDeal(HttpServletRequest req, HttpServletResponse resp, String deal_id)
 		throws IOException
 	{
+		log.info("new scenario received for " + deal_id);
 		String content = getRequestContent(req);
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
@@ -311,7 +312,8 @@ public class PandemicDealServlet extends HttpServlet
 
 		try
 		{
-			Key key = KeyFactory.createKey("Deal", deal_id);
+			Key key = KeyFactory.createKey("Scenario", deal_id);
+			log.info("key is " + key.toString());
 			Date createdDate = new Date();
 			String creatorIp = req.getRemoteAddr();
 
@@ -319,6 +321,7 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("content", new Text(content));
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", r.toString());
+			ent.setProperty("playerCount", r.playerCount);
 
 		// WARNING: older version of playerRoles is /-separated string
 			ent.setProperty("playerRoles", playerRoles);
@@ -327,6 +330,8 @@ public class PandemicDealServlet extends HttpServlet
 			ent.setProperty("createdBy", creatorIp);
 
 			datastore.put(ent);
+			log.info("saved scenario");
+
 			txn.commit();
 
 			resp.setContentType("text/json;charset=UTF-8");
