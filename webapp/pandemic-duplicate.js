@@ -595,6 +595,7 @@ function init_game_completed_page($pg)
 	var f = document.game_completed_form;
 	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
 	f.rules.value = stringify_rules(G.rules);
+	f.cure_count.value = count_cured_diseases(G);
 	f.shuffle_id.value = G.shuffle_id;
 }
 
@@ -2212,9 +2213,15 @@ function do_discover_cure(disease_color)
 
 function count_uncured_diseases(G)
 {
+	var total = (G.rules.mutation_challenge || G.rules.worldwide_panic) ? 5 : 4;
+	return total - count_cured_diseases(G);
+}
+
+function count_cured_diseases(G)
+{
 	var count = 0;
 	for (var disease_color in Pandemic.Diseases) {
-		if (!G.diseases[disease_color]) {
+		if (G.diseases[disease_color]) {
 			count++;
 		}
 	}
