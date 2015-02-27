@@ -552,6 +552,12 @@ function update_game_score()
 
 function init_game_completed_page($pg)
 {
+	var f = document.game_completed_form;
+	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
+	f.rules.value = stringify_rules(G.rules);
+	f.cure_count.value = count_cured_diseases(G);
+	f.shuffle_id.value = G.shuffle_id;
+
 	$('.turns', $pg).text(G.turns);
 	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
 	$('.level', $pg).text(G.rules.level);
@@ -591,12 +597,6 @@ function init_game_completed_page($pg)
 		$('.player'+i+' .role_icon', $pg).attr('src', get_role_icon(G.roles[i]));
 		$('.player'+i+' .role', $pg).text(G.roles[i]);
 	}
-
-	var f = document.game_completed_form;
-	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
-	f.rules.value = stringify_rules(G.rules);
-	f.cure_count.value = count_cured_diseases(G);
-	f.shuffle_id.value = G.shuffle_id;
 }
 
 function submit_player_names_form()
