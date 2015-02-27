@@ -1060,7 +1060,12 @@ function make_history_item(evt)
 	if (evt.type == 'infection') {
 		var $e = $('<div class="infection_event"></div>');
 		$e.append(make_infection_card(evt.infection));
-		$e.append(' is infected (add 1 cube)');
+		if (G.chronic_effect && G.virulent_strain == Pandemic.Cities[evt.infection].color) {
+			$e.append(' is infected (add 1 or 2 cubes)');
+		}
+		else {
+			$e.append(' is infected (add 1 cube)');
+		}
 		return $e;
 	}
 	else if (evt.type == 'epidemic') {
@@ -1221,6 +1226,9 @@ function do_move(m)
 					'epidemic_count': G.epidemic_count+G.pending_epidemics,
 					'card': c1
 					});
+				if (c1 == 'Epidemic: Chronic Effect') {
+					G.chronic_effect = true;
+				}
 			}
 			else {
 				G.hands[G.active_player].push(c1);
