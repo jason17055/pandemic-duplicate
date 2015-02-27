@@ -316,6 +316,10 @@ function show_current_game(xtra)
 		var $pg = show_page('special_event_page');
 		return init_retrieve_special_event_page($pg);
 	}
+	else if (xtra == '/virulent_strain') {
+		var $pg = show_page('virulent_strain_page');
+		return init_virulent_strain_page($pg);
+	}
 	else if (xtra == '/discover_cure') {
 		var $pg = show_page('discover_cure_page');
 		return init_discover_cure_page($pg);
@@ -1113,6 +1117,12 @@ function make_history_item(evt)
 		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
 		return $e;
 	}
+	else if (evt.type == 'virulent_strain') {
+		var $e = $('<div class="virulent_strain_event">&nbsp; --> <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> becomes the virulent strain</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
 	else if (evt.type == 'resilient_population') {
 		var $e = $('<div class="resilient_population_event">&nbsp; --> <span class="card_container"></span> is made resilient</div>');
 		$('.card_container',$e).append(make_infection_card(evt.city));
@@ -1271,6 +1281,9 @@ function do_move(m)
 	}
 	else if (mm[0] == 'retrieve') {
 		do_retrieve_special_event(m.substring(9));
+	}
+	else if (mm[0] == 'virulent') {
+		do_virulent_strain(mm[1]);
 	}
 	else if (mm[0] == 'discover') {
 		do_discover_cure(mm[1]);
@@ -1602,12 +1615,21 @@ function set_continue_btn_caption($pg)
 	if (G.step == 'actions') {
 		$('.goto_draw_cards_btn', $pg).show();
 		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else if (G.pending_epidemics > 0) {
 		$('.goto_draw_cards_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).show();
+		$('.goto_virulent_strain_btn', $pg).hide();
+		$('.goto_infection_btn', $pg).hide();
+		$('.goto_player_turn_btn', $pg).hide();
+	}
+	else if (G.step == "epidemic" && G.rules.virulent_strain && !G.virulent_strain) {
+		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_virulent_strain_btn', $pg).show();
 		$('.goto_infection_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).hide();
 	}
@@ -1615,12 +1637,14 @@ function set_continue_btn_caption($pg)
 			(G.step == 'draw_cards' || G.step == 'epidemic') && !G.one_quiet_night)) {
 		$('.goto_draw_cards_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).show();
 		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else {
 		$('.goto_draw_cards_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).show();
 
@@ -2146,6 +2170,15 @@ function declare_victory_clicked()
 	return set_move('claim_victory');
 }
 
+function on_determine_virulent_strain_clicked()
+{
+	console.log("Picking virulent strain");
+	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/virulent_strain';
+	history.pushState(null, null, u);
+	on_state_init();
+	return false;
+}
+
 function discover_cure_clicked()
 {
 	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discover_cure';
@@ -2190,6 +2223,23 @@ function init_show_discards_page($pg)
 	}
 }
 
+function on_virulent_strain_clicked(disease_color)
+{
+	return set_move('virulent ' + disease_color);
+}
+
+function do_virulent_strain(disease_color)
+{
+	G.virulent_strain = disease_color;
+	G.history.push({
+		'type':'virulent_strain',
+		'disease':disease_color
+		});
+
+	G.step = 'epidemic';
+	G.time++;
+}
+
 function on_discover_cure_clicked(disease_color)
 {
 	return set_move('discover '+disease_color);
@@ -2226,6 +2276,19 @@ function count_cured_diseases(G)
 		}
 	}
 	return count;
+}
+
+function init_virulent_strain_page($pg)
+{
+	$('.virulent_strain_btn', $pg).each(function(idx,el) {
+		var disease_color = el.getAttribute('data-disease');
+		if (disease_color == "purple" && !G.rules.worldwide_panic) {
+			$(el).hide();
+		}
+		else {
+			$(el).show();
+		}
+		});
 }
 
 function init_discover_cure_page($pg)
