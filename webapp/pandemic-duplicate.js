@@ -1317,6 +1317,9 @@ function epidemic_drawn(c)
 		'epidemic_count': G.epidemic_count+G.pending_epidemics,
 		'card': c
 		});
+	if (c != 'Epidemic') {
+		G.player_discards.push(c);
+	}
 	if (c == 'Epidemic: Chronic Effect') {
 		G.chronic_effect = true;
 	}
@@ -2237,6 +2240,28 @@ function init_show_discards_page($pg)
 		$('.infection_discards_list', $pg).append(
 			make_infection_card_li(c)
 			);
+	}
+
+	$('.epidemic_discards_list', $pg).empty();
+
+	var ep_count = 0;
+
+	for (var i = 0; i < G.player_discards.length; i++) {
+		var c = G.player_discards[i];
+
+		if (is_epidemic(c)) {
+			$('.epidemic_discards_list', $pg).append(
+				make_player_card_li(c)
+				);
+			ep_count++;
+		}
+	}
+
+	if (ep_count > 0) {
+		$('.virulent_epidemic_discards', $pg).show();
+	}
+	else {
+		$('.virulent_epidemic_discards', $pg).hide();
 	}
 }
 
