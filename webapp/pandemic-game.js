@@ -124,7 +124,7 @@ var Epidemics = [
 	'Complex Molecular Structure',
 	'Government Interference',
 	'Hidden Pocket',
-//	'Rate Effect',
+	'Rate Effect',
 	'Slippery Slope',
 	'Unacceptable Loss',
 	'Uncounted Populations',
@@ -161,15 +161,13 @@ Counts['none'] = {
 Counts['on_the_brink'] = {
 	'num_specials': 13,
 	'num_roles': 13,
-//	'num_epidemics': 8
-	'num_epidemics': 7,
+	'num_epidemics': 8,
 	'num_sequences': 0
 }
 Counts['in_the_lab'] = {
 	'num_specials': 16,
 	'num_roles': 17,
-//	'num_epidemics': 10
-	'num_epidemics': 9,
+	'num_epidemics': 10,
 	'num_sequences': 14
 }
 

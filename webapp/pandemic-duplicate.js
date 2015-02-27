@@ -1041,6 +1041,11 @@ function do_more_infection()
 			});
 		G.infection_discards.push(c);
 		G.pending_infection--;
+		if (G.rate_effect && !G.rate_effect_extra_drawn &&
+			G.virulent_strain == Pandemic.Cities[c].color) {
+			G.pending_infection++;
+			G.rate_effect_extra_drawn = true;
+		}
 	}
 	else {
 
@@ -1194,6 +1199,7 @@ function start_infection()
 	else {
 		G.pending_infection = G.infection_rate;
 	}
+	G.rate_effect_extra_drawn = false;
 	do_more_infection();
 }
 
@@ -1220,15 +1226,7 @@ function do_move(m)
 
 			G.pending_epidemics = 0;
 			if (is_epidemic(c1)) {
-				G.pending_epidemics++;
-				G.history.push({
-					'type': 'draw_epidemic',
-					'epidemic_count': G.epidemic_count+G.pending_epidemics,
-					'card': c1
-					});
-				if (c1 == 'Epidemic: Chronic Effect') {
-					G.chronic_effect = true;
-				}
+				epidemic_drawn(c1);
 			}
 			else {
 				G.hands[G.active_player].push(c1);
@@ -1240,12 +1238,7 @@ function do_move(m)
 			}
 
 			if (is_epidemic(c2)) {
-				G.pending_epidemics++;
-				G.history.push({
-					'type': 'draw_epidemic',
-					'epidemic_count': G.epidemic_count+G.pending_epidemics,
-					'card': c2
-					});
+				epidemic_drawn(c2);
 			}
 			else {
 				G.hands[G.active_player].push(c2);
@@ -1313,6 +1306,22 @@ function do_move(m)
 
 		console.log("unrecognized move: "+m);
 		G.time++;
+	}
+}
+
+function epidemic_drawn(c)
+{
+	G.pending_epidemics++;
+	G.history.push({
+		'type': 'draw_epidemic',
+		'epidemic_count': G.epidemic_count+G.pending_epidemics,
+		'card': c
+		});
+	if (c == 'Epidemic: Chronic Effect') {
+		G.chronic_effect = true;
+	}
+	else if (c == 'Epidemic: Rate Effect') {
+		G.rate_effect = true;
 	}
 }
 
