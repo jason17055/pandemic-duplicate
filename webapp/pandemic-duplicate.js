@@ -985,6 +985,136 @@ function start_epidemic()
 	G.pending_epidemics--;
 
 	G.infection_discards.push(c);
+
+	if (G.virulent_strain) {
+		resolve_vs_epidemic();
+	}
+}
+
+function resolve_vs_epidemic()
+{
+	var ep = G.current_epidemic;
+	if (!ep) {
+		return;
+	}
+
+	if (G.current_epidemic == 'Chronic Effect') {
+		G.chronic_effect = true;
+		G.history.push({
+			'type': 'chronic_effect_activate'
+			});
+	}
+	else if (ep == 'Complex Molecular Structure') {
+		if (is_cured(G, G.virulent_strain)) {
+			vs_dud(ep);
+		}
+		else {
+			G.history.push({
+				'type': 'complex_molecular_structure_activate',
+				'disease': G.virulent_strain
+				});
+		}
+	}
+	else if (ep == 'Government Interference') {
+		G.history.push({
+			'type': 'government_interference_activate',
+			'disease': G.virulent_strain
+			});
+	}
+	else if (ep == 'Hidden Pocket') {
+		if (!is_eradicated(G, G.virulent_strain)) {
+			vs_dud(ep);
+		}
+		else {
+			var count = 0;
+			for (var i = 0; i < G.infection_discards.length; i++) {
+				var c = G.infection_discards[i];
+				var ci = Pandemic.Cities[c];
+				if (ci.color == G.virulent_strain) {
+					if (count == 0) {
+						G.history.push({
+							'type': 'hidden_pocket_activate',
+							'disease': G.virulent_strain
+							});
+						G.diseases[G.virulent_strain] = 'cured';
+						if (G.rate_effect) {
+							G.history.push({
+								'type': 'rate_effect_activate'
+								});
+						}
+					}
+					G.history.push({
+						'type': 'hidden_pocket_infect',
+						'city': c
+						});
+					count++;
+				}
+			}
+			if (count == 0) {
+				vs_dud(ep);
+			}
+		}
+	}
+	else if (ep == 'Rate Effect') {
+		G.rate_effect = true;
+		if (is_eradicated(G, G.virulent_strain)) {
+			vs_dud(ep);
+		}
+		else {
+			G.history.push({
+				'type': 'rate_effect_activate',
+				'disease': G.virulent_strain
+				});
+		}
+	}
+	else if (ep == 'Slippery Slope') {
+		G.history.push({
+			'type': 'slippery_slope_activate',
+			'disease': G.virulent_strain
+			});
+	}
+	else if (ep == 'Unacceptable Loss') {
+		G.history.push({
+			'type': 'unacceptable_loss',
+			'disease': G.virulent_strain
+			});
+	}
+	else if (ep == 'Uncounted Populations') {
+		G.history.push({
+			'type': 'uncounted_populations',
+			'disease': G.virulent_strain
+			});
+	}
+	else if (ep == 'Highly Contagious') {
+		G.history.push({
+			'type': 'highly_contagious_activate',
+			'disease': G.virulent_strain
+			});
+	}
+	else if (ep == 'Resistant to Treatment') {
+		if (is_cured(G, G.virulent_strain)) {
+			vs_dud(ep);
+		}
+		else {
+			G.history.push({
+				'type': 'resistant_to_treatment_activate',
+				'disease': G.virulent_strain
+				});
+		}
+	}
+	else {
+		console.log("Unrecognized epidemic: '" + ep + "'");
+	}
+
+	G.current_epidemic = null;
+}
+
+function vs_dud(epidemic_name)
+{
+	G.history.push({
+		'type': 'vs_epidemic_dud',
+		'epidemic': epidemic_name
+		});
 }
 
 // Note: this function is called when the user clicks Next after an
@@ -1042,9 +1172,13 @@ function do_more_infection()
 		G.infection_discards.push(c);
 		G.pending_infection--;
 		if (G.rate_effect && !G.rate_effect_extra_drawn &&
+			!is_eradicated(G, G.virulent_strain) &&
 			G.virulent_strain == Pandemic.Cities[c].color) {
 			G.pending_infection++;
 			G.rate_effect_extra_drawn = true;
+			G.history.push({
+				'type': 'rate_effect_trigger'
+				});
 		}
 	}
 	else {
@@ -1065,7 +1199,11 @@ function make_history_item(evt)
 	if (evt.type == 'infection') {
 		var $e = $('<div class="infection_event"></div>');
 		$e.append(make_infection_card(evt.infection));
-		if (G.chronic_effect && G.virulent_strain == Pandemic.Cities[evt.infection].color) {
+		var ci = Pandemic.Cities[evt.infection];
+		if (is_eradicated(G, ci.color)) {
+			$e.append(' is not infected (eradicated)');
+		}
+		else if (G.chronic_effect && G.virulent_strain == ci.color) {
 			$e.append(' is infected (add 1 or 2 cubes)');
 		}
 		else {
@@ -1127,6 +1265,12 @@ function make_history_item(evt)
 		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
 		return $e;
 	}
+	else if (evt.type == 'eradicate') {
+		var $e = $('<div class="eradicate_event"><span class="disease_name_container"><img src="" class="card_icon" alt=""></span> is eradicated</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
 	else if (evt.type == 'virulent_strain') {
 		var $e = $('<div class="virulent_strain_event">&nbsp; --> <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> becomes the virulent strain</div>');
 		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
@@ -1138,7 +1282,87 @@ function make_history_item(evt)
 		$('.card_container',$e).append(make_infection_card(evt.city));
 		return $e;
 	}
+	else if (evt.type == 'vs_epidemic_dud') {
+		var $e = $('<div class="vs_epidemic_dud_event">&nbsp; --> <span class="epidemic_name"></span>: no effect</div>');
+		$('.epidemic_name',$e).text(evt.epidemic);
+		return $e;
+	}
+	else if (evt.type == 'chronic_effect_activate') {
+		var $e = $('<div class="chronic_effect_activate_event">&nbsp; --> Chronic Effect activates (<span class="disease_name_container"><img src="" class="card_icon" alt=""></span>)</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'complex_molecular_structure_activate') {
+		var $e = $('<div class="complex_molecular_structure_activate_event">&nbsp; --> Complex Molecular Structure: <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> now requires an additional card to cure</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'government_interference_activate') {
+		var $e = $('<div class="government_interference_activate_event">&nbsp; --> Government Interference activates (<span class="disease_name_container"><img src="" class="card_icon" alt=""></span>)</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'hidden_pocket_activate') {
+		var $e = $('<div class="hidden_pocket_activate_event">&nbsp; --> Hidden Pocket: <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> is no longer eradicated</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'hidden_pocket_infect') {
+		var $e = $('<div class="hidden_pocket_infect_event"></div>');
+		$e.append(make_infection_card(evt.city));
+		var ci = Pandemic.Cities[evt.city];
+		$e.append(' is infected (add 1 cube)');
+		return $e;
+	}
+	else if (evt.type == 'rate_effect_activate') {
+		var $e = $('<div class="rate_effect_activate_event">&nbsp; --> Rate Effect activates (<span class="disease_name_container"><img src="" class="card_icon" alt=""></span>)</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'rate_effect_deactivate') {
+		var $e = $('<div class="rate_effect_deactivate_event">&nbsp; --> Rate Effect is no longer active</div>');
+	}
+	else if (evt.type == 'rate_effect_trigger') {
+		var $e = $('<div class="rate_effect_trigger_event">&nbsp; --> Rate Effect triggers</div>');
+		return $e;
+	}
+	else if (evt.type == 'slippery_slope_activate') {
+		var $e = $('<div class="slippery_slope_activate_event">&nbsp; --> Slippery Slope: <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> outbreaks now count double</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'unacceptable_loss') {
+		var $e = $('<div class="unacceptable_loss_event">&nbsp; --> Unacceptable Loss: remove 4 <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> cubes from supply</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'uncounted_populations') {
+		var $e = $('<div class="uncounted_populations_event">&nbsp; --> Uncounted Populations: cities with exactly 1 <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> cube get a second</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'highly_contagious_activate') {
+		var $e = $('<div class="highly_contagious_activate_event">&nbsp; --> Highly Contagious: <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> outbreaks now add two cubes instead of one</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
+	else if (evt.type == 'resistant_to_treatment_activate') {
+		var $e = $('<div class="resistant_to_treatment_activate_event">&nbsp; --> Resistant to Treatment: <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> cubes now take two actions to treat</div>');
+		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
+		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
+		return $e;
+	}
 	else {
+		console.log("Unrecognized event type: '" + evt.type + "'");
 		return null;
 	}
 }
@@ -1289,6 +1513,9 @@ function do_move(m)
 	else if (mm[0] == 'discover') {
 		do_discover_cure(mm[1]);
 	}
+	else if (mm[0] == 'eradicate') {
+		do_eradicate(mm[1]);
+	}
 	else if (mm[0] == 'forecast') {
 		do_forecast(m.substring(9));
 	}
@@ -1319,12 +1546,7 @@ function epidemic_drawn(c)
 		});
 	if (c != 'Epidemic') {
 		G.player_discards.push(c);
-	}
-	if (c == 'Epidemic: Chronic Effect') {
-		G.chronic_effect = true;
-	}
-	else if (c == 'Epidemic: Rate Effect') {
-		G.rate_effect = true;
+		G.current_epidemic = c.substring(10);
 	}
 }
 
@@ -2192,7 +2414,6 @@ function declare_victory_clicked()
 
 function on_determine_virulent_strain_clicked()
 {
-	console.log("Picking virulent strain");
 	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/virulent_strain';
 	history.pushState(null, null, u);
 	on_state_init();
@@ -2280,6 +2501,8 @@ function do_virulent_strain(disease_color)
 
 	G.step = 'epidemic';
 	G.time++;
+
+	resolve_vs_epidemic();
 }
 
 function on_discover_cure_clicked(disease_color)
@@ -2303,6 +2526,28 @@ function do_discover_cure(disease_color)
 	G.time++;
 }
 
+function on_eradicate_clicked(disease_color)
+{
+	return set_move('eradicate '+disease_color);
+}
+
+function do_eradicate(disease_color)
+{
+	G.diseases[disease_color] = 'eradicated';
+	G.history.push({
+		'type':'eradicate',
+		'disease':disease_color
+		});
+
+	if (G.rate_effect && disease_color == G.virulent_strain) {
+		G.history.push({
+			'type': 'rate_effect_deactivate'
+			});
+	}
+
+	G.time++;
+}
+
 function count_uncured_diseases(G)
 {
 	var total = (G.rules.mutation_challenge || G.rules.worldwide_panic) ? 5 : 4;
@@ -2313,11 +2558,21 @@ function count_cured_diseases(G)
 {
 	var count = 0;
 	for (var disease_color in Pandemic.Diseases) {
-		if (G.diseases[disease_color]) {
+		if (is_cured(G, disease_color)) {
 			count++;
 		}
 	}
 	return count;
+}
+
+function is_cured(G, disease_color)
+{
+	return G.diseases[disease_color] == 'cured' || is_eradicated(G, disease_color);
+}
+
+function is_eradicated(G, disease_color)
+{
+	return G.diseases[disease_color] == 'eradicated';
 }
 
 function init_virulent_strain_page($pg)
@@ -2337,7 +2592,17 @@ function init_discover_cure_page($pg)
 {
 	$('.discover_cure_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (G.diseases[disease_color]) {
+		if (is_cured(G, disease_color)) {
+			$(el).hide();
+		}
+		else {
+			$(el).show();
+		}
+		});
+
+	$('.eradicate_btn', $pg).each(function(idx,el) {
+		var disease_color = el.getAttribute('data-disease');
+		if (is_eradicated(G, disease_color) || !is_cured(G, disease_color)) {
 			$(el).hide();
 		}
 		else {
