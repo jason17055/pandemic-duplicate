@@ -651,9 +651,9 @@ function save_player_names()
 		);
 }
 
-function init_deck_setup_page($pg, shuffle_id)
+function init_deck_setup_page($pg, scenario_id)
 {
-	load_scenario(shuffle_id);
+	load_scenario(scenario_id);
 
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
