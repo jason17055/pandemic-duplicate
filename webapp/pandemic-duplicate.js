@@ -92,17 +92,17 @@ function init_game()
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
 }
 
-function load_scenario(shuffle_id)
+function load_scenario(scenario_id)
 {
-	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.scenario.' + scenario_id);
 	if (!s) {
-		console.log('Fatal: scenario '+shuffle_id+' is not known');
+		console.log('Fatal: scenario '+scenario_id+' is not known');
 		return;
 	}
 
 	G = JSON.parse(s);
-	G.shuffle_id = shuffle_id;
-	G.scenario_id = shuffle_id;
+	G.shuffle_id = scenario_id;
+	G.scenario_id = scenario_id;
 	return G;
 }
 
