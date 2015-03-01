@@ -2797,6 +2797,7 @@ function init_pick_scenario_page($pg, xtra)
 		$tr.removeClass('template');
 		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
+		$('button',$tr).attr('data-scenario-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
 		var $g = $tr;
