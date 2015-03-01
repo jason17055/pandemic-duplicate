@@ -460,6 +460,7 @@ function submit_generate_game_form()
 		'worldwide_panic': f.worldwide_panic.checked
 		};
 	G = generate_scenario(rules);
+	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
 
 	// create game
 	G.game_id = generate_new_game_id(G.scenario_id);
