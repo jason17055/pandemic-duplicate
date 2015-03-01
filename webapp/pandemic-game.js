@@ -91,7 +91,8 @@ var Disease_Names = {
 	'black': 'Black',
 	'blue': 'Blue',
 	'red': 'Red',
-	'yellow': 'Yellow'
+	'yellow': 'Yellow',
+	'purple': 'Purple'
 	};
 
 var Specials = [
