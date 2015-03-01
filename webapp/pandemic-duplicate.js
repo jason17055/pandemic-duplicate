@@ -2684,8 +2684,8 @@ function init_found_completed_games_page($pg, search_results)
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
 
-		var shuffle_id = r.shuffle_id;
-		load_scenario(shuffle_id);
+		var scenario_id = r.shuffle_id;
+		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
@@ -2700,13 +2700,13 @@ function init_found_completed_games_page($pg, search_results)
 			}
 		}
 
-		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(parse_rules(r.rules)));
 		$('.epidemic_count', $g).text(G.rules.level);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-scenario-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', scenario_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
@@ -2724,8 +2724,8 @@ function init_review_results_page($pg)
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
 
-		var shuffle_id = r.shuffle_id;
-		load_scenario(shuffle_id);
+		var scenario_id = r.shuffle_id;
+		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
@@ -2740,13 +2740,13 @@ function init_review_results_page($pg)
 			}
 		}
 
-		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(G.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-scenario-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', scenario_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
