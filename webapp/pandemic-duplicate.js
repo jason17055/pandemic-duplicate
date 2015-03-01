@@ -778,14 +778,14 @@ function init_player_setup_page($pg, game_id)
 	}
 }
 
-function init_results_page($pg, shuffle_id)
+function init_results_page($pg, scenario_id)
 {
-	load_scenario(shuffle_id);
+	load_scenario(scenario_id);
 	
-	$('.scenario_name', $pg).text(scenario_name(shuffle_id));
+	$('.scenario_name', $pg).text(scenario_name(scenario_id));
 
-	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
-	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
+	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
+	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + scenario_id);
 	if (my_result_id) {
 		all_result_ids.push(my_result_id);
 	}
@@ -799,7 +799,7 @@ function init_results_page($pg, shuffle_id)
 		var result_id = all_result_ids[i];
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
-		if (r.shuffle_id != shuffle_id) { continue; }
+		if (r.shuffle_id != scenario_id) { continue; }
 
 		if (all_result_ids[i] == my_result_id) {
 			r.mine = true;
