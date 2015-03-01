@@ -1001,7 +1001,8 @@ function resolve_vs_epidemic()
 	if (G.current_epidemic == 'Chronic Effect') {
 		G.chronic_effect = true;
 		G.history.push({
-			'type': 'chronic_effect_activate'
+			'type': 'chronic_effect_activate',
+			'disease': G.virulent_strain
 			});
 	}
 	else if (ep == 'Complex Molecular Structure') {
