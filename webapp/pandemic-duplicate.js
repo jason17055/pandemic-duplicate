@@ -560,7 +560,7 @@ function init_game_completed_page($pg)
 	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
 	f.rules.value = stringify_rules(G.rules);
 	f.cure_count.value = count_cured_diseases(G);
-	f.shuffle_id.value = G.shuffle_id;
+	f.shuffle_id.value = G.scenario_id;
 
 	$('.turns', $pg).text(G.turns);
 	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
@@ -676,7 +676,7 @@ function init_deck_setup_page($pg, scenario_id)
 
 function continue_after_deck_setup()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/board_setup';
+	var u = BASE_URL + '#'+G.scenario_id+'/board_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 
@@ -946,7 +946,7 @@ function load_game_at(game_id, target_time)
 	target_time = +target_time;
 	while (G.time < target_time) {
 
-		var mv = get_move(G.shuffle_id, G.time);
+		var mv = get_move(G.scenario_id, G.time);
 		do_move(mv);
 	}
 
@@ -2178,12 +2178,12 @@ function start_publishing_game(game_id)
 function set_move(m)
 {
 	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.last_played', timestr);
-	if (localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played') == null) {
-		localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played', timestr);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.last_played', timestr);
+	if (localStorage.getItem(PACKAGE + '.game.' + G.scenario_id + '.first_played') == null) {
+		localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.first_played', timestr);
 	}
 
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time, m);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.T' + G.time, m);
 
 	do_move(m);
 	navigate_to_current_turn();
@@ -2398,7 +2398,7 @@ function discarded_special_event(s)
 function record_game_finished()
 {
 	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.finished', timestr);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.finished', timestr);
 }
 
 function admit_defeat_clicked()
