@@ -2093,22 +2093,22 @@ function navigate_to_current_turn()
 	return;
 }
 
-function deal_finished(deal_id)
+function scenario_finished(deal_id)
 {
 	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished') != null);
 }
 
-function deal_started(deal_id)
+function scenario_started(deal_id)
 {
 	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played') != null);
 }
 
-function deal_finish_time(deal_id)
+function scenario_finish_time(deal_id)
 {
 	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished');
 }
 
-function deal_first_played_time(deal_id)
+function scenario_first_played_time(deal_id)
 {
 	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played');
 }
@@ -2825,10 +2825,10 @@ function init_pick_scenario_page($pg, xtra)
 		}
 
 		description +=
-			deal_finished(a[i]) ? ('; Completed ' + format_time(deal_finish_time(a[i]))) :
-			deal_started(a[i]) ? ('; Started ' + format_time(deal_first_played_time(a[i]))) :
+			scenario_finished(a[i]) ? ('; Completed ' + format_time(scenario_finish_time(a[i]))) :
+			scenario_started(a[i]) ? ('; Started ' + format_time(scenario_first_played_time(a[i]))) :
 			'';
-		if (results_info.maximum_score > 0 && deal_finished(a[i])) {
+		if (results_info.maximum_score > 0 && scenario_finished(a[i])) {
 			description += '; best score: '+results_info.maximum_score;
 		}
 
