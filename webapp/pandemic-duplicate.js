@@ -3012,12 +3012,12 @@ function clear_storage_clicked()
 	location.reload();
 }
 
-function summarize_results_for_scenario(shuffle_id)
+function summarize_results_for_scenario(scenario_id)
 {
 	var names = {};
 	var best_score = 0;
 
-	var a = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
+	var a = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
 	for (var i = 0; i < a.length; i++) {
 
 		var V = load_result(a[i]);
