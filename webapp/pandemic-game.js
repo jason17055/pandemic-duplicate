@@ -135,6 +135,12 @@ var Epidemics = [
 	'Resistant to Treatment'
 	];
 
+var Mutations = [
+	'The Mutation Spreads',
+	'The Mutation Threatens',
+	'The Mutation Intensifies'
+];
+
 var Sequences = [
 	'Small Black',
 	'Small Red',
@@ -290,6 +296,13 @@ function generate_scenario_real(rules)
 		}
 		G.initial_hands[(1+i)] = b;
 		G.roles[(1+i)] = R.pop();
+	}
+
+	if (G.rules.mutation_challenge || G.rules.worldwide_panic) {
+		for (var i = 0; i < Mutations.length; i++) {
+			A.push('Mutation: ' + Mutations[i]);
+		}
+		shuffle_array(A);
 	}
 
 	var E = [];

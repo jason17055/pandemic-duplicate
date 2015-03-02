@@ -885,6 +885,12 @@ function make_player_card(c)
 		$('.card_icon', $x).attr('src', 'virulent_epidemic_icon.png');
 		$x.addClass('epidemic_card');
 	}
+	else if (is_mutation(c)) {
+		var text = is_mutation(c);
+		$('.card_name', $x).text(text);
+		$('.card_icon', $x).attr('src', 'purple_icon.png');
+		$x.addClass('mutation_event');
+	}
 	else {
 		$('.card_name', $x).text(c);
 		$('.card_icon', $x).attr('src', 'special_event_icon.png');
@@ -1453,6 +1459,9 @@ function do_move(m)
 			if (is_epidemic(c1)) {
 				epidemic_drawn(c1);
 			}
+			else if (is_mutation(c1)) {
+				mutation_drawn(c1);
+			}
 			else {
 				G.hands[G.active_player].push(c1);
 				G.history.push({
@@ -1464,6 +1473,9 @@ function do_move(m)
 
 			if (is_epidemic(c2)) {
 				epidemic_drawn(c2);
+			}
+			else if (is_mutation(c1)) {
+				mutation_drawn(c1);
 			}
 			else {
 				G.hands[G.active_player].push(c2);
@@ -1549,6 +1561,11 @@ function epidemic_drawn(c)
 		G.player_discards.push(c);
 		G.current_epidemic = c.substring(10);
 	}
+}
+
+function mutation_drawn(c)
+{
+	G.pending_mutations.push(c);
 }
 
 //returns the player-id of the player who had it
@@ -1914,6 +1931,17 @@ function init_epidemic_page($pg)
 function is_epidemic(c)
 {
 	return (/^Epidemic/).test(c);
+}
+
+function is_mutation(c)
+{
+	var m = /^Mutation(?:{\d+})?: (.*)/.exec(c);
+	if (!m) {
+		return null;
+	}
+	else {
+		return m[1];
+	}
 }
 
 function init_infection_page($pg)
