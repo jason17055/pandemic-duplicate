@@ -129,6 +129,11 @@ img.role_icon {
 	height: 25px;
 }
 
+.mutation_card .card_name {
+	font-weight: bold;
+	font-style: italic;
+}
+
 .epidemic_card .card_name {
 	font-weight: bold;
 	font-style: italic;

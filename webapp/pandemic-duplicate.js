@@ -902,7 +902,7 @@ function make_player_card(c)
 		var text = is_mutation(c);
 		$('.card_name', $x).text(text);
 		$('.card_icon', $x).attr('src', 'purple_icon.png');
-		$x.addClass('mutation_event');
+		$x.addClass('mutation_card');
 	}
 	else {
 		$('.card_name', $x).text(c);
