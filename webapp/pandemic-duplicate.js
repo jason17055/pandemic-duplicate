@@ -2985,6 +2985,50 @@ function init_generate_game_page($pg, xtra)
 
 	$('.player_count', $pg).text(pcount);
 	document.generate_game_form.player_count.value = pcount;
+
+	validate_modules();
+}
+
+function validate_modules()
+{
+	var f = document.generate_game_form;
+
+	var exp = f.expansion.value;
+
+	if (exp == 'none') {
+		f.virulent_strain.checked = false;
+		f.virulent_strain.disabled = true;
+		f.lab_challenge.checked = false;
+		f.lab_challenge.disabled = true;
+		f.mutation_challenge.checked = false;
+		f.mutation_challenge.disabled = true;
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+	else if (exp == 'on_the_brink') {
+		f.virulent_strain.disabled = false;
+		f.lab_challenge.checked = false;
+		f.lab_challenge.disabled = true;
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+	else if (exp == 'in_the_lab') {
+		f.virulent_strain.disabled = false;
+		f.lab_challenge.disabled = false;
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.disabled = false;
+	}
+
+	if (f.mutation_challenge.checked) {
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+
+	if (f.worldwide_panic.checked) {
+		f.mutation_challenge.checked = false;
+		f.mutation_challenge.disabled = true;
+	}
 }
 
 function init_pick_scenario_page($pg, xtra)

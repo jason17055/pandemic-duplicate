@@ -167,7 +167,7 @@ to purchase or use a subscription.
 
 <tr>
 <td><label for="expansion_cb">Expansion:</label></td>
-<td><select id="expansion_cb" name="expansion">
+<td><select id="expansion_cb" name="expansion" onclick='validate_modules();'>
 <option value="in_the_lab">In The Lab</option>
 <option value="on_the_brink">On The Brink</option>
 <option value="none">Original</option>
@@ -190,13 +190,13 @@ to purchase or use a subscription.
 <tr>
 <td>Modules:</td>
 <td>
-<input type="checkbox" id="vs_checkbox" name="virulent_strain"/>
+<input type="checkbox" id="vs_checkbox" name="virulent_strain" onclick='validate_modules();'/>
 <label for="vs_checkbox">Virulent Strain</label><br>
-<input type="checkbox" id="lab_checkbox" name="lab_challenge"/>
+<input type="checkbox" id="lab_checkbox" name="lab_challenge" onclick='validate_modules();'/>
 <label for="lab_checkbox">Lab Challenge</label><br>
-<input type="checkbox" id="mut_checkbox" name="mutation_challenge"/>
+<input type="checkbox" id="mut_checkbox" name="mutation_challenge" onclick='validate_modules();'/>
 <label for="mut_checkbox">Mutation Challenge</label><br>
-<input type="checkbox" id="wp_checkbox" name="worldwide_panic"/>
+<input type="checkbox" id="wp_checkbox" name="worldwide_panic" onclick='validate_modules();'/>
 <label for="wp_checkbox">Worldwide Panic</label>
 </td>
 </table>
