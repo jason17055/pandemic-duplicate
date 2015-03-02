@@ -100,6 +100,7 @@ function init_game()
 	}
 
 	G.epidemic_count = 0;
+	G.pending_mutations = [];
 
 	G.player_discards = [];
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
@@ -1250,8 +1251,18 @@ function do_more_infection()
 				'type': 'draw_infection_mutation',
 				'card': c
 				});
-			G.pending_mutations.push(c);
-			do_mutation();
+
+			if (is_eradicated(G, 'purple')) {
+				G.history.push({
+					'type': 'mutation_dud',
+					'mutation': is_mutation(c)
+					});
+			}
+			else {
+				G.pending_mutations.push(c);
+				do_mutation();
+			}
+
 			G.pending_infection--;
 		}
 		else {
@@ -1471,6 +1482,11 @@ function make_history_item(evt)
 		$('.card_container',$e).append(make_infection_card(evt.card));
 		return $e;
 	}
+	else if (evt.type == 'mutation_dud') {
+		var $e = $('<div class="mutation_dud_event">&nbsp; --> <span class="mutation_name"></span>: no effect</div>');
+		$('.mutation_name',$e).text(evt.mutation);
+		return $e;
+	}
 	else {
 		console.log("Unrecognized event type: '" + evt.type + "'");
 		return null;
@@ -1559,7 +1575,6 @@ function do_move(m)
 				};
 
 			G.pending_epidemics = 0;
-			G.pending_mutations = [];
 			if (is_epidemic(c1)) {
 				epidemic_drawn(c1);
 			}
@@ -1687,12 +1702,25 @@ function epidemic_drawn(c)
 
 function mutation_drawn(c)
 {
-	G.pending_mutations.push(c);
-
 	G.history.push({
 		'type': 'draw_mutation',
 		'card': c
 		});
+
+	if (is_eradicated(G, 'purple')) {
+		G.history.push({
+			'type': 'mutation_dud',
+			'mutation': is_mutation(c)
+			});
+	}
+	else if (is_mutation(c) == 'The Mutation Intensifies') {
+		G.history.push({
+			'type': 'mutation_intensifies'
+			});
+	}
+	else {
+		G.pending_mutations.push(c);
+	}
 }
 
 //returns the player-id of the player who had it
