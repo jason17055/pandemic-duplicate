@@ -2811,6 +2811,13 @@ function init_discover_cure_page($pg)
 			$(el).show();
 		}
 		});
+
+	if (count_uncured_diseases(G) == 1 && !is_unnecessary(G, 'purple') && !is_cured(G, 'purple')) {
+		$('.victory_button_container', $pg).show();
+	}
+	else {
+		$('.victory_button_container', $pg).hide();
+	}
 }
 
 function init_play_special_event_page($pg)
