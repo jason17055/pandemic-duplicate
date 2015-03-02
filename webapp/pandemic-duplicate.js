@@ -900,7 +900,7 @@ function make_player_card(c)
 	}
 	else if (is_mutation(c)) {
 		var text = is_mutation(c);
-		$('.card_name', $x).text(text);
+		$('.card_name', $x).text(text + '!');
 		$('.card_icon', $x).attr('src', 'purple_icon.png');
 		$x.addClass('mutation_card');
 	}
@@ -920,8 +920,9 @@ function make_infection_card(c)
 	var text = is_mutation(c);
 
 	if (text) {
+		text += '!';
 		$('.card_icon', $x).attr('src', 'purple_icon.png');
-		$x.addClass('purple_card');
+		$x.addClass('mutation_card');
 	}
 	else {
 		var ci = Pandemic.Cities[c];
@@ -1241,7 +1242,7 @@ function do_more_infection()
 		var c = G.infection_deck.pop();
 		if (is_mutation(c)) {
 			G.history.push({
-				'type': 'draw_mutation',
+				'type': 'draw_infection_mutation',
 				'card': c
 				});
 			G.pending_mutations.push(c);
@@ -1456,8 +1457,13 @@ function make_history_item(evt)
 		return $e;
 	}
 	else if (evt.type == 'draw_mutation') {
-		var $e = $('<div class="draw_mutation_event"><span class="card_container"></span> is triggered</div>');
+		var $e = $('<div class="draw_mutation_event"><span class="card_container"></span> is drawn</div>');
 		$('.card_container',$e).append(make_player_card(evt.card));
+		return $e;
+	}
+	else if (evt.type == 'draw_infection_mutation') {
+		var $e = $('<div class="draw_mutation_event"><span class="card_container"></span> is drawn</div>');
+		$('.card_container',$e).append(make_infection_card(evt.card));
 		return $e;
 	}
 	else {
