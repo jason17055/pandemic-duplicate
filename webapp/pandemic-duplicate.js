@@ -79,6 +79,8 @@ function init_game()
 		G.infection_discards.push(c);
 	}
 
+	G.diseases = {}; //identifies cured/eradicated diseases
+
 	if (G.rules.mutation_challenge) {
 		G.infection_discards.push("Mutation{1}: Mutation");
 		G.infection_discards.push("Mutation{2}: Mutation");
@@ -87,6 +89,9 @@ function init_game()
 		G.infection_discards.push("Mutation{1}: Worldwide Panic");
 		G.infection_discards.push("Mutation{2}: Worldwide Panic");
 	}
+	else {
+		G.diseases['purple'] = 'unnecessary';
+	}
 
 	G.sequence_discards = [];
 	if (G.rules.lab_challenge) {
@@ -94,7 +99,6 @@ function init_game()
 		G.sequence_discards.push(c);
 	}
 
-	G.diseases = {}; //identifies cured/eradicated diseases
 	G.epidemic_count = 0;
 
 	G.player_discards = [];
@@ -2739,6 +2743,11 @@ function is_eradicated(G, disease_color)
 	return G.diseases[disease_color] == 'eradicated';
 }
 
+function is_unnecessary(G, disease_color)
+{
+	return G.diseases[disease_color] == 'unnecessary';
+}
+
 function init_virulent_strain_page($pg)
 {
 	$('.virulent_strain_btn', $pg).each(function(idx,el) {
@@ -2756,7 +2765,7 @@ function init_discover_cure_page($pg)
 {
 	$('.discover_cure_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (is_cured(G, disease_color)) {
+		if (is_cured(G, disease_color) || is_unnecessary(G, disease_color)) {
 			$(el).hide();
 		}
 		else {
@@ -2766,7 +2775,7 @@ function init_discover_cure_page($pg)
 
 	$('.eradicate_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (is_eradicated(G, disease_color) || !is_cured(G, disease_color)) {
+		if (is_eradicated(G, disease_color) || !is_cured(G, disease_color) || is_unnecessary(G, disease_color)) {
 			$(el).hide();
 		}
 		else {
