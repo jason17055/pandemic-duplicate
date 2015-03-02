@@ -105,17 +105,17 @@ function init_game()
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
 }
 
-function load_scenario(shuffle_id)
+function load_scenario(scenario_id)
 {
-	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
+	var s = localStorage.getItem(PACKAGE + '.scenario.' + scenario_id);
 	if (!s) {
-		console.log('Fatal: scenario '+shuffle_id+' is not known');
+		console.log('Fatal: scenario '+scenario_id+' is not known');
 		return;
 	}
 
 	G = JSON.parse(s);
-	G.shuffle_id = shuffle_id;
-	G.scenario_id = shuffle_id;
+	G.shuffle_id = scenario_id;
+	G.scenario_id = scenario_id;
 	return G;
 }
 
@@ -477,6 +477,7 @@ function submit_generate_game_form()
 		'worldwide_panic': f.worldwide_panic.checked
 		};
 	G = generate_scenario(rules);
+	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
 
 	// create game
 	G.game_id = generate_new_game_id(G.scenario_id);
@@ -577,7 +578,7 @@ function init_game_completed_page($pg)
 	f.location.value = localStorage.getItem(PACKAGE + '.game_location');
 	f.rules.value = stringify_rules(G.rules);
 	f.cure_count.value = count_cured_diseases(G);
-	f.shuffle_id.value = G.shuffle_id;
+	f.shuffle_id.value = G.scenario_id;
 
 	$('.turns', $pg).text(G.turns);
 	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
@@ -668,9 +669,9 @@ function save_player_names()
 		);
 }
 
-function init_deck_setup_page($pg, shuffle_id)
+function init_deck_setup_page($pg, scenario_id)
 {
-	load_scenario(shuffle_id);
+	load_scenario(scenario_id);
 
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
@@ -693,7 +694,7 @@ function init_deck_setup_page($pg, shuffle_id)
 
 function continue_after_deck_setup()
 {
-	var u = BASE_URL + '#'+G.shuffle_id+'/board_setup';
+	var u = BASE_URL + '#'+G.scenario_id+'/board_setup';
 	history.pushState(null, null, u);
 	on_state_init();
 
@@ -795,14 +796,14 @@ function init_player_setup_page($pg, game_id)
 	}
 }
 
-function init_results_page($pg, shuffle_id)
+function init_results_page($pg, scenario_id)
 {
-	load_scenario(shuffle_id);
+	load_scenario(scenario_id);
 	
-	$('.scenario_name', $pg).text(scenario_name(shuffle_id));
+	$('.scenario_name', $pg).text(scenario_name(scenario_id));
 
-	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
-	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + shuffle_id);
+	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
+	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + scenario_id);
 	if (my_result_id) {
 		all_result_ids.push(my_result_id);
 	}
@@ -816,7 +817,7 @@ function init_results_page($pg, shuffle_id)
 		var result_id = all_result_ids[i];
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
-		if (r.shuffle_id != shuffle_id) { continue; }
+		if (r.shuffle_id != scenario_id) { continue; }
 
 		if (all_result_ids[i] == my_result_id) {
 			r.mine = true;
@@ -980,7 +981,7 @@ function load_game_at(game_id, target_time)
 	target_time = +target_time;
 	while (G.time < target_time) {
 
-		var mv = get_move(G.shuffle_id, G.time);
+		var mv = get_move(G.scenario_id, G.time);
 		do_move(mv);
 	}
 
@@ -2260,22 +2261,22 @@ function navigate_to_current_turn()
 	return;
 }
 
-function deal_finished(deal_id)
+function scenario_finished(deal_id)
 {
 	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished') != null);
 }
 
-function deal_started(deal_id)
+function scenario_started(deal_id)
 {
 	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played') != null);
 }
 
-function deal_finish_time(deal_id)
+function scenario_finish_time(deal_id)
 {
 	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished');
 }
 
-function deal_first_played_time(deal_id)
+function scenario_first_played_time(deal_id)
 {
 	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played');
 }
@@ -2345,12 +2346,12 @@ function start_publishing_game(game_id)
 function set_move(m)
 {
 	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.last_played', timestr);
-	if (localStorage.getItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played') == null) {
-		localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.first_played', timestr);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.last_played', timestr);
+	if (localStorage.getItem(PACKAGE + '.game.' + G.scenario_id + '.first_played') == null) {
+		localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.first_played', timestr);
 	}
 
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.T' + G.time, m);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.T' + G.time, m);
 
 	do_move(m);
 	navigate_to_current_turn();
@@ -2565,7 +2566,7 @@ function discarded_special_event(s)
 function record_game_finished()
 {
 	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.shuffle_id + '.finished', timestr);
+	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.finished', timestr);
 }
 
 function admit_defeat_clicked()
@@ -2856,8 +2857,8 @@ function init_found_completed_games_page($pg, search_results)
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
 
-		var shuffle_id = r.shuffle_id;
-		load_scenario(shuffle_id);
+		var scenario_id = r.shuffle_id;
+		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
@@ -2872,13 +2873,13 @@ function init_found_completed_games_page($pg, search_results)
 			}
 		}
 
-		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(parse_rules(r.rules)));
 		$('.epidemic_count', $g).text(G.rules.level);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-scenario-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', scenario_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
@@ -2896,8 +2897,8 @@ function init_review_results_page($pg)
 		var r = load_result(result_id);
 		if (!r || r.version != Version) { continue; }
 
-		var shuffle_id = r.shuffle_id;
-		load_scenario(shuffle_id);
+		var scenario_id = r.shuffle_id;
+		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
@@ -2912,13 +2913,13 @@ function init_review_results_page($pg)
 			}
 		}
 
-		$('.scenario_name_container', $g).append(make_scenario_label(shuffle_id));
+		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(G.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
-		$('button', $g).attr('data-scenario-id', shuffle_id);
+		$('button', $g).attr('data-scenario-id', scenario_id);
 		$('button', $g).attr('data-result-id', result_id);
 		$('button', $g).click(on_review_result_game_clicked);
 
@@ -2969,6 +2970,7 @@ function init_pick_scenario_page($pg, xtra)
 		$tr.removeClass('template');
 		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
+		$('button',$tr).attr('data-scenario-id', a[i]);
 		$('button',$tr).click(on_preshuffled_game_clicked);
 
 		var $g = $tr;
@@ -2997,10 +2999,10 @@ function init_pick_scenario_page($pg, xtra)
 		}
 
 		description +=
-			deal_finished(a[i]) ? ('; Completed ' + format_time(deal_finish_time(a[i]))) :
-			deal_started(a[i]) ? ('; Started ' + format_time(deal_first_played_time(a[i]))) :
+			scenario_finished(a[i]) ? ('; Completed ' + format_time(scenario_finish_time(a[i]))) :
+			scenario_started(a[i]) ? ('; Started ' + format_time(scenario_first_played_time(a[i]))) :
 			'';
-		if (results_info.maximum_score > 0 && deal_finished(a[i])) {
+		if (results_info.maximum_score > 0 && scenario_finished(a[i])) {
 			description += '; best score: '+results_info.maximum_score;
 		}
 
@@ -3184,12 +3186,12 @@ function clear_storage_clicked()
 	location.reload();
 }
 
-function summarize_results_for_scenario(shuffle_id)
+function summarize_results_for_scenario(scenario_id)
 {
 	var names = {};
 	var best_score = 0;
 
-	var a = stor_get_list(PACKAGE + '.game_results.' + shuffle_id);
+	var a = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
 	for (var i = 0; i < a.length; i++) {
 
 		var V = load_result(a[i]);
