@@ -350,6 +350,14 @@ function generate_scenario_real(rules)
 		for (var i = 0; i < Cities.length; i++) {
 			a.push(Cities[i]);
 		}
+		if (G.rules.mutation_challenge) {
+			a.push('Mutation{1}: Mutation');
+			a.push('Mutation{2}: Mutation');
+		}
+		else if (G.rules.worldwide_panic) {
+			a.push('Mutation{1}: Worldwide Panic');
+			a.push('Mutation{2}: Worldwide Panic');
+		}
 		shuffle_array(a);
 		G['epidemic.'+k] = a;
 	}
