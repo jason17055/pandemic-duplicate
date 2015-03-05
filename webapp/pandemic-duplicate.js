@@ -2394,6 +2394,16 @@ function order_infection_discards()
 	}
 	A.sort(function(a,b) {
 
+		if (is_mutation(a) && is_mutation(b)) {
+			return a.localCompare(b);
+		}
+		else if (is_mutation(a)) {
+			return -1;
+		}
+		else if (is_mutation(b)) {
+			return 1;
+		}
+
 		var a_ci = Pandemic.Cities[a];
 		var b_ci = Pandemic.Cities[b];
 		if (a_ci.color != b_ci.color) {
@@ -2522,6 +2532,10 @@ function init_resilient_population_page($pg)
 	$('.resilient_population_btn_row:not(.template)',$pg).remove();
 	for (var i = 0; i < A.length; i++) {
 		var c = A[i];
+		
+		if (is_mutation(c)) {
+			continue;
+		}
 
 		var $s = $('.resilient_population_btn_row.template',$pg).clone();
 		$('button', $s).append(make_infection_card(c));
