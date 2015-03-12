@@ -2395,7 +2395,7 @@ function order_infection_discards()
 	A.sort(function(a,b) {
 
 		if (is_mutation(a) && is_mutation(b)) {
-			return a.localCompare(b);
+			return 0;
 		}
 		else if (is_mutation(a)) {
 			return -1;
