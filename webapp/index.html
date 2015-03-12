@@ -167,7 +167,7 @@ to purchase or use a subscription.
 
 <tr>
 <td><label for="expansion_cb">Expansion:</label></td>
-<td><select id="expansion_cb" name="expansion">
+<td><select id="expansion_cb" name="expansion" onclick='validate_modules();'>
 <option value="in_the_lab">In The Lab</option>
 <option value="on_the_brink">On The Brink</option>
 <option value="none">Original</option>
@@ -190,13 +190,13 @@ to purchase or use a subscription.
 <tr>
 <td>Modules:</td>
 <td>
-<input type="checkbox" id="vs_checkbox" name="virulent_strain"/>
+<input type="checkbox" id="vs_checkbox" name="virulent_strain" onclick='validate_modules();'/>
 <label for="vs_checkbox">Virulent Strain</label><br>
-<input type="checkbox" id="lab_checkbox" name="lab_challenge"/>
+<input type="checkbox" id="lab_checkbox" name="lab_challenge" onclick='validate_modules();'/>
 <label for="lab_checkbox">Lab Challenge</label><br>
-<input type="checkbox" id="mut_checkbox" name="mutation_challenge" disabled="disabled"/>
+<input type="checkbox" id="mut_checkbox" name="mutation_challenge" onclick='validate_modules();'/>
 <label for="mut_checkbox">Mutation Challenge</label><br>
-<input type="checkbox" id="wp_checkbox" name="worldwide_panic" disabled="disabled"/>
+<input type="checkbox" id="wp_checkbox" name="worldwide_panic" onclick='validate_modules();'/>
 <label for="wp_checkbox">Worldwide Panic</label>
 </td>
 </table>
@@ -539,6 +539,7 @@ Perform your actions.
 <div class="continue_button_container">
 <div class="button_container">
 <button type="button" class="goto_draw_cards_btn" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
+<button type="button" class="goto_mutation_btn" onclick="continue_player_turn()">Next: <small>Mutation</small></button>
 <button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 <button type="button" class="goto_virulent_strain_btn" onclick="on_determine_virulent_strain_clicked()">Next: <small>Determine Virulent Strain</small></button>
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
@@ -581,6 +582,15 @@ Perform your actions.
 <div class="button_container">
 <button type="button" class="eradicate_btn" data-disease="yellow" onclick="on_eradicate_clicked('yellow')">Eradicate <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
 </div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="purple" onclick="on_discover_cure_clicked('purple')">Cure <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="purple" onclick="on_eradicate_clicked('purple')">Eradicate <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container victory_button_container">
+<button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
+</div>
 <div id="discover_cure_none_row" class="button_container">
 <button type="button" onclick="cancel_special_event()">Never Mind</button>
 </div>
@@ -607,6 +617,9 @@ Perform your actions.
 </div>
 <div class="button_container">
 <button type="button" class="virulent_strain_btn" data-disease="yellow" onclick="on_virulent_strain_clicked('yellow')"><img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="purple" onclick="on_virulent_strain_clicked('purple')"><img src="purple_icon.png" class="card_icon" alt="">Purple</button>
 </div>
 </div>
 

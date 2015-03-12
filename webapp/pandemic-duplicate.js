@@ -79,14 +79,28 @@ function init_game()
 		G.infection_discards.push(c);
 	}
 
+	G.diseases = {}; //identifies cured/eradicated diseases
+
+	if (G.rules.mutation_challenge) {
+		G.infection_discards.push("Mutation{1}: Mutation");
+		G.infection_discards.push("Mutation{2}: Mutation");
+	}
+	else if (G.rules.worldwide_panic) {
+		G.infection_discards.push("Mutation{1}: Worldwide Panic");
+		G.infection_discards.push("Mutation{2}: Worldwide Panic");
+	}
+	else {
+		G.diseases['purple'] = 'unnecessary';
+	}
+
 	G.sequence_discards = [];
 	if (G.rules.lab_challenge) {
 		var c = G.sequence_deck.shift();
 		G.sequence_discards.push(c);
 	}
 
-	G.diseases = {}; //identifies cured/eradicated diseases
 	G.epidemic_count = 0;
+	G.pending_mutations = [];
 
 	G.player_discards = [];
 	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
@@ -332,6 +346,10 @@ function show_current_game(xtra)
 	else if (G.step == 'draw_cards') {
 		var $pg = show_page('player_turn_page');
 		init_draw_cards_page($pg);
+	}
+	else if (G.step == 'mutation') {
+		var $pg = show_page('player_turn_page');
+		init_epidemic_page($pg);
 	}
 	else if (G.step == 'epidemic') {
 		var $pg = show_page('player_turn_page');
@@ -711,7 +729,7 @@ function init_board_setup_page($pg, game_id)
 	}
 
 	$('.1cube_cities').empty();
-	for (var i = 6; i < G.infection_discards.length; i++) {
+	for (var i = 6; i < 9; i++) {
 		var c = G.infection_discards[i];
 		if (G.rules.worldwide_panic && i == 6) {
 			$('.1cube_cities').append(make_infection_card_li(c).append(' (plus 3 purple cubes)'));
@@ -886,6 +904,12 @@ function make_player_card(c)
 		$('.card_icon', $x).attr('src', 'virulent_epidemic_icon.png');
 		$x.addClass('epidemic_card');
 	}
+	else if (is_mutation(c)) {
+		var text = is_mutation(c);
+		$('.card_name', $x).text(text + '!');
+		$('.card_icon', $x).attr('src', 'purple_icon.png');
+		$x.addClass('mutation_card');
+	}
 	else {
 		$('.card_name', $x).text(c);
 		$('.card_icon', $x).attr('src', 'special_event_icon.png');
@@ -897,12 +921,23 @@ function make_player_card(c)
 
 function make_infection_card(c)
 {
-	var ci = Pandemic.Cities[c];
-
 	var $x = $('<span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
-	$('.card_name', $x).text(ci.name);
-	$('.card_icon', $x).attr('src', ci.color+'_icon.png');
-	$x.addClass(ci.color + '_card');
+
+	var text = is_mutation(c);
+
+	if (text) {
+		text += '!';
+		$('.card_icon', $x).attr('src', 'purple_icon.png');
+		$x.addClass('mutation_card');
+	}
+	else {
+		var ci = Pandemic.Cities[c];
+		text = ci.name;
+		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
+		$x.addClass(ci.color + '_card');
+	}
+	
+	$('.card_name', $x).text(text);
 	return $x;
 }
 
@@ -964,6 +999,52 @@ function get_move(game_id, time)
 {
 	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);
 	return mv != null ? mv : 'pass';
+}
+
+function do_mutation()
+{
+	var mut = G.pending_mutations.shift();
+	var mut_text = is_mutation(mut);
+	if (mut_text == 'The Mutation Spreads') {
+		for (var i = 0; i < 3; i++) {
+			var c = G.infection_deck.shift();
+			G.history.push({
+				'type': 'mutation',
+				'city': c,
+				'count': 1
+				});
+			G.infection_discards.push(c);
+		}
+	}
+	else if (mut_text == 'The Mutation Threatens') {
+		var c = G.infection_deck.shift();
+		G.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 3
+			});
+		G.infection_discards.push(c);
+	}
+	else if (mut_text == 'Mutation') {
+		var c = G.infection_deck.shift();
+		G.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 1
+			});
+		G.infection_discards.push(mut);
+		G.infection_discards.push(c);
+	}
+	else if (mut_text == 'Worldwide Panic') {
+		var c = G.infection_deck.shift();
+		G.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 2
+			});
+		G.infection_discards.push(mut);
+		G.infection_discards.push(c);
+	}
 }
 
 function start_epidemic()
@@ -1041,7 +1122,8 @@ function resolve_vs_epidemic()
 						G.diseases[G.virulent_strain] = 'cured';
 						if (G.rate_effect) {
 							G.history.push({
-								'type': 'rate_effect_activate'
+								'type': 'rate_effect_activate',
+								'disease': G.virulent_strain
 								});
 						}
 					}
@@ -1164,23 +1246,44 @@ function do_more_infection()
 		G.time++;
 
 		var c = G.infection_deck.pop();
-		G.current = {
-			'infection': c
-			};
-		G.history.push({
-			'type': 'infection',
-			'infection': c
-			});
-		G.infection_discards.push(c);
-		G.pending_infection--;
-		if (G.rate_effect && !G.rate_effect_extra_drawn &&
-			!is_eradicated(G, G.virulent_strain) &&
-			G.virulent_strain == Pandemic.Cities[c].color) {
-			G.pending_infection++;
-			G.rate_effect_extra_drawn = true;
+		if (is_mutation(c)) {
 			G.history.push({
-				'type': 'rate_effect_trigger'
+				'type': 'draw_infection_mutation',
+				'card': c
 				});
+
+			if (is_eradicated(G, 'purple')) {
+				G.history.push({
+					'type': 'mutation_dud',
+					'mutation': is_mutation(c)
+					});
+			}
+			else {
+				G.pending_mutations.push(c);
+				do_mutation();
+			}
+
+			G.pending_infection--;
+		}
+		else {
+			G.current = {
+				'infection': c
+				};
+			G.history.push({
+				'type': 'infection',
+				'infection': c
+				});
+			G.infection_discards.push(c);
+			G.pending_infection--;
+			if (G.rate_effect && !G.rate_effect_extra_drawn &&
+				!is_eradicated(G, G.virulent_strain) &&
+				G.virulent_strain == Pandemic.Cities[c].color) {
+				G.pending_infection++;
+				G.rate_effect_extra_drawn = true;
+				G.history.push({
+					'type': 'rate_effect_trigger'
+					});
+			}
 		}
 	}
 	else {
@@ -1363,6 +1466,27 @@ function make_history_item(evt)
 		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
 		return $e;
 	}
+	else if (evt.type == 'mutation') {
+		var $e = $('<div class="mutation_event">&nbsp; --> </div>');
+		$e.append(make_infection_card(evt.city));
+		$e.append(' is infected (add ' + evt.count + ' purple cube' + (evt.count > 1 ? 's' : '') + ')');
+		return $e;
+	}
+	else if (evt.type == 'draw_mutation') {
+		var $e = $('<div class="draw_mutation_event"><span class="card_container"></span> is drawn</div>');
+		$('.card_container',$e).append(make_player_card(evt.card));
+		return $e;
+	}
+	else if (evt.type == 'draw_infection_mutation') {
+		var $e = $('<div class="draw_mutation_event"><span class="card_container"></span> is drawn</div>');
+		$('.card_container',$e).append(make_infection_card(evt.card));
+		return $e;
+	}
+	else if (evt.type == 'mutation_dud') {
+		var $e = $('<div class="mutation_dud_event">&nbsp; --> <span class="mutation_name"></span>: no effect</div>');
+		$('.mutation_name',$e).text(evt.mutation);
+		return $e;
+	}
 	else {
 		console.log("Unrecognized event type: '" + evt.type + "'");
 		return null;
@@ -1454,6 +1578,9 @@ function do_move(m)
 			if (is_epidemic(c1)) {
 				epidemic_drawn(c1);
 			}
+			else if (is_mutation(c1)) {
+				mutation_drawn(c1);
+			}
 			else {
 				G.hands[G.active_player].push(c1);
 				G.history.push({
@@ -1465,6 +1592,9 @@ function do_move(m)
 
 			if (is_epidemic(c2)) {
 				epidemic_drawn(c2);
+			}
+			else if (is_mutation(c2)) {
+				mutation_drawn(c2);
 			}
 			else {
 				G.hands[G.active_player].push(c2);
@@ -1478,7 +1608,25 @@ function do_move(m)
 		}
 		else if (G.step == 'draw_cards') {
 
-			if (G.pending_epidemics > 0) {
+			if (G.pending_mutations.length > 0) {
+				G.step = 'mutation';
+				G.time++;
+				do_mutation();
+			}
+			else if (G.pending_epidemics > 0) {
+				start_epidemic();
+			}
+			else {
+				start_infection();
+			}
+		}
+		else if (G.step == 'mutation') {
+
+			if (G.pending_mutations.length > 0) {
+				G.time++;
+				do_mutation();
+			}
+			else if (G.pending_epidemics > 0) {
 				start_epidemic();
 			}
 			else {
@@ -1549,6 +1697,29 @@ function epidemic_drawn(c)
 	if (c != 'Epidemic') {
 		G.player_discards.push(c);
 		G.current_epidemic = c.substring(10);
+	}
+}
+
+function mutation_drawn(c)
+{
+	G.history.push({
+		'type': 'draw_mutation',
+		'card': c
+		});
+
+	if (is_eradicated(G, 'purple')) {
+		G.history.push({
+			'type': 'mutation_dud',
+			'mutation': is_mutation(c)
+			});
+	}
+	else if (is_mutation(c) == 'The Mutation Intensifies') {
+		G.history.push({
+			'type': 'mutation_intensifies'
+			});
+	}
+	else {
+		G.pending_mutations.push(c);
 	}
 }
 
@@ -1858,6 +2029,15 @@ function set_continue_btn_caption($pg)
 {
 	if (G.step == 'actions') {
 		$('.goto_draw_cards_btn', $pg).show();
+		$('.goto_mutation_btn', $pg).hide();
+		$('.goto_epidemic_btn', $pg).hide();
+		$('.goto_virulent_strain_btn', $pg).hide();
+		$('.goto_infection_btn', $pg).hide();
+		$('.goto_player_turn_btn', $pg).hide();
+	}
+	else if (G.pending_mutations.length > 0) {
+		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_mutation_btn', $pg).show();
 		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).hide();
@@ -1865,6 +2045,7 @@ function set_continue_btn_caption($pg)
 	}
 	else if (G.pending_epidemics > 0) {
 		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_mutation_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).show();
 		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).hide();
@@ -1872,14 +2053,16 @@ function set_continue_btn_caption($pg)
 	}
 	else if (G.step == "epidemic" && G.rules.virulent_strain && !G.virulent_strain) {
 		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_mutation_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_virulent_strain_btn', $pg).show();
 		$('.goto_infection_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else if (G.pending_infection > 0 || (
-			(G.step == 'draw_cards' || G.step == 'epidemic') && !G.one_quiet_night)) {
+			(G.step == 'draw_cards' || G.step == 'epidemic' || G.step == 'mutation') && !G.one_quiet_night)) {
 		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_mutation_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).show();
@@ -1887,6 +2070,7 @@ function set_continue_btn_caption($pg)
 	}
 	else {
 		$('.goto_draw_cards_btn', $pg).hide();
+		$('.goto_mutation_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).hide();
@@ -1915,6 +2099,17 @@ function init_epidemic_page($pg)
 function is_epidemic(c)
 {
 	return (/^Epidemic/).test(c);
+}
+
+function is_mutation(c)
+{
+	var m = /^Mutation(?:{\d+})?: (.*)/.exec(c);
+	if (!m) {
+		return null;
+	}
+	else {
+		return m[1];
+	}
 }
 
 function init_infection_page($pg)
@@ -2199,6 +2394,16 @@ function order_infection_discards()
 	}
 	A.sort(function(a,b) {
 
+		if (is_mutation(a) && is_mutation(b)) {
+			return 0;
+		}
+		else if (is_mutation(a)) {
+			return -1;
+		}
+		else if (is_mutation(b)) {
+			return 1;
+		}
+
 		var a_ci = Pandemic.Cities[a];
 		var b_ci = Pandemic.Cities[b];
 		if (a_ci.color != b_ci.color) {
@@ -2327,6 +2532,10 @@ function init_resilient_population_page($pg)
 	$('.resilient_population_btn_row:not(.template)',$pg).remove();
 	for (var i = 0; i < A.length; i++) {
 		var c = A[i];
+		
+		if (is_mutation(c)) {
+			continue;
+		}
 
 		var $s = $('.resilient_population_btn_row.template',$pg).clone();
 		$('button', $s).append(make_infection_card(c));
@@ -2577,6 +2786,11 @@ function is_eradicated(G, disease_color)
 	return G.diseases[disease_color] == 'eradicated';
 }
 
+function is_unnecessary(G, disease_color)
+{
+	return G.diseases[disease_color] == 'unnecessary';
+}
+
 function init_virulent_strain_page($pg)
 {
 	$('.virulent_strain_btn', $pg).each(function(idx,el) {
@@ -2594,7 +2808,7 @@ function init_discover_cure_page($pg)
 {
 	$('.discover_cure_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (is_cured(G, disease_color)) {
+		if (is_cured(G, disease_color) || is_unnecessary(G, disease_color)) {
 			$(el).hide();
 		}
 		else {
@@ -2604,13 +2818,20 @@ function init_discover_cure_page($pg)
 
 	$('.eradicate_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (is_eradicated(G, disease_color) || !is_cured(G, disease_color)) {
+		if (is_eradicated(G, disease_color) || !is_cured(G, disease_color) || is_unnecessary(G, disease_color)) {
 			$(el).hide();
 		}
 		else {
 			$(el).show();
 		}
 		});
+
+	if (count_uncured_diseases(G) == 1 && !is_unnecessary(G, 'purple') && !is_cured(G, 'purple')) {
+		$('.victory_button_container', $pg).show();
+	}
+	else {
+		$('.victory_button_container', $pg).hide();
+	}
 }
 
 function init_play_special_event_page($pg)
@@ -2778,6 +2999,50 @@ function init_generate_game_page($pg, xtra)
 
 	$('.player_count', $pg).text(pcount);
 	document.generate_game_form.player_count.value = pcount;
+
+	validate_modules();
+}
+
+function validate_modules()
+{
+	var f = document.generate_game_form;
+
+	var exp = f.expansion.value;
+
+	if (exp == 'none') {
+		f.virulent_strain.checked = false;
+		f.virulent_strain.disabled = true;
+		f.lab_challenge.checked = false;
+		f.lab_challenge.disabled = true;
+		f.mutation_challenge.checked = false;
+		f.mutation_challenge.disabled = true;
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+	else if (exp == 'on_the_brink') {
+		f.virulent_strain.disabled = false;
+		f.lab_challenge.checked = false;
+		f.lab_challenge.disabled = true;
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+	else if (exp == 'in_the_lab') {
+		f.virulent_strain.disabled = false;
+		f.lab_challenge.disabled = false;
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.disabled = false;
+	}
+
+	if (f.mutation_challenge.checked) {
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
+	}
+
+	if (f.worldwide_panic.checked) {
+		f.mutation_challenge.checked = false;
+		f.mutation_challenge.disabled = true;
+	}
 }
 
 function init_pick_scenario_page($pg, xtra)

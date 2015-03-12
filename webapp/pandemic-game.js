@@ -91,7 +91,8 @@ var Disease_Names = {
 	'black': 'Black',
 	'blue': 'Blue',
 	'red': 'Red',
-	'yellow': 'Yellow'
+	'yellow': 'Yellow',
+	'purple': 'Purple'
 	};
 
 var Specials = [
@@ -133,6 +134,12 @@ var Epidemics = [
 	'Highly Contagious',
 	'Resistant to Treatment'
 	];
+
+var Mutations = [
+	'The Mutation Spreads',
+	'The Mutation Threatens',
+	'The Mutation Intensifies'
+];
 
 var Sequences = [
 	'Small Black',
@@ -291,6 +298,13 @@ function generate_scenario_real(rules)
 		G.roles[(1+i)] = R.pop();
 	}
 
+	if (G.rules.mutation_challenge || G.rules.worldwide_panic) {
+		for (var i = 0; i < Mutations.length; i++) {
+			A.push('Mutation: ' + Mutations[i]);
+		}
+		shuffle_array(A);
+	}
+
 	var E = [];
 	for (var i = 0; i < num_epidemics; i++) {
 		E.push('Epidemic: ' + Epidemics[i]);
@@ -335,6 +349,14 @@ function generate_scenario_real(rules)
 		var a = [];
 		for (var i = 0; i < Cities.length; i++) {
 			a.push(Cities[i]);
+		}
+		if (G.rules.mutation_challenge) {
+			a.push('Mutation{1}: Mutation');
+			a.push('Mutation{2}: Mutation');
+		}
+		else if (G.rules.worldwide_panic) {
+			a.push('Mutation{1}: Worldwide Panic');
+			a.push('Mutation{2}: Worldwide Panic');
 		}
 		shuffle_array(a);
 		G['epidemic.'+k] = a;
