@@ -1533,7 +1533,12 @@ var Role_icons = {
 	'Local Liaison': 'local_liaison_role_icon.png',
 	'Pilot': 'pilot_role_icon.png',
 	'Contingency Planner': 'contingency_planner_role_icon.png',
-	'Quarantine Specialist': 'quarantine_specialist_role_icon.png'
+	'Quarantine Specialist': 'quarantine_specialist_role_icon.png',
+	'Colonel': 'colonel_role_icon.png',
+	'First Responder': 'first_responder_role_icon.png',
+	'Pharmacist': 'pharmacist_role_icon.png',
+	'Veterinarian': 'veterinarian_role_icon.png',
+	'Gene Splicer': 'gene_splicer_role_icon.png'
 	};
 function get_role_icon(r)
 {
