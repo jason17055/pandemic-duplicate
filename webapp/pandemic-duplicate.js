@@ -475,7 +475,11 @@ function submit_generate_game_form()
 		'virulent_strain': f.virulent_strain.checked,
 		'lab_challenge': f.lab_challenge.checked,
 		'mutation_challenge': f.mutation_challenge.checked,
-		'worldwide_panic': f.worldwide_panic.checked
+		'worldwide_panic': f.worldwide_panic.checked,
+		'quarantines': f.quarantines.checked,
+		'hinterlands_challenge': f.hinterlands_challenge.checked,
+		'emergency_event_challenge': f.emergency_event_challenge.checked,
+		'superbug_challenge': f.superbug_challenge.checked
 		};
 	G = generate_scenario(rules);
 	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
