@@ -46,6 +46,10 @@ public class HelperFunctions
 		boolean mutationChallenge;
 		boolean worldwidePanic;
 		boolean labChallenge;
+		boolean quarantines;
+		boolean hinterlandsChallenge;
+		boolean emergencyEventChallenge;
+		boolean superbugChallenge;
 
 		@Override
 		public String toString()
@@ -54,7 +58,11 @@ public class HelperFunctions
 				(virulentStrain ? "-virulent_strain" : "") +
 				(labChallenge ? "-lab_challenge" : "") +
 				(mutationChallenge ? "-mutation_challenge" : "") +
-				(worldwidePanic ? "-worldwide_panic" : "");
+				(worldwidePanic ? "-worldwide_panic" : "") +
+				(quarantines ? "-quarantines" : "") +
+				(hinterlandsChallenge ? "-hinterlands_challenge" : "") +
+				(emergencyEventChallenge ? "-emergency_event_challenge" : "") +
+				(superbugChallenge ? "-superbug_challenge" : "");
 		}
 		
 		public boolean parseCurrentToken(JsonParser json)
@@ -93,6 +101,26 @@ public class HelperFunctions
 			else if (json.getCurrentName().equals("lab_challenge")) {
 				json.nextToken();
 				labChallenge = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("quarantines")) {
+				json.nextToken();
+				quarantines = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("hinterlands_challenge")) {
+				json.nextToken();
+				hinterlandsChallenge = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("emergency_event_challenge")) {
+				json.nextToken();
+				emergencyEventChallenge = json.getText().equals("true");
+				return true;
+			}
+			else if (json.getCurrentName().equals("superbug_challenge")) {
+				json.nextToken();
+				superbugChallenge = json.getText().equals("true");
 				return true;
 			}
 			else {
