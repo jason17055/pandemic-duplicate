@@ -28,7 +28,7 @@ var Roles = [
 	'Colonel',
 	'First Responder',
 	'Pharmacist',
-	'Veternarian',
+	'Veterinarian',
 	'Gene Splicer'
 	];
 
@@ -208,6 +208,15 @@ for (var i = 0; i < Cities.length; i++) {
 		'color': (i < 12 ? 'blue' : i < 24 ? 'yellow' : i < 36 ? 'black' : 'red')
 		};
 	City_Info[ci.id] = ci;
+}
+
+var Conditions = {
+	'Field Operative': function(rules) { return !rules.in_the_lab },
+	'Colonel': function(rules) { return rules.quarantines },
+	'Veterinarian': function(rules) { return rules.hinterlands_challenge },
+	'Local Initiative': function(rules) { return rules.quarantines },
+	'Resource Planning': function(rules) { return false }, // NYI
+	'Infection Rumor': function(rules) { return false } // NYI
 }
 
 Pandemic = {
