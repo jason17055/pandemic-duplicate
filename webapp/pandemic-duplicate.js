@@ -1216,7 +1216,13 @@ function make_history_item(evt)
 	else if (evt.type == 'epidemic') {
 		var $e = $('<div class="epidemic_event"></div>');
 		$e.append(make_infection_card(evt.epidemic));
-		$e.append(' is infected (<em>add 3 cubes!</em>)');
+		var ci = Pandemic.Cities[evt.epidemic];
+		if (is_eradicated(G, ci.color)) {
+			$e.append(' is not infected (eradicated)');
+		}
+		else {
+			$e.append(' is infected (<em>add 3 cubes!</em>)');
+		}
 		return $e;
 	}
 	else if (evt.type == 'draw_card') {
