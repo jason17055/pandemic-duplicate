@@ -212,20 +212,28 @@ function stringify_rules(R)
 		(R.virulent_strain ? '-virulent_strain' : '') +
 		(R.lab_challenge ? '-lab_challenge' : '') +
 		(R.mutation_challenge ? '-mutation_challenge' : '') +
-		(R.worldwide_panic ? '-worldwide_panic' : '');
+		(R.worldwide_panic ? '-worldwide_panic' : '') +
+		(R.quarantines ? '-quarantines' : '') +
+		(R.hinterlands_challenge ? '-hinterlands_challenge' : '') +
+		(R.emergency_event_challenge ? '-emergency_event_challenge' : '') +
+		(R.superbug_challenge ? '-superbug_challenge' : '');
 }
 
 function parse_rules(s)
 {
 	var ss = s.split(/-/);
 	var ret = {
-	'expansion': ss[0],
-	'player_count': +ss[1].substring(0, ss[1].length-1),
-	'level': +ss[2].substring(0, ss[2].length-1),
-	'virulent_strain': false,
-	'mutation_challenge': false,
-	'worldwide_panic': false,
-	'lab_challenge': false,
+		'expansion': ss[0],
+		'player_count': +ss[1].substring(0, ss[1].length-1),
+		'level': +ss[2].substring(0, ss[2].length-1),
+		'virulent_strain': false,
+		'mutation_challenge': false,
+		'worldwide_panic': false,
+		'lab_challenge': false,
+		'quarantines': false,
+		'hinterlands_challenge': false,
+		'emergency_event_challenge': false,
+		'superbug_challenge': false,
 	};
 	for (var i = 3; i < ss.length; i++) {
 		switch (ss[i]) {
@@ -240,6 +248,18 @@ function parse_rules(s)
 				break;
 			case 'worldwide_panic':
 				ret.worldwide_panic = true;
+				break;
+			case 'quarantines':
+				ret.quarantines = true;
+				break;
+			case 'hinterlands_challenge':
+				ret.hinterlands_challenge = true;
+				break;
+			case 'emergency_event_challenge':
+				ret.emergency_event_challenge = true;
+				break;
+			case 'superbug_challenge':
+				ret.superbug_challenge = true;
 				break;
 		}
 	}
