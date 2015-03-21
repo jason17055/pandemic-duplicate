@@ -22,7 +22,14 @@ var Roles = [
 	'Pilot',
 	'Local Liaison',
 	'Field Director',
-	'Virologist'
+	'Virologist',
+
+	// expansion roles from "State of Emergency"
+	'Colonel',
+	'First Responder',
+	'Pharmacist',
+	'Veternarian',
+	'Gene Splicer'
 	];
 
 var Cities = [
@@ -116,7 +123,16 @@ var Specials = [
 	// specials from the "In the Lab" expansion
 	'Infection Zone Ban',
 	'Sequencing Breakthrough',
-	'Improved Sanitation'
+	'Improved Sanitation',
+
+	// specials from the "State of Emergency" expansion
+	'Emergency Response',
+	'Advance Team',
+	'Local Initiative',
+	'Resource Planning',
+	'Sample Delivery',
+	'Emergency Conference',
+	'Infection Rumor'
 	];
 
 var Epidemics = [
@@ -176,6 +192,12 @@ Counts['in_the_lab'] = {
 	'num_roles': 17,
 	'num_epidemics': 10,
 	'num_sequences': 14
+}
+Counts['state_of_emergency'] = {
+	'num_specials': 23,
+	'num_roles': 22,
+	'num_epidemics': 10,
+	'num_sequence': 14
 }
 
 var City_Info = {};
