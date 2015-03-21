@@ -3022,6 +3022,14 @@ function validate_modules()
 		f.mutation_challenge.disabled = true;
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
+		f.quarantines.checked = false;
+		f.quarantines.disabled = true;
+		f.hinterlands_challenge.checked = false;
+		f.hinterlands_challenge.disabled = true;
+		f.emergency_event_challenge.checked = false;
+		f.emergency_event_challenge.disabled = true;
+		f.superbug_challenge.checked = false;
+		f.superbug_challenge.disabled = true;
 	}
 	else if (exp == 'on_the_brink') {
 		f.virulent_strain.disabled = false;
@@ -3030,22 +3038,59 @@ function validate_modules()
 		f.mutation_challenge.disabled = false;
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
+		f.quarantines.checked = false;
+		f.quarantines.disabled = true;
+		f.hinterlands_challenge.checked = false;
+		f.hinterlands_challenge.disabled = true;
+		f.emergency_event_challenge.checked = false;
+		f.emergency_event_challenge.disabled = true;
+		f.superbug_challenge.checked = false;
+		f.superbug_challenge.disabled = true;
 	}
 	else if (exp == 'in_the_lab') {
 		f.virulent_strain.disabled = false;
 		f.lab_challenge.disabled = false;
 		f.mutation_challenge.disabled = false;
 		f.worldwide_panic.disabled = false;
+		f.quarantines.checked = false;
+		f.quarantines.disabled = true;
+		f.hinterlands_challenge.checked = false;
+		f.hinterlands_challenge.disabled = true;
+		f.emergency_event_challenge.checked = false;
+		f.emergency_event_challenge.disabled = true;
+		f.superbug_challenge.checked = false;
+		f.superbug_challenge.disabled = true;
+	}
+	else if (exp == 'state_of_emergency') {
+		f.virulent_strain.disabled = false;
+		f.lab_challenge.disabled = false;
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.disabled = false;
+		f.quarantines.disabled = false;
+		f.hinterlands_challenge.disabled = false;
+		f.emergency_event_challenge.disabled = false;
+		f.superbug_challenge.disabled = false;
 	}
 
 	if (f.mutation_challenge.checked) {
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
+		f.superbug_challenge.checked = false;
+		f.superbug_challenge.disabled = true;
 	}
 
 	if (f.worldwide_panic.checked) {
 		f.mutation_challenge.checked = false;
 		f.mutation_challenge.disabled = true;
+		f.superbug_challenge.checked = false;
+		f.superbug_challenge.disabled = true;
+	}
+
+	if (f.superbug_challenge.checked) {
+		f.mutation_challenge.checked = false;
+		f.mutation_challenge.disabled = true;
+		f.worldwide_panic.checked = false;
+		f.worldwide_panic.disabled = true;
 	}
 }
 
