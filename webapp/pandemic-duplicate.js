@@ -2195,10 +2195,10 @@ function stor_get_list(key)
 function make_modules_label(rules)
 {
 	var $m = $('<span class="module list"></span>');
-	$m.append(rules.level == 4 ? 'Intro' :
-			  rules.level == 5 ? 'Normal' :
-			  rules.level == 6 ? 'Heroic' :
-			  rules.level == 7 ? 'Legendary' : '');
+	$m.append(rules.level == 4 ? 'Intro Difficulty' :
+			  rules.level == 5 ? 'Normal Difficulty' :
+			  rules.level == 6 ? 'Heroic Difficulty' :
+			  rules.level == 7 ? 'Legendary Difficulty' : '');
 	if (rules.lab_challenge) {
 		$m.append('<br>');
 		$m.append('Lab Challenge');
@@ -2214,6 +2214,22 @@ function make_modules_label(rules)
 	if (rules.virulent_strain) {
 		$m.append('<br>');
 		$m.append('Virulent Strain');
+	}
+	if (rules.quarantines) {
+		$m.append('<br>');
+		$m.append('Quarantines');
+	}
+	if (rules.hinterlands_challenge) {
+		$m.append('<br>');
+		$m.append('Hinterlands');
+	}
+	if (rules.emergency_event_challenge) {
+		$m.append('<br>');
+		$m.append('Emergency Events');
+	}
+	if (rules.superbug_challenge) {
+		$m.append('<br>');
+		$m.append('Superbug Challenge');
 	}
 	return $m;
 }
