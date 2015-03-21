@@ -3091,6 +3091,8 @@ function validate_modules()
 		f.mutation_challenge.disabled = true;
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
+		f.quarantines.checked = true;
+		f.quarantines.disabled = true;
 	}
 }
 
