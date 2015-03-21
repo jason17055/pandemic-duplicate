@@ -185,6 +185,15 @@ Contents['state_of_emergency'] = {
 		'Sample Delivery',
 		'Emergency Conference',
 		'Infection Rumor'
+	],
+	'Emergencies': [
+		'CDC Planes Grounded',
+		'Limited Options',
+		'Containment Failure',
+		'Patient Zero',
+		'Disease Hot Spot',
+		'Widespread Panic',
+		'Disease Zones Expand'
 	]
 }
 
