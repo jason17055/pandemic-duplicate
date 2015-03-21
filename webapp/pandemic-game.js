@@ -224,8 +224,14 @@ Pandemic = {
 	'Specials': Specials,
 	'Cities': City_Info,
 	'Diseases': Disease_Names,
+	'Conditions': Conditions,
 	'MAX_PLAYERS': 5
 	};
+
+function is_valid_card(card, rules)
+{
+	return (!Pandemic.Conditions[card] || Pandemic.Conditions[card](rules));
+}
 
 function shuffle_array(A)
 {
@@ -309,7 +315,7 @@ function generate_scenario_real(rules)
 
 	var S = [];
 	for (var i = 0; i < num_specials; i++) {
-		if (!Conditions[Specials[i]] || Conditions[Specials[i]](G.rules)) {
+		if (is_valid_card(Specials[i], G.rules)) {
 			S.push(Specials[i]);
 		}
 	}
@@ -327,7 +333,7 @@ function generate_scenario_real(rules)
 
 	var R = [];
 	for (var i = 0; i < num_roles; i++) {
-		if (!Conditions[Roles[i]] || Conditions[Roles[i]](G.rules)) {
+		if (is_valid_card(Roles[i], G.rules)) {
 			R.push(Roles[i]);
 		}
 	}
