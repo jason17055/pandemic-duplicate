@@ -2507,8 +2507,9 @@ function init_new_assignment_page($pg)
 	}
 
 	$('select[name=new_role]', $pg).empty();
-	for (var i = 0; i < Pandemic.Roles.length; i++) {
-		var r = Pandemic.Roles[i];
+	var roles = get_deck('Roles', G.rules);
+	for (var i = 0; i < roles.length; i++) {
+		var r = roles[i];
 		if (role_in_use(r)) { continue; }
 		var $o = $('<option></option>');
 		$o.attr('value', r);
@@ -2847,8 +2848,9 @@ function init_play_special_event_page($pg)
 {
 	$('.special_action_name').text("Play");
 	$('.special_event_btn_row:not(.template)').remove();
-	for (var i = 0; i < Pandemic.Specials.length; i++) {
-		var s = Pandemic.Specials[i];
+	var specials = get_deck('Specials', G.rules);
+	for (var i = 0; i < specials.length; i++) {
+		var s = specials[i];
 		if (!has_special_event(s)) {
 			continue;
 		}
@@ -2873,8 +2875,9 @@ function init_retrieve_special_event_page($pg)
 {
 	$('.special_action_name').text("Retrieve");
 	$('.special_event_btn_row:not(.template)').remove();
-	for (var i = 0; i < Pandemic.Specials.length; i++) {
-		var s = Pandemic.Specials[i];
+	var specials = get_deck('Specials', G.rules);
+	for (var i = 0; i < specials.length; i++) {
+		var s = specials[i];
 		if (!discarded_special_event(s)) {
 			continue;
 		}

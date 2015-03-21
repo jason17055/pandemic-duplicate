@@ -1,37 +1,3 @@
-var Roles = [
-	// original roles
-	'Dispatcher',
-	'Operations Expert',
-	'Scientist',
-	'Medic',
-	'Researcher',
-
-	// 2nd edition roles
-	'Quarantine Specialist',
-	'Contingency Planner',
-
-	// expansion roles from "On The Brink" (those supported, anyway)
-	'Field Operative',
-	'Containment Specialist',
-	'Generalist',
-	'Archivist',
-	'Epidemiologist',
-	'Troubleshooter',
-
-	// expansion roles from "In The Lab"
-	'Pilot',
-	'Local Liaison',
-	'Field Director',
-	'Virologist',
-
-	// expansion roles from "State of Emergency"
-	'Colonel',
-	'First Responder',
-	'Pharmacist',
-	'Veterinarian',
-	'Gene Splicer'
-	];
-
 var Cities = [
 	// Blue cities
 	'Atlanta',
@@ -88,12 +54,13 @@ var Cities = [
 	'Ho Chi Minh City',
 	'Manila',
 	'Sydney'
-
 	];
+
 var Translated_City_Names = {
 	'Bogota': 'Bogot\u00e1',      //Bogotá
 	'Sao Paulo': 'S\u00e3o Paulo' //São Paulo
 	};
+
 var Disease_Names = {
 	'black': 'Black',
 	'blue': 'Blue',
@@ -102,102 +69,123 @@ var Disease_Names = {
 	'purple': 'Purple'
 	};
 
-var Specials = [
-	// specials from the base game
-	'Airlift',
-	'Forecast',
-	'Government Grant',
-	'One Quiet Night',
-	'Resilient Population',
-
-	// specials from the "On the Brink" expansion
-	'Borrowed Time',
-	'Commercial Travel Ban',
-	'Mobile Hospital',
-	'New Assignment',
-	'Rapid Vaccine Deployment',
-	'Re-examined Research',
-	'Remote Treatment',
-	'Special Orders',
-
-	// specials from the "In the Lab" expansion
-	'Infection Zone Ban',
-	'Sequencing Breakthrough',
-	'Improved Sanitation',
-
-	// specials from the "State of Emergency" expansion
-	'Emergency Response',
-	'Advance Team',
-	'Local Initiative',
-	'Resource Planning',
-	'Sample Delivery',
-	'Emergency Conference',
-	'Infection Rumor'
-	];
-
-var Epidemics = [
-	// virulent strain epidemics from "On the Brink" expansion
-	'Chronic Effect',
-	'Complex Molecular Structure',
-	'Government Interference',
-	'Hidden Pocket',
-	'Rate Effect',
-	'Slippery Slope',
-	'Unacceptable Loss',
-	'Uncounted Populations',
-
-	// virulent strain epidemics from "In the Lab" expansion
-	'Highly Contagious',
-	'Resistant to Treatment'
-	];
-
 var Mutations = [
 	'The Mutation Spreads',
 	'The Mutation Threatens',
 	'The Mutation Intensifies'
 ];
 
-var Sequences = [
-	'Small Black',
-	'Small Red',
-	'Small Yellow',
-	'Small Blue',
-	'Black and Red',
-	'Blue and Black',
-	'Red and Yellow',
-	'Red and Blue',
-	'Yellow and Blue',
-	'Black and Yellow',
-	'Big Black',
-	'Big Yellow',
-	'Big Red',
-	'Big Blue'
-	];
+var Expansions = [
+	'base',
+	'base2013',
+	'on_the_brink',
+	'in_the_lab',
+	'state_of_emergency'
+];
 
-var Counts = [];
-Counts['none'] = {
-	'num_specials': 5,
-	'num_roles': 7,
-	'num_epidemics': 0,
-	'num_sequences': 0
+var Contents = [];
+Contents['base'] = {
+	'Roles': [
+		'Dispatcher',
+		'Operations Expert',
+		'Scientist',
+		'Medic',
+		'Researcher'
+	],
+	'Specials': [
+		'Airlift',
+		'Forecast',
+		'Government Grant',
+		'One Quiet Night',
+		'Resilient Population'
+	]
 }
-Counts['on_the_brink'] = {
-	'num_specials': 13,
-	'num_roles': 13,
-	'num_epidemics': 8,
-	'num_sequences': 0
+Contents['base2013'] = {
+	'Roles': [
+		'Quarantine Specialist',
+		'Contingency Planner'
+	]
 }
-Counts['in_the_lab'] = {
-	'num_specials': 16,
-	'num_roles': 17,
-	'num_epidemics': 10,
-	'num_sequences': 14
+Contents['on_the_brink'] = {
+	'Roles': [
+		'Field Operative',
+		'Containment Specialist',
+		'Generalist',
+		'Archivist',
+		'Epidemiologist',
+		'Troubleshooter'
+	],
+	'Specials': [
+		'Borrowed Time',
+		'Commercial Travel Ban',
+		'Mobile Hospital',
+		'New Assignment',
+		'Rapid Vaccine Deployment',
+		'Re-examined Research',
+		'Remote Treatment',
+		'Special Orders'
+	],
+	'Epidemics': [
+		'Chronic Effect',
+		'Complex Molecular Structure',
+		'Government Interference',
+		'Hidden Pocket',
+		'Rate Effect',
+		'Slippery Slope',
+		'Unacceptable Loss',
+		'Uncounted Populations'
+	]
 }
-Counts['state_of_emergency'] = {
-	'num_specials': 23,
-	'num_roles': 22,
-	'num_epidemics': 10,
-	'num_sequence': 14
+Contents['in_the_lab'] = {
+	'Roles': [
+		'Pilot',
+		'Local Liaison',
+		'Field Director',
+		'Virologist'
+	],
+	'Specials': [
+		'Infection Zone Ban',
+		'Sequencing Breakthrough',
+		'Improved Sanitation'
+	],
+	'Epidemics': [
+		'Highly Contagious',
+		'Resistant to Treatment'
+	],
+	'Sequences': [
+		'Small Black',
+		'Small Red',
+		'Small Yellow',
+		'Small Blue',
+		'Black and Red',
+		'Blue and Black',
+		'Red and Yellow',
+		'Red and Blue',
+		'Yellow and Blue',
+		'Black and Yellow',
+		'Big Black',
+		'Big Yellow',
+		'Big Red',
+		'Big Blue'
+	]
+}
+Contents['state_of_emergency'] = {
+	'Roles': [
+		'Colonel',
+		'First Responder',
+		'Pharmacist',
+		'Veterinarian',
+		'Gene Splicer'
+	],
+	'Specials': [
+		'Emergency Response',
+		'Advance Team',
+		'Local Initiative',
+		'Resource Planning',
+		'Sample Delivery',
+		'Emergency Conference',
+		'Infection Rumor'
+	]
 }
 
 var City_Info = {};
@@ -220,8 +208,7 @@ var Conditions = {
 }
 
 Pandemic = {
-	'Roles': Roles,
-	'Specials': Specials,
+	'Contents': Contents,
 	'Cities': City_Info,
 	'Diseases': Disease_Names,
 	'Conditions': Conditions,
@@ -231,6 +218,32 @@ Pandemic = {
 function is_valid_card(card, rules)
 {
 	return (!Pandemic.Conditions[card] || Pandemic.Conditions[card](rules));
+}
+
+function get_deck(name, rules)
+{
+	deck = [];
+
+	var expansions = [];
+	for (var i = 0; i < Expansions.length; i++) {
+		expansions.push(Expansions[i]);
+		if (rules.expansion == Expansions[i]) {
+			break;
+		}
+	}
+
+	var cur;
+	for (var i = 0; i < expansions.length; i++) {
+		cur = Pandemic.Contents[expansions[i]][name];
+		if (cur) {
+			for (var j = 0; j < cur.length; j++) {
+				if (!rules || is_valid_card(cur[j], rules)) {
+					deck.push(cur[j]);
+				}
+			}
+		}
+	}
+	return deck;
 }
 
 function shuffle_array(A)
@@ -308,17 +321,7 @@ function generate_scenario_real(rules)
 	var G = {};
 	G.rules = rules;
 
-	var num_specials = Counts[G.rules.expansion].num_specials || Specials.length;
-	var num_roles = Counts[G.rules.expansion].num_roles || Roles.length;
-	var num_epidemics = G.rules.virulent_strain ? Counts[G.rules.expansion].num_epidemics || Epidemics.length : 0;
-	var num_sequences = G.rules.lab_challenge ? Counts[G.rules.expansion].num_sequences || Sequences.length : 0;
-
-	var S = [];
-	for (var i = 0; i < num_specials; i++) {
-		if (is_valid_card(Specials[i], G.rules)) {
-			S.push(Specials[i]);
-		}
-	}
+	var S = get_deck('Specials', G.rules);
 	shuffle_array(S);
 
 	var A = [];
@@ -331,13 +334,7 @@ function generate_scenario_real(rules)
 		A.push(S[i]);
 	}
 
-	var R = [];
-	for (var i = 0; i < num_roles; i++) {
-		if (is_valid_card(Roles[i], G.rules)) {
-			R.push(Roles[i]);
-		}
-	}
-
+	var R = get_deck('Roles', G.rules);
 	shuffle_array(R);
 
 	shuffle_array(A);
@@ -364,10 +361,13 @@ function generate_scenario_real(rules)
 	}
 
 	var E = [];
-	for (var i = 0; i < num_epidemics; i++) {
-		E.push('Epidemic: ' + Epidemics[i]);
+	if (G.rules.virulent_strain) {
+		var vs = get_deck('Epidemics', G.rules);
+		shuffle_array(vs);
+		for (var i = 0; i < G.rules.level && i < vs.length; i++) {
+			E.push('Epidemic: ' + vs[i]);
+		}
 	}
-	shuffle_array(E);
 
 	while (E.length < G.rules.level) {
 		E.push('Epidemic');
@@ -389,11 +389,10 @@ function generate_scenario_real(rules)
 		}
 	}
 
-	G.sequence_deck = [];
-	for (var i = 0; i < num_sequences; i++) {
-		G.sequence_deck.push(Sequences[i]);
+	if (G.rules.lab_challenge) {
+		G.sequence_deck = get_deck('Sequences', G.rules);
+		shuffle_array(G.sequence_deck);
 	}
-	shuffle_array(G.sequence_deck);
 
 	G.infection_deck = [];
 	for (var i = 0; i < Cities.length; i++) {
