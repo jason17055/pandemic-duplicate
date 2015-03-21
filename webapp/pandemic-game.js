@@ -309,7 +309,9 @@ function generate_scenario_real(rules)
 
 	var S = [];
 	for (var i = 0; i < num_specials; i++) {
-		S.push(Specials[i]);
+		if (!Conditions[Specials[i]] || Conditions[Specials[i]](G.rules)) {
+			S.push(Specials[i]);
+		}
 	}
 	shuffle_array(S);
 
@@ -325,12 +327,11 @@ function generate_scenario_real(rules)
 
 	var R = [];
 	for (var i = 0; i < num_roles; i++) {
-		R.push(Roles[i]);
+		if (!Conditions[Roles[i]] || Conditions[Roles[i]](G.rules)) {
+			R.push(Roles[i]);
+		}
 	}
 
-	if (G.rules.lab_challenge) {
-		find_and_remove_card(R, 'Field Operative');
-	}
 	shuffle_array(R);
 
 	shuffle_array(A);
