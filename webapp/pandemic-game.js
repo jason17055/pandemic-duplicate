@@ -208,7 +208,7 @@ for (var i = 0; i < Cities.length; i++) {
 }
 
 var Conditions = {
-	'Field Operative': function(rules) { return !rules.in_the_lab },
+	'Field Operative': function(rules) { return !rules.lab_challenge },
 	'Colonel': function(rules) { return rules.quarantines },
 	'Veterinarian': function(rules) { return rules.hinterlands_challenge },
 	'Local Initiative': function(rules) { return rules.quarantines },
