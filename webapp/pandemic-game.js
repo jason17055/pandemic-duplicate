@@ -223,7 +223,6 @@ var Conditions = {
 	'Colonel': function(rules) { return rules.quarantines },
 	'Veterinarian': function(rules) { return rules.hinterlands_challenge },
 	'Local Initiative': function(rules) { return rules.quarantines },
-	'Resource Planning': function(rules) { return false }, // NYI
 	'Infection Rumor': function(rules) { return false } // NYI
 }
 
