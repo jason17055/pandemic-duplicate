@@ -363,6 +363,10 @@ function show_current_game(xtra)
 		var $pg = show_page('forecast_page');
 		init_forecast_page($pg);
 	}
+	else if (G.step == 'resource_planning') {
+		var $pg = show_page('resource_planning_page');
+		init_resource_planning_page($pg);
+	}
 	else if (G.step == 'end') {
 		var $pg = show_page('game_completed_page');
 		init_game_completed_page($pg);
@@ -885,6 +889,7 @@ function make_player_card_li(c)
 {
 	var $x = $('<li></li>');
 	$x.append(make_player_card(c));
+	$x.attr('data-card-name', c);
 	return $x;
 }
 
@@ -1684,6 +1689,9 @@ function do_move(m)
 	else if (mm[0] == 'forecast') {
 		do_forecast(m.substring(9));
 	}
+	else if (mm[0] == 'resource_planning') {
+		do_resource_planning(m.substring(18));
+	}
 	else if (m == 'give_up') {
 		G.step = 'end';
 		G.result = 'loss'
@@ -1772,6 +1780,27 @@ function do_forecast(s)
 	delete G.after_forecast_step;
 }
 
+function do_resource_planning(s)
+{
+	var cardlist = [];
+	var m;
+	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
+		cardlist.push(m[1]);
+		s = m[2];
+	}
+
+	for (var i = 0; i < cardlist.length; i++) {
+		G.player_deck.pop();
+	}
+	for (var i = cardlist.length-1; i >= 0; i--) {
+		G.player_deck.push(cardlist[i]);
+	}
+
+	G.time++;
+	G.step = G.after_resource_planning_step;
+	delete G.after_resource_planning_step;
+}
+
 function do_special_event(c)
 {
 	var hfun = function(cc) {
@@ -1818,6 +1847,12 @@ function do_special_event(c)
 			}
 			G.after_forecast_step = G.step;
 			G.step = 'forecast';
+		}
+	}
+	else if (c == 'Resource Planning') {
+		if (hfun(c)) {
+			G.after_resource_planning_step = G.step;
+			G.step = 'resource_planning';
 		}
 	}
 	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
@@ -2509,6 +2544,75 @@ function init_forecast_page($pg)
 		$('button', $s).append(make_infection_card(c));
 		$('button', $s).attr('data-city-name', c);
 		$('button', $s).click(on_forecast_city_selected);
+		$s.removeClass('template');
+		$('.reset_btn_container', $pg).before($s);
+	}
+	$('.choosing', $pg).show();
+	$('.confirming', $pg).hide();
+	$('.reset_btn_container', $pg).hide();
+}
+
+function on_resource_planning_reset_clicked()
+{
+	init_resource_planning_page($('#resource_planning_page'));
+}
+
+function on_resource_planning_confirm_clicked()
+{
+	var sel = [];
+	$('#resource_planning_page .resource_planning_cards_list li').each(function(idx,el) {
+		var c = el.getAttribute('data-card-name');
+		sel.push(c);
+		});
+
+	var m = "resource_planning";
+	for (var i = 0; i < sel.length; i++) {
+		m += ' "' + sel[i] + '"';
+	}
+
+	return set_move(m);
+}
+
+function init_resource_planning_page($pg)
+{
+	var pick_card = function(c) {
+		$('.resource_planning_cards_list',$pg).prepend(make_player_card_li(c));
+	};
+
+	var on_resource_planning_card_selected = function() {
+		var c = this.getAttribute('data-card-name');
+		pick_card(c);
+
+		var $s = $('.card_btn_row:has([data-card-name="'+c+'"])', $pg);
+		$s.remove();
+
+		var left = $('.card_btn_row:not(.template)', $pg);
+		if (left.length == 1) {
+
+			left.each(function(idx,el) {
+				var c = $('button',el).attr('data-card-name');
+				pick_card(c);
+				});
+			left.remove();
+			$('.choosing', $pg).hide();
+			$('.confirming', $pg).show();
+		}
+
+		$('.reset_btn_container', $pg).show();
+	};
+
+	$('.resource_planning_cards_list', $pg).empty();
+
+	$('.card_btn_row:not(.template)',$pg).remove();
+	for (var i = 0; i < 4; i++) {
+		var c = G.player_deck[G.player_deck.length-1-i];
+		if (!c) { continue; }
+
+		var $s = $('.card_btn_row.template', $pg).clone();
+
+		$('button', $s).append(make_player_card(c));
+		$('button', $s).attr('data-card-name', c);
+		$('button', $s).click(on_resource_planning_card_selected);
 		$s.removeClass('template');
 		$('.reset_btn_container', $pg).before($s);
 	}
