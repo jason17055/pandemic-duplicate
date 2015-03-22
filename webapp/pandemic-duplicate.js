@@ -1402,6 +1402,11 @@ function make_history_item(evt)
 		$('.card_container',$e).append(make_infection_card(evt.city));
 		return $e;
 	}
+	else if (evt.type == 'infection_rumor') {
+		var $e = $('<div class="infection_rumor_event">&nbsp; --> <span class="card_container"></span> is discarded</div>');
+		$('.card_container',$e).append(make_infection_card(evt.city));
+		return $e;
+	}
 	else if (evt.type == 'vs_epidemic_dud') {
 		var $e = $('<div class="vs_epidemic_dud_event">&nbsp; --> <span class="epidemic_name"></span>: no effect</div>');
 		$('.epidemic_name',$e).text(evt.epidemic);
@@ -1568,6 +1573,10 @@ function start_infection()
 	}
 	else {
 		G.pending_infection = G.infection_rate;
+	}
+	if (G.infection_rumor) {
+		G.pending_infection--;
+		delete G.infection_rumor;
 	}
 	G.rate_effect_extra_drawn = false;
 	do_more_infection();
@@ -1860,6 +1869,17 @@ function do_special_event(c)
 			find_and_remove_card(G.infection_discards, m[1]);
 			G.history.push({
 				'type':'resilient_population',
+				'city':m[1]
+				});
+		}
+	}
+	else if (m = /^"Infection Rumor" "(.*)"$/.exec(c)) {
+		if (hfun("Infection Rumor")) {
+			find_and_remove_card(G.infection_deck, m[1]);
+			G.infection_discards.push(G.infection_deck, m[1]);
+			G.infection_rumor = true;
+			G.history.push({
+				'type':'infection_rumor',
 				'city':m[1]
 				});
 		}
@@ -2688,6 +2708,31 @@ function on_resilient_population_selected()
 	return set_move('special "Resilient Population" "'+c+'"');
 }
 
+function init_infection_rumor_page($pg)
+{
+	$('.infection_rumor_btn_row:not(.template)',$pg).remove();
+
+	var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
+	for (var i = 0; i < eff_infection_rate; i++) {
+		var c = G.infection_deck[G.infection_deck.length - 1 - i];
+		if (!c) { continue; }
+
+		var $s = $('.infection_rumor_btn_row.template', $pg).clone();
+
+		$('button', $s).append(make_infection_card(c));
+		$('button', $s).attr('data-city-name', c);
+		$('button', $s).click(on_infection_rumor_selected);
+		$s.removeClass('template');
+		$('.infection_rumor_btns_container',$pg).append($s);
+	}
+}
+
+function on_infection_rumor_selected()
+{
+	var c = this.getAttribute('data-city-name');
+	return set_move('special "Infection Rumor" "' + c + '"');
+}
+
 function on_special_event_clicked()
 {
 	var s =  this.getAttribute('data-special-event');
@@ -2696,6 +2741,11 @@ function on_special_event_clicked()
 
 		var $pg = show_page('resilient_population_page');
 		init_resilient_population_page($pg);
+		return;
+	}
+	if (s == 'Infection Rumor') {
+		var $pg = show_page('infection_rumor_page');
+		init_infection_rumor_page($pg);
 		return;
 	}
 	else if (s == 'New Assignment') {
