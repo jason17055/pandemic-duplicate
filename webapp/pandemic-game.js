@@ -83,6 +83,17 @@ var Expansions = [
 	'state_of_emergency'
 ];
 
+var Modules = [
+	'virulent_strain',
+	'lab_challenge',
+	'mutation_challenge',
+	'worldwide_panic',
+	'quarantines',
+	'hinterlands_challenge',
+	'emergency_event_challenge',
+	'superbug_challenge'
+];
+
 var Contents = [];
 Contents['base'] = {
 	'Roles': [
@@ -267,15 +278,13 @@ function shuffle_array(A)
 
 function stringify_rules(R)
 {
-	return R.expansion+'-'+R.player_count+'p-'+R.level+'x' +
-		(R.virulent_strain ? '-virulent_strain' : '') +
-		(R.lab_challenge ? '-lab_challenge' : '') +
-		(R.mutation_challenge ? '-mutation_challenge' : '') +
-		(R.worldwide_panic ? '-worldwide_panic' : '') +
-		(R.quarantines ? '-quarantines' : '') +
-		(R.hinterlands_challenge ? '-hinterlands_challenge' : '') +
-		(R.emergency_event_challenge ? '-emergency_event_challenge' : '') +
-		(R.superbug_challenge ? '-superbug_challenge' : '');
+	var ret = R.expansion + '-' + R.player_count + 'p-' + R.level + 'x';
+	for (var i = 0; i < Modules.length; i++) {
+		if (R[Modules[i]]) {
+			ret = ret + '-' + Modules[i];
+		}
+	}
+	return ret;
 }
 
 function parse_rules(s)
@@ -284,44 +293,19 @@ function parse_rules(s)
 	var ret = {
 		'expansion': ss[0],
 		'player_count': +ss[1].substring(0, ss[1].length-1),
-		'level': +ss[2].substring(0, ss[2].length-1),
-		'virulent_strain': false,
-		'mutation_challenge': false,
-		'worldwide_panic': false,
-		'lab_challenge': false,
-		'quarantines': false,
-		'hinterlands_challenge': false,
-		'emergency_event_challenge': false,
-		'superbug_challenge': false,
+		'level': +ss[2].substring(0, ss[2].length-1)
 	};
-	for (var i = 3; i < ss.length; i++) {
-		switch (ss[i]) {
-			case 'lab_challenge':
-				ret.lab_challenge = true;
+
+	for (var i = 0; i < Modules.length; i++) {
+		ret[Modules[i]] = false;
+		for (var j = 3; j < ss.length; j++) {
+			if (ss[j] == Modules[i]) {
+				ret[Modules[i]] = true;
 				break;
-			case 'virulent_strain':
-				ret.virulent_strain = true;
-				break;
-			case 'mutation_challenge':
-				ret.mutation_challenge = true;
-				break;
-			case 'worldwide_panic':
-				ret.worldwide_panic = true;
-				break;
-			case 'quarantines':
-				ret.quarantines = true;
-				break;
-			case 'hinterlands_challenge':
-				ret.hinterlands_challenge = true;
-				break;
-			case 'emergency_event_challenge':
-				ret.emergency_event_challenge = true;
-				break;
-			case 'superbug_challenge':
-				ret.superbug_challenge = true;
-				break;
+			}
 		}
 	}
+
 	return ret;
 }
 
