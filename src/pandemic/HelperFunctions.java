@@ -1,6 +1,8 @@
 package pandemic;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
@@ -39,88 +41,60 @@ public class HelperFunctions
 
 	public static class Rules
 	{
+		static final String[] MODULE_LIST = new String[] {
+			"virulent_strain",
+			"mutation_challenge",
+			"worldwide_panic",
+			"lab_challenge",
+			"quarantines",
+			"hinterlands_challenge",
+			"emergency_event_challenge",
+			"superbug_challenge",
+		};
 		String expansion;
 		int playerCount;
 		int level;
-		boolean virulentStrain;
-		boolean mutationChallenge;
-		boolean worldwidePanic;
-		boolean labChallenge;
-		boolean quarantines;
-		boolean hinterlandsChallenge;
-		boolean emergencyEventChallenge;
-		boolean superbugChallenge;
+		HashMap<String, Boolean> modules;
+
+		public Rules()
+		{
+			modules = new HashMap<String, Boolean>();
+		}
 
 		@Override
 		public String toString()
 		{
-			return expansion + "-" + playerCount + "p-" + level + "x" +
-				(virulentStrain ? "-virulent_strain" : "") +
-				(labChallenge ? "-lab_challenge" : "") +
-				(mutationChallenge ? "-mutation_challenge" : "") +
-				(worldwidePanic ? "-worldwide_panic" : "") +
-				(quarantines ? "-quarantines" : "") +
-				(hinterlandsChallenge ? "-hinterlands_challenge" : "") +
-				(emergencyEventChallenge ? "-emergency_event_challenge" : "") +
-				(superbugChallenge ? "-superbug_challenge" : "");
+			String ret = expansion + "-" + playerCount + "p-" + level + "x";
+			for (String module : MODULE_LIST) {
+				if (modules.containsKey(module) && modules.get(module)) {
+					ret += "-" + module;
+				}
+			}
+			return ret;
 		}
 		
 		public boolean parseCurrentToken(JsonParser json)
 			throws IOException
 		{
-			if (json.getCurrentName().equals("player_count")) {
+			String cur = json.getCurrentName();
+			if (cur.equals("player_count")) {
 				json.nextToken();
 				playerCount = json.getIntValue();
 				return true;
 			}
-			else if (json.getCurrentName().equals("level")) {
+			else if (cur.equals("level")) {
 				json.nextToken();
 				level = json.getIntValue();
 				return true;
 			}
-			else if (json.getCurrentName().equals("expansion")) {
+			else if (cur.equals("expansion")) {
 				json.nextToken();
 				expansion = json.getText();
 				return true;
 			}
-			else if (json.getCurrentName().equals("virulent_strain")) {
+			else if (Arrays.asList(MODULE_LIST).contains(cur)) {
 				json.nextToken();
-				virulentStrain = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("mutation_challenge")) {
-				json.nextToken();
-				mutationChallenge = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("worldwide_panic")) {
-				json.nextToken();
-				worldwidePanic = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("lab_challenge")) {
-				json.nextToken();
-				labChallenge = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("quarantines")) {
-				json.nextToken();
-				quarantines = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("hinterlands_challenge")) {
-				json.nextToken();
-				hinterlandsChallenge = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("emergency_event_challenge")) {
-				json.nextToken();
-				emergencyEventChallenge = json.getText().equals("true");
-				return true;
-			}
-			else if (json.getCurrentName().equals("superbug_challenge")) {
-				json.nextToken();
-				superbugChallenge = json.getText().equals("true");
+				modules.put(cur, json.getText().equals("true"));
 				return true;
 			}
 			else {
