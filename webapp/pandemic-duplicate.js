@@ -593,6 +593,17 @@ function init_game_completed_page($pg)
 	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
 	$('.level', $pg).text(G.rules.level);
 	if (G.result == 'victory') {
+		var victory_type;
+		if (is_unnecessary(G, 'purple')) {
+			victory_type = "cured all four diseases";
+		}
+		else if (is_cured(G, 'purple')) {
+			victory_type = "cured all five diseases";
+		}
+		else {
+			victory_type = "cured all four normal diseases and wiped purple off the board";
+		}
+		$('.victory_type', $pg).text(victory_type);
 		$('.victory_only', $pg).show();
 		$('.defeat_only', $pg).hide();
 	}
