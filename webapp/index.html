@@ -728,6 +728,34 @@ This is the order the next 6 infection cards will appear.
 </div><!--/page_body-->
 </div><!--/forecast_page-->
 
+<div id="resource_planning_page" class="page">
+<div class="page_header"><h1>Forecast</h1></div>
+<div class="page_body">
+
+<div class="choosing">
+<p>
+Choose cards (in order) to put back on the player deck.
+Save the cards you want to see this turn for last.
+</p>
+</div>
+<div class="confirming">
+<p>
+This is the order the next 4 player cards will appear.
+</p>
+<ol class="resource_planning_cards_list"></ol>
+</div>
+
+<div class="card_btns_container">
+<div class="confirming button_container"><button type="button" onclick="on_resource_planning_confirm_clicked()">OK</button></div>
+<div class="template card_btn_row button_container">
+<button type="button"></button>
+</div>
+<div class="reset_btn_container button_container"><button type="button" onclick="on_resource_planning_reset_clicked()">Reset</button></div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/resource_planning_page-->
+
 <div id="game_completed_page" class="page">
 <div class="page_header"><h1>Game Completed</h1></div>
 <div class="page_body">
