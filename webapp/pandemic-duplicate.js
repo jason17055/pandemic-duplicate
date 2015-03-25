@@ -2108,53 +2108,31 @@ function set_buttons_visibility($pg)
 
 function set_continue_btn_caption($pg)
 {
+	$('.goto_draw_cards_btn', $pg).hide();
+	$('.goto_mutation_btn', $pg).hide();
+	$('.goto_epidemic_btn', $pg).hide();
+	$('.goto_virulent_strain_btn', $pg).hide();
+	$('.goto_hinterlands_btn', $pg).hide();
+	$('.goto_infection_btn', $pg).hide();
+	$('.goto_player_turn_btn', $pg).hide();
+
 	if (G.step == 'actions') {
-		$('.goto_draw_cards_btn', $pg).show();
-		$('.goto_mutation_btn', $pg).hide();
-		$('.goto_epidemic_btn', $pg).hide();
-		$('.goto_virulent_strain_btn', $pg).hide();
-		$('.goto_infection_btn', $pg).hide();
-		$('.goto_player_turn_btn', $pg).hide();
+        $('.goto_draw_cards_btn', $pg).show();
 	}
 	else if (G.pending_mutations.length > 0) {
-		$('.goto_draw_cards_btn', $pg).hide();
 		$('.goto_mutation_btn', $pg).show();
-		$('.goto_epidemic_btn', $pg).hide();
-		$('.goto_virulent_strain_btn', $pg).hide();
-		$('.goto_infection_btn', $pg).hide();
-		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else if (G.pending_epidemics > 0) {
-		$('.goto_draw_cards_btn', $pg).hide();
-		$('.goto_mutation_btn', $pg).hide();
 		$('.goto_epidemic_btn', $pg).show();
-		$('.goto_virulent_strain_btn', $pg).hide();
-		$('.goto_infection_btn', $pg).hide();
-		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else if (G.step == "epidemic" && G.rules.virulent_strain && !G.virulent_strain) {
-		$('.goto_draw_cards_btn', $pg).hide();
-		$('.goto_mutation_btn', $pg).hide();
-		$('.goto_epidemic_btn', $pg).hide();
 		$('.goto_virulent_strain_btn', $pg).show();
-		$('.goto_infection_btn', $pg).hide();
-		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else if (G.pending_infection > 0 || (
 			(G.step == 'draw_cards' || G.step == 'epidemic' || G.step == 'mutation') && !G.one_quiet_night)) {
-		$('.goto_draw_cards_btn', $pg).hide();
-		$('.goto_mutation_btn', $pg).hide();
-		$('.goto_epidemic_btn', $pg).hide();
-		$('.goto_virulent_strain_btn', $pg).hide();
 		$('.goto_infection_btn', $pg).show();
-		$('.goto_player_turn_btn', $pg).hide();
 	}
 	else {
-		$('.goto_draw_cards_btn', $pg).hide();
-		$('.goto_mutation_btn', $pg).hide();
-		$('.goto_epidemic_btn', $pg).hide();
-		$('.goto_virulent_strain_btn', $pg).hide();
-		$('.goto_infection_btn', $pg).hide();
 		$('.goto_player_turn_btn', $pg).show();
 
 		$('.goto_player_turn_btn .player_name', $pg).text(
