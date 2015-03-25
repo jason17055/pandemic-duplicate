@@ -3662,22 +3662,22 @@ function continue_sync()
 	}
 
 	if (pending_sync.download_index) {
-		console.log("sync: checking for items to download");
+		// console.log("sync: checking for items to download");
 		check_for_downloads();
 	}
 
 	// nothing more to do
-	console.log("sync: finished");
+	// console.log("sync: finished");
 	sync_started = false;
 }
 
 function upload_scenario(shuffle_id)
 {
-	console.log("sync: uploading scenario "+shuffle_id);
+	// console.log("sync: uploading scenario "+shuffle_id);
 	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
 
 	var onSuccess = function(data) {
-		console.log('sync: successful upload of '+shuffle_id);
+		// console.log('sync: successful upload of '+shuffle_id);
 		stor_remove_from_set(PACKAGE + '.pending_scenarios', shuffle_id);
 		return continue_sync();
 		};
@@ -3695,11 +3695,11 @@ function upload_scenario(shuffle_id)
 
 function upload_result(result_id)
 {
-	console.log("sync: uploading result "+result_id);
+	// console.log("sync: uploading result "+result_id);
 	var s = localStorage.getItem(PACKAGE + '.result.' + result_id);
 
 	var onSuccess = function(data) {
-		console.log('sync: successful upload of '+result_id);
+		// console.log('sync: successful upload of '+result_id);
 		stor_remove_from_set(PACKAGE + '.pending_results', result_id);
 		return continue_sync();
 		};
@@ -3737,7 +3737,7 @@ function upload_current_game()
 	else if (secret) {
 
 		// new game
-		console.log("sync: uploading current game metadata");
+		// console.log("sync: uploading current game metadata");
 		var st = {
 			'scenario': shuffle_id,
 			'secret': secret,
@@ -3751,8 +3751,8 @@ function upload_current_game()
 
 		var onSuccess = function(data) {
 			game_id = data.game_id;
-			console.log('sync: successful upload of current game metadata');
-			console.log('sync: new game id is '+game_id);
+			// console.log('sync: successful upload of current game metadata');
+			// console.log('sync: new game id is '+game_id);
 			localStorage.setItem(PACKAGE + '.current_game.published', game_id);
 			return upload_current_game_moves(game_id, secret);
 			};
@@ -3771,7 +3771,7 @@ function upload_current_game()
 
 function upload_current_game_moves(game_id, secret)
 {
-	console.log("sync: uploading current game movelog");
+	// console.log("sync: uploading current game movelog");
 	delete pending_sync.game_state;
 
 	var mv_array = [];
@@ -3787,7 +3787,7 @@ function upload_current_game_moves(game_id, secret)
 		};
 
 	var onSuccess = function(data) {
-		console.log('sync: successful upload of current game movelog');
+		// console.log('sync: successful upload of current game movelog');
 		return continue_sync();
 		};
 
@@ -3878,12 +3878,12 @@ function save_downloaded_result(result_id, result_data)
 function download_result(result_b)
 {
 	var onSuccess = function(data) {
-		console.log('sync: successful download of result '+result_b.id);
+		// console.log('sync: successful download of result '+result_b.id);
 		save_downloaded_result(result_b.id, data);
 		return download_next_result();
 		};
 
-	console.log('sync: downloading result '+result_b.id);
+	// console.log('sync: downloading result '+result_b.id);
 	$.ajax({
 	type: "GET",
 	url: "s/deals?deal="+escape(result_b.scenario)+"&result="+escape(result_b.id),
@@ -3915,12 +3915,12 @@ function save_downloaded_scenario(scenario_id, data)
 function download_scenario(scenario_id)
 {
 	var onSuccess = function(data) {
-		console.log('sync: successful download of '+scenario_id);
+		// console.log('sync: successful download of '+scenario_id);
 		save_downloaded_scenario(scenario_id, data);
 		return download_next_scenario();
 		};
 
-	console.log('sync: downloading scenario '+scenario_id);
+	// console.log('sync: downloading scenario '+scenario_id);
 	$.ajax({
 	type: "GET",
 	url: "s/scenarios?id="+escape(scenario_id),
