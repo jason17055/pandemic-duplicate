@@ -1258,6 +1258,25 @@ function find_and_remove_card(pile, card_name)
 	return null;
 }
 
+function do_hinterlands_infection()
+{
+	var c = G.hinterlands_rolls.pop();
+	if (c == 'blank') {
+		G.history.push({
+			'type': 'hinterlands_dud'
+			});
+	}
+	else {
+		G.history.push({
+			'type': 'hinterlands_infection',
+			'color': c
+			});
+	}
+
+	G.step = 'infection';
+	G.time++;
+}
+
 function do_more_infection()
 {
 	if (G.pending_infection > 0) {
@@ -1518,6 +1537,26 @@ function make_history_item(evt)
 		$('.mutation_name',$e).text(evt.mutation);
 		return $e;
 	}
+	else if (evt.type == 'hinterlands_infection') {
+		var $e = $('<div class="hinterlands_infection_event"><img src="" class="color_icon"><span class="color_name"></span></div>');
+		$('.color_icon', $e).attr('src', evt.color + '_icon.png');
+		$('.color_name', $e).text(Disease_Names[evt.color]);
+
+		if (is_eradicated(G, evt.color)) {
+			$e.append(' is rolled (eradicated)');
+		}
+		else if (G.chronic_effect && G.virulent_strain == evt.color) {
+			$e.append(' is rolled (add 1 or 2 cubes)');
+		}
+		else {
+			$e.append(' is rolled (add 1 cube)');
+		}
+		return $e;
+	}
+	else if (evt.type == 'hinterlands_dud') {
+		var $e = $('<div class="hinterlands_dud_event">Blank result is rolled -- no effect!</div>');
+		return $e;
+	}
 	else {
 		console.log("Unrecognized event type: '" + evt.type + "'");
 		return null;
@@ -1590,7 +1629,13 @@ function start_infection()
 		delete G.infection_rumor;
 	}
 	G.rate_effect_extra_drawn = false;
-	do_more_infection();
+
+	if (G.rules.hinterlands_challenge) {
+		do_hinterlands_infection();
+	}
+	else {
+		do_more_infection();
+	}
 }
 
 function do_move(m)
@@ -2128,9 +2173,16 @@ function set_continue_btn_caption($pg)
 	else if (G.step == "epidemic" && G.rules.virulent_strain && !G.virulent_strain) {
 		$('.goto_virulent_strain_btn', $pg).show();
 	}
-	else if (G.pending_infection > 0 || (
-			(G.step == 'draw_cards' || G.step == 'epidemic' || G.step == 'mutation') && !G.one_quiet_night)) {
+	else if (G.pending_infection > 0) {
 		$('.goto_infection_btn', $pg).show();
+	}
+	else if ((G.step == 'draw_cards' || G.step == 'epidemic' || G.step == 'mutation') && !G.one_quiet_night) {
+		if (G.rules.hinterlands_challenge) {
+			$('.goto_hinterlands_btn', $pg).show();
+		}
+		else {
+			$('.goto_infection_btn', $pg).show();
+		}
 	}
 	else {
 		$('.goto_player_turn_btn', $pg).show();
