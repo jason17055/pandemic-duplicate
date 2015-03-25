@@ -75,6 +75,15 @@ var Mutations = [
 	'The Mutation Intensifies'
 ];
 
+var Hinterlands_Die = [
+	'black',
+	'blue',
+	'red',
+	'yellow',
+	'blank',
+	'blank'
+];
+
 var Expansions = [
 	'base',
 	'base2013',
@@ -307,6 +316,12 @@ function parse_rules(s)
 	return ret;
 }
 
+function hinterlands_roll()
+{
+	var i = Math.floor(Math.random() * (Hinterlands_Die.length));
+	return Hinterlands_Die[i];
+}
+
 function generate_scenario_real(rules)
 {
 	var G = {};
@@ -410,6 +425,13 @@ function generate_scenario_real(rules)
 		G['epidemic.'+k] = a;
 	}
 
+	if (G.rules.hinterlands_challenge) {
+		G.hinterlands_rolls = [];
+		for (var i = 0; i < G.player_deck.length / 2 + 1; i++) {
+			G.hinterlands_rolls.push(hinterlands_roll());
+		}
+	}
+
 	return G;
 }
 
@@ -429,11 +451,15 @@ function generate_scenario(rules)
 		X['epidemic.'+k] = G['epidemic.'+k];
 	}
 
+	if (G.rules.hinterlands_challenge) {
+		X.hinterlands_rolls = G.hinterlands_rolls;
+	}
+
 	var XX = JSON.stringify(X);
 	G.scenario_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
 	G.shuffle_id = G.scenario_id;
 
-console.log('saving scenario ' + G.scenario_id);
+	console.log('saving scenario ' + G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id, XX);
 	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(G.rules), G.scenario_id);
 	stor_add_to_set(PACKAGE + '.scenarios_by_player_count.' + G.rules.player_count, G.scenario_id);
