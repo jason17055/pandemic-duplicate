@@ -1538,7 +1538,7 @@ function make_history_item(evt)
 		return $e;
 	}
 	else if (evt.type == 'hinterlands_infection') {
-		var $e = $('<div class="hinterlands_infection_event"><img src="" class="color_icon"><span class="color_name"></span></div>');
+		var $e = $('<div class="hinterlands_infection_event"><span class="infection_card"><img src="" class="color_icon"><span class="color_name"></span></span></div>');
 		$('.color_icon', $e).attr('src', evt.color + '_icon.png');
 		$('.color_name', $e).text(Disease_Names[evt.color]);
 
