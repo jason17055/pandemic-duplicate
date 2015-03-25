@@ -386,6 +386,15 @@ function generate_scenario_real(rules)
 	for (var i = 0; i < G.rules.level; i++) {
 		piles.push([E.shift()]);
 	}
+
+	if (G.rules.emergency_event_challenge) {
+		var ee = get_deck('Emergencies', G.rules);
+		shuffle_array(ee);
+		for (var i = 0; i < G.rules.level && ee.length > 0; i++) {
+			piles[i].push("Emergency: " + ee.pop());
+		}
+	}
+
 	for (var i = 0; i < A.length; i++) {
 		var j = i % piles.length;
 		piles[j].push(A[i]);
