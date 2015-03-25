@@ -213,6 +213,9 @@ Contents['state_of_emergency'] = {
 		'Patient Zero',
 		'Disease Hot Spot',
 		'Widespread Panic',
+		'Logistics Failure',
+		'Sanitation Breakdown',
+		'Time Runs Out',
 		'Disease Zones Expand'
 	]
 }
