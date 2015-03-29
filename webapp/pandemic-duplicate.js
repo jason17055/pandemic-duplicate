@@ -930,6 +930,12 @@ function make_player_card(c)
 		$('.card_icon', $x).attr('src', 'purple_icon.png');
 		$x.addClass('mutation_card');
 	}
+	else if (is_emergency(c)) {
+		var text = is_emergency(c);
+		$('.card_name', $x).text(text);
+		$('.card_icon', $x).attr('src', 'emergency_event_icon.png');
+		$x.addClass('emergency_card');
+	}
 	else {
 		$('.card_name', $x).text(c);
 		$('.card_icon', $x).attr('src', 'special_event_icon.png');
@@ -2215,6 +2221,17 @@ function is_epidemic(c)
 function is_mutation(c)
 {
 	var m = /^Mutation(?:{\d+})?: (.*)/.exec(c);
+	if (!m) {
+		return null;
+	}
+	else {
+		return m[1];
+	}
+}
+
+function is_emergency(c)
+{
+	var m = /^Emergency(?:{\d+})?: (.*)/.exec(c);
 	if (!m) {
 		return null;
 	}
