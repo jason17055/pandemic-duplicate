@@ -24,6 +24,7 @@ function load_options()
 
 	CFG.has_on_the_brink = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
 	CFG.has_in_the_lab = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
+	CFG.has_state_of_emergency = localStorage.getItem(PACKAGE+'.has_state_of_emergency')=='true';
 
 	CFG.game_detail_level = +localStorage.getItem(PACKAGE+'.game_detail_level');
 	if (CFG.game_detail_level >= 1) {
@@ -131,6 +132,7 @@ function init_options_page($pg)
 
 	f.has_on_the_brink.checked = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
 	f.has_in_the_lab.checked = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
+	f.has_state_of_emergency.checked = localStorage.getItem(PACKAGE+'.has_state_of_emergency')=='true';
 
 	var tmp1 = localStorage.getItem(PACKAGE+'.game_detail_level');
 	f.game_detail_level.value = tmp1 || '0';
@@ -142,6 +144,7 @@ function save_options_form()
 	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
 	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
 	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+	localStorage.setItem(PACKAGE+'.has_state_of_emergency', f.has_state_of_emergency.checked ? 'true' : 'false');
 	localStorage.setItem(PACKAGE+'.game_detail_level', f.game_detail_level.value);
 	load_options();
 }
@@ -151,6 +154,7 @@ $(function() {
 	f.base_game_version.onchange = save_options_form;
 	f.has_on_the_brink.onchange = save_options_form;
 	f.has_in_the_lab.onchange = save_options_form;
+	f.has_state_of_emergency.onchange = save_options_form;
 	f.game_detail_level.onchange = save_options_form;
 });
 function init_subscription_page($pg)
