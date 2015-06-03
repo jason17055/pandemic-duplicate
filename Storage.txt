@@ -66,7 +66,7 @@ Documents what localStorage keys are used client-side.
 .scenario.X.current_game
 	Game id.
 
-.scenarios_by_rules.X
+.scenarios_by_rules.X (deprecated)
 	List of scenario ids, where X is a rules string
 
 .scenarios_by_player_count.#
@@ -82,6 +82,9 @@ Documents what localStorage keys are used client-side.
 
 .has_in_the_lab
 	'true' if user indicated they have the In The Lab expansion
+
+.has_state_of_emergency
+	'true' if user indicated they have the State of Emergency expansion
 
 .base_game_version
 	either '2007' or '2013' to indicate which version of base game user has

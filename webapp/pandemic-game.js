@@ -258,9 +258,8 @@ function get_deck(name, rules)
 
 	var expansions = [];
 	for (var i = 0; i < Expansions.length; i++) {
-		expansions.push(Expansions[i]);
-		if (rules.expansion == Expansions[i]) {
-			break;
+		if (Expansions[i] == 'base' || rules[Expansions[i]]) {
+			expansions.push(Expansions[i]);
 		}
 	}
 
@@ -290,7 +289,12 @@ function shuffle_array(A)
 
 function stringify_rules(R)
 {
-	var ret = R.player_count + 'p-' + R.level + 'x-' + R.expansion;
+	var ret = R.player_count + 'p-' + R.level + 'x';
+	for (var i = 0; i < Expansions.length; i++) {
+		if (R[Expansions[i]]) {
+			ret = ret + '-' + Expansions[i];
+		}
+	}
 	for (var i = 0; i < Module_Names.length; i++) {
 		if (R[Module_Names[i]]) {
 			ret = ret + '-' + Module_Names[i];
@@ -303,16 +307,21 @@ function parse_rules(s)
 {
 	var R = {};
 
+	for (var i = 0; i < Expansions.length; i++) {
+		R[Expansions[i]] = false;
+	}
+
 	var ss = s.split(/-/);
 	if (ss[0].match(/^(\d+)p/)) {
 		// new-style rules string (player-count first)
+		// TODO- support multiple expansions
 		R.player_count = +ss[0].substring(0, ss[0].length-1);
 		R.level = +ss[1].substring(0, ss[1].length-1);
-		R.expansion = ss[2];
+		R[ss[2]] = true;
 	}
 	else {
 		// old-style rules string (expansion first)
-		R.expansion = ss[0];
+		R[ss[0]] = true;
 		R.player_count = +ss[1].substring(0, ss[1].length-1);
 		R.level = +ss[2].substring(0, ss[2].length-1);
 	}
@@ -349,7 +358,13 @@ function generate_scenario_real(rules)
 		A.push(Cities[i]);
 	}
 
-	var num_specials_avail = G.rules.expansion == 'none' ? 5 : G.rules.player_count*2;
+	var num_specials_avail;
+	if (G.rules.on_the_brink || G.rules.in_the_lab || G.rules.state_of_emergency) {
+		num_specials_avail = G.rules.player_count*2;
+	}
+	else {
+		num_specials_avail = 5;
+	}
 	for (var i = 0; i < S.length && i < num_specials_avail; i++) {
 		A.push(S[i]);
 	}

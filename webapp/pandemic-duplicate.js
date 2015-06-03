@@ -481,8 +481,10 @@ function submit_generate_game_form()
 	var f = document.generate_game_form;
 	var rules = {
 		'player_count': +f.player_count.value,
-		'expansion': f.expansion.value,
 		'level': +f.level.value,
+		'on_the_brink': f.expansion.value == 'on_the_brink',
+		'in_the_lab': f.expansion.value == 'in_the_lab',
+		'state_of_emergency': f.expansion.value == 'state_of_emergency',
 		'virulent_strain': f.virulent_strain.checked,
 		'lab_challenge': f.lab_challenge.checked,
 		'mutation_challenge': f.mutation_challenge.checked,
@@ -3347,7 +3349,7 @@ function validate_modules()
 
 function scenario_compatible(R)
 {
-	if (R.expansion=='on_the_brink' && !CFG.has_on_the_brink) {
+	if (R.on_the_brink && !CFG.has_on_the_brink) {
 		return false;
 	}
 	return true;
