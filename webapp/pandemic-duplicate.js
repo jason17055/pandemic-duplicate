@@ -482,9 +482,9 @@ function submit_generate_game_form()
 	var rules = {
 		'player_count': +f.player_count.value,
 		'level': +f.level.value,
-		'on_the_brink': f.expansion.value == 'on_the_brink',
-		'in_the_lab': f.expansion.value == 'in_the_lab',
-		'state_of_emergency': f.expansion.value == 'state_of_emergency',
+		'on_the_brink': f.on_the_brink.checked,
+		'in_the_lab': f.in_the_lab.checked,
+		'state_of_emergency': f.state_of_emergency.checked,
 		'virulent_strain': f.virulent_strain.checked,
 		'lab_challenge': f.lab_challenge.checked,
 		'mutation_challenge': f.mutation_challenge.checked,
@@ -3262,88 +3262,31 @@ function validate_modules()
 {
 	var f = document.generate_game_form;
 
-	var exp = f.expansion.value;
-
-	if (exp == 'none') {
-		f.virulent_strain.checked = false;
-		f.virulent_strain.disabled = true;
-		f.lab_challenge.checked = false;
-		f.lab_challenge.disabled = true;
-		f.mutation_challenge.checked = false;
-		f.mutation_challenge.disabled = true;
-		f.worldwide_panic.checked = false;
-		f.worldwide_panic.disabled = true;
-		f.quarantines.checked = false;
-		f.quarantines.disabled = true;
-		f.hinterlands_challenge.checked = false;
-		f.hinterlands_challenge.disabled = true;
-		f.emergency_event_challenge.checked = false;
-		f.emergency_event_challenge.disabled = true;
-		f.superbug_challenge.checked = false;
-		f.superbug_challenge.disabled = true;
-	}
-	else if (exp == 'on_the_brink') {
-		f.virulent_strain.disabled = false;
-		f.lab_challenge.checked = false;
-		f.lab_challenge.disabled = true;
-		f.mutation_challenge.disabled = false;
-		f.worldwide_panic.checked = false;
-		f.worldwide_panic.disabled = true;
-		f.quarantines.checked = false;
-		f.quarantines.disabled = true;
-		f.hinterlands_challenge.checked = false;
-		f.hinterlands_challenge.disabled = true;
-		f.emergency_event_challenge.checked = false;
-		f.emergency_event_challenge.disabled = true;
-		f.superbug_challenge.checked = false;
-		f.superbug_challenge.disabled = true;
-	}
-	else if (exp == 'in_the_lab') {
-		f.virulent_strain.disabled = false;
-		f.lab_challenge.disabled = false;
-		f.mutation_challenge.disabled = false;
-		f.worldwide_panic.disabled = false;
-		f.quarantines.checked = false;
-		f.quarantines.disabled = true;
-		f.hinterlands_challenge.checked = false;
-		f.hinterlands_challenge.disabled = true;
-		f.emergency_event_challenge.checked = false;
-		f.emergency_event_challenge.disabled = true;
-		f.superbug_challenge.checked = false;
-		f.superbug_challenge.disabled = true;
-	}
-	else if (exp == 'state_of_emergency') {
-		f.virulent_strain.disabled = false;
-		f.lab_challenge.disabled = false;
-		f.mutation_challenge.disabled = false;
-		f.worldwide_panic.disabled = false;
-		f.quarantines.disabled = false;
-		f.hinterlands_challenge.disabled = false;
-		f.emergency_event_challenge.disabled = false;
-		f.superbug_challenge.disabled = false;
-	}
-
 	if (f.mutation_challenge.checked) {
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
 		f.superbug_challenge.checked = false;
 		f.superbug_challenge.disabled = true;
 	}
-
-	if (f.worldwide_panic.checked) {
+	else if (f.worldwide_panic.checked) {
 		f.mutation_challenge.checked = false;
 		f.mutation_challenge.disabled = true;
 		f.superbug_challenge.checked = false;
 		f.superbug_challenge.disabled = true;
 	}
-
-	if (f.superbug_challenge.checked) {
+	else if (f.superbug_challenge.checked) {
 		f.mutation_challenge.checked = false;
 		f.mutation_challenge.disabled = true;
 		f.worldwide_panic.checked = false;
 		f.worldwide_panic.disabled = true;
 		f.quarantines.checked = true;
 		f.quarantines.disabled = true;
+	}
+	else {
+		f.mutation_challenge.disabled = false;
+		f.worldwide_panic.disabled = false;
+		f.superbug_challenge.disabled = false;
+		f.quarantines.disabled = false;
 	}
 }
 
