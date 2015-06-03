@@ -306,28 +306,28 @@ function parse_rules(s)
 	var ss = s.split(/-/);
 	if (ss[0].match(/^(\d+)p/)) {
 		// new-style rules string (player-count first)
-		ret.player_count = +ss[0].substring(0, ss[0].length-1);
-		ret.level = +ss[1].substring(0, ss[1].length-1);
-		ret.expansion = ss[2];
+		R.player_count = +ss[0].substring(0, ss[0].length-1);
+		R.level = +ss[1].substring(0, ss[1].length-1);
+		R.expansion = ss[2];
 	}
 	else {
 		// old-style rules string (expansion first)
-		ret.expansion = ss[0];
-		ret.player_count = +ss[1].substring(0, ss[1].length-1);
-		ret.level = +ss[2].substring(0, ss[2].length-1);
+		R.expansion = ss[0];
+		R.player_count = +ss[1].substring(0, ss[1].length-1);
+		R.level = +ss[2].substring(0, ss[2].length-1);
 	}
 
 	for (var i = 0; i < Module_Names.length; i++) {
-		ret[Module_Names[i]] = false;
+		R[Module_Names[i]] = false;
 		for (var j = 3; j < ss.length; j++) {
 			if (ss[j] == Module_Names[i]) {
-				ret[Module_Names[i]] = true;
+				R[Module_Names[i]] = true;
 				break;
 			}
 		}
 	}
 
-	return ret;
+	return R;
 }
 
 function hinterlands_roll()
