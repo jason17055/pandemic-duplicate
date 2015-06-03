@@ -788,6 +788,7 @@ function init_player_setup_page($pg, game_id)
 	load_game(game_id);
 
 	$('.scenario_name',$pg).text(scenario_name(G.scenario_id));
+	$('.rules', $pg).text(stringify_rules(G.rules));
 
 	if (G.rules.player_count <= 2) {
 		$('.player3', $pg).hide();
