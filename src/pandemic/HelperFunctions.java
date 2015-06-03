@@ -64,7 +64,7 @@ public class HelperFunctions
 		@Override
 		public String toString()
 		{
-			String ret = expansion + "-" + playerCount + "p-" + level + "x";
+			String ret = playerCount + "p-" + level + "x-" + expansion;
 			for (String module : MODULE_LIST) {
 				if (modules.containsKey(module) && modules.get(module)) {
 					ret += "-" + module;

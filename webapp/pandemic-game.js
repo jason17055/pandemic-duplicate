@@ -290,7 +290,7 @@ function shuffle_array(A)
 
 function stringify_rules(R)
 {
-	var ret = R.expansion + '-' + R.player_count + 'p-' + R.level + 'x';
+	var ret = R.player_count + 'p-' + R.level + 'x-' + R.expansion;
 	for (var i = 0; i < Module_Names.length; i++) {
 		if (R[Module_Names[i]]) {
 			ret = ret + '-' + Module_Names[i];
@@ -301,12 +301,21 @@ function stringify_rules(R)
 
 function parse_rules(s)
 {
+	var R = {};
+
 	var ss = s.split(/-/);
-	var ret = {
-		'expansion': ss[0],
-		'player_count': +ss[1].substring(0, ss[1].length-1),
-		'level': +ss[2].substring(0, ss[2].length-1)
-	};
+	if (ss[0].match(/^(\d+)p/)) {
+		// new-style rules string (player-count first)
+		ret.player_count = +ss[0].substring(0, ss[0].length-1);
+		ret.level = +ss[1].substring(0, ss[1].length-1);
+		ret.expansion = ss[2];
+	}
+	else {
+		// old-style rules string (expansion first)
+		ret.expansion = ss[0];
+		ret.player_count = +ss[1].substring(0, ss[1].length-1);
+		ret.level = +ss[2].substring(0, ss[2].length-1);
+	}
 
 	for (var i = 0; i < Module_Names.length; i++) {
 		ret[Module_Names[i]] = false;
