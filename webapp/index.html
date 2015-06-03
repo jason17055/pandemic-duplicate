@@ -60,6 +60,7 @@ Welcome to Pandemic Duplicate!
 <p>Expansions:
 <label><input type="checkbox" name="has_on_the_brink">On The Brink</label>
 <label><input type="checkbox" name="has_in_the_lab">In The Lab</label>
+<label><input type="checkbox" name="has_state_of_emergency">State of Emergency</label>
 </p>
 
 <p>
@@ -167,7 +168,8 @@ to purchase or use a subscription.
 
 <tr>
 <td><label for="expansion_cb">Expansion:</label></td>
-<td><select id="expansion_cb" name="expansion">
+<td><select id="expansion_cb" name="expansion" onclick='validate_modules();'>
+<option value="state_of_emergency">State of Emergency</option>
 <option value="in_the_lab">In The Lab</option>
 <option value="on_the_brink">On The Brink</option>
 <option value="none">Original</option>
@@ -190,14 +192,22 @@ to purchase or use a subscription.
 <tr>
 <td>Modules:</td>
 <td>
-<input type="checkbox" id="vs_checkbox" name="virulent_strain"/>
+<input type="checkbox" id="vs_checkbox" name="virulent_strain" onclick='validate_modules();'/>
 <label for="vs_checkbox">Virulent Strain</label><br>
-<input type="checkbox" id="lab_checkbox" name="lab_challenge"/>
+<input type="checkbox" id="lab_checkbox" name="lab_challenge" onclick='validate_modules();'/>
 <label for="lab_checkbox">Lab Challenge</label><br>
-<input type="checkbox" id="mut_checkbox" name="mutation_challenge" disabled="disabled"/>
+<input type="checkbox" id="mut_checkbox" name="mutation_challenge" onclick='validate_modules();'/>
 <label for="mut_checkbox">Mutation Challenge</label><br>
-<input type="checkbox" id="wp_checkbox" name="worldwide_panic" disabled="disabled"/>
-<label for="wp_checkbox">Worldwide Panic</label>
+<input type="checkbox" id="wp_checkbox" name="worldwide_panic" onclick='validate_modules();'/>
+<label for="wp_checkbox">Worldwide Panic</label><br>
+<input type="checkbox" id="quarantines_checkbox" name="quarantines" onclick='validate_modules();'/>
+<label for="quarantines_checkbox">Quarantines</label><br>
+<input type="checkbox" id="hinterlands_checkbox" name="hinterlands_challenge" onclick='validate_modules();'/>
+<label for="hinterlands_checkbox">Hinterlands Challenge</label><br>
+<input type="checkbox" id="emergency_event_checkbox" name="emergency_event_challenge" onclick='validate_modules();'/>
+<label for="emergency_event_checkbox">Emergency Event Challenge *NYI*</label><br>
+<input type="checkbox" id="superbug_checkbox" name="superbug_challenge" onclick='validate_modules();'/>
+<label for="superbug_checkbox">Superbug Challenge *NYI*</label>
 </td>
 </table>
 </div><!--/flex_container-->
@@ -544,8 +554,10 @@ Perform your actions.
 <div class="continue_button_container">
 <div class="button_container">
 <button type="button" class="goto_draw_cards_btn" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
+<button type="button" class="goto_mutation_btn" onclick="continue_player_turn()">Next: <small>Mutation</small></button>
 <button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
 <button type="button" class="goto_virulent_strain_btn" onclick="on_determine_virulent_strain_clicked()">Next: <small>Determine Virulent Strain</small></button>
+<button type="button" class="goto_hinterlands_btn" onclick="continue_player_turn()">Next: <small>Hinterlands Infection</small></button>
 <button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
 <button type="button" class="goto_player_turn_btn" onclick="continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
 </div>
@@ -586,6 +598,15 @@ Perform your actions.
 <div class="button_container">
 <button type="button" class="eradicate_btn" data-disease="yellow" onclick="on_eradicate_clicked('yellow')">Eradicate <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
 </div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="purple" onclick="on_discover_cure_clicked('purple')">Cure <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="purple" onclick="on_eradicate_clicked('purple')">Eradicate <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container victory_button_container">
+<button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
+</div>
 <div id="discover_cure_none_row" class="button_container">
 <button type="button" onclick="cancel_special_event()">Never Mind</button>
 </div>
@@ -612,6 +633,9 @@ Perform your actions.
 </div>
 <div class="button_container">
 <button type="button" class="virulent_strain_btn" data-disease="yellow" onclick="on_virulent_strain_clicked('yellow')"><img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="purple" onclick="on_virulent_strain_clicked('purple')"><img src="purple_icon.png" class="card_icon" alt="">Purple</button>
 </div>
 </div>
 
@@ -682,6 +706,23 @@ Choose a city to remove from the Infection deck.
 </div><!--/page_body-->
 </div><!--/resilient_population_page-->
 
+<div id="infection_rumor_page" class="page">
+<div class="page_header"><h1>Play Infection Rumor</h1></div>
+<div class="page_body">
+
+<p>
+Choose a card to discard from the Infection deck.
+</p>
+
+<div class="infection_rumor_btns_container">
+<div class="template infection_rumor_btn_row button_container">
+<button type="button"></button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/infection_rumor_page-->
+
 <div id="forecast_page" class="page">
 <div class="page_header"><h1>Forecast</h1></div>
 <div class="page_body">
@@ -710,6 +751,34 @@ This is the order the next 6 infection cards will appear.
 </div><!--/page_body-->
 </div><!--/forecast_page-->
 
+<div id="resource_planning_page" class="page">
+<div class="page_header"><h1>Resource Planning</h1></div>
+<div class="page_body">
+
+<div class="choosing">
+<p>
+Choose cards (in order) to put back on the player deck.
+Save the cards you want to see this turn for last.
+</p>
+</div>
+<div class="confirming">
+<p>
+This is the order the next 4 player cards will appear.
+</p>
+<ol class="resource_planning_cards_list"></ol>
+</div>
+
+<div class="card_btns_container">
+<div class="confirming button_container"><button type="button" onclick="on_resource_planning_confirm_clicked()">OK</button></div>
+<div class="template card_btn_row button_container">
+<button type="button"></button>
+</div>
+<div class="reset_btn_container button_container"><button type="button" onclick="on_resource_planning_reset_clicked()">Reset</button></div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/resource_planning_page-->
+
 <div id="game_completed_page" class="page">
 <div class="page_header"><h1>Game Completed</h1></div>
 <div class="page_body">
@@ -723,7 +792,7 @@ This is the order the next 6 infection cards will appear.
 <div class="victory_only">
 <p>
 With <span class="level"></span> epidemics,
-you cured all four diseases in <span class="turns"></span> turns
+you <span class="victory_type"></span> in <span class="turns"></span> turns
 (<span class="turns_left"></span> turn(s) left).
 </p>
 </div>

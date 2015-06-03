@@ -1,30 +1,3 @@
-var Roles = [
-	// original roles
-	'Dispatcher',
-	'Operations Expert',
-	'Scientist',
-	'Medic',
-	'Researcher',
-
-	// 2nd edition roles
-	'Quarantine Specialist',
-	'Contingency Planner',
-
-	// expansion roles from "On The Brink" (those supported, anyway)
-	'Field Operative',
-	'Containment Specialist',
-	'Generalist',
-	'Archivist',
-	'Epidemiologist',
-	'Troubleshooter',
-
-	// expansion roles from "In The Lab"
-	'Pilot',
-	'Local Liaison',
-	'Field Director',
-	'Virologist'
-	];
-
 var Cities = [
 	// Blue cities
 	'Atlanta',
@@ -81,94 +54,170 @@ var Cities = [
 	'Ho Chi Minh City',
 	'Manila',
 	'Sydney'
-
 	];
+
 var Translated_City_Names = {
 	'Bogota': 'Bogot\u00e1',      //Bogotá
 	'Sao Paulo': 'S\u00e3o Paulo' //São Paulo
 	};
+
 var Disease_Names = {
 	'black': 'Black',
 	'blue': 'Blue',
 	'red': 'Red',
-	'yellow': 'Yellow'
+	'yellow': 'Yellow',
+	'purple': 'Purple'
 	};
 
-var Specials = [
-	// specials from the base game
-	'Airlift',
-	'Forecast',
-	'Government Grant',
-	'One Quiet Night',
-	'Resilient Population',
+var Mutations = [
+	'The Mutation Spreads',
+	'The Mutation Threatens',
+	'The Mutation Intensifies'
+];
 
-	// specials from the "On the Brink" expansion
-	'Borrowed Time',
-	'Commercial Travel Ban',
-	'Mobile Hospital',
-	'New Assignment',
-	'Rapid Vaccine Deployment',
-	'Re-examined Research',
-	'Remote Treatment',
-	'Special Orders',
+var Hinterlands_Die = [
+	'black',
+	'blue',
+	'red',
+	'yellow',
+	'blank',
+	'blank'
+];
 
-	// specials from the "In the Lab" expansion
-	'Infection Zone Ban',
-	'Sequencing Breakthrough',
-	'Improved Sanitation'
-	];
+var Expansions = [
+	'base',
+	'base2013',
+	'on_the_brink',
+	'in_the_lab',
+	'state_of_emergency'
+];
 
-var Epidemics = [
-	// virulent strain epidemics from "On the Brink" expansion
-	'Chronic Effect',
-	'Complex Molecular Structure',
-	'Government Interference',
-	'Hidden Pocket',
-	'Rate Effect',
-	'Slippery Slope',
-	'Unacceptable Loss',
-	'Uncounted Populations',
+var Modules = [
+	'virulent_strain',
+	'lab_challenge',
+	'mutation_challenge',
+	'worldwide_panic',
+	'quarantines',
+	'hinterlands_challenge',
+	'emergency_event_challenge',
+	'superbug_challenge'
+];
 
-	// virulent strain epidemics from "In the Lab" expansion
-	'Highly Contagious',
-	'Resistant to Treatment'
-	];
-
-var Sequences = [
-	'Small Black',
-	'Small Red',
-	'Small Yellow',
-	'Small Blue',
-	'Black and Red',
-	'Blue and Black',
-	'Red and Yellow',
-	'Red and Blue',
-	'Yellow and Blue',
-	'Black and Yellow',
-	'Big Black',
-	'Big Yellow',
-	'Big Red',
-	'Big Blue'
-	];
-
-var Counts = [];
-Counts['none'] = {
-	'num_specials': 5,
-	'num_roles': 7,
-	'num_epidemics': 0,
-	'num_sequences': 0
+var Contents = [];
+Contents['base'] = {
+	'Roles': [
+		'Dispatcher',
+		'Operations Expert',
+		'Scientist',
+		'Medic',
+		'Researcher'
+	],
+	'Specials': [
+		'Airlift',
+		'Forecast',
+		'Government Grant',
+		'One Quiet Night',
+		'Resilient Population'
+	]
 }
-Counts['on_the_brink'] = {
-	'num_specials': 13,
-	'num_roles': 13,
-	'num_epidemics': 8,
-	'num_sequences': 0
+Contents['base2013'] = {
+	'Roles': [
+		'Quarantine Specialist',
+		'Contingency Planner'
+	]
 }
-Counts['in_the_lab'] = {
-	'num_specials': 16,
-	'num_roles': 17,
-	'num_epidemics': 10,
-	'num_sequences': 14
+Contents['on_the_brink'] = {
+	'Roles': [
+		'Field Operative',
+		'Containment Specialist',
+		'Generalist',
+		'Archivist',
+		'Epidemiologist',
+		'Troubleshooter'
+	],
+	'Specials': [
+		'Borrowed Time',
+		'Commercial Travel Ban',
+		'Mobile Hospital',
+		'New Assignment',
+		'Rapid Vaccine Deployment',
+		'Re-examined Research',
+		'Remote Treatment',
+		'Special Orders'
+	],
+	'Epidemics': [
+		'Chronic Effect',
+		'Complex Molecular Structure',
+		'Government Interference',
+		'Hidden Pocket',
+		'Rate Effect',
+		'Slippery Slope',
+		'Unacceptable Loss',
+		'Uncounted Populations'
+	]
+}
+Contents['in_the_lab'] = {
+	'Roles': [
+		'Pilot',
+		'Local Liaison',
+		'Field Director',
+		'Virologist'
+	],
+	'Specials': [
+		'Infection Zone Ban',
+		'Sequencing Breakthrough',
+		'Improved Sanitation'
+	],
+	'Epidemics': [
+		'Highly Contagious',
+		'Resistant to Treatment'
+	],
+	'Sequences': [
+		'Small Black',
+		'Small Red',
+		'Small Yellow',
+		'Small Blue',
+		'Black and Red',
+		'Blue and Black',
+		'Red and Yellow',
+		'Red and Blue',
+		'Yellow and Blue',
+		'Black and Yellow',
+		'Big Black',
+		'Big Yellow',
+		'Big Red',
+		'Big Blue'
+	]
+}
+Contents['state_of_emergency'] = {
+	'Roles': [
+		'Colonel',
+		'First Responder',
+		'Pharmacist',
+		'Veterinarian',
+		'Gene Splicer'
+	],
+	'Specials': [
+		'Emergency Response',
+		'Advance Team',
+		'Local Initiative',
+		'Resource Planning',
+		'Sample Delivery',
+		'Emergency Conference',
+		'Infection Rumor'
+	],
+	'Emergencies': [
+		'CDC Planes Grounded',
+		'Limited Options',
+		'Containment Failure',
+		'Patient Zero',
+		'Disease Hot Spot',
+		'Widespread Panic',
+		'Logistics Failure',
+		'Sanitation Breakdown',
+		'Time Runs Out',
+		'Disease Zones Expand'
+	]
 }
 
 var City_Info = {};
@@ -181,13 +230,51 @@ for (var i = 0; i < Cities.length; i++) {
 	City_Info[ci.id] = ci;
 }
 
+var Conditions = {
+	'Field Operative': function(rules) { return !rules.lab_challenge },
+	'Colonel': function(rules) { return rules.quarantines },
+	'Veterinarian': function(rules) { return rules.hinterlands_challenge },
+	'Local Initiative': function(rules) { return rules.quarantines },
+}
+
 Pandemic = {
-	'Roles': Roles,
-	'Specials': Specials,
+	'Contents': Contents,
 	'Cities': City_Info,
 	'Diseases': Disease_Names,
+	'Conditions': Conditions,
 	'MAX_PLAYERS': 5
 	};
+
+function is_valid_card(card, rules)
+{
+	return (!Pandemic.Conditions[card] || Pandemic.Conditions[card](rules));
+}
+
+function get_deck(name, rules)
+{
+	deck = [];
+
+	var expansions = [];
+	for (var i = 0; i < Expansions.length; i++) {
+		expansions.push(Expansions[i]);
+		if (rules.expansion == Expansions[i]) {
+			break;
+		}
+	}
+
+	var cur;
+	for (var i = 0; i < expansions.length; i++) {
+		cur = Pandemic.Contents[expansions[i]][name];
+		if (cur) {
+			for (var j = 0; j < cur.length; j++) {
+				if (!rules || is_valid_card(cur[j], rules)) {
+					deck.push(cur[j]);
+				}
+			}
+		}
+	}
+	return deck;
+}
 
 function shuffle_array(A)
 {
@@ -201,42 +288,41 @@ function shuffle_array(A)
 
 function stringify_rules(R)
 {
-	return R.expansion+'-'+R.player_count+'p-'+R.level+'x' +
-		(R.virulent_strain ? '-virulent_strain' : '') +
-		(R.lab_challenge ? '-lab_challenge' : '') +
-		(R.mutation_challenge ? '-mutation_challenge' : '') +
-		(R.worldwide_panic ? '-worldwide_panic' : '');
+	var ret = R.expansion + '-' + R.player_count + 'p-' + R.level + 'x';
+	for (var i = 0; i < Modules.length; i++) {
+		if (R[Modules[i]]) {
+			ret = ret + '-' + Modules[i];
+		}
+	}
+	return ret;
 }
 
 function parse_rules(s)
 {
 	var ss = s.split(/-/);
 	var ret = {
-	'expansion': ss[0],
-	'player_count': +ss[1].substring(0, ss[1].length-1),
-	'level': +ss[2].substring(0, ss[2].length-1),
-	'virulent_strain': false,
-	'mutation_challenge': false,
-	'worldwide_panic': false,
-	'lab_challenge': false,
+		'expansion': ss[0],
+		'player_count': +ss[1].substring(0, ss[1].length-1),
+		'level': +ss[2].substring(0, ss[2].length-1)
 	};
-	for (var i = 3; i < ss.length; i++) {
-		switch (ss[i]) {
-			case 'lab_challenge':
-				ret.lab_challenge = true;
+
+	for (var i = 0; i < Modules.length; i++) {
+		ret[Modules[i]] = false;
+		for (var j = 3; j < ss.length; j++) {
+			if (ss[j] == Modules[i]) {
+				ret[Modules[i]] = true;
 				break;
-			case 'virulent_strain':
-				ret.virulent_strain = true;
-				break;
-			case 'mutation_challenge':
-				ret.mutation_challenge = true;
-				break;
-			case 'worldwide_panic':
-				ret.worldwide_panic = true;
-				break;
+			}
 		}
 	}
+
 	return ret;
+}
+
+function hinterlands_roll()
+{
+	var i = Math.floor(Math.random() * (Hinterlands_Die.length));
+	return Hinterlands_Die[i];
 }
 
 function generate_scenario_real(rules)
@@ -244,15 +330,7 @@ function generate_scenario_real(rules)
 	var G = {};
 	G.rules = rules;
 
-	var num_specials = Counts[G.rules.expansion].num_specials || Specials.length;
-	var num_roles = Counts[G.rules.expansion].num_roles || Roles.length;
-	var num_epidemics = G.rules.virulent_strain ? Counts[G.rules.expansion].num_epidemics || Epidemics.length : 0;
-	var num_sequences = G.rules.lab_challenge ? Counts[G.rules.expansion].num_sequences || Sequences.length : 0;
-
-	var S = [];
-	for (var i = 0; i < num_specials; i++) {
-		S.push(Specials[i]);
-	}
+	var S = get_deck('Specials', G.rules);
 	shuffle_array(S);
 
 	var A = [];
@@ -265,14 +343,7 @@ function generate_scenario_real(rules)
 		A.push(S[i]);
 	}
 
-	var R = [];
-	for (var i = 0; i < num_roles; i++) {
-		R.push(Roles[i]);
-	}
-
-	if (G.rules.lab_challenge) {
-		find_and_remove_card(R, 'Field Operative');
-	}
+	var R = get_deck('Roles', G.rules);
 	shuffle_array(R);
 
 	shuffle_array(A);
@@ -291,11 +362,21 @@ function generate_scenario_real(rules)
 		G.roles[(1+i)] = R.pop();
 	}
 
-	var E = [];
-	for (var i = 0; i < num_epidemics; i++) {
-		E.push('Epidemic: ' + Epidemics[i]);
+	if (G.rules.mutation_challenge || G.rules.worldwide_panic) {
+		for (var i = 0; i < Mutations.length; i++) {
+			A.push('Mutation: ' + Mutations[i]);
+		}
+		shuffle_array(A);
 	}
-	shuffle_array(E);
+
+	var E = [];
+	if (G.rules.virulent_strain) {
+		var vs = get_deck('Epidemics', G.rules);
+		shuffle_array(vs);
+		for (var i = 0; i < G.rules.level && i < vs.length; i++) {
+			E.push('Epidemic: ' + vs[i]);
+		}
+	}
 
 	while (E.length < G.rules.level) {
 		E.push('Epidemic');
@@ -305,6 +386,15 @@ function generate_scenario_real(rules)
 	for (var i = 0; i < G.rules.level; i++) {
 		piles.push([E.shift()]);
 	}
+
+	if (G.rules.emergency_event_challenge) {
+		var ee = get_deck('Emergencies', G.rules);
+		shuffle_array(ee);
+		for (var i = 0; i < G.rules.level && ee.length > 0; i++) {
+			piles[i].push("Emergency: " + ee.pop());
+		}
+	}
+
 	for (var i = 0; i < A.length; i++) {
 		var j = i % piles.length;
 		piles[j].push(A[i]);
@@ -317,11 +407,10 @@ function generate_scenario_real(rules)
 		}
 	}
 
-	G.sequence_deck = [];
-	for (var i = 0; i < num_sequences; i++) {
-		G.sequence_deck.push(Sequences[i]);
+	if (G.rules.lab_challenge) {
+		G.sequence_deck = get_deck('Sequences', G.rules);
+		shuffle_array(G.sequence_deck);
 	}
-	shuffle_array(G.sequence_deck);
 
 	G.infection_deck = [];
 	for (var i = 0; i < Cities.length; i++) {
@@ -336,8 +425,23 @@ function generate_scenario_real(rules)
 		for (var i = 0; i < Cities.length; i++) {
 			a.push(Cities[i]);
 		}
+		if (G.rules.mutation_challenge) {
+			a.push('Mutation{1}: Mutation');
+			a.push('Mutation{2}: Mutation');
+		}
+		else if (G.rules.worldwide_panic) {
+			a.push('Mutation{1}: Worldwide Panic');
+			a.push('Mutation{2}: Worldwide Panic');
+		}
 		shuffle_array(a);
 		G['epidemic.'+k] = a;
+	}
+
+	if (G.rules.hinterlands_challenge) {
+		G.hinterlands_rolls = [];
+		for (var i = 0; i < G.player_deck.length / 2 + 1; i++) {
+			G.hinterlands_rolls.push(hinterlands_roll());
+		}
 	}
 
 	return G;
@@ -359,11 +463,15 @@ function generate_scenario(rules)
 		X['epidemic.'+k] = G['epidemic.'+k];
 	}
 
+	if (G.rules.hinterlands_challenge) {
+		X.hinterlands_rolls = G.hinterlands_rolls;
+	}
+
 	var XX = JSON.stringify(X);
 	G.scenario_id = (""+CryptoJS.SHA1(XX)).substring(0,18);
 	G.shuffle_id = G.scenario_id;
 
-console.log('saving scenario ' + G.scenario_id);
+	console.log('saving scenario ' + G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id, XX);
 	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(G.rules), G.scenario_id);
 	stor_add_to_set(PACKAGE + '.scenarios_by_player_count.' + G.rules.player_count, G.scenario_id);
