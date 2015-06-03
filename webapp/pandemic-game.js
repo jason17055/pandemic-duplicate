@@ -92,7 +92,9 @@ var Expansions = [
 	'state_of_emergency'
 ];
 
-var Modules = [
+// the order of modules in this list determines the order they should
+// be encoded in a Rules string.
+var Module_Names = [
 	'virulent_strain',
 	'lab_challenge',
 	'mutation_challenge',
@@ -289,9 +291,9 @@ function shuffle_array(A)
 function stringify_rules(R)
 {
 	var ret = R.expansion + '-' + R.player_count + 'p-' + R.level + 'x';
-	for (var i = 0; i < Modules.length; i++) {
-		if (R[Modules[i]]) {
-			ret = ret + '-' + Modules[i];
+	for (var i = 0; i < Module_Names.length; i++) {
+		if (R[Module_Names[i]]) {
+			ret = ret + '-' + Module_Names[i];
 		}
 	}
 	return ret;
@@ -306,11 +308,11 @@ function parse_rules(s)
 		'level': +ss[2].substring(0, ss[2].length-1)
 	};
 
-	for (var i = 0; i < Modules.length; i++) {
-		ret[Modules[i]] = false;
+	for (var i = 0; i < Module_Names.length; i++) {
+		ret[Module_Names[i]] = false;
 		for (var j = 3; j < ss.length; j++) {
-			if (ss[j] == Modules[i]) {
-				ret[Modules[i]] = true;
+			if (ss[j] == Module_Names[i]) {
+				ret[Module_Names[i]] = true;
 				break;
 			}
 		}
