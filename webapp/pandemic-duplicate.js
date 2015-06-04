@@ -2323,11 +2323,16 @@ function stor_get_list(key)
 
 function make_modules_label(rules)
 {
-	var $m = $('<span class="module list"></span>');
-	$m.append(rules.level == 4 ? 'Intro Difficulty' :
-			  rules.level == 5 ? 'Normal Difficulty' :
-			  rules.level == 6 ? 'Heroic Difficulty' :
-			  rules.level == 7 ? 'Legendary Difficulty' : '');
+	var $m = $('<span></span>');
+	if (rules.on_the_brink) {
+		$m.append('<img src="images/on_the_brink.png" alt="On The Brink">');
+	}
+	if (rules.in_the_lab) {
+		$m.append('<img src="images/in_the_lab.png" alt="In The Lab">');
+	}
+	if (rules.state_of_emergency) {
+		$m.append('<img src="images/state_of_emergency.png" alt="State of Emergency">');
+	}
 	if (rules.lab_challenge) {
 		$m.append('<br>');
 		$m.append('Lab Challenge');
