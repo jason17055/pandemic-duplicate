@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="128"
+   height="128"
+   viewBox="0 0 128 128"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="state_of_emergency.svg"
+   inkscape:export-filename="/Users/jasonlo/src/pandemic-duplicate/webapp/images/state_of_emergency.png"
+   inkscape:export-xdpi="14.06"
+   inkscape:export-ydpi="14.06">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="-91.607003"
+     inkscape:cy="165.02525"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1440"
+     inkscape:window-height="775"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-924.36216)">
+    <circle
+       style="opacity:1;fill:#7ed26b;fill-opacity:1;stroke:#acf39c;stroke-width:9.30899715;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path4147"
+       cx="64"
+       cy="988.36212"
+       r="59.345501" />
+    <path
+       style="fill:#acf39c;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.32422251;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 72.95581,1029.7297 c 1.208558,0.5338 6.016871,2.4529 5.417163,2.0905 l -8.117094,0 c -2.906195,0.8629 -3.303205,1.9027 -6.215557,2.4476 -1.690306,0.9259 -6.091108,3.3318 -3.404702,0.4084 0.739402,-1.5595 5.156047,-4.3839 4.208863,-4.6598 -2.581784,-1.4452 -5.097679,-2.2188 -7.816459,-3.0063 -0.126899,-1.7532 4.110321,-1.9083 6.2875,-1.8038 1.681756,-0.7838 3.383419,1.7064 3.332759,0 0.628658,-2.2611 0.139992,-4.7765 0.265611,-7.1506 1.083207,-4.1304 -4.397544,-1.6104 -6.686557,-3.2616 -4.930432,-1.7118 -9.492838,-5.0517 -11.757247,-9.8707 -2.184276,-5.04299 -7.141442,-8.98758 -7.097588,-14.86927 0.253908,-3.64068 -0.754442,-7.36088 1.088769,-10.71177 -0.372338,-3.31221 -2.736277,-6.57181 -1.597655,-10.53464 -0.652124,-2.21823 -0.608802,-2.96262 -5.444873,-4.50472 5.31055,-0.75287 3.2364,-4.55394 2.679656,-7.35485 -1.031661,-4.0028 -0.241143,-4.77591 2.358331,-7.3555 4.62466,-2.11666 7.886971,-2.2695 10.686068,1.80532 0.0014,3.11933 4.791007,6.63145 0.561123,8.60167 -0.688079,0.98542 0.350589,4.53198 1.127082,5.88365 3.255727,2.57168 2.493965,6.52414 4.391996,10.10474 1.700726,2.62901 4.073125,4.64489 8.275745,2.15133 2.53761,-3.71288 5.733229,-4.51721 6.923777,-8.814 1.148949,-4.14664 3.538256,-4.84791 7.21136,-7.04329 3.197741,-2.21284 8.204846,-4.33343 11.759774,-2.34689 3.134584,3.88562 3.586207,9.1597 5.920113,13.49446 1.75534,3.88874 0.04429,8.3954 1.704722,12.32848 -0.191809,3.52528 1.18128,7.27437 -0.747386,10.69419 -1.928686,3.41981 -5.87732,5.92189 -9.307524,8.56959 0,0 -7.229834,2.9128 -9.491269,6.0081 -2.261432,3.0953 -5.104314,4.3608 -8.449786,4.7889 -2.672952,-0.6061 -1.876671,1.8361 -1.969369,3.5414 6.4e-5,1.648 0.07527,2.5821 0.02649,4.9456 -0.04878,2.3635 1.392139,4.8443 3.87616,5.4238 z"
+       id="path4141"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccccccccccccscccczszcccc" />
+  </g>
+</svg>
