@@ -3704,8 +3704,8 @@ function continue_sync()
 	// check for pending scenarios
 	var a = stor_get_list(PACKAGE + '.pending_scenarios');
 	if (a.length) {
-		var shuffle_id = a[0];
-		return upload_scenario(shuffle_id);
+		var scenario_id = a[0];
+		return upload_scenario(scenario_id);
 	}
 
 	// check for pending results
