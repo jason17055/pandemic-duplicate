@@ -2,11 +2,5 @@ game subscription messages: should include game_id
 
 pick_game: show how many results are recorded for each deal
 
-think about handling 2nd edition new roles:
- * Contingency Planner - allows Event cards to be recovered from discard pile
-    and played again
-
- * Quarantine Specialist - does not affect duplicate play
-
-add an Options screen, with
- * an option to substitute Toronto with Montreal (to handle 2nd edition sets)
+params: replace player_count drop down with four separate
+buttons
