@@ -846,8 +846,8 @@ function init_results_page($pg, scenario_id)
 
 		var result_id = all_result_ids[i];
 		var r = load_result(result_id);
-		if (!r || r.version != Version) { continue; }
-		if (r.shuffle_id != scenario_id) { continue; }
+		if (!r) { continue; }
+		if (r.scenario_id != scenario_id) { continue; }
 
 		if (all_result_ids[i] == my_result_id) {
 			r.mine = true;
@@ -3165,9 +3165,9 @@ function init_found_completed_games_page($pg, search_results)
 	for (var i = 0; i < lis.length; i++) {
 		var result_id = lis[i].id;
 		var r = load_result(result_id);
-		if (!r || r.version != Version) { continue; }
+		if (!r) { continue; }
 
-		var scenario_id = r.shuffle_id;
+		var scenario_id = r.scenario_id;
 		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
@@ -3205,9 +3205,9 @@ function init_review_results_page($pg)
 	for (var i = 0; i < lis.length; i++) {
 		var result_id = lis[i];
 		var r = load_result(result_id);
-		if (!r || r.version != Version) { continue; }
+		if (!r) { continue; }
 
-		var scenario_id = r.shuffle_id;
+		var scenario_id = r.scenario_id;
 		load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
@@ -3568,7 +3568,7 @@ function summarize_results_for_scenario(scenario_id)
 	for (var i = 0; i < a.length; i++) {
 
 		var r = load_result(a[i]);
-		if (!r || r.version != Version) { continue; }
+		if (!r) { continue; }
 
 		for (var pid = 1; pid < 5; pid++) {
 			var nam = r['player'+pid];
@@ -3602,11 +3602,11 @@ function load_result(result_id)
 		return null;
 	}
 
-	var V = JSON.parse(VV);
-	if (!V.scenario_id) {
+	var r = JSON.parse(VV);
+	if (r.version != Version || !r.scenario_id) {
 		return null;
 	}
-	return V;
+	return r;
 }
 
 function save_current_result(for_submission)
