@@ -3921,7 +3921,12 @@ function download_next_result()
 
 function save_downloaded_result(result_id, result_data)
 {
-	var scenario_id = result_data.shuffle_id;
+	if (result_data.shuffle_id && !result_data.scenario_id) {
+		// old results may have only .shuffle_id
+		result_data.scenario_id = result_data.shuffle_id;
+	}
+
+	var scenario_id = result_data.scenario_id;
 	if (!scenario_id) {
 		console.log("Warning: no scenario given for result "+result_id);
 		return;
