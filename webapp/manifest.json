@@ -3,8 +3,8 @@
   "name": "Pandemic Duplicate",
   "icons": [
     {
-      "src": "images/pandemic_app_icon.png",
-      "sizes": "48x48",
+      "src": "app_icon_hires.png",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ],
