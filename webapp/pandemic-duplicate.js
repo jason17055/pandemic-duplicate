@@ -3301,6 +3301,13 @@ function scenario_compatible(R)
 	if (R.on_the_brink && !CFG.has_on_the_brink) {
 		return false;
 	}
+	if (R.in_the_lab && !CFG.has_in_the_lab) {
+		return false;
+	}
+	if (R.state_of_emergency && !CFG.has_state_of_emergency) {
+		return false;
+	}
+
 	return true;
 }
 
