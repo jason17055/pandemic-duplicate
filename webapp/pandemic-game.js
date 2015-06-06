@@ -307,31 +307,45 @@ function parse_rules(s)
 {
 	var R = {};
 
+	// initialize rules struct
 	for (var i = 0; i < Expansions.length; i++) {
 		R[Expansions[i]] = false;
 	}
-
-	var ss = s.split(/-/);
-	if (ss[0].match(/^(\d+)p/)) {
-		// new-style rules string (player-count first)
-		// TODO- support multiple expansions
-		R.player_count = +ss[0].substring(0, ss[0].length-1);
-		R.level = +ss[1].substring(0, ss[1].length-1);
-		R[ss[2]] = true;
-	}
-	else {
-		// old-style rules string (expansion first)
-		R[ss[0]] = true;
-		R.player_count = +ss[1].substring(0, ss[1].length-1);
-		R.level = +ss[2].substring(0, ss[2].length-1);
-	}
-
 	for (var i = 0; i < Module_Names.length; i++) {
 		R[Module_Names[i]] = false;
-		for (var j = 3; j < ss.length; j++) {
-			if (ss[j] == Module_Names[i]) {
-				R[Module_Names[i]] = true;
-				break;
+	}
+
+	var ss = s.split(/-/);
+	for (var i = 0; i < ss.length; i++) {
+		var t = ss[i];
+		var m = t.match(/^(\d+)p$/);
+		if (m) {
+			// specifies player-count
+			R.player_count = parseInt(m[1]);
+			continue;
+		}
+
+		m = t.match(/^(\d+)x$/);
+		if (m) {
+			// specifies number of epidemics
+			R.level = parseInt(m[1]);
+			continue;
+		}
+
+		if (t == 'none' || t == 'base') {
+			// old way of describing no expansions
+			continue;
+		}
+
+		// check if this match's a known expansion or module
+		for (var j = 0; j < Expansions.length; j++) {
+			if (t == Expansions[j]) {
+				R[Expansions[j]] = true;
+			}
+		}
+		for (var j = 0; j < Module_Names.length; j++) {
+			if (t == Module_Names[j]) {
+				R[Module_Names[j]] = true;
 			}
 		}
 	}
