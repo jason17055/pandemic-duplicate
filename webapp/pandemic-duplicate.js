@@ -3916,17 +3916,17 @@ function download_next_result()
 
 function save_downloaded_result(result_id, result_data)
 {
-	var deal_id = result_data.shuffle_id;
-	if (!deal_id) {
-		console.log("Warning: deal number not found in result "+result_id);
+	var scenario_id = result_data.shuffle_id;
+	if (!scenario_id) {
+		console.log("Warning: no scenario given for result "+result_id);
 		return;
 	}
 
-	console.log('result is for deal '+deal_id);
+	console.log('result is for deal '+scenario_id);
 
 	var VV = JSON.stringify(result_data);
 	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
-	stor_add_to_set(PACKAGE + '.game_results.' + deal_id, result_id);
+	stor_add_to_set(PACKAGE + '.game_results.' + scenario_id, result_id);
 }
 
 function download_result(result_b)
