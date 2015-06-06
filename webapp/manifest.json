@@ -1,0 +1,14 @@
+{
+  "short_name": "Pandemic Duplicate",
+  "name": "Pandemic Duplicate",
+  "icons": [
+    {
+      "src": "images/pandemic_app_icon.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/?fs",
+  "display": "standalone",
+  "orientation": "portrait"
+}
