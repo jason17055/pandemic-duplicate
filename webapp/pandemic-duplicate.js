@@ -456,9 +456,9 @@ function submit_search_results_form()
 
 function init_welcome_page($pg)
 {
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
+	var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 
-	if (shuffle_id == null) {
+	if (scenario_id == null) {
 		$('.resume_game_btn', $pg).attr('disabled', 'disabled');
 	}
 	else {
