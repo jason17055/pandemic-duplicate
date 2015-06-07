@@ -166,11 +166,12 @@ tr.my_result .place_col, tr.my_result .score_col {
 	float: left;
 	border-left: 3px solid green;
 	border-right: 3px solid green;
-	padding-left: 4px;
-	padding-right: 4px;
 	font-size: 10px;
 	text-align: center;
 	margin-right: 4px;
+	width: 38px;
+	height: 36px;
+	overflow: hidden;
 }
 
 .scenario_description_container {
