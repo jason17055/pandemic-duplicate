@@ -193,7 +193,7 @@ function init_join_game_pick_page($pg, search_results)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(g.deal));
 		$('.module_list_container', $g).append(make_modules_label(r.rules));
-		$('.epidemic_count', $g).text(G.rules.level);
+		update_scenario_description($g, G.rules);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
@@ -3168,7 +3168,7 @@ function init_found_completed_games_page($pg, search_results)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(parse_rules(r.rules)));
-		$('.epidemic_count', $g).text(G.rules.level);
+		update_scenario_description($g, G.rules);
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -3208,7 +3208,8 @@ function init_review_results_page($pg)
 
 		$('.scenario_name_container', $g).append(make_scenario_label(scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(G.rules));
-		$('.epidemic_count', $g).text(G.rules.level);
+		update_scenario_description($g, G.rules);
+
 		$('.location', $g).text(r.location);
 		$('.submitted', $g).text(format_time(r.time));
 
@@ -3294,6 +3295,13 @@ function scenario_compatible(R)
 	return true;
 }
 
+function update_scenario_description($g, R)
+{
+	$('.epidemic_count', $g).text(R.level);
+	$('.epidemic_icon', $g).attr('src', 'images/epidemic_count_icons/' + R.level + '.png');
+	$('.epidemic_icon', $g).attr('alt', R.level + ' epidemics');
+}
+
 function init_pick_scenario_page($pg, xtra)
 {
 	var pcount = 2;
@@ -3324,9 +3332,7 @@ function init_pick_scenario_page($pg, xtra)
 
 		var $g = $tr;
 		$('.module_list_container',$tr).append(make_modules_label(G.rules));
-		$('.epidemic_count', $g).text(G.rules.level);
-		$('.epidemic_icon', $g).attr('src', 'images/epidemic_count_icons/' + G.rules.level + '.png');
-		$('.epidemic_icon', $g).attr('alt', G.rules.level + ' epidemics');
+		update_scenario_description($tr, G.rules);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var $p_name = $('<span><img class="role_icon"></span>');
