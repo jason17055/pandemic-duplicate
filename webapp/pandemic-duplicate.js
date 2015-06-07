@@ -121,6 +121,12 @@ function load_scenario(scenario_id)
 	G = JSON.parse(s);
 	G.shuffle_id = scenario_id;
 	G.scenario_id = scenario_id;
+
+	if (G.rules.expansion) {
+		// fix old-style way of indicating expansion
+		G.rules[G.rules.expansion] = true;
+	}
+
 	return G;
 }
 
