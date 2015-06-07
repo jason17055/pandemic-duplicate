@@ -3683,14 +3683,17 @@ function trigger_sync_process()
 function trigger_upload_game_state()
 {
 	pending_sync.game_state = true;
-	if (!sync_started) {
-		continue_sync();
-	}
+	trigger_sync_process();
 }
 
 function continue_sync()
 {
-	sync_started = true;
+	if (sync_started) {
+		console.log("sync: continuing");
+	} else {
+		console.log("sync: starting");
+		sync_started = true;
+	}
 
 	// check for pending scenarios
 	var a = stor_get_list(PACKAGE + '.pending_scenarios');
@@ -3717,7 +3720,7 @@ function continue_sync()
 	}
 
 	// nothing more to do
-	// console.log("sync: finished");
+	console.log("sync: finished");
 	sync_started = false;
 }
 
@@ -3787,7 +3790,7 @@ function upload_current_game()
 	else if (secret) {
 
 		// new game
-		// console.log("sync: uploading current game metadata");
+		console.log("sync: uploading current game metadata");
 		var st = {
 			'scenario': shuffle_id,
 			'secret': secret,
@@ -3817,11 +3820,14 @@ function upload_current_game()
 		error: handle_ajax_error
 		});
 	}
+	else {
+		console.log('sync: no current game to upload');
+	}
 }
 
 function upload_current_game_moves(game_id, secret)
 {
-	// console.log("sync: uploading current game movelog");
+	console.log("sync: uploading current game movelog");
 	delete pending_sync.game_state;
 
 	var mv_array = [];
