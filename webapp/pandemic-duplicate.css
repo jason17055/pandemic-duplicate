@@ -179,6 +179,7 @@ tr.my_result .place_col, tr.my_result .score_col {
 	margin-right: 4px;
 	padding-top: 4px;
 	line-height: 24px;
+	white-space: nowrap;
 }
 
 .module_list_container {
@@ -189,6 +190,11 @@ tr.my_result .place_col, tr.my_result .score_col {
 	font-size: 20px;
 	color: #060;
 	font-weight: bold;
+}
+
+.scenario_description_container .epidemic_icon {
+	height: 16px;
+	margin-top: 8px;
 }
 
 #pick_scenario_page .scenarios_list {
