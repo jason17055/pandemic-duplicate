@@ -2330,46 +2330,23 @@ function stor_get_list(key)
 function make_modules_label(rules)
 {
 	var $m = $('<span></span>');
-	if (rules.on_the_brink) {
-		$m.append('<img src="images/on_the_brink.png" alt="On The Brink">');
+	for (var i = 0; i < Pandemic.Expansions.length; i++) {
+		var expansion_name = Pandemic.Expansions[i];
+		if (rules[expansion_name]) {
+			var $t = $('<span class="expansion_ind"><img src=""></span>');
+			$('img', $t).attr('src', 'images/'+expansion_name+'.png');
+			$('img', $t).attr('alt', expansion_name);
+			$m.append($t);
+		}
 	}
-	if (rules.in_the_lab) {
-		$m.append('<img src="images/in_the_lab.png" alt="In The Lab">');
-	}
-	if (rules.state_of_emergency) {
-		$m.append('<img src="images/state_of_emergency.png" alt="State of Emergency">');
-	}
-	if (rules.lab_challenge) {
-		$m.append('<br>');
-		$m.append('Lab Challenge');
-	}
-	if (rules.mutation_challenge) {
-		$m.append('<br>');
-		$m.append('Mutation Challenge');
-	}
-	if (rules.worldwide_panic) {
-		$m.append('<br>');
-		$m.append('Worldwide Panic');
-	}
-	if (rules.virulent_strain) {
-		$m.append('<br>');
-		$m.append('Virulent Strain');
-	}
-	if (rules.quarantines) {
-		$m.append('<br>');
-		$m.append('Quarantines');
-	}
-	if (rules.hinterlands_challenge) {
-		$m.append('<br>');
-		$m.append('Hinterlands');
-	}
-	if (rules.emergency_event_challenge) {
-		$m.append('<br>');
-		$m.append('Emergency Events');
-	}
-	if (rules.superbug_challenge) {
-		$m.append('<br>');
-		$m.append('Superbug Challenge');
+	for (var i = 0; i < Pandemic.Module_Names.length; i++) {
+		var module_name = Pandemic.Module_Names[i];
+		if (rules[module_name]) {
+			var $t = $('<span class="module_ind"><img src=""></span>');
+			$('img', $t).attr('src', 'images/module_icons/'+module_name+'.png');
+			$('img', $t).attr('alt', module_name);
+			$m.append($t);
+		}
 	}
 	return $m;
 }

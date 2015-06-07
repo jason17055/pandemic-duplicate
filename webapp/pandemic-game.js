@@ -244,6 +244,8 @@ Pandemic = {
 	'Cities': City_Info,
 	'Diseases': Disease_Names,
 	'Conditions': Conditions,
+	'Expansions': Expansions,
+	'Module_Names': Module_Names,
 	'MAX_PLAYERS': 5
 	};
 
