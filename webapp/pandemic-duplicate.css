@@ -173,13 +173,21 @@ tr.my_result .place_col, tr.my_result .score_col {
 	margin-right: 4px;
 }
 
-.module_list_container {
+.scenario_description_container {
 	float: left;
-	padding-left: 4px;
-	padding-right: 4px;
-	font-size: 10px;
-	text-align: center;
 	margin-right: 4px;
+	padding-top: 4px;
+	line-height: 24px;
+}
+
+.module_list_container {
+	font-size: 10px;
+}
+
+.scenario_description_container .epidemic_count {
+	font-size: 20px;
+	color: #060;
+	font-weight: bold;
 }
 
 #pick_scenario_page .scenarios_list {

@@ -3325,6 +3325,8 @@ function init_pick_scenario_page($pg, xtra)
 		var $g = $tr;
 		$('.module_list_container',$tr).append(make_modules_label(G.rules));
 		$('.epidemic_count', $g).text(G.rules.level);
+		$('.epidemic_icon', $g).attr('src', 'images/epidemic_count_icons/' + G.rules.level + '.png');
+		$('.epidemic_icon', $g).attr('alt', G.rules.level + ' epidemics');
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var $p_name = $('<span><img class="role_icon"></span>');
