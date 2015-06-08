@@ -1,0 +1,54 @@
+Endpoints
+---------
+
+GET /s/games?search_player=QUERY
+ for the "join network game" page
+
+POST /s/games?subscribe=GAMEID
+ to start watching a game
+
+POST /s/games?id=GAMEID&post=meta
+ upload game metadata
+
+POST /s/games?id=GAMEID
+ upload game movelog
+
+GET /s/results?q=QUERY
+ for the "completed games" page
+
+GET /s/deals?deal=SCENARIOID&result=RESULTID
+ download a result
+
+POST /s/deals?id=SCENARIOID
+ upload a scenario
+
+POST /s/deals?result=RESULTID
+ upload a result
+
+GET /s/scenarios
+ this is the "index"
+
+GET /s/scenarios?id=SCENARIOID
+ download a scenario
+
+
+Scenarios
+=========
+TODO
+
+Results
+=======
+{
+"version": 1,
+"rules": "2p-6x-on_the_brink",
+"scenario_id": "<scenario_id>",
+"score": 101,
+"cures": 4,
+"turns": 20,
+"location": "some random place",
+"comments": "Interesting scenario",
+"player1": "joe",
+"player2": "mary",
+"time": "2015-06-11T12:11:10Z",
+"localOnly": true  // for results not submitted to server
+}
