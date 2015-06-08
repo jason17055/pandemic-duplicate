@@ -42,6 +42,7 @@ Results
 "version": 1,
 "rules": "2p-6x-on_the_brink",
 "scenario_id": "<scenario_id>",
+"game_id": "<game_id>",
 "score": 101,
 "cures": 4,
 "turns": 20,

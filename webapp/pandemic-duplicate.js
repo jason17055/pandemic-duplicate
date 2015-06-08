@@ -603,6 +603,7 @@ function init_game_completed_page($pg)
 	f.rules.value = stringify_rules(G.rules);
 	f.cure_count.value = count_cured_diseases(G);
 	f.scenario_id.value = G.scenario_id;
+	f.game_id.value = G.game_id;
 
 	$('.turns', $pg).text(G.turns);
 	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
@@ -3611,6 +3612,7 @@ function save_current_result(for_submission)
 	V.rules = f.rules.value;
 	V.shuffle_id = f.scenario_id.value;
 	V.scenario_id = f.scenario_id.value;
+	V.game_id = f.game_id.value;
 	V.score = f.score.value;
 	V.cures = f.cures.value;
 	V.turns = f.turns.value;
