@@ -24,6 +24,10 @@ public class GenerateScenarioServlet extends HttpServlet
 			return;
 		}
 
+		if (rulesStr.equals("@1")) {
+			rulesStr = pickRulesFrom("rules-rotations/1");
+		}
+
 		Date d = new Date();
 		String name = String.format("%1$tY-%1$tm-%1$td", d);
 
@@ -47,6 +51,24 @@ public class GenerateScenarioServlet extends HttpServlet
 			e.printStackTrace(resp.getWriter());
 		}
 
+	}
+
+	String pickRulesFrom(String path)
+		throws IOException
+	{
+		BufferedReader in = new BufferedReader(
+			new FileReader(path));
+		ArrayList<String> values = new ArrayList<String>();
+		String s;
+		while ( (s=in.readLine()) != null ) {
+			values.add(s);
+		}
+		in.close();
+
+		Date d = new Date();
+		int index = (int)((d.getTime() / 86400000) % values.size());
+
+		return values.get(index);
 	}
 
 	void generateScenario(String name, String rules)
