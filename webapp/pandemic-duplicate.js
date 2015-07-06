@@ -3281,15 +3281,15 @@ function validate_modules()
 	}
 }
 
-function scenario_compatible(R)
+function scenario_compatible(G)
 {
-	if (R.on_the_brink && !CFG.has_on_the_brink) {
+	if (G.rules.on_the_brink && !CFG.has_on_the_brink) {
 		return false;
 	}
-	if (R.in_the_lab && !CFG.has_in_the_lab) {
+	if (G.rules.in_the_lab && !CFG.has_in_the_lab) {
 		return false;
 	}
-	if (R.state_of_emergency && !CFG.has_state_of_emergency) {
+	if (G.rules.state_of_emergency && !CFG.has_state_of_emergency) {
 		return false;
 	}
 
@@ -3319,7 +3319,7 @@ function init_pick_scenario_page($pg, xtra)
 	for (var i = 0; i < a.length; i++) {
 
 		G = load_scenario(a[i]);
-		if (!scenario_compatible(G.rules)) {
+		if (!scenario_compatible(G)) {
 			not_shown++;
 			continue;
 		}
