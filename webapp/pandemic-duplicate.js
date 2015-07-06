@@ -3949,7 +3949,7 @@ function download_result(result_b)
 	// console.log('sync: downloading result '+result_b.id);
 	$.ajax({
 	type: "GET",
-	url: "s/deals?deal="+escape(result_b.scenario)+"&result="+escape(result_b.id),
+	url: "s/results?scenario="+escape(result_b.scenario)+"&result="+escape(result_b.id),
 	dataType: "json",
 	success: onSuccess,
 	error: handle_ajax_error

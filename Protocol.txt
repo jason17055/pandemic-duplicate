@@ -16,8 +16,11 @@ POST /s/games?id=GAMEID
 GET /s/results?q=QUERY
  for the "completed games" page
 
-GET /s/deals?deal=SCENARIOID&result=RESULTID
+GET /s/results?scenario=SCENARIOID&result=RESULTID
  download a result
+
+GET /s/deals?deal=SCENARIOID&result=RESULTID
+ still available for backwards-compatibility
 
 POST /s/deals?id=SCENARIOID
  upload a scenario
