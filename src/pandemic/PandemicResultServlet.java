@@ -52,6 +52,30 @@ public class PandemicResultServlet extends HttpServlet
 		out.close();
 	}
 
+	void doGetResult(String deal_id, String result_id, HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		try {
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key key = KeyFactory.createKey("Deal", deal_id);
+		Key key1 = KeyFactory.createKey(key, "Result", result_id);
+		Entity ent = datastore.get(key1);
+
+		Text t = (Text) ent.getProperty("content");
+		
+		resp.setContentType("text/json;charset=UTF-8");
+		Writer out = resp.getWriter();
+		out.write(t.getValue());
+		out.close();
+
+		}
+		catch (EntityNotFoundException e) {
+			resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+	}
+
 	@Override
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
@@ -59,6 +83,14 @@ public class PandemicResultServlet extends HttpServlet
 		String tmp = req.getParameter("q");
 		if (tmp != null) {
 			doSearchResults(tmp, req, resp);
+			return;
+		}
+
+		String scenarioId = req.getParameter("scenario");
+		String resultId = req.getParameter("result");
+
+		if (scenarioId != null && resultId != null) {
+			doGetResult(scenarioId, resultId, req, resp);
 			return;
 		}
 

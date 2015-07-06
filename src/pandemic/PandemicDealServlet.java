@@ -42,6 +42,7 @@ public class PandemicDealServlet extends HttpServlet
 		}
 	}
 
+	//deprecated, kept for historic reasons
 	void doGetResult(String deal_id, String result_id, HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
