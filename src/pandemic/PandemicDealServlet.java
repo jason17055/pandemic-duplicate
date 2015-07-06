@@ -417,7 +417,11 @@ public class PandemicDealServlet extends HttpServlet
 
 	void notifyCustomers(Entity resultEntity)
 	{
-		String msgBody = "Rules: "+(String)resultEntity.getProperty("rules");
+		String scenarioId = resultEntity.getKey().getParent().getName();
+
+		String msgBody = "Scenario: "+scenarioId;
+		msgBody += "\n";
+		msgBody += "Rules: "+(String)resultEntity.getProperty("rules");
 		msgBody += "\n";
 		msgBody += "Location: "+(String)resultEntity.getProperty("location");
 		msgBody += "\n";
@@ -436,7 +440,7 @@ public class PandemicDealServlet extends HttpServlet
 		Message msg = new MimeMessage(mailSession);
 		msg.setFrom(new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
 		msg.addRecipient(Message.RecipientType.TO,
-			new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
+			new InternetAddress("pandemic-duplicate-results@googlegroups.com", "Jason Long"));
 		msg.setSubject("Pandemic - New Result Posted");
 		msg.setText(msgBody);
 		Transport.send(msg);
