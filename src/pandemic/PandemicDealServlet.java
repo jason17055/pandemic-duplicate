@@ -10,9 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
-import javax.mail.*;
-import javax.mail.internet.*;
 import static pandemic.HelperFunctions.*;
+import static pandemic.PandemicResultServlet.notifyCustomers;
 
 public class PandemicDealServlet extends HttpServlet
 {
@@ -307,6 +306,8 @@ public class PandemicDealServlet extends HttpServlet
 		}
 	}
 
+	//deprecated, use PandemicResultServlet instead.
+	//kept for backwards-compatibility
 	void doPostResult(HttpServletRequest req, HttpServletResponse resp, String result_id)
 		throws IOException
 	{
@@ -413,42 +414,6 @@ public class PandemicDealServlet extends HttpServlet
 			if (txn.isActive()) {
 				txn.rollback();
 			}
-		}
-	}
-
-	void notifyCustomers(Entity resultEntity)
-	{
-		String scenarioId = resultEntity.getKey().getParent().getName();
-
-		String msgBody = "Scenario: "+scenarioId;
-		msgBody += "\n";
-		msgBody += "Rules: "+(String)resultEntity.getProperty("rules");
-		msgBody += "\n";
-		msgBody += "Location: "+(String)resultEntity.getProperty("location");
-		msgBody += "\n";
-		msgBody += "Players:\n";
-
-		List<?> l = (List<?>) resultEntity.getProperty("playerNames");
-		for (Object o : l) {
-			msgBody += "*"+(String)o + "\n";
-		}
-		msgBody += "\n";
-
-	log.info("body "+msgBody);
-		try {
-
-		Session mailSession = Session.getDefaultInstance(new Properties(), null);
-		Message msg = new MimeMessage(mailSession);
-		msg.setFrom(new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
-		msg.addRecipient(Message.RecipientType.TO,
-			new InternetAddress("pandemic-duplicate-results@googlegroups.com", "Jason Long"));
-		msg.setSubject("Pandemic - New Result Posted");
-		msg.setText(msgBody);
-		Transport.send(msg);
-
-		}
-		catch (Exception e) {
-			log.warning("Mail exception: " + e);
 		}
 	}
 }

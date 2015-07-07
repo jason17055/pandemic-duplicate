@@ -9,8 +9,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+import javax.mail.*;
+import javax.mail.internet.*;
 
 import static pandemic.PandemicDealServlet.getRequestContent;
+import static pandemic.PandemicDealServlet.MAX_PLAYERS;
 
 public class PandemicResultServlet extends HttpServlet
 {
@@ -101,6 +104,151 @@ public class PandemicResultServlet extends HttpServlet
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
-		resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		String result_id = req.getParameter("result");
+		if (result_id == null) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		String content = getRequestContent(req);
+		JsonParser json = new JsonFactory().
+			createJsonParser(new StringReader(content));
+
+		String versionString = null;
+		String rulesString = null;
+		String shuffleId = null;
+		int score = 0;
+		String [] playerNames = new String[MAX_PLAYERS];
+		String location = null;
+
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			String k = json.getCurrentName();
+			if (k.equals("rules")) {
+				json.nextToken();
+				rulesString = json.getText();
+			}
+			else if (k.equals("shuffle_id")) {
+				json.nextToken();
+				shuffleId = json.getText();
+			}
+			else if (k.equals("version")) {
+				json.nextToken();
+				versionString = json.getText();
+			}
+			else if (k.equals("score")) {
+				json.nextToken();
+				score = json.getCurrentToken() == JsonToken.VALUE_NUMBER_INT ?
+						json.getIntValue() :
+						Integer.parseInt(json.getText());
+			}
+			else if (k.matches("^player\\d+$")) {
+				int pid = Integer.parseInt(k.substring(6));
+				json.nextToken();
+				if (pid >= 1 && pid <= MAX_PLAYERS) {
+					playerNames[pid-1] = json.getText();
+				}
+			}
+			else if (k.equals("location")) {
+				json.nextToken();
+				location = json.getText();
+			}
+			else {
+				// unrecognized
+				json.nextToken();
+				json.skipChildren();
+			}
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Transaction txn = datastore.beginTransaction();
+
+		try
+		{
+			Key key = KeyFactory.createKey("Deal", shuffleId);
+			Key key1 = KeyFactory.createKey(key, "Result", result_id);
+			Date createdDate = new Date();
+			String creatorIp = req.getRemoteAddr();
+
+			Entity ent = new Entity(key1);
+			ent.setProperty("content", new Text(content));
+			ent.setProperty("version", versionString);
+			ent.setProperty("rules", rulesString);
+			ent.setProperty("score", new Integer(score));
+
+			if (location != null && location.length() != 0) {
+				ent.setProperty("location", location);
+				ent.setProperty("locationLC", location.toLowerCase());
+			}
+
+			ArrayList<String> names1 = new ArrayList<String>();
+			ArrayList<String> names2 = new ArrayList<String>();
+			for (String s : playerNames) {
+				if (s != null) {
+					names1.add(s);
+					names2.add(s.toLowerCase());
+				}
+			}
+			ent.setProperty("playerNames", names1);
+			ent.setProperty("playerNamesLC", names2);
+
+			ent.setProperty("created", createdDate);
+			ent.setProperty("createdBy", creatorIp);
+
+			datastore.put(ent);
+			txn.commit();
+
+			resp.setContentType("text/json;charset=UTF-8");
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeEndObject();
+			out.close();
+
+			notifyCustomers(ent);
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
+	static void notifyCustomers(Entity resultEntity)
+	{
+		String scenarioId = resultEntity.getKey().getParent().getName();
+
+		String msgBody = "Scenario: "+scenarioId;
+		msgBody += "\n";
+		msgBody += "Rules: "+(String)resultEntity.getProperty("rules");
+		msgBody += "\n";
+		msgBody += "Location: "+(String)resultEntity.getProperty("location");
+		msgBody += "\n";
+		msgBody += "Players:\n";
+
+		List<?> l = (List<?>) resultEntity.getProperty("playerNames");
+		for (Object o : l) {
+			msgBody += "*"+(String)o + "\n";
+		}
+		msgBody += "\n";
+
+	log.info("body "+msgBody);
+		try {
+
+		Session mailSession = Session.getDefaultInstance(new Properties(), null);
+		Message msg = new MimeMessage(mailSession);
+		msg.setFrom(new InternetAddress("jasonalonzolong@gmail.com", "Jason Long"));
+		msg.addRecipient(Message.RecipientType.TO,
+			new InternetAddress("pandemic-duplicate-results@googlegroups.com", "Jason Long"));
+		msg.setSubject("Pandemic - New Result Posted");
+		msg.setText(msgBody);
+		Transport.send(msg);
+
+		}
+		catch (Exception e) {
+			log.warning("Mail exception: " + e);
+		}
 	}
 }

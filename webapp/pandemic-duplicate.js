@@ -3761,7 +3761,7 @@ function upload_result(result_id)
 
 	$.ajax({
 	type: "POST",
-	url: "s/deals?result="+result_id,
+	url: "s/results?result="+result_id,
 	data: s,
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
