@@ -2104,7 +2104,7 @@ function can_draw_sequence_card()
 
 function can_play_special_event()
 {
-	return G.has_control;
+	return G.has_control && has_any_special_event();
 }
 
 function can_retrieve_special_event()
@@ -2255,6 +2255,26 @@ function is_emergency(c)
 	else {
 		return m[1];
 	}
+}
+
+function is_special(c)
+{
+	if (Pandemic.Cities[c]) {
+		return false;
+	}
+	if (c == 'Epidemic') {
+		return false;
+	}
+	if (is_epidemic(c)) {
+		return false;
+	}
+	if (is_mutation(c)) {
+		return false;
+	}
+	if (is_emergency(c)) {
+		return false;
+	}
+	return true;
 }
 
 function init_infection_page($pg)
@@ -2820,6 +2840,22 @@ function on_special_event_retrieve_clicked()
 	var s =  this.getAttribute('data-special-event');
 
 	return set_move('retrieve '+s);
+}
+
+function has_any_special_event()
+{
+	if (G.contingency_event)
+		return true;
+
+	for (var pid in G.hands) {
+		var h = G.hands[pid];
+		for (var i = 0; i < h.length; i++) {
+			if (is_special(h[i])) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 function has_special_event(s)
