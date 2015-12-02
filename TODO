@@ -1,6 +1,9 @@
+make it possible to filter out scenarios that use a role
+from new printing of base game
+
 game subscription messages: should include game_id
 
-pick_game: show how many results are recorded for each deal
+pick_game: show how many results are recorded for each scenario
 
 params: replace player_count drop down with four separate
 buttons
