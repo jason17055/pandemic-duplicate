@@ -3406,7 +3406,7 @@ function init_pick_scenario_page($pg, xtra)
 			description += '; best score: '+results_info.maximum_score;
 		}
 
-		$('.deal_status_col', $tr).text(description);
+		$('.scenario_status_col', $tr).text(description);
 
 		$('.scenarios_list', $pg).append($tr);
 	}
