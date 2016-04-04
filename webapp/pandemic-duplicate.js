@@ -2452,24 +2452,24 @@ function navigate_to_current_turn()
 	return;
 }
 
-function scenario_finished(deal_id)
+function scenario_finished(scenario_id)
 {
-	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished') != null);
+	return (localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.finished') != null);
 }
 
-function scenario_started(deal_id)
+function scenario_started(scenario_id)
 {
-	return (localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played') != null);
+	return (localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.first_played') != null);
 }
 
-function scenario_finish_time(deal_id)
+function scenario_finish_time(scenario_id)
 {
-	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.finished');
+	return localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.finished');
 }
 
-function scenario_first_played_time(deal_id)
+function scenario_first_played_time(scenario_id)
 {
-	return localStorage.getItem(PACKAGE + '.game.' + deal_id + '.first_played');
+	return localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.first_played');
 }
 
 function format_time(timestr)
@@ -3933,9 +3933,9 @@ function check_for_downloads()
 	});
 }
 
-function has_scenario(deal_id)
+function has_scenario(scenario_id)
 {
-	return localStorage.getItem(PACKAGE + '.scenario.' + deal_id) != null;
+	return localStorage.getItem(PACKAGE + '.scenario.' + scenario_id) != null;
 }
 
 function has_result(result_id)
