@@ -3370,7 +3370,6 @@ function init_pick_scenario_page($pg, xtra)
 		var $tr = $('.scenario_row.template').clone();
 		$tr.removeClass('template');
 		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
-		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).attr('data-scenario-id', a[i]);
 		$('button',$tr).click(on_pick_scenario_scenario_clicked);
 
