@@ -2311,6 +2311,7 @@ function show_blank_page()
 function show_page(page_name)
 {
 	S.currentPage = page_name;
+	$('body').controller().setPageWithApply(page_name);
 	$(".page").hide();
 	return $("#"+page_name).show();
 }
@@ -3513,11 +3514,6 @@ function on_state_init()
 	}
 	check_screen_size();
 }
-
-$(function() {
-	window.addEventListener('popstate', on_state_init);
-	on_state_init();
-});
 
 $(function() {
 	$('.cure_count').change(update_game_score);
