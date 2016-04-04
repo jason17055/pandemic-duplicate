@@ -18,15 +18,6 @@ Documents what localStorage keys are used client-side.
 .game.X.T#
 	a move string, X is a game id, # is an integer
 
-.game.X.finished
-	time string
-
-.game.X.first_played
-	time string
-
-.game.X.last_played
-	time string
-
 .game.X.owner_secret
 	secret given to server when game data is uploaded
 
@@ -67,6 +58,15 @@ Documents what localStorage keys are used client-side.
 
 .scenario.X.current_game
 	Game id.
+
+.scenario.X.finished
+	time string
+
+.scenario.X.first_played
+	time string
+
+.scenario.X.last_played
+	time string
 
 .scenarios_by_rules.X (deprecated)
 	List of scenario ids, where X is a rules string

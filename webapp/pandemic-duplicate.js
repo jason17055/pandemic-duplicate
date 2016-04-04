@@ -1025,7 +1025,7 @@ function load_game_at(game_id, target_time)
 	target_time = +target_time;
 	while (G.time < target_time) {
 
-		var mv = get_move(G.scenario_id, G.time);
+		var mv = get_move(G.scenario_id, G.game_id, G.time);
 		do_move(mv);
 	}
 
@@ -1038,9 +1038,15 @@ function load_game_at(game_id, target_time)
 	}
 }
 
-function get_move(game_id, time)
+function get_move(scenario_id, game_id, time)
 {
 	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);
+	if (mv != null) {
+		return mv;
+	}
+
+	// backwards compatibility
+	var mv = localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.T' + time);
 	return mv != null ? mv : 'pass';
 }
 
@@ -2454,22 +2460,22 @@ function navigate_to_current_turn()
 
 function scenario_finished(scenario_id)
 {
-	return (localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.finished') != null);
+	return (localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.finished') != null);
 }
 
 function scenario_started(scenario_id)
 {
-	return (localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.first_played') != null);
+	return (localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.first_played') != null);
 }
 
 function scenario_finish_time(scenario_id)
 {
-	return localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.finished');
+	return localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.finished');
 }
 
 function scenario_first_played_time(scenario_id)
 {
-	return localStorage.getItem(PACKAGE + '.game.' + scenario_id + '.first_played');
+	return localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.first_played');
 }
 
 function format_time(timestr)
@@ -2537,12 +2543,12 @@ function start_publishing_game(game_id)
 function set_move(m)
 {
 	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.last_played', timestr);
-	if (localStorage.getItem(PACKAGE + '.game.' + G.scenario_id + '.first_played') == null) {
-		localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.first_played', timestr);
+	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.last_played', timestr);
+	if (!scenario_started(G.scenario_id)) {
+		localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.first_played', timestr);
 	}
 
-	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.T' + G.time, m);
+	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.T' + G.time, m);
 
 	do_move(m);
 	navigate_to_current_turn();
@@ -2888,6 +2894,7 @@ function record_game_finished()
 {
 	var timestr = new Date().toISOString();
 	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.finished', timestr);
+	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.finished', timestr);
 }
 
 function admit_defeat_clicked()
@@ -3870,7 +3877,7 @@ function upload_current_game_moves(game_id, secret)
 
 	var mv_array = [];
 	for (var t = 0; t < G.time; t++) {
-		var mv = get_move(G.shuffle_id, t);
+		var mv = get_move(G.scenario_id, G.game_id, t);
 		mv_array.push(mv);
 	}
 
