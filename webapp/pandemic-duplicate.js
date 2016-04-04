@@ -3674,13 +3674,13 @@ function submit_result_clicked()
 {
 	var result_id = save_current_result(true);
 
-	stor_add_to_set(PACKAGE + '.game_results.' + G.shuffle_id, result_id);
+	stor_add_to_set(PACKAGE + '.game_results.' + G.scenario_id, result_id);
 	stor_add_to_set(PACKAGE + '.pending_results', result_id);
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
 	trigger_sync_process();
 
-	var u = BASE_URL + '#'+G.shuffle_id+'/results';
+	var u = BASE_URL + '#'+G.scenario_id+'/results';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -3693,7 +3693,7 @@ function dont_submit_clicked()
 	// this makes this game show up in the "Review Results" page
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
-	var u = BASE_URL + '#'+G.shuffle_id+'/results';
+	var u = BASE_URL + '#'+G.scenario_id+'/results';
 	history.pushState(null, null, u);
 	on_state_init();
 	return false;
@@ -3762,20 +3762,20 @@ function continue_sync()
 	sync_started = false;
 }
 
-function upload_scenario(shuffle_id)
+function upload_scenario(scenario_id)
 {
-	// console.log("sync: uploading scenario "+shuffle_id);
-	var s = localStorage.getItem(PACKAGE + '.scenario.' + shuffle_id);
+	// console.log("sync: uploading scenario "+scenario_id);
+	var s = localStorage.getItem(PACKAGE + '.scenario.' + scenario_id);
 
 	var onSuccess = function(data) {
-		// console.log('sync: successful upload of '+shuffle_id);
-		stor_remove_from_set(PACKAGE + '.pending_scenarios', shuffle_id);
+		// console.log('sync: successful upload of '+scenario_id);
+		stor_remove_from_set(PACKAGE + '.pending_scenarios', scenario_id);
 		return continue_sync();
 		};
 
 	$.ajax({
 	type: "POST",
-	url: "s/scenarios?id="+shuffle_id,
+	url: "s/scenarios?id="+scenario_id,
 	data: s,
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",
@@ -3816,7 +3816,7 @@ function upload_current_game()
 		return continue_sync();
 	}
 
-	var shuffle_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
+	var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 	var published = localStorage.getItem(PACKAGE + '.current_game.published');
 	var secret = localStorage.getItem(PACKAGE + '.game.' + game_id + '.owner_secret');
 
@@ -3830,7 +3830,7 @@ function upload_current_game()
 		// new game
 		console.log("sync: uploading current game metadata");
 		var st = {
-			'scenario': shuffle_id,
+			'scenario': scenario_id,
 			'secret': secret,
 			'player_count': G.rules.player_count
 			};
