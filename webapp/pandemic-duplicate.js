@@ -501,7 +501,7 @@ function submit_generate_game_form()
 		'superbug_challenge': f.superbug_challenge.checked
 		};
 	G = generate_scenario(rules);
-	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
+	trigger_upload_scenario(G.scenario_id);
 
 	// create game
 	G.game_id = generate_new_game_id(G.scenario_id);
@@ -3731,6 +3731,12 @@ function trigger_upload_game_state()
 	trigger_sync_process();
 }
 
+function trigger_upload_scenario(scenario_id)
+{
+	stor_add_to_set(PACKAGE + '.pending_scenarios', scenario_id);
+	trigger_sync_process();
+}
+
 function continue_sync()
 {
 	if (sync_started) {
@@ -3771,11 +3777,10 @@ function continue_sync()
 
 function upload_scenario(scenario_id)
 {
-	// console.log("sync: uploading scenario "+scenario_id);
+	console.log("sync: uploading scenario "+scenario_id);
 	var s = localStorage.getItem(PACKAGE + '.scenario.' + scenario_id);
 
 	var onSuccess = function(data) {
-		// console.log('sync: successful upload of '+scenario_id);
 		stor_remove_from_set(PACKAGE + '.pending_scenarios', scenario_id);
 		return continue_sync();
 		};
