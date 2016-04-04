@@ -2429,7 +2429,7 @@ function generate_new_game_id(scenario_id)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function on_preshuffled_game_clicked(evt)
+function on_pick_scenario_scenario_clicked(evt)
 {
 	var el = this;
 	var scenario_id = el.getAttribute('data-scenario-id');
@@ -3372,7 +3372,7 @@ function init_pick_scenario_page($pg, xtra)
 		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
 		$('button',$tr).attr('data-shuffle-id', a[i]);
 		$('button',$tr).attr('data-scenario-id', a[i]);
-		$('button',$tr).click(on_preshuffled_game_clicked);
+		$('button',$tr).click(on_pick_scenario_scenario_clicked);
 
 		var $g = $tr;
 		$('.module_list_container',$tr).append(make_modules_label(G.rules));
