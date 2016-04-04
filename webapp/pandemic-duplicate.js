@@ -255,9 +255,7 @@ function handle_channel_message(raw_message)
 function on_join_game_picked()
 {
 	var game_id = this.getAttribute('data-game-id');
-	var u = BASE_URL + '#' + escape(game_id) + '/watch';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(escape(game_id) + '/watch');
 	return false;
 }
 
@@ -438,9 +436,7 @@ function submit_join_game_form()
 
 	localStorage.setItem(PACKAGE+'.my_player_name', name);
 
-	var u = BASE_URL + '#join_network_game/' + escape(name);
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state('join_network_game/' + escape(name));
 	return false;
 }
 
@@ -454,9 +450,7 @@ function submit_search_results_form()
 	var f = document.search_results_form;
 	var q = f.q.value;
 
-	var u = BASE_URL + '#search_results/' + escape(q);
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state('search_results/' + escape(q));
 	return false;
 }
 
@@ -476,9 +470,7 @@ function submit_create_game_form()
 {
 	var f = document.create_game_form;
 	var pcount = f.player_count.value;
-	var u = BASE_URL + '#names/' + pcount + 'p';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state('names/' + pcount + 'p');
 	return false;
 }
 
@@ -513,18 +505,14 @@ function submit_generate_game_form()
 	load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
-	var u = BASE_URL + '#'+G.game_id+'/player_setup';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(G.game_id+'/player_setup');
 	return false;
 }
 
 function generate_game_clicked()
 {
 	var pcount = document.pick_scenario_form.player_count.value;
-	var u = BASE_URL + '#generate_game/' + pcount + 'p';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state('generate_game/' + pcount + 'p');
 }
 
 function init_player_names_page($pg, xtra)
@@ -693,8 +681,7 @@ function submit_player_names_form()
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
 
-	history.pushState(null, null, BASE_URL + '#pick_scenario/' + pcount + 'p');
-	on_state_init();
+	goto_state('pick_scenario/' + pcount + 'p');
 	return false;
 }
 
@@ -730,10 +717,7 @@ function init_deck_setup_page($pg, scenario_id)
 
 function continue_after_deck_setup()
 {
-	var u = BASE_URL + '#'+G.scenario_id+'/board_setup';
-	history.pushState(null, null, u);
-	on_state_init();
-
+	goto_state(G.scenario_id+'/board_setup');
 	return false;
 }
 
@@ -1010,10 +994,7 @@ function make_sequence_card(c)
 
 function continue_after_player_setup()
 {
-	var u = BASE_URL + '#'+G.game_id+'/board_setup';
-	history.pushState(null, null, u);
-	on_state_init();
-
+	goto_state(G.game_id+'/board_setup');
 	return false;
 }
 
@@ -2446,16 +2427,12 @@ function on_pick_scenario_scenario_clicked(evt)
 	load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
-	var u = BASE_URL + '#'+G.game_id+'/player_setup';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(G.game_id+'/player_setup');
 }
 
 function navigate_to_current_turn()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time;
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(G.game_id + '/T' + G.time);
 	return;
 }
 
@@ -2912,17 +2889,13 @@ function declare_victory_clicked()
 
 function on_determine_virulent_strain_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/virulent_strain';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_current_game_state('/virulent_strain');
 	return false;
 }
 
 function discover_cure_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/discover_cure';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_current_game_state('/discover_cure');
 	return false;
 }
 
@@ -2931,21 +2904,9 @@ function cancel_show_discards()
 	history.back();
 }
 
-function get_current_game_url()
-{
-	if (G.has_control) {
-		return BASE_URL + '#' + G.game_id + '/T' + G.time;
-	}
-	else {
-		return BASE_URL + '#' + G.game_id + '/watch';
-	}
-}
-
 function show_discards_clicked()
 {
-	var u = get_current_game_url() + '/discards';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_current_game_state('/discards');
 	return false;
 }
 
@@ -3142,9 +3103,7 @@ function init_play_special_event_page($pg)
 
 function play_special_event_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/play_special';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_current_game_state('/play_special');
 	return false;
 }
 
@@ -3174,9 +3133,7 @@ function draw_sequence_card_clicked()
 
 function retrieve_special_event_clicked()
 {
-	var u = BASE_URL + '#' + G.game_id + '/T' + G.time + '/retrieve_special';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_current_game_state('/retrieve_special');
 	return false;
 }
 
@@ -3274,9 +3231,7 @@ function on_review_result_game_clicked()
 	// so that the correct row is highlighted
 	localStorage.setItem(PACKAGE + '.my_result.' + scenario_id, result_id);
 
-	var u = BASE_URL + '#'+scenario_id+'/results';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(scenario_id + '/results');
 }
 
 function init_generate_game_page($pg, xtra)
@@ -3531,10 +3486,24 @@ function go_home_page()
 	on_state_init();
 }
 
+function goto_state(rel_url)
+{
+	history.pushState(null, null, BASE_URL + '#' + rel_url);
+	on_state_init();
+}
+
+function goto_current_game_state(url_suffix)
+{
+	if (G.has_control) {
+		goto_state(G.game_id + '/T' + G.time + url_suffix);
+	} else {
+		goto_state(G.game_id + '/watch' + url_suffix);
+	}
+}
+
 function start_game_clicked()
 {
-	history.pushState(null, null, BASE_URL + '#params');
-	on_state_init();
+	goto_state('params');
 }
 
 function resume_game_clicked()
@@ -3546,14 +3515,10 @@ function resume_game_clicked()
 
 	var time_str = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
 	if (time_str != null) {
-		var u = BASE_URL + '#' + game_id + '/T' + time_str;
-		history.pushState(null, null, u);
-		on_state_init();
+		goto_state(game_id + '/T' + time_str);
 	}
 	else {
-		var u = BASE_URL + '#' + game_id + '/player_setup';
-		history.pushState(null, null, u);
-		on_state_init();
+		goto_state(game_id + '/player_state');
 	}
 
 	return;
@@ -3561,26 +3526,22 @@ function resume_game_clicked()
 
 function review_results_clicked()
 {
-	history.pushState(null, null, BASE_URL + '#review_results');
-	on_state_init();
+	goto_state('review_results');
 }
 
 function join_network_game_clicked()
 {
-	history.pushState(null, null, BASE_URL + '#join_network_game');
-	on_state_init();
+	goto_state('join_network_game');
 }
 
 function options_clicked()
 {
-	history.pushState(null, null, BASE_URL + '#options');
-	on_state_init();
+	goto_state('options');
 }
 
 function go_subscription_page()
 {
-	history.pushState(null, null, BASE_URL + '#subscription');
-	on_state_init();
+	goto_state('subscription');
 }
 
 function clear_storage_clicked()
@@ -3685,9 +3646,7 @@ function submit_result_clicked()
 
 	trigger_sync_process();
 
-	var u = BASE_URL + '#'+G.scenario_id+'/results';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(G.scenario_id + '/results');
 	return false;
 }
 
@@ -3698,9 +3657,7 @@ function dont_submit_clicked()
 	// this makes this game show up in the "Review Results" page
 	stor_add_to_set(PACKAGE + '.my_results', result_id);
 
-	var u = BASE_URL + '#'+G.scenario_id+'/results';
-	history.pushState(null, null, u);
-	on_state_init();
+	goto_state(G.scenario_id + '/results');
 	return false;
 }
 
