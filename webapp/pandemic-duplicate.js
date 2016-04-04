@@ -308,7 +308,7 @@ function reload_watched_game()
 	var game_data = watched_game_data;
 
 	G=null;
-	load_scenario(game_data.deal);
+	load_scenario(game_data.scenario_id);
 
 	G.player_names = {};
 	for (var pid = 1; pid <= game_data.players.length; pid++) {

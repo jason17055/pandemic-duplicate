@@ -292,6 +292,7 @@ log.info("created subscription "+skey.getId());
 			out.writeStartObject();
 
 			out.writeStringField("deal", dealId);
+			out.writeStringField("scenario_id", dealId);
 			out.writeFieldName("players");
 			out.writeStartArray();
 			for (String nm : playerNames) {

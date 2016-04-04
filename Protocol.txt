@@ -3,10 +3,11 @@ Endpoints
 
 GET /s/games?search_player=QUERY
  for the "join network game" page
- returns {results: [...]} where ... is array of Game objects
+ returns {results: [...]} where ... is array of partial Game objects
 
 POST /s/games?subscribe=GAMEID
  to start watching a game
+ returns {status: "ok", subscriber_id: string, channel: string, game: !Game}
 
 POST /s/games?id=GAMEID&post=meta
  upload game metadata
@@ -50,6 +51,8 @@ Games
 "scenario_id": "<scenario_id>",
 "players": ["joe", "Mary"],
 "location": "Grantham",
+"started": true,
+"moves": ["move1", "move2", ...],
 }
 
 Results
