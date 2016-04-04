@@ -3426,6 +3426,9 @@ function on_state_init()
 	if (path && path.substring(0,1) == '#') {
 		path = path.substring(1);
 	}
+	if (path && path.substring(0,1) == '/') {
+		path = path.substring(1);
+	}
 
 	var m;
 	if (!path) {
