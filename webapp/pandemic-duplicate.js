@@ -2426,11 +2426,11 @@ function generate_new_game_id(scenario_id)
 function on_preshuffled_game_clicked(evt)
 {
 	var el = this;
-	var shuffle_id = el.getAttribute('data-shuffle-id');
+	var scenario_id = el.getAttribute('data-scenario-id');
 
 	// create game
-	load_scenario(shuffle_id);
-	G.game_id = generate_new_game_id(shuffle_id);
+	load_scenario(scenario_id);
+	G.game_id = generate_new_game_id(scenario_id);
 	console.log("new game id is "+G.game_id);
 
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
