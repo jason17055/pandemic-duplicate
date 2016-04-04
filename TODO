@@ -7,3 +7,5 @@ pick_game: show how many results are recorded for each scenario
 
 params: replace player_count drop down with four separate
 buttons
+
+refactor Result entities to be singleton children of Game entities
