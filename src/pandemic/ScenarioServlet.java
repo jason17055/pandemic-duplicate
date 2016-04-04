@@ -100,10 +100,10 @@ public class ScenarioServlet extends HttpServlet
 
 		for (Entity ent : pq_1.asIterable()) {
 			out.writeStartObject();
-			String deal_id = ent.getKey().getParent().getName();
+			String scenario_id = ent.getKey().getParent().getName();
 			String result_id = ent.getKey().getName();
 			out.writeStringField("id", result_id);
-			out.writeStringField("scenario", deal_id);
+			out.writeStringField("scenario", scenario_id);
 			out.writeEndObject();
 		}
 
