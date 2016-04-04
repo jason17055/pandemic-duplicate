@@ -24,6 +24,7 @@ GET /s/deals?deal=SCENARIOID&result=RESULTID
 
 POST /s/deals?id=SCENARIOID
  upload a scenario
+ still available for backwards-compatibility
 
 POST /s/deals?result=RESULTID
  upload a result
@@ -33,6 +34,9 @@ GET /s/scenarios
 
 GET /s/scenarios?id=SCENARIOID
  download a scenario
+
+POST /s/scenarios?id=SCENARIOID
+ upload a scenario
 
 
 Scenarios

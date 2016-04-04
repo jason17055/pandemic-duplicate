@@ -1,11 +1,17 @@
 package pandemic;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Logger;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.*;
+
+import static pandemic.HelperFunctions.*;
+import static pandemic.PandemicDealServlet.getRequestContent;
+import static pandemic.PandemicDealServlet.MAX_PLAYERS;
 
 public class ScenarioServlet extends HttpServlet
 {
@@ -121,5 +127,107 @@ public class ScenarioServlet extends HttpServlet
 
 		String myUrl = scheme + "://" + req.getServerName() + (port == defaultPort ? "" : ":"+port) + req.getContextPath();
 		return myUrl;
+	}
+
+	void doPostScenario(HttpServletRequest req, HttpServletResponse resp, String scenarioId)
+		throws IOException
+	{
+		log.info("new scenario received for " + scenarioId);
+		String content = getRequestContent(req);
+		JsonParser json = new JsonFactory().
+			createJsonParser(new StringReader(content));
+
+		Rules r = new Rules();
+		String versionString = null;
+		String ctx = "";
+		String [] roles = new String[MAX_PLAYERS];
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() == JsonToken.END_OBJECT) { ctx = ""; }
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("rules")) {
+				ctx = "rules";
+				json.nextToken();
+			}
+			else if (json.getCurrentName().equals("roles")) {
+				ctx = "roles";
+				json.nextToken();
+			}
+			else if (json.getCurrentName().equals("version")) {
+				json.nextToken();
+				versionString = json.getText();
+			}
+			else if (ctx.equals("rules")) {
+				r.parseCurrentToken(json);
+			}
+			else if (ctx.equals("roles")) {
+				int seat = Integer.parseInt(json.getCurrentName());
+				json.nextToken();
+				if (seat >= 1 && seat <= MAX_PLAYERS) {
+					roles[seat-1] = json.getText();
+				}
+			}
+		}
+
+		ArrayList<String> playerRoles = new ArrayList<String>();
+		for (String s : roles) {
+			if (s != null) {
+				playerRoles.add(s);
+			}
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Transaction txn = datastore.beginTransaction();
+
+		try
+		{
+			Key key = KeyFactory.createKey("Scenario", scenarioId);
+			log.info("key is " + key.toString());
+			Date createdDate = new Date();
+			String creatorIp = req.getRemoteAddr();
+
+			Entity ent = new Entity(key);
+			ent.setProperty("content", new Text(content));
+			ent.setProperty("version", versionString);
+			ent.setProperty("rules", r.toString());
+			ent.setProperty("playerCount", r.playerCount);
+
+		// WARNING: older version of playerRoles is /-separated string
+			ent.setProperty("playerRoles", playerRoles);
+
+			ent.setProperty("created", createdDate);
+			ent.setProperty("createdBy", creatorIp);
+
+			datastore.put(ent);
+			log.info("saved scenario");
+
+			txn.commit();
+
+			resp.setContentType("text/json;charset=UTF-8");
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		String scenarioId = req.getParameter("id");
+		if (scenarioId != null) {
+			doPostScenario(req, resp, scenarioId);
+			return;
+		}
+
+		resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 	}
 }

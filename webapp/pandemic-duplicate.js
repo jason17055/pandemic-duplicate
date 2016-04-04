@@ -3775,7 +3775,7 @@ function upload_scenario(shuffle_id)
 
 	$.ajax({
 	type: "POST",
-	url: "s/deals?id="+shuffle_id,
+	url: "s/scenarios?id="+shuffle_id,
 	data: s,
 	contentType: "application/json; charset=utf-8",
 	dataType: "json",

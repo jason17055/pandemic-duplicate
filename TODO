@@ -9,3 +9,5 @@ params: replace player_count drop down with four separate
 buttons
 
 refactor Result entities to be singleton children of Game entities
+
+PostScenario: should fail if scenario already exists
