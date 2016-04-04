@@ -3,6 +3,7 @@ Endpoints
 
 GET /s/games?search_player=QUERY
  for the "join network game" page
+ returns {results: [...]} where ... is array of Game objects
 
 POST /s/games?subscribe=GAMEID
  to start watching a game
@@ -42,6 +43,14 @@ POST /s/scenarios?id=SCENARIOID
 Scenarios
 =========
 TODO
+
+Games
+=====
+{
+"scenario_id": "<scenario_id>",
+"players": ["joe", "Mary"],
+"location": "Grantham",
+}
 
 Results
 =======

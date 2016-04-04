@@ -185,15 +185,15 @@ function init_join_game_pick_page($pg, search_results)
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
 		var g = list[i];
-		var r = load_scenario(g.deal);
+		var r = load_scenario(g.scenario_id);
 		if (!r) { continue; }
 
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
 
-		$('.scenario_name_container', $g).append(make_scenario_label(g.deal));
+		$('.scenario_name_container', $g).append(make_scenario_label(g.scenario_id));
 		$('.module_list_container', $g).append(make_modules_label(r.rules));
-		update_scenario_description($g, G.rules);
+		update_scenario_description($g, r.rules);
 
 		for (var pid = 1; pid <= G.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
@@ -3979,7 +3979,7 @@ function save_downloaded_result(result_id, result_data)
 		return;
 	}
 
-	console.log('result is for deal '+scenario_id);
+	console.log('result is for scenario '+scenario_id);
 
 	var VV = JSON.stringify(result_data);
 	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
