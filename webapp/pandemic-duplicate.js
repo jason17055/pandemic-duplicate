@@ -508,12 +508,6 @@ function submit_generate_game_form()
 	return false;
 }
 
-function generate_game_clicked()
-{
-	var pcount = document.pick_scenario_form.player_count.value;
-	goto_state('generate_game/' + pcount + 'p');
-}
-
 function init_player_names_page($pg, xtra)
 {
 	var pcount = 2;

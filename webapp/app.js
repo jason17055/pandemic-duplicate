@@ -124,7 +124,11 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function() {
+  function(StateService) {
+    this.generate_game_clicked = function() {
+      var pcount = document.pick_scenario_form.player_count.value;
+      StateService.go('generate_game/' + pcount + 'p');
+    }.bind(this);
   });
 
 app.controller('ReviewResultsPageController',
