@@ -28,7 +28,40 @@ app.controller('TopController',
   });
 
 app.controller('WelcomePageController',
-  function() {
+  function(StateService) {
+    this.start_game_clicked = function() {
+      StateService.go('params');
+    };
+
+    this.resume_game_clicked = function() {
+      var game_id = localStorage.getItem(PACKAGE + '.current_game');
+      if (game_id == null) {
+        return false;
+      }
+
+      var time_str = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
+      if (time_str != null) {
+        StateService.go(game_id + '/T' + time_str);
+      }
+      else {
+        StateService.go(game_id + '/player_state');
+      }
+
+      return;
+    };
+
+    this.review_results_clicked = function() {
+      StateService.go('review_results');
+    };
+
+    this.join_network_game_clicked = function() {
+      StateService.go('join_network_game');
+    };
+
+    this.options_clicked = function() {
+      StateService.go('options');
+    };
+
   });
 
 app.controller('OptionsPageController',

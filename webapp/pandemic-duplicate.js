@@ -3493,44 +3493,6 @@ function goto_current_game_state(url_suffix)
 	}
 }
 
-function start_game_clicked()
-{
-	goto_state('params');
-}
-
-function resume_game_clicked()
-{
-	var game_id = localStorage.getItem(PACKAGE + '.current_game');
-	if (game_id == null) {
-		return false;
-	}
-
-	var time_str = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
-	if (time_str != null) {
-		goto_state(game_id + '/T' + time_str);
-	}
-	else {
-		goto_state(game_id + '/player_state');
-	}
-
-	return;
-}
-
-function review_results_clicked()
-{
-	goto_state('review_results');
-}
-
-function join_network_game_clicked()
-{
-	goto_state('join_network_game');
-}
-
-function options_clicked()
-{
-	goto_state('options');
-}
-
 function go_subscription_page()
 {
 	goto_state('subscription');
