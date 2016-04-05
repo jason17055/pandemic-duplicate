@@ -136,7 +136,10 @@ app.controller('ReviewResultsPageController',
   });
 
 app.controller('FoundCompletedGamesPageController',
-  function() {
+  function($window) {
+    this.back = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('PlayerNamesPageController',
