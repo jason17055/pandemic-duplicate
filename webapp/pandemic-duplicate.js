@@ -3493,20 +3493,6 @@ function goto_current_game_state(url_suffix)
 	}
 }
 
-function go_subscription_page()
-{
-	goto_state('subscription');
-}
-
-function clear_storage_clicked()
-{
-	var r = confirm("Clear localStorage? This will erase all settings saved on this device.");
-	if (r) {
-		localStorage.clear();
-	}
-	location.reload();
-}
-
 function summarize_results_for_scenario(scenario_id)
 {
 	var names = {};

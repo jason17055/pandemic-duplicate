@@ -65,7 +65,20 @@ app.controller('WelcomePageController',
   });
 
 app.controller('OptionsPageController',
-  function() {
+  function(StateService, $window) {
+    this.subscription_clicked = function() {
+      StateService.go('subscription');
+    };
+    this.clear_storage_clicked = function() {
+      var r = confirm("Clear localStorage? This will erase all settings saved on this device.");
+      if (r) {
+        localStorage.clear();
+      }
+      location.reload();
+    };
+    this.back_clicked = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('SubscriptionPageController',
