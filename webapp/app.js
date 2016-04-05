@@ -1,17 +1,4 @@
-app = angular.module('pandemicDuplicateApp', []);/*, ['ui.router']*/
-/*app.config(
-  function($stateProvider) {
-    var defStateEnter = function($state) {
-      console.log('entering state');
-      console.log($state);
-    };
-
-    console.log('configuring stateProvider');
-    $stateProvider
-      .state('create_game', {
-        onEnter: defStateEnter
-      });
-  });*/
+app = angular.module('pandemicDuplicateApp', []);
 
 app.controller('TopController',
   function($scope) {
