@@ -82,7 +82,23 @@ app.controller('OptionsPageController',
   });
 
 app.controller('SubscriptionPageController',
-  function() {
+  function($window) {
+    this.login_clicked = function() {
+      if (S.loginUrl) {
+        $window.location.href = S.loginUrl;
+      } else {
+        console.log("no login url");
+        console.log(JSON.stringify(S));
+      }
+    };
+    this.logout_clicked = function() {
+      if (S.logoutUrl) {
+        $window.location.href = S.logoutUrl;
+      }
+    };
+    this.back = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('CreateGamePageController',

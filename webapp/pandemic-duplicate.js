@@ -3976,21 +3976,3 @@ $(function() {
 	$('.page_header .role_icon').click(onRenamePlayerClicked);
 	window.onresize = check_screen_size;
 });
-
-function login_clicked()
-{
-	if (S.loginUrl) {
-		location.href = S.loginUrl;
-	}
-	else {
-		console.log("no login url");
-		console.log(JSON.stringify(S));
-	}
-}
-
-function logout_clicked()
-{
-	if (S.logoutUrl) {
-		location.href = S.logoutUrl;
-	}
-}
