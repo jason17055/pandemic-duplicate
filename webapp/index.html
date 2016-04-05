@@ -21,7 +21,7 @@
 </head>
 <body ng-app="pandemicDuplicateApp" ng-controller="TopController as top">
 
-<div class="page" id="welcome_page">
+<div class="page" id="welcome_page" ng-controller="WelcomePageController as c">
 
 <div class="page_header">
 <h1>Pandemic Duplicate</h1>
@@ -45,7 +45,7 @@ Welcome to Pandemic Duplicate!
 </div><!--/page_body-->
 </div><!--/welcome_page-->
 
-<div class="page" id="options_page">
+<div class="page" id="options_page" ng-controller="OptionsPageController as c">
 
 <div class="page_header">
 <h1>Options Menu</h1>
@@ -88,7 +88,7 @@ Welcome to Pandemic Duplicate!
 </div><!--/page_body-->
 </div><!--/options_page-->
 
-<div class="page" id="subscription_page">
+<div class="page" id="subscription_page" ng-controller="SubscriptionPageController as c">
 
 <div class="page_header">
 <h1>Subscription</h1>
@@ -124,7 +124,7 @@ to purchase or use a subscription.
 </div><!--/page_body-->
 </div><!--/subscription_page-->
 
-<div class="page" id="create_game_page">
+<div class="page" id="create_game_page" ng-controller="CreateGamePageController as c">
 
 <div class="page_header">
 <h1>Get Started</h1>
@@ -156,7 +156,7 @@ to purchase or use a subscription.
 </div><!--/page_body-->
 </div><!--/create_game_page-->
 
-<div class="page" id="generate_game_page">
+<div class="page" id="generate_game_page" ng-controller="GenerateGamePageController as c">
 
 <div class="page_header">
 <h1>Generate Game</h1>
@@ -225,7 +225,7 @@ to purchase or use a subscription.
 </div><!--/page_body-->
 </div><!--/generate_game_page-->
 
-<div class="page" id="join_game_page">
+<div class="page" id="join_game_page" ng-controller="JoinGamePageController as c">
 
 <div class="page_header">
 <h1>Join Network Game</h1>
@@ -251,7 +251,7 @@ Enter your name as it appears in the host's game.
 </div><!--/page_body-->
 </div><!--/join_game_page-->
 
-<div class="page" id="join_game_pick_page">
+<div class="page" id="join_game_pick_page" ng-controller="JoinGamePickPageController as c">
 
 <div class="page_header">
 <h1>Join Network Game</h1>
@@ -282,7 +282,7 @@ Enter your name as it appears in the host's game.
 </div><!--/page_body-->
 </div><!--/join_game_pick_page-->
 
-<div class="page" id="pick_scenario_page">
+<div class="page" id="pick_scenario_page" ng-controller="PickScenarioPageController as c">
 <div class="page_header"><h1>Pick Scenario</h1></div>
 <div class="page_body">
 
@@ -321,7 +321,7 @@ Or generate a new game:
 </div><!--/page_body-->
 </div><!--/pick_scenario_page-->
 
-<div class="page" id="review_results_page">
+<div class="page" id="review_results_page" ng-controller="ReviewResultsPageController as c">
 <div class="page_header"><h1>Review Results</h1></div>
 <div class="page_body">
 
@@ -355,7 +355,7 @@ Or search for a game:
 </div><!--/page_body-->
 </div><!--/review_results_page-->
 
-<div class="page" id="found_completed_games_page">
+<div class="page" id="found_completed_games_page" ng-controller="FoundCompletedGamesPageController as c">
 <div class="page_header"><h1>Completed Games</h1></div>
 <div class="page_body">
 
@@ -381,7 +381,7 @@ Or search for a game:
 </div><!--/page_body-->
 </div><!--/found_completed_games_page-->
 
-<div class="page" id="player_names_page">
+<div class="page" id="player_names_page" ng-controller="PlayerNamesPageController as c">
 <div class="page_header">
 <h1>Player Names</h1>
 </div><!--/page_header-->
@@ -421,7 +421,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/player_names_page-->
 
-<div id="deck_setup_page" class="page">
+<div id="deck_setup_page" class="page" ng-controller="DeckSetupPageController as c">
 <div class="page_header">
 <h1>Deck Setup</h1>
 </div><!--/page_header-->
@@ -440,7 +440,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/deck_setup_page-->
 
-<div id="board_setup_page" class="page">
+<div id="board_setup_page" class="page" ng-controller="BoardSetupPageController as c">
 <div class="page_header"><h1>Board Setup</h1></div>
 <div class="page_body">
 
@@ -467,7 +467,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/board_setup_page-->
 
-<div id="player_setup_page" class="page">
+<div id="player_setup_page" class="page" ng-controller="PlayerSetupPageController as c">
 <div class="page_header"><h1>Player Setup</h1></div>
 <div class="page_body">
 
@@ -514,7 +514,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/player_setup_page-->
 
-<div id="player_turn_page" class="page">
+<div id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
 <div class="page_header">
 <div class="game_state_summary_pane">T: <span class="turn_number"></span></div>
 <h1><img src="" alt="" class="role_icon"><span class="player_name"></span></h1>
@@ -581,7 +581,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/player_turn_page-->
 
-<div id="discover_cure_page" class="page">
+<div id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
 <div class="page_header"><h1>Cure / Eradicate Disease</h1></div>
 <div class="page_body">
 
@@ -629,7 +629,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/discover_cure_page-->
 
-<div id="virulent_strain_page" class="page">
+<div id="virulent_strain_page" class="page" ng-controller="VirulentStrainPageController as c">
 <div class="page_header"><h1>Virulent Strain</h1></div>
 <div class="page_body">
 
@@ -656,7 +656,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/virulent_strain_page-->
 
-<div id="special_event_page" class="page">
+<div id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
 	<div class="page_header"><h1><span class="special_action_name"></span> Special Event</h1></div>
 <div class="page_body">
 
@@ -673,7 +673,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/special_event_page-->
 
-<div id="new_assignment_page" class="page">
+<div id="new_assignment_page" class="page" ng-controller="NewAssignmentPageController as c">
 <div class="page_header"><h1>Play New Assignment</h1></div>
 <div class="page_body">
 
@@ -703,7 +703,7 @@ Choose a new role for that player.
 </div><!--/page_body-->
 </div><!--/new_assignment_page-->
 
-<div id="resilient_population_page" class="page">
+<div id="resilient_population_page" class="page" ng-controller="ResilientPopulationPageController as c">
 <div class="page_header"><h1>Play Resilient Population</h1></div>
 <div class="page_body">
 
@@ -720,7 +720,7 @@ Choose a city to remove from the Infection deck.
 </div><!--/page_body-->
 </div><!--/resilient_population_page-->
 
-<div id="infection_rumor_page" class="page">
+<div id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
 <div class="page_header"><h1>Play Infection Rumor</h1></div>
 <div class="page_body">
 
@@ -737,7 +737,7 @@ Choose a card to discard from the Infection deck.
 </div><!--/page_body-->
 </div><!--/infection_rumor_page-->
 
-<div id="forecast_page" class="page">
+<div id="forecast_page" class="page" ng-controller="ForecastPageController as c">
 <div class="page_header"><h1>Forecast</h1></div>
 <div class="page_body">
 
@@ -765,7 +765,7 @@ This is the order the next 6 infection cards will appear.
 </div><!--/page_body-->
 </div><!--/forecast_page-->
 
-<div id="resource_planning_page" class="page">
+<div id="resource_planning_page" class="page" ng-controller="ResourcePlanningPageController as c">
 <div class="page_header"><h1>Resource Planning</h1></div>
 <div class="page_body">
 
@@ -793,7 +793,7 @@ This is the order the next 4 player cards will appear.
 </div><!--/page_body-->
 </div><!--/resource_planning_page-->
 
-<div id="game_completed_page" class="page">
+<div id="game_completed_page" class="page" ng-controller="GameCompletedPageController as c">
 <div class="page_header"><h1>Game Completed</h1></div>
 <div class="page_body">
 
@@ -863,7 +863,7 @@ without prior knowledge of the sequence of cards shown.
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
 
-<div id="results_page" class="page">
+<div id="results_page" class="page" ng-controller="ResultsPageController as c">
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
 
@@ -896,7 +896,7 @@ without prior knowledge of the sequence of cards shown.
 </div><!--/page_body-->
 </div><!--/results_page-->
 
-<div id="show_discards_page" class="page">
+<div id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
 <div class="page_header"><h1>Discarded Infection Cards</h1></div>
 <div class="page_body">
 
