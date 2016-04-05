@@ -32,7 +32,6 @@ function load_options()
 		$('.no_detail_level_1').hide();
 	}
 }
-$(load_options);
 
 function handle_ajax_error(jqx, status, errMsg)
 {

@@ -1,5 +1,11 @@
 app = angular.module('pandemicDuplicateApp', []);
 
+app.factory('Options',
+  function() {
+    load_options();
+    return CFG;
+  });
+
 app.factory('StateService',
   function() {
     return {
@@ -15,7 +21,7 @@ app.factory('StateService',
   });
 
 app.controller('TopController',
-  function($scope, StateService) {
+  function($scope, StateService, Options) {
     this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
         StateService.go(rel_url);
