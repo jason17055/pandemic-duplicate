@@ -3423,12 +3423,7 @@ function on_state_init()
 		show_blank_page();
 		do_search_results(q);
 	}
-	else if (m = path.match(/^watch\/(.*)$/)) { //old-style watch url
-		var game_id = unescape(m[1]);
-		show_blank_page();
-		do_watch_game(game_id, null);
-	}
-	else if (m = path.match(/^([0-9a-f]+)\/watch(\/.*)?$/)) { //new-style watch url
+	else if (m = path.match(/^([0-9a-f]+)\/watch(\/.*)?$/)) {
 		var game_id = unescape(m[1]);
 		var xtra = m[2];
 		show_blank_page();
