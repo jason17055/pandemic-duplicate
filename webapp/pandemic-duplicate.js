@@ -708,12 +708,6 @@ function init_deck_setup_page($pg, scenario_id)
 	return false;
 }
 
-function continue_after_deck_setup()
-{
-	goto_state(G.scenario_id+'/board_setup');
-	return false;
-}
-
 function init_board_setup_page($pg, game_id)
 {
 	load_game(game_id);
@@ -983,12 +977,6 @@ function make_sequence_card(c)
 	$('.card_icon', $x).attr('src', 'sequence_card_icon.png');
 
 	return $x;
-}
-
-function continue_after_player_setup()
-{
-	goto_state(G.game_id+'/board_setup');
-	return false;
 }
 
 function load_game_at(game_id, target_time)

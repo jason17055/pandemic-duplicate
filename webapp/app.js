@@ -147,7 +147,11 @@ app.controller('PlayerNamesPageController',
   });
 
 app.controller('DeckSetupPageController',
-  function() {
+  function(StateService) {
+    this.continue = function() {
+      StateService.go(G.scenario_id+'/board_setup');
+      return false;
+    };
   });
 
 app.controller('BoardSetupPageController',
@@ -155,7 +159,11 @@ app.controller('BoardSetupPageController',
   });
 
 app.controller('PlayerSetupPageController',
-  function() {
+  function(StateService) {
+    this.continue = function() {
+      StateService.go(G.game_id+'/board_setup');
+      return false;
+    };
   });
 
 app.controller('PlayerTurnPageController',
