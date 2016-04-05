@@ -3488,7 +3488,7 @@ function go_home_page()
 
 function goto_state(rel_url)
 {
-	history.pushState(null, null, BASE_URL + '#' + rel_url);
+	history.pushState(null, null, BASE_URL + '#/' + rel_url);
 	on_state_init();
 }
 
