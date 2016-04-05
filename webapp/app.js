@@ -1,19 +1,30 @@
 app = angular.module('pandemicDuplicateApp', []);
 
+app.factory('StateService',
+  function() {
+    return {
+      go: function(rel_url) {
+        if (rel_url != null) {
+          history.pushState(null, null, BASE_URL + '#/' + rel_url);
+        } else {
+          history.pushState(null, null, BASE_URL);
+        }
+        on_state_init();
+      }
+    };
+  });
+
 app.controller('TopController',
-  function($scope) {
-    this.currentPage = null;
-
-    this.setPageWithApply = function(newPage) {
+  function($scope, StateService) {
+    this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
-        this.currentPage = newPage;
-      }.bind(this));
-    }.bind(this);
-
-    $(function() {
-      window.addEventListener('popstate', on_state_init);
-      on_state_init();
+        StateService.go(rel_url);
+      });
+    };
+    window.addEventListener('popstate', function() {
+      $scope.$apply(on_state_init);
     });
+    on_state_init();
   });
 
 app.controller('WelcomePageController',

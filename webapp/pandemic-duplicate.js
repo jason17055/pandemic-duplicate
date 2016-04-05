@@ -2292,7 +2292,6 @@ function show_blank_page()
 function show_page(page_name)
 {
 	S.currentPage = page_name;
-	$('body').controller().setPageWithApply(page_name);
 	$(".page").hide();
 	return $("#"+page_name).show();
 }
@@ -3477,14 +3476,12 @@ function go_home_page()
 	localStorage.removeItem(PACKAGE + '.current_game');
 	localStorage.removeItem(PACKAGE + '.current_game.scenario');
 
-	history.pushState(null, null, BASE_URL);
-	on_state_init();
+	goto_state(null);
 }
 
 function goto_state(rel_url)
 {
-	history.pushState(null, null, BASE_URL + '#/' + rel_url);
-	on_state_init();
+	$('body').controller().goto_state_async(rel_url);
 }
 
 function goto_current_game_state(url_suffix)
@@ -3868,7 +3865,8 @@ function check_for_downloads()
 		S.userName = data.userName;
 
 		if (S.currentPage == 'subscription_page') {
-			on_state_init();
+			// TODO- refresh list of available games
+			//on_state_init();
 		}
 
 		for (var i = 0; i < data.scenarios.length; i++) {
@@ -4006,7 +4004,8 @@ function onRenamePlayerClicked()
 		G.player_names[G.active_player] = p_name;
 		save_player_names();
 		$('.page_header .player_name').text(p_name);
-		on_state_init();
+		//TODO- refresh page
+		//on_state_init();
 	}
 }
 
