@@ -154,14 +154,6 @@ function save_options_form()
 	load_options();
 }
 
-$(function() {
-	var f = document.options_form;
-	f.base_game_version.onchange = save_options_form;
-	f.has_on_the_brink.onchange = save_options_form;
-	f.has_in_the_lab.onchange = save_options_form;
-	f.has_state_of_emergency.onchange = save_options_form;
-	f.game_detail_level.onchange = save_options_form;
-});
 function init_subscription_page($pg)
 {
 	if (S.userName) {
