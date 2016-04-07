@@ -2879,11 +2879,6 @@ function do_virulent_strain(disease_color)
 	resolve_vs_epidemic();
 }
 
-function on_discover_cure_clicked(disease_color)
-{
-	return set_move('discover '+disease_color);
-}
-
 function do_discover_cure(disease_color)
 {
 	G.diseases[disease_color] = 'cured';
@@ -2898,11 +2893,6 @@ function do_discover_cure(disease_color)
 		G.result = 'victory';
 	}
 	G.time++;
-}
-
-function on_eradicate_clicked(disease_color)
-{
-	return set_move('eradicate '+disease_color);
 }
 
 function do_eradicate(disease_color)

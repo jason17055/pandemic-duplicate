@@ -258,7 +258,21 @@ app.controller('PlayerTurnPageController',
   });
 
 app.controller('DiscoverCurePageController',
-  function() {
+  function(GameService) {
+    this.on_discover_cure_clicked = function(disease_color) {
+      GameService.set_move('discover '+disease_color);
+    };
+    this.on_eradicate_clicked = function(disease_color) {
+      GameService.set_move('eradicate '+disease_color);
+    };
+    this.declare_victory_clicked = function() {
+      record_game_finished();
+      GameService.set_move('claim_victory');
+    };
+    this.cancel = function() {
+      $window.history.back();
+    };
+
   });
 
 app.controller('VirulentStrainPageController',
