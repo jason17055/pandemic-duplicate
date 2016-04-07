@@ -2799,11 +2799,6 @@ function record_game_finished()
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.finished', timestr);
 }
 
-function cancel_show_discards()
-{
-	history.back();
-}
-
 function init_show_discards_page($pg)
 {
 	$('.infection_discards_list', $pg).empty();

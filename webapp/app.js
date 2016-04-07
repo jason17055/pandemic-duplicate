@@ -352,5 +352,8 @@ app.controller('ResultsPageController',
   });
 
 app.controller('ShowDiscardsPageController',
-  function() {
+  function($window) {
+    this.back_clicked = function() {
+      $window.history.back();
+    };
   });
