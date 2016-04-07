@@ -3371,10 +3371,6 @@ function on_state_init()
 	check_screen_size();
 }
 
-$(function() {
-	$('.cure_count').change(update_game_score);
-});
-
 function go_home_page()
 {
 	localStorage.removeItem(PACKAGE + '.current_game');

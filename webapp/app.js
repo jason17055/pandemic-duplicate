@@ -288,6 +288,7 @@ app.controller('ResourcePlanningPageController',
 
 app.controller('GameCompletedPageController',
   function() {
+    $('.cure_count').change(update_game_score);
   });
 
 app.controller('ResultsPageController',
