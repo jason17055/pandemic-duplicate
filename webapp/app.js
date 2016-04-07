@@ -157,6 +157,10 @@ app.controller('GenerateGamePageController',
 
 app.controller('JoinGamePageController',
   function() {
+    var n = localStorage.getItem(PACKAGE+'.my_player_name');
+    if (n) {
+      document.join_game_form.name.value = n;
+    }
   });
 
 app.controller('JoinGamePickPageController',

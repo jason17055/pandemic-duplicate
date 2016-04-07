@@ -379,13 +379,6 @@ function show_current_game(xtra)
 	}
 }
 
-$(function() {
-	var n = localStorage.getItem(PACKAGE+'.my_player_name');
-	if (n) {
-		document.join_game_form.name.value = n;
-	}
-});
-
 function do_search_results(q)
 {
 	var onSuccess = function(data) {
