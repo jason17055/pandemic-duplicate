@@ -541,39 +541,39 @@ Perform your actions.
 
 
 <div class="button_container">
-<button type="button" onclick="show_discards_clicked()">Show Discards</button>
+<button type="button" ng-click="c.show_discards_clicked()">Show Discards</button>
 </div>
 <div class="button_container draw_sequence_card_button_container">
-<button type="button" onclick="draw_sequence_card_clicked()">Draw Sequence Card</button>
+<button type="button" ng-click="c.draw_sequence_card_clicked()">Draw Sequence Card</button>
 </div>
 <div class="button_container play_special_event_button_container">
-<button type="button" onclick="play_special_event_clicked()">Play Special Event</button>
+<button type="button" ng-click="c.play_special_event_clicked()">Play Special Event</button>
 </div>
 <div class="button_container retrieve_special_event_button_container">
-<button type="button" onclick="retrieve_special_event_clicked()">Retrieve Special Event</button>
+<button type="button" ng-click="c.retrieve_special_event_clicked()">Retrieve Special Event</button>
 </div>
 <div class="detail_level_1">
 <div class="button_container victory_button_container">
-<button type="button" onclick="discover_cure_clicked()">Cure / Eradicate Disease</button>
+<button type="button" ng-click="c.discover_cure_clicked()">Cure / Eradicate Disease</button>
 </div>
 </div>
 <div class="no_detail_level_1">
 <div class="button_container victory_button_container">
-<button type="button" onclick="declare_victory_clicked()">Declare Victory</button>
+<button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
 </div>
 </div>
 <div class="button_container defeat_button_container">
-<button type="button" onclick="admit_defeat_clicked()">Admit Defeat</button>
+<button type="button" ng-click="c.admit_defeat_clicked()">Admit Defeat</button>
 </div>
 <div class="continue_button_container">
 <div class="button_container">
-<button type="button" class="goto_draw_cards_btn" onclick="continue_player_turn()">Next: <small>Draw Cards Step</small></button>
-<button type="button" class="goto_mutation_btn" onclick="continue_player_turn()">Next: <small>Mutation</small></button>
-<button type="button" class="goto_epidemic_btn" onclick="continue_player_turn()">Next: <small>Epidemic</small></button>
-<button type="button" class="goto_virulent_strain_btn" onclick="on_determine_virulent_strain_clicked()">Next: <small>Determine Virulent Strain</small></button>
-<button type="button" class="goto_hinterlands_btn" onclick="continue_player_turn()">Next: <small>Hinterlands Infection</small></button>
-<button type="button" class="goto_infection_btn" onclick="continue_player_turn()">Next: <small>Infection</small></button>
-<button type="button" class="goto_player_turn_btn" onclick="continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
+<button type="button" class="goto_draw_cards_btn" ng-click="c.continue_player_turn()">Next: <small>Draw Cards Step</small></button>
+<button type="button" class="goto_mutation_btn" ng-click="c.continue_player_turn()">Next: <small>Mutation</small></button>
+<button type="button" class="goto_epidemic_btn" ng-click="c.continue_player_turn()">Next: <small>Epidemic</small></button>
+<button type="button" class="goto_virulent_strain_btn" ng-click="c.on_determine_virulent_strain_clicked()">Next: <small>Determine Virulent Strain</small></button>
+<button type="button" class="goto_hinterlands_btn" ng-click="c.continue_player_turn()">Next: <small>Hinterlands Infection</small></button>
+<button type="button" class="goto_infection_btn" ng-click="c.continue_player_turn()">Next: <small>Infection</small></button>
+<button type="button" class="goto_player_turn_btn" ng-click="c.continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
 </div>
 </div>
 <div class="end_of_page"></div>

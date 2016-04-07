@@ -2039,11 +2039,6 @@ function begin_turn()
 	init_player_turn_page($pg);
 }
 
-function continue_player_turn()
-{
-	set_move('pass');
-}
-
 function init_draw_cards_page($pg)
 {
 	set_game_state_summary($pg);
@@ -2500,17 +2495,7 @@ function start_publishing_game(game_id)
 
 function set_move(m)
 {
-	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.last_played', timestr);
-	if (!scenario_started(G.scenario_id)) {
-		localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.first_played', timestr);
-	}
-
-	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.T' + G.time, m);
-
-	do_move(m);
-	navigate_to_current_turn();
-	return;
+	$('body').controller().set_move_x(m);
 }
 
 function order_infection_discards()
@@ -2855,39 +2840,9 @@ function record_game_finished()
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.finished', timestr);
 }
 
-function admit_defeat_clicked()
-{
-	record_game_finished();
-	return set_move('give_up');
-}
-
-function declare_victory_clicked()
-{
-	record_game_finished();
-	return set_move('claim_victory');
-}
-
-function on_determine_virulent_strain_clicked()
-{
-	goto_current_game_state('/virulent_strain');
-	return false;
-}
-
-function discover_cure_clicked()
-{
-	goto_current_game_state('/discover_cure');
-	return false;
-}
-
 function cancel_show_discards()
 {
 	history.back();
-}
-
-function show_discards_clicked()
-{
-	goto_current_game_state('/discards');
-	return false;
 }
 
 function init_show_discards_page($pg)
@@ -3081,12 +3036,6 @@ function init_play_special_event_page($pg)
 	}
 }
 
-function play_special_event_clicked()
-{
-	goto_current_game_state('/play_special');
-	return false;
-}
-
 function init_retrieve_special_event_page($pg)
 {
 	$('.special_action_name').text("Retrieve");
@@ -3104,17 +3053,6 @@ function init_retrieve_special_event_page($pg)
 		$s.removeClass('template');
 		$('#special_event_none_row').before($s);
 	}
-}
-
-function draw_sequence_card_clicked()
-{
-	return set_move('draw_sequence_card');
-}
-
-function retrieve_special_event_clicked()
-{
-	goto_current_game_state('/retrieve_special');
-	return false;
 }
 
 function cancel_special_event()
@@ -3463,15 +3401,6 @@ function go_home_page()
 function goto_state(rel_url)
 {
 	$('body').controller().goto_state_async(rel_url);
-}
-
-function goto_current_game_state(url_suffix)
-{
-	if (G.has_control) {
-		goto_state(G.game_id + '/T' + G.time + url_suffix);
-	} else {
-		goto_state(G.game_id + '/watch' + url_suffix);
-	}
 }
 
 function summarize_results_for_scenario(scenario_id)

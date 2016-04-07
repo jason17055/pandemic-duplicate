@@ -20,11 +20,44 @@ app.factory('StateService',
     };
   });
 
+app.factory('GameService',
+  function(StateService) {
+    var g = {};
+    g.navigate_to_current_turn = function() {
+      StateService.go(G.game_id + '/T' + G.time);
+    };
+    g.goto_current_game_state = function(url_suffix) {
+      if (G.has_control) {
+        StateService.go(G.game_id + '/T' + G.time + url_suffix);
+      } else {
+        StateService.go(G.game_id + '/watch' + url_suffix);
+      }
+    };
+    g.set_move = function(m) {
+      var timestr = new Date().toISOString();
+      localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.last_played', timestr);
+      if (!scenario_started(G.scenario_id)) {
+        localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.first_played', timestr);
+      }
+
+      localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.T' + G.time, m);
+
+      do_move(m);
+      g.navigate_to_current_turn();
+    };
+    return g;
+  });
+
 app.controller('TopController',
-  function($scope, StateService, Options) {
+  function($scope, StateService, Options, GameService) {
     this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
         StateService.go(rel_url);
+      });
+    };
+    this.set_move_x = function(m) {
+      $scope.$apply(function() {
+        GameService.set_move(m);
       });
     };
     window.addEventListener('popstate', function() {
@@ -167,7 +200,36 @@ app.controller('PlayerSetupPageController',
   });
 
 app.controller('PlayerTurnPageController',
-  function() {
+  function(GameService) {
+    this.show_discards_clicked = function() {
+      GameService.goto_current_game_state('/discards');
+    };
+    this.draw_sequence_card_clicked = function() {
+      GameService.set_move('draw_sequence_card');
+    };
+    this.play_special_event_clicked = function() {
+      GameService.goto_current_game_state('/play_special');
+    };
+    this.retrieve_special_event_clicked = function() {
+      GameService.goto_current_game_state('/retrieve_special');
+    };
+    this.discover_cure_clicked = function() {
+      GameService.goto_current_game_state('/discover_cure');
+    };
+    this.declare_victory_clicked = function() {
+      record_game_finished();
+      GameService.set_move('claim_victory');
+    };
+    this.admit_defeat_clicked = function() {
+      record_game_finished();
+      GameService.set_move('give_up');
+    };
+    this.continue_player_turn = function() {
+      GameService.set_move('pass');
+    };
+    this.on_determine_virulent_strain_clicked = function() {
+      GameService.goto_current_game_state('/virulent_strain');
+    };
   });
 
 app.controller('DiscoverCurePageController',
