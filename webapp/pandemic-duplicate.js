@@ -741,11 +741,6 @@ function init_board_setup_page($pg, game_id)
 	}
 }
 
-function continue_after_board_setup()
-{
-	return navigate_to_current_turn();
-}
-
 function init_player_setup_page($pg, game_id)
 {
 	load_game(game_id);

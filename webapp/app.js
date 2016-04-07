@@ -199,7 +199,10 @@ app.controller('DeckSetupPageController',
   });
 
 app.controller('BoardSetupPageController',
-  function() {
+  function(GameService) {
+    this.continue = function() {
+      GameService.navigate_to_current_turn();
+    };
   });
 
 app.controller('PlayerSetupPageController',
