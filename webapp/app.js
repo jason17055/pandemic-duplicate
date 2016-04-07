@@ -296,7 +296,24 @@ app.controller('InfectionRumorPageController',
   });
 
 app.controller('ForecastPageController',
-  function() {
+  function(GameService) {
+    this.on_forecast_confirm_clicked = function() {
+      var sel = [];
+      $('#forecast_page .forecast_cards_list li').each(function(idx,el) {
+        var c = el.getAttribute('data-city-name');
+        sel.push(c);
+      });
+
+      var m = "forecast";
+      for (var i = 0; i < sel.length; i++) {
+        m += ' "' + sel[i] + '"';
+      }
+
+      GameService.set_move(m);
+    };
+    this.on_forecast_reset_clicked = function() {
+      init_forecast_page($('#forecast_page'));
+    };
   });
 
 app.controller('ResourcePlanningPageController',

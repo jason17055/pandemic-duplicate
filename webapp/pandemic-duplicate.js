@@ -2509,27 +2509,6 @@ function order_infection_discards()
 	return A;
 }
 
-function on_forecast_reset_clicked()
-{
-	init_forecast_page($('#forecast_page'));
-}
-
-function on_forecast_confirm_clicked()
-{
-	var sel = [];
-	$('#forecast_page .forecast_cards_list li').each(function(idx,el) {
-		var c = el.getAttribute('data-city-name');
-		sel.push(c);
-		});
-
-	var m = "forecast";
-	for (var i = 0; i < sel.length; i++) {
-		m += ' "' + sel[i] + '"';
-	}
-
-	return set_move(m);
-}
-
 function init_forecast_page($pg)
 {
 	var pick_city = function(c) {
