@@ -3838,20 +3838,6 @@ $(trigger_sync_process);
 // END SYNCHRONIZATION CODE
 //
 
-function onRenamePlayerClicked()
-{
-	var p_name = G.player_names[G.active_player];
-	var p_role = G.roles[G.active_player];
-	p_name = window.prompt('Enter name of '+p_role, p_name);
-	if (p_name) {
-		G.player_names[G.active_player] = p_name;
-		save_player_names();
-		$('.page_header .player_name').text(p_name);
-		//TODO- refresh page
-		//on_state_init();
-	}
-}
-
 function check_screen_size()
 {
 	$('.page').each(function(idx, el) {
@@ -3868,6 +3854,5 @@ function check_screen_size()
 }
 
 $(function() {
-	$('.page_header .role_icon').click(onRenamePlayerClicked);
 	window.onresize = check_screen_size;
 });

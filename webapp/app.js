@@ -212,6 +212,17 @@ app.controller('PlayerSetupPageController',
 
 app.controller('PlayerTurnPageController',
   function(GameService) {
+    this.rename_player = function() {
+      var p_name = G.player_names[G.active_player];
+      var p_role = G.roles[G.active_player];
+      p_name = window.prompt('Enter name of '+p_role, p_name);
+      if (p_name) {
+        G.player_names[G.active_player] = p_name;
+        save_player_names();
+        $('.page_header .player_name').text(p_name);
+        on_state_init();
+      }
+    };
     this.show_discards_clicked = function() {
       GameService.goto_current_game_state('/discards');
     };
