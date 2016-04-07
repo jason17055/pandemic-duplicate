@@ -348,7 +348,13 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function() {
+  function(StateService) {
+    this.go_home_page = function() {
+      localStorage.removeItem(PACKAGE + '.current_game');
+      localStorage.removeItem(PACKAGE + '.current_game.scenario');
+
+      StateService.go(null);
+    };
   });
 
 app.controller('ShowDiscardsPageController',

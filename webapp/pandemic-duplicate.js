@@ -3330,14 +3330,6 @@ function on_state_init()
 	check_screen_size();
 }
 
-function go_home_page()
-{
-	localStorage.removeItem(PACKAGE + '.current_game');
-	localStorage.removeItem(PACKAGE + '.current_game.scenario');
-
-	goto_state(null);
-}
-
 function goto_state(rel_url)
 {
 	$('body').controller().goto_state_async(rel_url);
