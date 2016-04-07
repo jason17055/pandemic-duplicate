@@ -321,8 +321,30 @@ app.controller('ResourcePlanningPageController',
   });
 
 app.controller('GameCompletedPageController',
-  function() {
+  function(StateService) {
     $('.cure_count').change(update_game_score);
+
+    this.submit_result_clicked = function() {
+      var result_id = save_current_result(true);
+
+      stor_add_to_set(PACKAGE + '.game_results.' + G.scenario_id, result_id);
+      stor_add_to_set(PACKAGE + '.pending_results', result_id);
+      stor_add_to_set(PACKAGE + '.my_results', result_id);
+
+      trigger_sync_process();
+
+      StateService.go(G.scenario_id + '/results');
+    };
+
+    this.dont_submit_clicked = function()
+    {
+      var result_id = save_current_result(false);
+
+      // this makes this game show up in the "Review Results" page
+      stor_add_to_set(PACKAGE + '.my_results', result_id);
+
+      StateService.go(G.scenario_id + '/results');
+    };
   });
 
 app.controller('ResultsPageController',
