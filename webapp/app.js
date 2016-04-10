@@ -287,7 +287,17 @@ app.controller('SpecialEventPageController',
   });
 
 app.controller('NewAssignmentPageController',
-  function() {
+  function($window, GameService) {
+    this.confirm = function() {
+      var f = document.new_assignment_form;
+      var old_role = f.old_role.value;
+      var new_role = f.new_role.value;
+      GameService.set_move('special "New Assignment" "'+old_role+'" "'+new_role+'"');
+    }
+    this.cancel = function() {
+      $window.history.back();
+    };
+
   });
 
 app.controller('ResilientPopulationPageController',

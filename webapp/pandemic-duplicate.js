@@ -2657,15 +2657,6 @@ function role_in_use(r)
 	return false;
 }
 
-function on_new_assignment_confirmed()
-{
-	var f = document.new_assignment_form;
-	var old_role = f.old_role.value;
-	var new_role = f.new_role.value;
-	set_move('special "New Assignment" "'+old_role+'" "'+new_role+'"');
-	return;
-}
-
 function init_resilient_population_page($pg)
 {
 	var A = order_infection_discards();
