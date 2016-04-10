@@ -411,3 +411,54 @@ app.controller('ShowDiscardsPageController',
       $window.history.back();
     };
   });
+
+app.controller('PlayerCardController',
+  function($scope) {
+    this.reload = function() {
+      var c = $scope.card;
+      var ci = Pandemic.Cities[c];
+      if (ci) {
+        this.card_name = ci.name;
+        this.card_icon_src = ci.color + '_icon.png';
+        this.html_class = ci.color + '_card';
+      } else if (c == 'Epidemic') {
+        this.card_name = 'Epidemic!';
+        this.card_icon_src = 'epidemic_icon.png';
+        this.html_class = 'epidemic_card';
+      } else if (is_epidemic(c)) {
+        this.card_name = c + '!';
+        this.card_icon_src = 'virulent_epidemic_icon.png';
+        this.html_class = 'epidemic_card';
+      } else if (is_mutation(c)) {
+        this.card_name = is_mutation(c) + '!';
+        this.card_icon_src = 'purple_icon.png';
+        this.html_class = 'mutation_card';
+      } else if (is_emergency(c)) {
+        this.card_name = is_emergency(c) + '!';
+        this.card_icon_src = 'emergency_event_icon.png';
+        this.html_class = 'emergency_card';
+      } else {
+        this.card_name = c;
+        this.card_icon_src = 'special_event_icon.png';
+        this.html_class = 'special_card';
+      }
+    };
+    this.reload();
+    $scope.$watch('card',
+      function(newValue, oldValue) {
+        this.reload();
+      }.bind(this));
+  });
+
+app.directive('pdPlayerCard',
+  function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/player-card.ng',
+      scope: {
+        card: '='
+      },
+      controller: 'PlayerCardController',
+      controllerAs: 'pcc'
+    };
+  });
