@@ -276,7 +276,10 @@ app.controller('DiscoverCurePageController',
   });
 
 app.controller('VirulentStrainPageController',
-  function() {
+  function(GameService) {
+    this.on_virulent_strain_clicked = function(disease_color) {
+      GameService.set_move('virulent ' + disease_color);
+    }
   });
 
 app.controller('SpecialEventPageController',

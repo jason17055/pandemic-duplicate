@@ -2834,11 +2834,6 @@ function init_show_discards_page($pg)
 	}
 }
 
-function on_virulent_strain_clicked(disease_color)
-{
-	return set_move('virulent ' + disease_color);
-}
-
 function do_virulent_strain(disease_color)
 {
 	G.virulent_strain = disease_color;
