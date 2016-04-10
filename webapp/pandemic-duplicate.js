@@ -420,18 +420,6 @@ function submit_search_results_form()
 	return false;
 }
 
-function init_welcome_page($pg)
-{
-	var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
-
-	if (scenario_id == null) {
-		$('.resume_game_btn', $pg).attr('disabled', 'disabled');
-	}
-	else {
-		$('.resume_game_btn', $pg).removeAttr('disabled');
-	}
-}
-
 function submit_create_game_form()
 {
 	var f = document.create_game_form;
@@ -3191,8 +3179,7 @@ function on_state_init()
 
 	var m;
 	if (!path) {
-		var $pg = show_page('welcome_page');
-		init_welcome_page($pg);
+		show_page('welcome_page');
 	}
 	else if (path == 'clear') {
 		localStorage.clear();

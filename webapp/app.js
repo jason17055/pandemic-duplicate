@@ -68,6 +68,11 @@ app.controller('TopController',
 
 app.controller('WelcomePageController',
   function(StateService) {
+    this.has_current_game = function() {
+      var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
+      return Boolean(scenario_id);
+    };
+
     this.start_game_clicked = function() {
       StateService.go('params');
     };
@@ -83,7 +88,7 @@ app.controller('WelcomePageController',
         StateService.go(game_id + '/T' + time_str);
       }
       else {
-        StateService.go(game_id + '/player_state');
+        StateService.go(game_id + '/player_setup');
       }
 
       return;
