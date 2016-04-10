@@ -54,6 +54,23 @@ public class ScenarioServlet extends HttpServlet
 		doGetIndex(req, resp);
 	}
 
+	void fetchUserProperties(DatastoreService ds, String userName, JsonGenerator out)
+		throws IOException
+	{
+		Key key = KeyFactory.createKey("User", userName);
+		try {
+			Entity ent = ds.get(key);
+			out.writeBooleanField("subscriber", true);
+			Boolean b = (Boolean) ent.getProperty("can_create_tournaments");
+			if (b != null && b.booleanValue()) {
+				out.writeBooleanField("can_create_tournaments", true);
+			}
+		}
+		catch (EntityNotFoundException e) {
+			//ignore
+		}
+	}
+
 	void doGetIndex(HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
@@ -82,6 +99,7 @@ public class ScenarioServlet extends HttpServlet
 			String logoutUrl = userService.createLogoutURL(
 				getBaseUrl(req));
 			out.writeStringField("logoutUrl", logoutUrl);
+			fetchUserProperties(datastore, req.getUserPrincipal().getName(), out);
 		}
 
 		out.writeFieldName("scenarios");

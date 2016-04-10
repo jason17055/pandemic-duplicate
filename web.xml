@@ -28,6 +28,11 @@
 	<servlet-name>GenerateScenario</servlet-name>
 </servlet-mapping>
 
+<servlet-mapping>
+	<url-pattern>/_admin</url-pattern>
+	<servlet-name>Admin</servlet-name>
+</servlet-mapping>
+
 <servlet>
 	<servlet-name>PandemicDeal</servlet-name>
 	<servlet-class>pandemic.PandemicDealServlet</servlet-class>
@@ -51,6 +56,11 @@
 <servlet>
 	<servlet-name>Scenario</servlet-name>
 	<servlet-class>pandemic.ScenarioServlet</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>Admin</servlet-name>
+	<servlet-class>pandemic.AdminServlet</servlet-class>
 </servlet>
 
 </web-app>
