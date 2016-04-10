@@ -164,7 +164,10 @@ app.controller('JoinGamePageController',
   });
 
 app.controller('JoinGamePickPageController',
-  function() {
+  function($window) {
+    this.cancel = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('PickScenarioPageController',

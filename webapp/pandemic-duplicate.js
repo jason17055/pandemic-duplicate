@@ -424,11 +424,6 @@ function submit_join_game_form()
 	return false;
 }
 
-function cancel_join_game_pick()
-{
-	history.back();
-}
-
 function submit_search_results_form()
 {
 	var f = document.search_results_form;
