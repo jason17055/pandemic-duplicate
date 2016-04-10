@@ -258,7 +258,7 @@ app.controller('PlayerTurnPageController',
   });
 
 app.controller('DiscoverCurePageController',
-  function(GameService) {
+  function($window, GameService) {
     this.on_discover_cure_clicked = function(disease_color) {
       GameService.set_move('discover '+disease_color);
     };
