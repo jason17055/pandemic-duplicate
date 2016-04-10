@@ -2964,11 +2964,6 @@ function init_retrieve_special_event_page($pg)
 	}
 }
 
-function cancel_special_event()
-{
-	history.back();
-}
-
 function init_found_completed_games_page($pg, search_results)
 {
 	$('.results_game_row:not(.template)', $pg).remove();

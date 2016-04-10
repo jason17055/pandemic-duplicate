@@ -283,7 +283,10 @@ app.controller('VirulentStrainPageController',
   });
 
 app.controller('SpecialEventPageController',
-  function() {
+  function($window) {
+    this.cancel = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('NewAssignmentPageController',
