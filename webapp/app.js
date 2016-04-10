@@ -330,7 +330,25 @@ app.controller('ForecastPageController',
   });
 
 app.controller('ResourcePlanningPageController',
-  function() {
+  function(GameService) {
+    this.reset = function() {
+      init_resource_planning_page($('#resource_planning_page'));
+    };
+
+    this.confirm = function() {
+      var sel = [];
+      $('#resource_planning_page .resource_planning_cards_list li').each(function(idx,el) {
+        var c = el.getAttribute('data-card-name');
+        sel.push(c);
+      });
+
+      var m = "resource_planning";
+      for (var i = 0; i < sel.length; i++) {
+        m += ' "' + sel[i] + '"';
+      }
+
+      GameService.set_move(m);
+    };
   });
 
 app.controller('GameCompletedPageController',

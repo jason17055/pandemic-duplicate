@@ -2557,27 +2557,6 @@ function init_forecast_page($pg)
 	$('.reset_btn_container', $pg).hide();
 }
 
-function on_resource_planning_reset_clicked()
-{
-	init_resource_planning_page($('#resource_planning_page'));
-}
-
-function on_resource_planning_confirm_clicked()
-{
-	var sel = [];
-	$('#resource_planning_page .resource_planning_cards_list li').each(function(idx,el) {
-		var c = el.getAttribute('data-card-name');
-		sel.push(c);
-		});
-
-	var m = "resource_planning";
-	for (var i = 0; i < sel.length; i++) {
-		m += ' "' + sel[i] + '"';
-	}
-
-	return set_move(m);
-}
-
 function init_resource_planning_page($pg)
 {
 	var pick_card = function(c) {
