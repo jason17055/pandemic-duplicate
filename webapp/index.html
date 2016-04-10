@@ -104,18 +104,23 @@ Subscribers get these privileges:
 
 <form name="subscription_form">
 
-<div class="not_logged_in">
-You must log in (using a Gmail/Google account)
-to purchase or use a subscription.
+<div ng-hide="c.is_logged_in()">
+  <div>
+    You must log in (using a Gmail/Google account)
+    to purchase or use a subscription.
+  </div>
+  <div class="button_container">
+    <button type="button" ng-click="c.login_clicked()">Login</button>
+  </div>
 </div>
-<div class="button_container not_logged_in"><button type="button" ng-click="c.login_clicked()">Login</button></div>
 
-<div class="logged_in">You are logged in as <b><span class="user_name"></span></b>.</div>
-<div class="logged_in">Subscription level: <span class="subscription_level">None</span></div>
-<div class="logged_in subscribed">Good until: <span class="subscription_date">N/A</span></div>
-<p class="loged_in">Sorry- purchase of new subscriptions is not available at this time.</p>
-
-<div class="button_container logged_in"><button type="button" ng-click="c.logout_clicked()">Logout</button></div>
+<div ng-show="c.is_logged_in()">
+  <div>You are logged in as <b>{{c.get_username()}}</b>.</div>
+  <div>Subscription level: <span class="subscription_level">None</span></div>
+  <div class="subscribed">Good until: <span class="subscription_date">N/A</span></div>
+  <p>Sorry- purchase of new subscriptions is not available at this time.</p>
+  <div class="button_container"><button type="button" ng-click="c.logout_clicked()">Logout</button></div>
+</div>
 
 <div class="button_container"><button type="button" ng-click="c.back()">Back</button></div>
 

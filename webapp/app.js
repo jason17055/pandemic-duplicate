@@ -129,6 +129,12 @@ app.controller('OptionsPageController',
 
 app.controller('SubscriptionPageController',
   function($window) {
+    this.get_username = function() {
+      return S.userName;
+    };
+    this.is_logged_in = function() {
+      return Boolean(S.userName);
+    };
     this.login_clicked = function() {
       if (S.loginUrl) {
         $window.location.href = S.loginUrl;
