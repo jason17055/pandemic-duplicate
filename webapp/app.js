@@ -220,7 +220,34 @@ app.controller('BoardSetupPageController',
   });
 
 app.controller('PlayerSetupPageController',
-  function(StateService) {
+  function(GameService, StateService) {
+    var seats_by_player_count = {
+      2: [1,2],
+      3: [1,2,3],
+      4: [1,2,3,4],
+      5: [1,2,3,4,5]
+    };
+    this.get_seats = function() {
+      return seats_by_player_count[G.rules.player_count];
+    };
+    this.get_scenario_name = function() {
+      return scenario_name(G.scenario_id);
+    };
+    this.get_rules = function() {
+      return stringify_rules(G.rules);
+    };
+    this.get_player_name = function(pid) {
+      return G.player_names[pid];
+    };
+    this.get_player_role = function(pid) {
+      return G.roles[pid];
+    };
+    this.get_player_role_icon = function(pid) {
+      return get_role_icon(G.roles[pid]);
+    };
+    this.get_player_cards = function(pid) {
+      return G.initial_hands[pid];
+    };
     this.continue = function() {
       StateService.go(G.game_id+'/board_setup');
       return false;

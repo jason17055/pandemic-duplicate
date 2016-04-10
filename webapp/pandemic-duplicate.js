@@ -714,44 +714,6 @@ function init_board_setup_page($pg, game_id)
 function init_player_setup_page($pg, game_id)
 {
 	load_game(game_id);
-
-	$('.scenario_name',$pg).text(scenario_name(G.scenario_id));
-	$('.rules', $pg).text(stringify_rules(G.rules));
-
-	if (G.rules.player_count <= 2) {
-		$('.player3', $pg).hide();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (G.rules.player_count == 3) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (G.rules.player_count == 4) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).hide();
-	}
-	else {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).show();
-	}
-
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		if (G.player_names) {
-			$('.player'+i+' .player_name', $pg).text(G.player_names[i]);
-		}
-		$('.player'+i+' .role', $pg).text(G.roles[i]);
-		$('.player'+i+' .role_icon', $pg).attr('src', get_role_icon(G.roles[i]));
-		$('.player'+i+' .card_list', $pg).empty();
-		for (var j = 0; j < G.initial_hands[i].length; j++) {
-			var c = G.initial_hands[i][j];
-			var $c = make_player_card_li(c);
-			$('.player'+i+' .card_list', $pg).append($c);
-		}
-	}
 }
 
 function init_results_page($pg, scenario_id)
