@@ -227,26 +227,27 @@ app.controller('PlayerSetupPageController',
       4: [1,2,3,4],
       5: [1,2,3,4,5]
     };
+    var empty = [];
     this.get_seats = function() {
-      return seats_by_player_count[G.rules.player_count];
+      return (G && G.rules && seats_by_player_count[G.rules.player_count]) || empty;
     };
     this.get_scenario_name = function() {
-      return scenario_name(G.scenario_id);
+      return G && G.scenario_id && scenario_name(G.scenario_id);
     };
     this.get_rules = function() {
-      return stringify_rules(G.rules);
+      return G && G.rules && stringify_rules(G.rules);
     };
     this.get_player_name = function(pid) {
-      return G.player_names[pid];
+      return G && G.player_names && G.player_names[pid];
     };
     this.get_player_role = function(pid) {
-      return G.roles[pid];
+      return G && G.roles && G.roles[pid];
     };
     this.get_player_role_icon = function(pid) {
-      return get_role_icon(G.roles[pid]);
+      return G && G.roles && get_role_icon(G.roles[pid]);
     };
     this.get_player_cards = function(pid) {
-      return G.initial_hands[pid];
+      return G && G.initial_hands && G.initial_hands[pid];
     };
     this.continue = function() {
       StateService.go(G.game_id+'/board_setup');
