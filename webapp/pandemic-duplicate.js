@@ -54,59 +54,8 @@ function load_game(game_id)
 	}
 
 	G.game_id = game_id;
-	init_game();
+	G.initialize();
 	return G;
-}
-
-function init_game()
-{
-	G.active_player = 1;
-	G.history = [];
-	G.history.push({'type':'next_turn', 'active_player':1});
-	G.time = 0;
-	G.turns = 1;
-	G.step = 'actions';
-	G.hands = {};
-	G.contingency_event = null;
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		G.hands[i] = [];
-		for (var j = 0; j < G.initial_hands[i].length; j++) {
-			G.hands[i].push(G.initial_hands[i][j]);
-		}
-	}
-
-	G.infection_rate = 2;
-	G.infection_discards = [];
-	for (var i = 0; i < 9; i++) {
-		var c = G.infection_deck.pop();
-		G.infection_discards.push(c);
-	}
-
-	G.diseases = {}; //identifies cured/eradicated diseases
-
-	if (G.rules.mutation_challenge) {
-		G.infection_discards.push("Mutation{1}: Mutation");
-		G.infection_discards.push("Mutation{2}: Mutation");
-	}
-	else if (G.rules.worldwide_panic) {
-		G.infection_discards.push("Mutation{1}: Worldwide Panic");
-		G.infection_discards.push("Mutation{2}: Worldwide Panic");
-	}
-	else {
-		G.diseases['purple'] = 'unnecessary';
-	}
-
-	G.sequence_discards = [];
-	if (G.rules.lab_challenge) {
-		var c = G.sequence_deck.shift();
-		G.sequence_discards.push(c);
-	}
-
-	G.epidemic_count = 0;
-	G.pending_mutations = [];
-
-	G.player_discards = [];
-	G.game_length_in_turns = 1+Math.floor(G.player_deck.length/2);
 }
 
 function load_scenario(scenario_id)
@@ -284,7 +233,7 @@ function reload_watched_game()
 	}
 
 	G.game_id = watched_game_info.game_id;
-	init_game();
+	G.initialize();
 	while (G.time < game_data.moves.length) {
 
 		var mv = game_data.moves[G.time];

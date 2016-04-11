@@ -380,6 +380,58 @@ Pandemic.GameState.deserialize = function(scenario_id, str) {
 	return G;
 };
 
+Pandemic.GameState.prototype.initialize = function() {
+
+	this.active_player = 1;
+	this.history = [];
+	this.history.push({'type':'next_turn', 'active_player':1});
+	this.time = 0;
+	this.turns = 1;
+	this.step = 'actions';
+	this.hands = {};
+	this.contingency_event = null;
+	for (var i = 1; i <= this.rules.player_count; i++) {
+		this.hands[i] = [];
+		for (var j = 0; j < this.initial_hands[i].length; j++) {
+			this.hands[i].push(this.initial_hands[i][j]);
+		}
+	}
+
+	this.infection_rate = 2;
+	this.infection_discards = [];
+	for (var i = 0; i < 9; i++) {
+		var c = this.infection_deck.pop();
+		this.infection_discards.push(c);
+	}
+
+	this.diseases = {}; //identifies cured/eradicated diseases
+
+	if (this.rules.mutation_challenge) {
+		this.infection_discards.push("Mutation{1}: Mutation");
+		this.infection_discards.push("Mutation{2}: Mutation");
+	}
+	else if (this.rules.worldwide_panic) {
+		this.infection_discards.push("Mutation{1}: Worldwide Panic");
+		this.infection_discards.push("Mutation{2}: Worldwide Panic");
+	}
+	else {
+		this.diseases['purple'] = 'unnecessary';
+	}
+
+	this.sequence_discards = [];
+	if (this.rules.lab_challenge) {
+		var c = this.sequence_deck.shift();
+		this.sequence_discards.push(c);
+	}
+
+	this.epidemic_count = 0;
+	this.pending_mutations = [];
+
+	this.player_discards = [];
+	this.game_length_in_turns = 1+Math.floor(this.player_deck.length/2);
+};
+
+
 function generate_scenario_real(rules)
 {
 	var G = new Pandemic.GameState();
