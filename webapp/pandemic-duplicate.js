@@ -235,7 +235,7 @@ function reload_watched_game()
 	while (G.time < game_data.moves.length) {
 
 		var mv = game_data.moves[G.time];
-		do_move(mv);
+		G.do_move(mv);
 	}
 
 	G.has_control = false;
@@ -838,7 +838,7 @@ function load_game_at(game_id, target_time)
 	while (G.time < target_time) {
 
 		var mv = get_move(G.scenario_id, G.game_id, G.time);
-		do_move(mv);
+		G.do_move(mv);
 	}
 
 	G.has_control = true;
@@ -1144,139 +1144,6 @@ var Role_icons = {
 function get_role_icon(r)
 {
 	return 'images/'+Role_icons[r];
-}
-
-function do_move(m)
-{
-	var mm = m.split(/ /);
-	if (m == 'pass') {
-
-		if (G.step == 'actions') {
-
-			// end of actions phase
-			G.step = 'draw_cards';
-			G.time++;
-
-			// draw two player cards
-			var c1 = G.player_deck.pop();
-			var c2 = G.player_deck.pop();
-			G.current = {
-				'cards_drawn': [c1, c2]
-				};
-
-			G.pending_epidemics = 0;
-			if (is_epidemic(c1)) {
-				G.epidemic_drawn(c1);
-			}
-			else if (is_mutation(c1)) {
-				G.mutation_drawn(c1);
-			}
-			else {
-				G.hands[G.active_player].push(c1);
-				G.history.push({
-					'type': 'draw_card',
-					'player': G.active_player,
-					'card': c1
-					});
-			}
-
-			if (is_epidemic(c2)) {
-				G.epidemic_drawn(c2);
-			}
-			else if (is_mutation(c2)) {
-				G.mutation_drawn(c2);
-			}
-			else {
-				G.hands[G.active_player].push(c2);
-				G.history.push({
-					'type': 'draw_card',
-					'player': G.active_player,
-					'card': c2
-					});
-			}
-
-		}
-		else if (G.step == 'draw_cards') {
-
-			if (G.pending_mutations.length > 0) {
-				G.step = 'mutation';
-				G.time++;
-				G.do_mutation();
-			}
-			else if (G.pending_epidemics > 0) {
-				G.start_epidemic();
-			}
-			else {
-				G.start_infection();
-			}
-		}
-		else if (G.step == 'mutation') {
-
-			if (G.pending_mutations.length > 0) {
-				G.time++;
-				G.do_mutation();
-			}
-			else if (G.pending_epidemics > 0) {
-				G.start_epidemic();
-			}
-			else {
-				G.start_infection();
-			}
-		}
-		else if (G.step == 'epidemic') {
-
-			G.finish_epidemic();
-			if (G.pending_epidemics > 0) {
-				G.start_epidemic();
-			}
-			else {
-				G.start_infection();
-			}
-		}
-		else { // infection
-
-			G.do_more_infection();
-		}
-	}
-	else if (mm[0] == 'draw_sequence_card') {
-		G.do_draw_sequence();
-	}
-	else if (mm[0] == 'special') {
-		G.do_special_event(m.substring(8));
-	}
-	else if (mm[0] == 'retrieve') {
-		G.do_retrieve_special_event(m.substring(9));
-	}
-	else if (mm[0] == 'virulent') {
-		G.do_virulent_strain(mm[1]);
-	}
-	else if (mm[0] == 'discover') {
-		G.do_discover_cure(mm[1]);
-	}
-	else if (mm[0] == 'eradicate') {
-		G.do_eradicate(mm[1]);
-	}
-	else if (mm[0] == 'forecast') {
-		G.do_forecast(m.substring(9));
-	}
-	else if (mm[0] == 'resource_planning') {
-		G.do_resource_planning(m.substring(18));
-	}
-	else if (m == 'give_up') {
-		G.step = 'end';
-		G.result = 'loss'
-		G.time++;
-	}
-	else if (m == 'claim_victory') {
-		G.step = 'end';
-		G.result = 'victory';
-		G.time++;
-	}
-	else {
-
-		console.log("unrecognized move: "+m);
-		G.time++;
-	}
 }
 
 //returns the player-id of the player who had it

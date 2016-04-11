@@ -549,6 +549,138 @@ Pandemic.GameState.prototype.do_more_infection = function() {
 	}
 };
 
+Pandemic.GameState.prototype.do_move = function(m) {
+	var mm = m.split(/ /);
+	if (m == 'pass') {
+
+		if (this.step == 'actions') {
+
+			// end of actions phase
+			this.step = 'draw_cards';
+			this.time++;
+
+			// draw two player cards
+			var c1 = this.player_deck.pop();
+			var c2 = this.player_deck.pop();
+			this.current = {
+				'cards_drawn': [c1, c2]
+				};
+
+			this.pending_epidemics = 0;
+			if (is_epidemic(c1)) {
+				this.epidemic_drawn(c1);
+			}
+			else if (is_mutation(c1)) {
+				this.mutation_drawn(c1);
+			}
+			else {
+				this.hands[this.active_player].push(c1);
+				this.history.push({
+					'type': 'draw_card',
+					'player': this.active_player,
+					'card': c1
+					});
+			}
+
+			if (is_epidemic(c2)) {
+				this.epidemic_drawn(c2);
+			}
+			else if (is_mutation(c2)) {
+				this.mutation_drawn(c2);
+			}
+			else {
+				this.hands[this.active_player].push(c2);
+				this.history.push({
+					'type': 'draw_card',
+					'player': this.active_player,
+					'card': c2
+					});
+			}
+
+		}
+		else if (this.step == 'draw_cards') {
+
+			if (this.pending_mutations.length > 0) {
+				this.step = 'mutation';
+				this.time++;
+				this.do_mutation();
+			}
+			else if (this.pending_epidemics > 0) {
+				this.start_epidemic();
+			}
+			else {
+				this.start_infection();
+			}
+		}
+		else if (this.step == 'mutation') {
+
+			if (this.pending_mutations.length > 0) {
+				this.time++;
+				this.do_mutation();
+			}
+			else if (this.pending_epidemics > 0) {
+				this.start_epidemic();
+			}
+			else {
+				this.start_infection();
+			}
+		}
+		else if (this.step == 'epidemic') {
+
+			this.finish_epidemic();
+			if (this.pending_epidemics > 0) {
+				this.start_epidemic();
+			}
+			else {
+				this.start_infection();
+			}
+		}
+		else { // infection
+
+			this.do_more_infection();
+		}
+	}
+	else if (mm[0] == 'draw_sequence_card') {
+		this.do_draw_sequence();
+	}
+	else if (mm[0] == 'special') {
+		this.do_special_event(m.substring(8));
+	}
+	else if (mm[0] == 'retrieve') {
+		this.do_retrieve_special_event(m.substring(9));
+	}
+	else if (mm[0] == 'virulent') {
+		this.do_virulent_strain(mm[1]);
+	}
+	else if (mm[0] == 'discover') {
+		this.do_discover_cure(mm[1]);
+	}
+	else if (mm[0] == 'eradicate') {
+		this.do_eradicate(mm[1]);
+	}
+	else if (mm[0] == 'forecast') {
+		this.do_forecast(m.substring(9));
+	}
+	else if (mm[0] == 'resource_planning') {
+		this.do_resource_planning(m.substring(18));
+	}
+	else if (m == 'give_up') {
+		this.step = 'end';
+		this.result = 'loss'
+		this.time++;
+	}
+	else if (m == 'claim_victory') {
+		this.step = 'end';
+		this.result = 'victory';
+		this.time++;
+	}
+	else {
+
+		console.log("unrecognized move: "+m);
+		this.time++;
+	}
+};
+
 Pandemic.GameState.prototype.do_mutation = function() {
 	var mut = this.pending_mutations.shift();
 	var mut_text = is_mutation(mut);

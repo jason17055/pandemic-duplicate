@@ -42,7 +42,7 @@ app.factory('GameService',
 
       localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.T' + G.time, m);
 
-      do_move(m);
+      G.do_move(m);
       g.navigate_to_current_turn();
     };
     return g;
