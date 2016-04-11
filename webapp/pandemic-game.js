@@ -380,6 +380,65 @@ Pandemic.GameState.deserialize = function(scenario_id, str) {
 	return G;
 };
 
+Pandemic.GameState.prototype.count_cured_diseases = function() {
+	var count = 0;
+	for (var disease_color in Pandemic.Diseases) {
+		if (this.is_cured(disease_color)) {
+			count++;
+		}
+	}
+	return count;
+};
+
+Pandemic.GameState.prototype.count_uncured_diseases = function() {
+	var total = (this.rules.mutation_challenge || this.rules.worldwide_panic) ? 5 : 4;
+	return total - this.count_cured_diseases();
+};
+
+Pandemic.GameState.prototype.do_discover_cure = function(disease_color) {
+	this.diseases[disease_color] = 'cured';
+	this.history.push({
+		'type':'discover_cure',
+		'player': this.active_player,
+		'disease':disease_color
+		});
+
+	if (this.count_uncured_diseases() == 0) {
+		this.step = 'end';
+		this.result = 'victory';
+	}
+	this.time++;
+};
+
+Pandemic.GameState.prototype.do_eradicate = function(disease_color) {
+	this.diseases[disease_color] = 'eradicated';
+	this.history.push({
+		'type':'eradicate',
+		'disease':disease_color
+		});
+
+	if (this.rate_effect && disease_color == this.virulent_strain) {
+		this.history.push({
+			'type': 'rate_effect_deactivate'
+			});
+	}
+
+	this.time++;
+};
+
+Pandemic.GameState.prototype.do_virulent_strain = function(disease_color) {
+	this.virulent_strain = disease_color;
+	this.history.push({
+		'type':'virulent_strain',
+		'disease':disease_color
+		});
+
+	this.step = 'epidemic';
+	this.time++;
+
+	this.resolve_vs_epidemic();
+};
+
 Pandemic.GameState.prototype.initialize = function() {
 
 	this.active_player = 1;
@@ -429,6 +488,144 @@ Pandemic.GameState.prototype.initialize = function() {
 
 	this.player_discards = [];
 	this.game_length_in_turns = 1+Math.floor(this.player_deck.length/2);
+};
+
+Pandemic.GameState.prototype.is_cured = function(disease_color) {
+	return this.diseases[disease_color] == 'cured' || this.is_eradicated(disease_color);
+};
+
+Pandemic.GameState.prototype.is_eradicated = function(disease_color) {
+	return this.diseases[disease_color] == 'eradicated';
+};
+
+Pandemic.GameState.prototype.is_unnecessary = function(disease_color) {
+	return this.diseases[disease_color] == 'unnecessary';
+};
+
+Pandemic.GameState.prototype.resolve_vs_epidemic = function() {
+	var ep = this.current_epidemic;
+	if (!ep) {
+		return;
+	}
+
+	if (this.current_epidemic == 'Chronic Effect') {
+		this.chronic_effect = true;
+		this.history.push({
+			'type': 'chronic_effect_activate',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Complex Molecular Structure') {
+		if (this.is_cured(this.virulent_strain)) {
+			this.vs_dud(ep);
+		}
+		else {
+			this.history.push({
+				'type': 'complex_molecular_structure_activate',
+				'disease': this.virulent_strain
+				});
+		}
+	}
+	else if (ep == 'Government Interference') {
+		this.history.push({
+			'type': 'government_interference_activate',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Hidden Pocket') {
+		if (!this.is_eradicated(this.virulent_strain)) {
+			this.vs_dud(ep);
+		}
+		else {
+			var count = 0;
+			for (var i = 0; i < this.infection_discards.length; i++) {
+				var c = this.infection_discards[i];
+				var ci = Pandemic.Cities[c];
+				if (ci.color == this.virulent_strain) {
+					if (count == 0) {
+						this.history.push({
+							'type': 'hidden_pocket_activate',
+							'disease': this.virulent_strain
+							});
+						this.diseases[this.virulent_strain] = 'cured';
+						if (this.rate_effect) {
+							this.history.push({
+								'type': 'rate_effect_activate',
+								'disease': this.virulent_strain
+								});
+						}
+					}
+					this.history.push({
+						'type': 'hidden_pocket_infect',
+						'city': c
+						});
+					count++;
+				}
+			}
+			if (count == 0) {
+				this.vs_dud(ep);
+			}
+		}
+	}
+	else if (ep == 'Rate Effect') {
+		this.rate_effect = true;
+		if (this.is_eradicated(this.virulent_strain)) {
+			this.vs_dud(ep);
+		}
+		else {
+			this.history.push({
+				'type': 'rate_effect_activate',
+				'disease': this.virulent_strain
+				});
+		}
+	}
+	else if (ep == 'Slippery Slope') {
+		this.history.push({
+			'type': 'slippery_slope_activate',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Unacceptable Loss') {
+		this.history.push({
+			'type': 'unacceptable_loss',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Uncounted Populations') {
+		this.history.push({
+			'type': 'uncounted_populations',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Highly Contagious') {
+		this.history.push({
+			'type': 'highly_contagious_activate',
+			'disease': this.virulent_strain
+			});
+	}
+	else if (ep == 'Resistant to Treatment') {
+		if (this.is_cured(this.virulent_strain)) {
+			this.vs_dud(ep);
+		}
+		else {
+			this.history.push({
+				'type': 'resistant_to_treatment_activate',
+				'disease': this.virulent_strain
+				});
+		}
+	}
+	else {
+		console.log("Unrecognized epidemic: '" + ep + "'");
+	}
+
+	this.current_epidemic = null;
+};
+
+Pandemic.GameState.prototype.vs_dud = function(epidemic_name) {
+	this.history.push({
+		'type': 'vs_epidemic_dud',
+		'epidemic': epidemic_name
+		});
 };
 
 
