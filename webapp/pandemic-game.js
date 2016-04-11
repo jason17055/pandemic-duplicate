@@ -395,6 +395,15 @@ Pandemic.GameState.prototype.count_uncured_diseases = function() {
 	return total - this.count_cured_diseases();
 };
 
+Pandemic.GameState.prototype.discarded_special_event = function(s) {
+	for (var i = 0; i < this.player_discards.length; i++) {
+		if (this.player_discards[i] == s) {
+			return true;
+		}
+	}
+	return false;
+};
+
 Pandemic.GameState.prototype.do_discover_cure = function(disease_color) {
 	this.diseases[disease_color] = 'cured';
 	this.history.push({
@@ -407,6 +416,22 @@ Pandemic.GameState.prototype.do_discover_cure = function(disease_color) {
 		this.step = 'end';
 		this.result = 'victory';
 	}
+	this.time++;
+};
+
+Pandemic.GameState.prototype.do_draw_sequence = function() {
+	var pid = this.active_player;
+
+	var c = this.sequence_deck.shift();
+
+	this.history.push({
+		'type':'draw_sequence_card',
+		'player':pid,
+		'card':c
+		});
+
+	this.sequence_discards.push(c);
+
 	this.time++;
 };
 
@@ -426,6 +451,109 @@ Pandemic.GameState.prototype.do_eradicate = function(disease_color) {
 	this.time++;
 };
 
+Pandemic.GameState.prototype.do_forecast = function(s) {
+	var cardlist = [];
+	var m;
+	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
+		cardlist.push(m[1]);
+		s = m[2];
+	}
+
+	for (var i = 0; i < cardlist.length; i++) {
+		this.infection_deck.pop();
+	}
+	for (var i = cardlist.length-1; i >= 0; i--) {
+		this.infection_deck.push(cardlist[i]);
+	}
+
+	this.time++;
+	this.step = this.after_forecast_step;
+	delete this.after_forecast_step;
+};
+
+Pandemic.GameState.prototype.do_mutation = function() {
+	var mut = this.pending_mutations.shift();
+	var mut_text = is_mutation(mut);
+	if (mut_text == 'The Mutation Spreads') {
+		for (var i = 0; i < 3; i++) {
+			var c = this.infection_deck.shift();
+			this.history.push({
+				'type': 'mutation',
+				'city': c,
+				'count': 1
+				});
+			this.infection_discards.push(c);
+		}
+	}
+	else if (mut_text == 'The Mutation Threatens') {
+		var c = this.infection_deck.shift();
+		this.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 3
+			});
+		this.infection_discards.push(c);
+	}
+	else if (mut_text == 'Mutation') {
+		var c = this.infection_deck.shift();
+		this.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 1
+			});
+		this.infection_discards.push(mut);
+		this.infection_discards.push(c);
+	}
+	else if (mut_text == 'Worldwide Panic') {
+		var c = this.infection_deck.shift();
+		this.history.push({
+			'type': 'mutation',
+			'city': c,
+			'count': 2
+			});
+		this.infection_discards.push(mut);
+		this.infection_discards.push(c);
+	}
+};
+
+Pandemic.GameState.prototype.do_resource_planning = function(s) {
+	var cardlist = [];
+	var m;
+	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
+		cardlist.push(m[1]);
+		s = m[2];
+	}
+
+	for (var i = 0; i < cardlist.length; i++) {
+		this.player_deck.pop();
+	}
+	for (var i = cardlist.length-1; i >= 0; i--) {
+		this.player_deck.push(cardlist[i]);
+	}
+
+	this.time++;
+	this.step = this.after_resource_planning_step;
+	delete this.after_resource_planning_step;
+};
+
+Pandemic.GameState.prototype.do_retrieve_special_event = function(c) {
+	var pid = this.active_player;
+	if (!find_and_remove_card(this.player_discards, c))
+		return null;
+	if (this.contingency_event)
+		return null;
+
+	this.contingency_event = c;
+
+	this.history.push({
+		'type':'retrieve_special_event',
+		'player':pid,
+		'card':c
+		});
+
+	this.time++;
+};
+
 Pandemic.GameState.prototype.do_virulent_strain = function(disease_color) {
 	this.virulent_strain = disease_color;
 	this.history.push({
@@ -437,6 +565,49 @@ Pandemic.GameState.prototype.do_virulent_strain = function(disease_color) {
 	this.time++;
 
 	this.resolve_vs_epidemic();
+};
+
+Pandemic.GameState.prototype.epidemic_drawn = function(c) {
+	this.pending_epidemics++;
+	this.history.push({
+		'type': 'draw_epidemic',
+		'epidemic_count': this.epidemic_count+this.pending_epidemics,
+		'card': c
+		});
+	if (c != 'Epidemic') {
+		this.player_discards.push(c);
+		this.current_epidemic = c.substring(10);
+	}
+};
+
+Pandemic.GameState.prototype.has_any_special_event = function() {
+	if (this.contingency_event)
+		return true;
+
+	for (var pid in this.hands) {
+		var h = this.hands[pid];
+		for (var i = 0; i < h.length; i++) {
+			if (is_special(h[i])) {
+				return true;
+			}
+		}
+	}
+	return false;
+};
+
+Pandemic.GameState.prototype.has_special_event = function(s) {
+	if (this.contingency_event == s)
+		return true;
+
+	for (var pid in this.hands) {
+		var h = this.hands[pid];
+		for (var i = 0; i < h.length; i++) {
+			if (h[i] == s) {
+				return true;
+			}
+		}
+	}
+	return false;
 };
 
 Pandemic.GameState.prototype.initialize = function() {
@@ -500,6 +671,28 @@ Pandemic.GameState.prototype.is_eradicated = function(disease_color) {
 
 Pandemic.GameState.prototype.is_unnecessary = function(disease_color) {
 	return this.diseases[disease_color] == 'unnecessary';
+};
+
+Pandemic.GameState.prototype.mutation_drawn = function(c) {
+	this.history.push({
+		'type': 'draw_mutation',
+		'card': c
+		});
+
+	if (this.is_eradicated('purple')) {
+		this.history.push({
+			'type': 'mutation_dud',
+			'mutation': is_mutation(c)
+			});
+	}
+	else if (is_mutation(c) == 'The Mutation Intensifies') {
+		this.history.push({
+			'type': 'mutation_intensifies'
+			});
+	}
+	else {
+		this.pending_mutations.push(c);
+	}
 };
 
 Pandemic.GameState.prototype.resolve_vs_epidemic = function() {
@@ -627,7 +820,6 @@ Pandemic.GameState.prototype.vs_dud = function(epidemic_name) {
 		'epidemic': epidemic_name
 		});
 };
-
 
 function generate_scenario_real(rules)
 {

@@ -862,52 +862,6 @@ function get_move(scenario_id, game_id, time)
 	return mv != null ? mv : 'pass';
 }
 
-function do_mutation()
-{
-	var mut = G.pending_mutations.shift();
-	var mut_text = is_mutation(mut);
-	if (mut_text == 'The Mutation Spreads') {
-		for (var i = 0; i < 3; i++) {
-			var c = G.infection_deck.shift();
-			G.history.push({
-				'type': 'mutation',
-				'city': c,
-				'count': 1
-				});
-			G.infection_discards.push(c);
-		}
-	}
-	else if (mut_text == 'The Mutation Threatens') {
-		var c = G.infection_deck.shift();
-		G.history.push({
-			'type': 'mutation',
-			'city': c,
-			'count': 3
-			});
-		G.infection_discards.push(c);
-	}
-	else if (mut_text == 'Mutation') {
-		var c = G.infection_deck.shift();
-		G.history.push({
-			'type': 'mutation',
-			'city': c,
-			'count': 1
-			});
-		G.infection_discards.push(mut);
-		G.infection_discards.push(c);
-	}
-	else if (mut_text == 'Worldwide Panic') {
-		var c = G.infection_deck.shift();
-		G.history.push({
-			'type': 'mutation',
-			'city': c,
-			'count': 2
-			});
-		G.infection_discards.push(mut);
-		G.infection_discards.push(c);
-	}
-}
-
 function start_epidemic()
 {
 	G.step = 'epidemic';
@@ -1012,7 +966,7 @@ function do_more_infection()
 			}
 			else {
 				G.pending_mutations.push(c);
-				do_mutation();
+				G.do_mutation();
 			}
 
 			G.pending_infection--;
@@ -1374,10 +1328,10 @@ function do_move(m)
 
 			G.pending_epidemics = 0;
 			if (is_epidemic(c1)) {
-				epidemic_drawn(c1);
+				G.epidemic_drawn(c1);
 			}
 			else if (is_mutation(c1)) {
-				mutation_drawn(c1);
+				G.mutation_drawn(c1);
 			}
 			else {
 				G.hands[G.active_player].push(c1);
@@ -1389,10 +1343,10 @@ function do_move(m)
 			}
 
 			if (is_epidemic(c2)) {
-				epidemic_drawn(c2);
+				G.epidemic_drawn(c2);
 			}
 			else if (is_mutation(c2)) {
-				mutation_drawn(c2);
+				G.mutation_drawn(c2);
 			}
 			else {
 				G.hands[G.active_player].push(c2);
@@ -1409,7 +1363,7 @@ function do_move(m)
 			if (G.pending_mutations.length > 0) {
 				G.step = 'mutation';
 				G.time++;
-				do_mutation();
+				G.do_mutation();
 			}
 			else if (G.pending_epidemics > 0) {
 				start_epidemic();
@@ -1422,7 +1376,7 @@ function do_move(m)
 
 			if (G.pending_mutations.length > 0) {
 				G.time++;
-				do_mutation();
+				G.do_mutation();
 			}
 			else if (G.pending_epidemics > 0) {
 				start_epidemic();
@@ -1447,13 +1401,13 @@ function do_move(m)
 		}
 	}
 	else if (mm[0] == 'draw_sequence_card') {
-		do_draw_sequence();
+		G.do_draw_sequence();
 	}
 	else if (mm[0] == 'special') {
 		do_special_event(m.substring(8));
 	}
 	else if (mm[0] == 'retrieve') {
-		do_retrieve_special_event(m.substring(9));
+		G.do_retrieve_special_event(m.substring(9));
 	}
 	else if (mm[0] == 'virulent') {
 		G.do_virulent_strain(mm[1]);
@@ -1465,10 +1419,10 @@ function do_move(m)
 		G.do_eradicate(mm[1]);
 	}
 	else if (mm[0] == 'forecast') {
-		do_forecast(m.substring(9));
+		G.do_forecast(m.substring(9));
 	}
 	else if (mm[0] == 'resource_planning') {
-		do_resource_planning(m.substring(18));
+		G.do_resource_planning(m.substring(18));
 	}
 	else if (m == 'give_up') {
 		G.step = 'end';
@@ -1487,43 +1441,6 @@ function do_move(m)
 	}
 }
 
-function epidemic_drawn(c)
-{
-	G.pending_epidemics++;
-	G.history.push({
-		'type': 'draw_epidemic',
-		'epidemic_count': G.epidemic_count+G.pending_epidemics,
-		'card': c
-		});
-	if (c != 'Epidemic') {
-		G.player_discards.push(c);
-		G.current_epidemic = c.substring(10);
-	}
-}
-
-function mutation_drawn(c)
-{
-	G.history.push({
-		'type': 'draw_mutation',
-		'card': c
-		});
-
-	if (G.is_eradicated('purple')) {
-		G.history.push({
-			'type': 'mutation_dud',
-			'mutation': is_mutation(c)
-			});
-	}
-	else if (is_mutation(c) == 'The Mutation Intensifies') {
-		G.history.push({
-			'type': 'mutation_intensifies'
-			});
-	}
-	else {
-		G.pending_mutations.push(c);
-	}
-}
-
 //returns the player-id of the player who had it
 function find_and_remove_card_any_hand(c)
 {
@@ -1535,48 +1452,6 @@ function find_and_remove_card_any_hand(c)
 		}
 	}
 	return null;
-}
-
-function do_forecast(s)
-{
-	var cardlist = [];
-	var m;
-	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
-		cardlist.push(m[1]);
-		s = m[2];
-	}
-
-	for (var i = 0; i < cardlist.length; i++) {
-		G.infection_deck.pop();
-	}
-	for (var i = cardlist.length-1; i >= 0; i--) {
-		G.infection_deck.push(cardlist[i]);
-	}
-
-	G.time++;
-	G.step = G.after_forecast_step;
-	delete G.after_forecast_step;
-}
-
-function do_resource_planning(s)
-{
-	var cardlist = [];
-	var m;
-	while (m = /^"([^"]+)"\s*(.*)$/.exec(s)) {
-		cardlist.push(m[1]);
-		s = m[2];
-	}
-
-	for (var i = 0; i < cardlist.length; i++) {
-		G.player_deck.pop();
-	}
-	for (var i = cardlist.length-1; i >= 0; i--) {
-		G.player_deck.push(cardlist[i]);
-	}
-
-	G.time++;
-	G.step = G.after_resource_planning_step;
-	delete G.after_resource_planning_step;
 }
 
 function do_special_event(c)
@@ -1674,42 +1549,6 @@ function do_special_event(c)
 	G.time++;
 }
 
-function do_draw_sequence()
-{
-	var pid = G.active_player;
-
-	var c = G.sequence_deck.shift();
-
-	G.history.push({
-		'type':'draw_sequence_card',
-		'player':pid,
-		'card':c
-		});
-
-	G.sequence_discards.push(c);
-
-	G.time++;
-}
-
-function do_retrieve_special_event(c)
-{
-	var pid = G.active_player;
-	if (!find_and_remove_card(G.player_discards, c))
-		return null;
-	if (G.contingency_event)
-		return null;
-
-	G.contingency_event = c;
-
-	G.history.push({
-		'type':'retrieve_special_event',
-		'player':pid,
-		'card':c
-		});
-
-	G.time++;
-}
-
 function set_game_state_summary($pg)
 {
 	var r = G.roles[G.active_player];
@@ -1789,7 +1628,7 @@ function can_draw_sequence_card()
 
 function can_play_special_event()
 {
-	return G.has_control && has_any_special_event();
+	return G.has_control && G.has_any_special_event();
 }
 
 function can_retrieve_special_event()
@@ -2462,48 +2301,6 @@ function on_special_event_retrieve_clicked()
 	return set_move('retrieve '+s);
 }
 
-function has_any_special_event()
-{
-	if (G.contingency_event)
-		return true;
-
-	for (var pid in G.hands) {
-		var h = G.hands[pid];
-		for (var i = 0; i < h.length; i++) {
-			if (is_special(h[i])) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-function has_special_event(s)
-{
-	if (G.contingency_event == s)
-		return true;
-
-	for (var pid in G.hands) {
-		var h = G.hands[pid];
-		for (var i = 0; i < h.length; i++) {
-			if (h[i] == s) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-function discarded_special_event(s)
-{
-	for (var i = 0; i < G.player_discards.length; i++) {
-		if (G.player_discards[i] == s) {
-			return true;
-		}
-	}
-	return false;
-}
-
 function record_game_finished()
 {
 	var timestr = new Date().toISOString();
@@ -2596,7 +2393,7 @@ function init_play_special_event_page($pg)
 	var specials = get_deck('Specials', G.rules);
 	for (var i = 0; i < specials.length; i++) {
 		var s = specials[i];
-		if (!has_special_event(s)) {
+		if (!G.has_special_event(s)) {
 			continue;
 		}
 		var $s = $('.special_event_btn_row.template').clone();
@@ -2615,7 +2412,7 @@ function init_retrieve_special_event_page($pg)
 	var specials = get_deck('Specials', G.rules);
 	for (var i = 0; i < specials.length; i++) {
 		var s = specials[i];
-		if (!discarded_special_event(s)) {
+		if (!G.discarded_special_event(s)) {
 			continue;
 		}
 		var $s = $('.special_event_btn_row.template').clone();
