@@ -117,15 +117,7 @@ function load_scenario(scenario_id)
 		return;
 	}
 
-	G = JSON.parse(s);
-	G.shuffle_id = scenario_id;
-	G.scenario_id = scenario_id;
-
-	if (G.rules.expansion) {
-		// fix old-style way of indicating expansion
-		G.rules[G.rules.expansion] = true;
-	}
-
+	G = Pandemic.GameState.deserialize(scenario_id, s);
 	return G;
 }
 
@@ -471,7 +463,7 @@ function init_player_names_page($pg, xtra)
 		pcount = +m[1];
 	}
 
-	G = {};
+	G = new Pandemic.GameState();
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
 		G.player_names = JSON.parse(s);
@@ -597,7 +589,7 @@ function submit_player_names_form()
 {
 	var f = document.player_names_form;
 	var pcount = +f.player_count.value;
-	G = {};
+	G = new Pandemic.GameState();
 	G.rules = { 'player_count': pcount };
 	G.player_names = {
 		'1': f.player1.value,

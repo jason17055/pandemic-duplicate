@@ -361,9 +361,28 @@ function hinterlands_roll()
 	return Hinterlands_Die[i];
 }
 
+/** Constructor */
+Pandemic.GameState = function() {
+};
+
+Pandemic.GameState.deserialize = function(scenario_id, str) {
+	var G = new Pandemic.GameState();
+	var X = JSON.parse(str);
+	for (var k in X) {
+		G[k] = X[k];
+	}
+	G.scenario_id = scenario_id;
+
+	if (G.rules.expansion) {
+		// fix old-style way of indicating expansion
+		G.rules[G.rules.expansion] = true;
+	}
+	return G;
+};
+
 function generate_scenario_real(rules)
 {
-	var G = {};
+	var G = new Pandemic.GameState();
 	G.rules = rules;
 
 	var S = get_deck('Specials', G.rules);
