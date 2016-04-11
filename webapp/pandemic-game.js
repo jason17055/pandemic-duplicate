@@ -471,6 +471,84 @@ Pandemic.GameState.prototype.do_forecast = function(s) {
 	delete this.after_forecast_step;
 };
 
+Pandemic.GameState.prototype.do_hinterlands_infection = function() {
+	var c = this.hinterlands_rolls.pop();
+	if (c == 'blank') {
+		this.history.push({
+			'type': 'hinterlands_dud'
+			});
+	}
+	else {
+		this.history.push({
+			'type': 'hinterlands_infection',
+			'color': c
+			});
+	}
+
+	this.step = 'infection';
+	this.time++;
+};
+
+Pandemic.GameState.prototype.do_more_infection = function() {
+	if (this.pending_infection > 0) {
+
+		this.step = 'infection';
+		this.time++;
+
+		var c = this.infection_deck.pop();
+		if (is_mutation(c)) {
+			this.history.push({
+				'type': 'draw_infection_mutation',
+				'card': c
+				});
+
+			if (this.is_eradicated('purple')) {
+				this.history.push({
+					'type': 'mutation_dud',
+					'mutation': is_mutation(c)
+					});
+			}
+			else {
+				this.pending_mutations.push(c);
+				this.do_mutation();
+			}
+
+			this.pending_infection--;
+		}
+		else {
+			this.current = {
+				'infection': c
+				};
+			this.history.push({
+				'type': 'infection',
+				'infection': c
+				});
+			this.infection_discards.push(c);
+			this.pending_infection--;
+			if (this.rate_effect && !this.rate_effect_extra_drawn &&
+				!this.is_eradicated(this.virulent_strain) &&
+				this.virulent_strain == Pandemic.Cities[c].color) {
+				this.pending_infection++;
+				this.rate_effect_extra_drawn = true;
+				this.history.push({
+					'type': 'rate_effect_trigger'
+					});
+			}
+		}
+	}
+	else {
+
+		this.active_player = this.active_player % this.rules.player_count + 1;
+		this.history.push({
+			'type': 'next_turn',
+			'active_player': this.active_player
+			});
+		this.step = 'actions';
+		this.time++;
+		this.turns++;
+	}
+};
+
 Pandemic.GameState.prototype.do_mutation = function() {
 	var mut = this.pending_mutations.shift();
 	var mut_text = is_mutation(mut);
@@ -554,6 +632,100 @@ Pandemic.GameState.prototype.do_retrieve_special_event = function(c) {
 	this.time++;
 };
 
+Pandemic.GameState.prototype.do_special_event = function(c) {
+	var hfun = function(cc) {
+		var pid = null;
+		if (this.contingency_event == cc) {
+			for (var i = 1; i <= this.rules.player_count; i++) {
+				if (this.roles[i] == 'Contingency Planner') {
+					pid = i;
+					break;
+				}
+			}
+			if (pid) {
+				this.contingency_event = null;
+			}
+		}
+		else {
+			pid = find_and_remove_card_any_hand(cc);
+		}
+		if (!pid) { return null; }
+
+		this.history.push({
+			'type':'special_event',
+			'player':pid,
+			'card':cc
+			});
+		return pid;
+	}.bind(this);
+
+	var m;
+	if (c == 'One Quiet Night') {
+		if (hfun(c)) {
+			this.one_quiet_night = 1;
+		}
+	}
+	else if (c == 'Commercial Travel Ban') {
+		if (hfun(c)) {
+			this.travel_ban = this.rules.player_count;
+		}
+	}
+	else if (c == 'Forecast') {
+		if (hfun(c)) {
+			if (this.step == 'epidemic') {
+				this.finish_epidemic();
+			}
+			this.after_forecast_step = this.step;
+			this.step = 'forecast';
+		}
+	}
+	else if (c == 'Resource Planning') {
+		if (hfun(c)) {
+			this.after_resource_planning_step = this.step;
+			this.step = 'resource_planning';
+		}
+	}
+	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
+		if (hfun("Resilient Population")) {
+			find_and_remove_card(this.infection_discards, m[1]);
+			this.history.push({
+				'type':'resilient_population',
+				'city':m[1]
+				});
+		}
+	}
+	else if (m = /^"Infection Rumor" "(.*)"$/.exec(c)) {
+		if (hfun("Infection Rumor")) {
+			find_and_remove_card(this.infection_deck, m[1]);
+			this.infection_discards.push(this.infection_deck, m[1]);
+			this.infection_rumor = true;
+			this.history.push({
+				'type':'infection_rumor',
+				'city':m[1]
+				});
+		}
+	}
+	else if (m = /^"New Assignment" "([^"]*)" "([^"]*)"$/.exec(c)) {
+		if (hfun("New Assignment")) {
+			for (var i = 1; i <= this.rules.player_count; i++) {
+				if (this.roles[i] == m[1]) {
+					this.roles[i] = m[2];
+					break;
+				}
+			}
+			if (m[1] == 'Contingency Planner' && this.contingency_event) {
+				this.player_discards.push(this.contingency_event);
+				this.contingency_event = null;
+			}
+		}
+	}
+	else {
+		hfun(c);
+	}
+
+	this.time++;
+};
+
 Pandemic.GameState.prototype.do_virulent_strain = function(disease_color) {
 	this.virulent_strain = disease_color;
 	this.history.push({
@@ -577,6 +749,31 @@ Pandemic.GameState.prototype.epidemic_drawn = function(c) {
 	if (c != 'Epidemic') {
 		this.player_discards.push(c);
 		this.current_epidemic = c.substring(10);
+	}
+};
+
+// Note: this function is called when the user clicks Next after an
+// epidemic is processed.
+// It is *also* called when a Forecast special event is played, as the
+// Forecast is interested in the infection deck after the cards are
+// reshuffled.
+// In the case of Forecast, this function is called MULTIPLE times,
+// the second time the infection discard pile is empty, so it has no
+// effect.
+//
+Pandemic.GameState.prototype.finish_epidemic = function() {
+	var a = this['epidemic.'+this.epidemic_count];
+	if (!a) {
+		alert('Oops, this game does not have an order defined for epidemic '+this.epidemic_count);
+		return;
+	}
+
+	for (var i = a.length-1; i >= 0; i--) {
+
+		var c = find_and_remove_card(this.infection_discards, a[i]);
+		if (c) {
+			this.infection_deck.push(c);
+		}
 	}
 };
 
@@ -692,6 +889,57 @@ Pandemic.GameState.prototype.mutation_drawn = function(c) {
 	}
 	else {
 		this.pending_mutations.push(c);
+	}
+};
+
+Pandemic.GameState.prototype.start_epidemic = function() {
+	this.step = 'epidemic';
+	this.time++;
+
+	this.epidemic_count++;
+	this.infection_rate = this.epidemic_count < 3 ? 2 :
+			this.epidemic_count < 5 ? 3 : 4;
+
+	var c = this.infection_deck.shift();
+	this.current = {
+		'epidemic': c
+		};
+	this.history.push({
+		'type': 'epidemic',
+		'epidemic': c
+		});
+	this.pending_epidemics--;
+
+	this.infection_discards.push(c);
+
+	if (this.virulent_strain) {
+		this.resolve_vs_epidemic();
+	}
+};
+
+Pandemic.GameState.prototype.start_infection = function() {
+	if (this.travel_ban) {
+		this.travel_ban--;
+		this.pending_infection = 1;
+	}
+	else if (this.one_quiet_night) {
+		delete this.one_quiet_night;
+		this.pending_infection = 0;
+	}
+	else {
+		this.pending_infection = this.infection_rate;
+	}
+	if (this.infection_rumor) {
+		this.pending_infection--;
+		delete this.infection_rumor;
+	}
+	this.rate_effect_extra_drawn = false;
+
+	if (this.rules.hinterlands_challenge) {
+		this.do_hinterlands_infection();
+	}
+	else {
+		this.do_more_infection();
 	}
 };
 

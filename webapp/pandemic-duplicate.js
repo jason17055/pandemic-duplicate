@@ -862,58 +862,6 @@ function get_move(scenario_id, game_id, time)
 	return mv != null ? mv : 'pass';
 }
 
-function start_epidemic()
-{
-	G.step = 'epidemic';
-	G.time++;
-
-	G.epidemic_count++;
-	G.infection_rate = G.epidemic_count < 3 ? 2 :
-			G.epidemic_count < 5 ? 3 : 4;
-
-	var c = G.infection_deck.shift();
-	G.current = {
-		'epidemic': c
-		};
-	G.history.push({
-		'type': 'epidemic',
-		'epidemic': c
-		});
-	G.pending_epidemics--;
-
-	G.infection_discards.push(c);
-
-	if (G.virulent_strain) {
-		G.resolve_vs_epidemic();
-	}
-}
-
-// Note: this function is called when the user clicks Next after an
-// epidemic is processed.
-// It is *also* called when a Forecast special event is played, as the
-// Forecast is interested in the infection deck after the cards are
-// reshuffled.
-// In the case of Forecast, this function is called MULTIPLE times,
-// the second time the infection discard pile is empty, so it has no
-// effect.
-//
-function finish_epidemic()
-{
-	var a = G['epidemic.'+G.epidemic_count];
-	if (!a) {
-		alert('Oops, this game does not have an order defined for epidemic '+G.epidemic_count);
-		return;
-	}
-
-	for (var i = a.length-1; i >= 0; i--) {
-
-		var c = find_and_remove_card(G.infection_discards, a[i]);
-		if (c) {
-			G.infection_deck.push(c);
-		}
-	}
-}
-
 function find_and_remove_card(pile, card_name)
 {
 	for (var i = 0; i < pile.length; i++) {
@@ -923,86 +871,6 @@ function find_and_remove_card(pile, card_name)
 		}
 	}
 	return null;
-}
-
-function do_hinterlands_infection()
-{
-	var c = G.hinterlands_rolls.pop();
-	if (c == 'blank') {
-		G.history.push({
-			'type': 'hinterlands_dud'
-			});
-	}
-	else {
-		G.history.push({
-			'type': 'hinterlands_infection',
-			'color': c
-			});
-	}
-
-	G.step = 'infection';
-	G.time++;
-}
-
-function do_more_infection()
-{
-	if (G.pending_infection > 0) {
-
-		G.step = 'infection';
-		G.time++;
-
-		var c = G.infection_deck.pop();
-		if (is_mutation(c)) {
-			G.history.push({
-				'type': 'draw_infection_mutation',
-				'card': c
-				});
-
-			if (G.is_eradicated('purple')) {
-				G.history.push({
-					'type': 'mutation_dud',
-					'mutation': is_mutation(c)
-					});
-			}
-			else {
-				G.pending_mutations.push(c);
-				G.do_mutation();
-			}
-
-			G.pending_infection--;
-		}
-		else {
-			G.current = {
-				'infection': c
-				};
-			G.history.push({
-				'type': 'infection',
-				'infection': c
-				});
-			G.infection_discards.push(c);
-			G.pending_infection--;
-			if (G.rate_effect && !G.rate_effect_extra_drawn &&
-				!G.is_eradicated(G.virulent_strain) &&
-				G.virulent_strain == Pandemic.Cities[c].color) {
-				G.pending_infection++;
-				G.rate_effect_extra_drawn = true;
-				G.history.push({
-					'type': 'rate_effect_trigger'
-					});
-			}
-		}
-	}
-	else {
-
-		G.active_player = G.active_player % G.rules.player_count + 1;
-		G.history.push({
-			'type': 'next_turn',
-			'active_player': G.active_player
-			});
-		G.step = 'actions';
-		G.time++;
-		G.turns++;
-	}
 }
 
 function make_history_item(evt)
@@ -1278,38 +1146,8 @@ function get_role_icon(r)
 	return 'images/'+Role_icons[r];
 }
 
-function start_infection()
-{
-	if (G.travel_ban) {
-		G.travel_ban--;
-		G.pending_infection = 1;
-	}
-	else if (G.one_quiet_night) {
-		delete G.one_quiet_night;
-		G.pending_infection = 0;
-	}
-	else {
-		G.pending_infection = G.infection_rate;
-	}
-	if (G.infection_rumor) {
-		G.pending_infection--;
-		delete G.infection_rumor;
-	}
-	G.rate_effect_extra_drawn = false;
-
-	if (G.rules.hinterlands_challenge) {
-		do_hinterlands_infection();
-	}
-	else {
-		do_more_infection();
-	}
-}
-
 function do_move(m)
 {
-	//console.log("m["+G.time+"]="+m);
-	//debug_infection_discards();
-
 	var mm = m.split(/ /);
 	if (m == 'pass') {
 
@@ -1366,10 +1204,10 @@ function do_move(m)
 				G.do_mutation();
 			}
 			else if (G.pending_epidemics > 0) {
-				start_epidemic();
+				G.start_epidemic();
 			}
 			else {
-				start_infection();
+				G.start_infection();
 			}
 		}
 		else if (G.step == 'mutation') {
@@ -1379,32 +1217,32 @@ function do_move(m)
 				G.do_mutation();
 			}
 			else if (G.pending_epidemics > 0) {
-				start_epidemic();
+				G.start_epidemic();
 			}
 			else {
-				start_infection();
+				G.start_infection();
 			}
 		}
 		else if (G.step == 'epidemic') {
 
-			finish_epidemic();
+			G.finish_epidemic();
 			if (G.pending_epidemics > 0) {
-				start_epidemic();
+				G.start_epidemic();
 			}
 			else {
-				start_infection();
+				G.start_infection();
 			}
 		}
 		else { // infection
 
-			do_more_infection();
+			G.do_more_infection();
 		}
 	}
 	else if (mm[0] == 'draw_sequence_card') {
 		G.do_draw_sequence();
 	}
 	else if (mm[0] == 'special') {
-		do_special_event(m.substring(8));
+		G.do_special_event(m.substring(8));
 	}
 	else if (mm[0] == 'retrieve') {
 		G.do_retrieve_special_event(m.substring(9));
@@ -1452,101 +1290,6 @@ function find_and_remove_card_any_hand(c)
 		}
 	}
 	return null;
-}
-
-function do_special_event(c)
-{
-	var hfun = function(cc) {
-		var pid = null;
-		if (G.contingency_event == cc) {
-			for (var i = 1; i <= G.rules.player_count; i++) {
-				if (G.roles[i] == 'Contingency Planner') {
-					pid = i;
-					break;
-				}
-			}
-			if (pid) {
-				G.contingency_event = null;
-			}
-		}
-		else {
-			pid = find_and_remove_card_any_hand(cc);
-		}
-		if (!pid) { return null; }
-
-		G.history.push({
-			'type':'special_event',
-			'player':pid,
-			'card':cc
-			});
-		return pid;
-	};
-
-	var m;
-	if (c == 'One Quiet Night') {
-		if (hfun(c)) {
-			G.one_quiet_night = 1;
-		}
-	}
-	else if (c == 'Commercial Travel Ban') {
-		if (hfun(c)) {
-			G.travel_ban = G.rules.player_count;
-		}
-	}
-	else if (c == 'Forecast') {
-		if (hfun(c)) {
-			if (G.step == 'epidemic') {
-				finish_epidemic();
-			}
-			G.after_forecast_step = G.step;
-			G.step = 'forecast';
-		}
-	}
-	else if (c == 'Resource Planning') {
-		if (hfun(c)) {
-			G.after_resource_planning_step = G.step;
-			G.step = 'resource_planning';
-		}
-	}
-	else if (m = /^"Resilient Population" "(.*)"$/.exec(c)) {
-		if (hfun("Resilient Population")) {
-			find_and_remove_card(G.infection_discards, m[1]);
-			G.history.push({
-				'type':'resilient_population',
-				'city':m[1]
-				});
-		}
-	}
-	else if (m = /^"Infection Rumor" "(.*)"$/.exec(c)) {
-		if (hfun("Infection Rumor")) {
-			find_and_remove_card(G.infection_deck, m[1]);
-			G.infection_discards.push(G.infection_deck, m[1]);
-			G.infection_rumor = true;
-			G.history.push({
-				'type':'infection_rumor',
-				'city':m[1]
-				});
-		}
-	}
-	else if (m = /^"New Assignment" "([^"]*)" "([^"]*)"$/.exec(c)) {
-		if (hfun("New Assignment")) {
-			for (var i = 1; i <= G.rules.player_count; i++) {
-				if (G.roles[i] == m[1]) {
-					G.roles[i] = m[2];
-					break;
-				}
-			}
-			if (m[1] == 'Contingency Planner' && G.contingency_event) {
-				G.player_discards.push(G.contingency_event);
-				G.contingency_event = null;
-			}
-		}
-	}
-	else {
-		hfun(c);
-	}
-
-	G.time++;
 }
 
 function set_game_state_summary($pg)
