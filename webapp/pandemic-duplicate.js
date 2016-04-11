@@ -46,16 +46,16 @@ function load_game(game_id)
 		return;
 	}
 
-	G = load_scenario(sid);
+	var game = load_scenario(sid);
 
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
-		G.player_names = JSON.parse(s);
+		game.player_names = JSON.parse(s);
 	}
 
-	G.game_id = game_id;
-	G.initialize();
-	return G;
+	game.game_id = game_id;
+	game.initialize();
+	return game;
 }
 
 function load_scenario(scenario_id)
@@ -398,7 +398,7 @@ function submit_generate_game_form()
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
-	load_game(G.game_id);
+	G = load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
 	goto_state(G.game_id+'/player_setup');
@@ -607,7 +607,7 @@ function init_deck_setup_page($pg, scenario_id)
 
 function init_board_setup_page($pg, game_id)
 {
-	load_game(game_id);
+	G = load_game(game_id);
 
 	$('.3cube_cities').empty();
 	for (var i = 0; i < 3; i++) {
@@ -655,7 +655,7 @@ function init_board_setup_page($pg, game_id)
 
 function init_player_setup_page($pg, game_id)
 {
-	load_game(game_id);
+	G = load_game(game_id);
 }
 
 function init_results_page($pg, scenario_id)
@@ -835,8 +835,7 @@ function make_sequence_card(c)
 
 function load_game_at(game_id, target_time)
 {
-	G=null;
-	load_game(game_id);
+	G = load_game(game_id);
 
 	target_time = +target_time;
 	while (G.time < target_time) {
@@ -2253,7 +2252,7 @@ function on_pick_scenario_scenario_clicked(evt)
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
-	load_game(G.game_id);
+	G = load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
 	goto_state(G.game_id+'/player_setup');
