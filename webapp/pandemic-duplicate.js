@@ -103,11 +103,8 @@ function init_join_game_pick_page($pg, search_results)
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
 		var g = list[i];
-		var r = load_scenario(g.scenario_id);
+		var r = load_scenario(list[i].scenario_id);
 		if (!r) { continue; }
-
-		// TODO- remove this
-		G = r;
 
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
@@ -116,13 +113,13 @@ function init_join_game_pick_page($pg, search_results)
 		$('.module_list_container', $g).append(make_modules_label(r.rules));
 		update_scenario_description($g, r.rules);
 
-		for (var pid = 1; pid <= G.rules.player_count; pid++) {
+		for (var pid = 1; pid <= r.rules.player_count; pid++) {
 			var p_name = g.players[pid-1];
 			var $p_name = $('<span><img class="role_icon"><span class="player_name"></span></span>');
-			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
+			$('.role_icon',$p_name).attr('src', get_role_icon(r.roles[pid]));
 			$('.player_name',$p_name).text(p_name);
 			$('.player_list', $g).append($p_name);
-			if (pid < G.rules.player_count) {
+			if (pid < r.rules.player_count) {
 				$('.player_list',$g).append(', ');
 			}
 		}
