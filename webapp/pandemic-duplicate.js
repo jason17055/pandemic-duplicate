@@ -46,7 +46,7 @@ function load_game(game_id)
 		return;
 	}
 
-	load_scenario(sid);
+	G = load_scenario(sid);
 
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
@@ -66,8 +66,7 @@ function load_scenario(scenario_id)
 		return;
 	}
 
-	G = Pandemic.GameState.deserialize(scenario_id, s);
-	return G;
+	return Pandemic.GameState.deserialize(scenario_id, s);
 }
 
 function init_options_page($pg)
@@ -106,6 +105,9 @@ function init_join_game_pick_page($pg, search_results)
 		var g = list[i];
 		var r = load_scenario(g.scenario_id);
 		if (!r) { continue; }
+
+		// TODO- remove this
+		G = r;
 
 		var $g = $('.join_game_btn.template', $pg).clone();
 		$g.removeClass('template');
@@ -224,8 +226,7 @@ function reload_watched_game()
 {
 	var game_data = watched_game_data;
 
-	G=null;
-	load_scenario(game_data.scenario_id);
+	G = load_scenario(game_data.scenario_id);
 
 	G.player_names = {};
 	for (var pid = 1; pid <= game_data.players.length; pid++) {
@@ -583,7 +584,7 @@ function save_player_names()
 
 function init_deck_setup_page($pg, scenario_id)
 {
-	load_scenario(scenario_id);
+	G = load_scenario(scenario_id);
 
 	$('#player_cards_list').empty();
 	for (var i = 0; i < G.player_deck.length; i++) {
@@ -659,7 +660,7 @@ function init_player_setup_page($pg, game_id)
 
 function init_results_page($pg, scenario_id)
 {
-	load_scenario(scenario_id);
+	G = load_scenario(scenario_id);
 	
 	$('.scenario_name', $pg).text(scenario_name(scenario_id));
 
@@ -2245,7 +2246,7 @@ function on_pick_scenario_scenario_clicked(evt)
 	var scenario_id = el.getAttribute('data-scenario-id');
 
 	// create game
-	load_scenario(scenario_id);
+	G = load_scenario(scenario_id);
 	G.game_id = generate_new_game_id(scenario_id);
 	console.log("new game id is "+G.game_id);
 
@@ -2848,7 +2849,7 @@ function init_found_completed_games_page($pg, search_results)
 		if (!r) { continue; }
 
 		var scenario_id = r.scenario_id;
-		load_scenario(scenario_id);
+		G = load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
@@ -2888,7 +2889,7 @@ function init_review_results_page($pg)
 		if (!r) { continue; }
 
 		var scenario_id = r.scenario_id;
-		load_scenario(scenario_id);
+		G = load_scenario(scenario_id);
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
