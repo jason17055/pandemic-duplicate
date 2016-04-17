@@ -21,8 +21,7 @@ app.config(
       .state('review_results', {
         url: '/review_results',
         onEnter: function() {
-          var $pg = show_page('review_results_page');
-          init_review_results_page($pg);
+          show_page('review_results_page');
         }})
       .state('join_game', {
         url: '/join_network_game',
@@ -59,45 +58,38 @@ app.config(
         }})
       .state('player_names', {
         url: '/names/:rulespec',
-        onEnter: function($stateParams) {
-          var $pg = show_page('player_names_page');
-          init_player_names_page($pg, $stateParams['rulespec']);
+        onEnter: function() {
+          show_page('player_names_page');
         }})
       .state('pick_scenario', {
         url: '/pick_scenario/:rulespec',
-        onEnter: function($stateParams) {
-          var $pg = show_page('pick_scenario_page');
-          init_pick_scenario_page($pg, $stateParams['rulespec']);
+        onEnter: function() {
+          show_page('pick_scenario_page');
         }})
       .state('generate_game', {
         url: '/generate_game/:rulespec',
-        onEnter: function($stateParams) {
-          var $pg = show_page('generate_game_page');
-          init_generate_game_page($pg, $stateParams['rulespec']);
+        onEnter: function() {
+          show_page('generate_game_page');
         }})
       .state('deck_setup', {
         url: '/:game_id/deck_setup',
-        onEnter: function($stateParams) {
-          var $pg = show_page('deck_setup_page');
-          init_deck_setup_page($pg, $stateParams['game_id']);
+        onEnter: function() {
+          show_page('deck_setup_page');
         }})
       .state('board_setup', {
         url: '/:game_id/board_setup',
-        onEnter: function($stateParams) {
-          var $pg = show_page('board_setup_page');
-          init_board_setup_page($pg, $stateParams['game_id']);
+        onEnter: function() {
+          show_page('board_setup_page');
         }})
       .state('player_setup', {
         url: '/:game_id/player_setup',
-        onEnter: function($stateParams) {
-          var $pg = show_page('player_setup_page');
-          init_player_setup_page($pg, $stateParams['game_id']);
+        onEnter: function() {
+          show_page('player_setup_page');
         }})
       .state('results', {
         url: '/:scenario_id/results',
-        onEnter: function($stateParams) {
-          var $pg = show_page('results_page');
-          init_results_page($pg, $stateParams['scenario_id']);
+        onEnter: function() {
+          show_page('results_page');
         }})
       .state('active_game', {
         url: '/:game_id/T{turn:[0-9]+}{xtra:/?.*}',
@@ -304,7 +296,8 @@ app.controller('CreateGamePageController',
   });
 
 app.controller('GenerateGamePageController',
-  function() {
+  function($state) {
+    init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
   });
 
 app.controller('JoinGamePageController',
@@ -329,11 +322,12 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function(StateService) {
+  function(StateService, $state) {
     this.generate_game_clicked = function() {
       var pcount = document.pick_scenario_form.player_count.value;
       StateService.go('generate_game/' + pcount + 'p');
     }.bind(this);
+    init_pick_scenario_page($('#pick_scenario_page'), $state.params['rulespec']);
   });
 
 app.controller('ReviewResultsPageController',
@@ -343,6 +337,7 @@ app.controller('ReviewResultsPageController',
       var q = f.q.value;
       StateService.go('search_results/' + escape(q));
     };
+    init_review_results_page($('#review_results_page'));
   });
 
 app.controller('FoundCompletedGamesPageController',
@@ -353,26 +348,29 @@ app.controller('FoundCompletedGamesPageController',
   });
 
 app.controller('PlayerNamesPageController',
-  function() {
+  function($state) {
+    init_player_names_page($('#player_names_page'), $state.params['rulespec']);
   });
 
 app.controller('DeckSetupPageController',
-  function(StateService) {
+  function(StateService, $state) {
     this.continue = function() {
       StateService.go(G.scenario_id+'/board_setup');
       return false;
     };
+    init_deck_setup_page($('#deck_setup_page'), $state.params['game_id']);
   });
 
 app.controller('BoardSetupPageController',
-  function(GameService) {
+  function(GameService, $state) {
     this.continue = function() {
       GameService.navigate_to_current_turn();
     };
+    init_board_setup_page($('#board_setup_page'), $state.params['game_id']);
   });
 
 app.controller('PlayerSetupPageController',
-  function(GameService, StateService) {
+  function(GameService, StateService, $state) {
     var seats_by_player_count = {
       2: [1,2],
       3: [1,2,3],
@@ -405,6 +403,7 @@ app.controller('PlayerSetupPageController',
       StateService.go(G.game_id+'/board_setup');
       return false;
     };
+    init_player_setup_page($('#player_setup_page'), $state.params['game_id']);
   });
 
 app.controller('PlayerTurnPageController',
@@ -576,13 +575,14 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function(StateService) {
+  function(StateService, $state) {
     this.go_home_page = function() {
       localStorage.removeItem(PACKAGE + '.current_game');
       localStorage.removeItem(PACKAGE + '.current_game.scenario');
 
       StateService.go(null);
     };
+    init_results_page($('#results_page'), $state.params['scenario_id']);
   });
 
 app.controller('ShowDiscardsPageController',

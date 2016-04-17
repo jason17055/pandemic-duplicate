@@ -162,7 +162,7 @@ Subscribers get these privileges:
 </div><!--/page_body-->
 </div><!--/create_game_page-->
 
-<div class="page" id="generate_game_page" ng-controller="GenerateGamePageController as c">
+<div class="page" id="generate_game_page" ng-controller="GenerateGamePageController as c" ng-if="top.$state.$current.name == 'generate_game'">
 
 <div class="page_header">
 <h1>Generate Game</h1>
@@ -288,7 +288,7 @@ Enter your name as it appears in the host's game.
 </div><!--/page_body-->
 </div><!--/join_game_pick_page-->
 
-<div class="page" id="pick_scenario_page" ng-controller="PickScenarioPageController as c">
+<div class="page" id="pick_scenario_page" ng-controller="PickScenarioPageController as c" ng-if="top.$state.$current.name == 'pick_scenario'">
 <div class="page_header"><h1>Pick Scenario</h1></div>
 <div class="page_body">
 
@@ -327,7 +327,7 @@ Or generate a new game:
 </div><!--/page_body-->
 </div><!--/pick_scenario_page-->
 
-<div class="page" id="review_results_page" ng-controller="ReviewResultsPageController as c">
+<div class="page" id="review_results_page" ng-controller="ReviewResultsPageController as c" ng-if="top.$state.$current.name == 'review_results'">
 <div class="page_header"><h1>Review Results</h1></div>
 <div class="page_body">
 
@@ -387,7 +387,7 @@ Or search for a game:
 </div><!--/page_body-->
 </div><!--/found_completed_games_page-->
 
-<div class="page" id="player_names_page" ng-controller="PlayerNamesPageController as c">
+<div class="page" id="player_names_page" ng-controller="PlayerNamesPageController as c" ng-if="top.$state.$current.name == 'player_names'">
 <div class="page_header">
 <h1>Player Names</h1>
 </div><!--/page_header-->
@@ -427,7 +427,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/player_names_page-->
 
-<div id="deck_setup_page" class="page" ng-controller="DeckSetupPageController as c">
+<div id="deck_setup_page" class="page" ng-controller="DeckSetupPageController as c" ng-if="top.$state.$current.name == 'deck_setup'">
 <div class="page_header">
 <h1>Deck Setup</h1>
 </div><!--/page_header-->
@@ -446,7 +446,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/deck_setup_page-->
 
-<div id="board_setup_page" class="page" ng-controller="BoardSetupPageController as c">
+<div id="board_setup_page" class="page" ng-controller="BoardSetupPageController as c" ng-if="top.$state.$current.name == 'board_setup'">
 <div class="page_header"><h1>Board Setup</h1></div>
 <div class="page_body">
 
@@ -473,7 +473,7 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/board_setup_page-->
 
-<div id="player_setup_page" class="page" ng-controller="PlayerSetupPageController as c">
+<div id="player_setup_page" class="page" ng-controller="PlayerSetupPageController as c" ng-if="top.$state.$current.name == 'player_setup'">
 <div class="page_header"><h1>Player Setup</h1></div>
 <div class="page_body">
 
@@ -850,7 +850,7 @@ without prior knowledge of the sequence of cards shown.
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
 
-<div id="results_page" class="page" ng-controller="ResultsPageController as c">
+<div id="results_page" class="page" ng-controller="ResultsPageController as c" ng-if="top.$state.$current.name == 'results'">
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
 
