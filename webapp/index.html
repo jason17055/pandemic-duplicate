@@ -501,6 +501,8 @@ Randomize:
 </div><!--/page_body-->
 </div><!--/player_setup_page-->
 
+<div ng-controller="CurrentGameController as game">
+
 <div id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
 <div class="page_header">
 <div class="game_state_summary_pane">T: <span class="turn_number"></span></div>
@@ -642,6 +644,24 @@ Perform your actions.
 
 </div><!--/page_body-->
 </div><!--/virulent_strain_page-->
+
+<div id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
+<div class="page_header"><h1>Discarded Infection Cards</h1></div>
+<div class="page_body">
+
+<ul class="infection_discards_list">
+</ul>
+<div class="virulent_epidemic_discards">
+Previously drawn epidemics:
+<ul class="epidemic_discards_list"
+</ul>
+</div>
+<div class="button_container">
+<button type="button" ng-click="c.back_clicked()">Go Back</button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/show_discards_page-->
 
 <div id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
 	<div class="page_header"><h1><span class="special_action_name"></span> Special Event</h1></div>
@@ -850,6 +870,8 @@ without prior knowledge of the sequence of cards shown.
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
 
+</div><!--/CurrentGameController-->
+
 <div id="results_page" class="page" ng-controller="ResultsPageController as c" ng-if="top.$state.$current.name == 'results'">
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
@@ -882,24 +904,6 @@ without prior knowledge of the sequence of cards shown.
 
 </div><!--/page_body-->
 </div><!--/results_page-->
-
-<div id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
-<div class="page_header"><h1>Discarded Infection Cards</h1></div>
-<div class="page_body">
-
-<ul class="infection_discards_list">
-</ul>
-<div class="virulent_epidemic_discards">
-Previously drawn epidemics:
-<ul class="epidemic_discards_list"
-</ul>
-</div>
-<div class="button_container">
-<button type="button" ng-click="c.back_clicked()">Go Back</button>
-</div>
-
-</div><!--/page_body-->
-</div><!--/show_discards_page-->
 
 </body>
 </html>

@@ -592,6 +592,10 @@ app.controller('ShowDiscardsPageController',
     };
   });
 
+app.controller('CurrentGameController',
+  function() {
+  });
+
 app.controller('PlayerCardController',
   function($scope) {
     this.reload = function() {
