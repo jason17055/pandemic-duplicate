@@ -1118,12 +1118,6 @@ function init_player_turn_page($pg)
 	set_continue_btn_caption($pg);
 }
 
-function begin_turn()
-{
-	var $pg = show_page('player_turn_page');
-	init_player_turn_page($pg);
-}
-
 function init_draw_cards_page($pg)
 {
 	set_game_state_summary($pg);
