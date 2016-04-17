@@ -70,9 +70,11 @@ app.config(
         }})
       .state('watch_game', {
         url: '/:game_id/watch/:xtra',
-        onEnter: function($stateParams) {
-          show_blank_page();
-          do_watch_game($stateParams['game_id'], $stateParams['xtra']);
+        templateUrl: 'pages/game.ng',
+        controller: 'CurrentGameController',
+        controllerAs: 'game',
+        resolve: {
+          'isPlaying': function() { return false; }
         }})
       .state('player_names', {
         url: '/names/:rulespec',
@@ -132,9 +134,11 @@ app.config(
         }})
       .state('active_game', {
         url: '/:game_id/T{turn:[0-9]+}{xtra:/?.*}',
-        onEnter: function($stateParams) {
-          load_game_at($stateParams['game_id'], $stateParams['turn']);
-          show_current_game($stateParams['xtra']);
+        templateUrl: 'pages/game.ng',
+        controller: 'CurrentGameController',
+        controllerAs: 'game',
+        resolve: {
+          'isPlaying': function() { return true; }
         }})
       .state('404', {
         onEnter: function() {
@@ -632,7 +636,15 @@ app.controller('ShowDiscardsPageController',
   });
 
 app.controller('CurrentGameController',
-  function() {
+  function($state, isPlaying) {
+    if (isPlaying) {
+      load_game_at($state.params['game_id'], $state.params['turn']);
+      show_current_game($state.params['xtra']);
+    } else {
+      show_blank_page();
+      do_watch_game($state.params['game_id'], $state.params['xtra']);
+    }
+    check_screen_size();
   });
 
 app.controller('PlayerCardController',
