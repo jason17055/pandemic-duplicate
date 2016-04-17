@@ -6,7 +6,11 @@
 </div>
 <div class="page_body">
 
-<div class="history_container" pd-flex-fill-height></div>
+<div class="history_container"></div>
+
+</div><!--/page_body-->
+<div class="page_nav">
+
 <div class="in_action_phase">
 <div class="troubleshooter_only">
 <div>
@@ -60,9 +64,8 @@ Perform your actions.
 <button type="button" class="goto_player_turn_btn" ng-click="c.continue_player_turn()">Next: <small><span class="player_name"></span> turn</small></button>
 </div>
 </div>
-<div class="end_of_page"></div>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/player_turn_page-->
 
 <div id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
@@ -144,7 +147,6 @@ Perform your actions.
 <div class="page_header"><h1>Discarded Infection Cards</h1></div>
 <div class="page_body">
 
-<div pd-flex-fill-height>
 <ul class="infection_discards_list">
 <li ng-repeat="c in game.get_infection_discards()"><pd-infection-card card="c"></pd-infection-card></li>
 </ul>
@@ -154,13 +156,15 @@ Previously drawn epidemics:
 <li ng-repeat="c in game.get_epidemic_discards()"><pd-player-card card="c"></pd-player-card></li>
 </ul>
 </div>
-</div><!--/pd-flex-fill-height-->
+
+</div><!--/page_body-->
+<div class="page_nav">
 
 <div class="button_container">
 <button type="button" ng-click="c.back_clicked()">Go Back</button>
 </div>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/show_discards_page-->
 
 <div id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">

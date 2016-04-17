@@ -790,22 +790,3 @@ app.directive('pdInfectionCard',
       controllerAs: 'cc'
     };
   });
-
-app.directive('pdFlexFillHeight',
-  function($window) {
-    return {
-      restrict: 'A',
-      link: function(scope, element) {
-        angular.element($window).on('resize.pdFlexFillHeight',
-          function() {
-            scope.$apply();
-          });
-        var pageElement = angular.element('body');
-        scope.$watch(
-          function() { return $window.innerHeight - pageElement.height() + element.height() - 16; },
-          function(newValue, oldValue) {
-            element.css('min-height', newValue + 'px');
-          });
-      }
-    };
-  });
