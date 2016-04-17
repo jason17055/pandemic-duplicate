@@ -27,13 +27,13 @@ Perform your actions.
 <div class="button_container">
 <button type="button" ng-click="c.show_discards_clicked()">Show Discards</button>
 </div>
-<div class="button_container draw_sequence_card_button_container">
+<div class="button_container" ng-show="game.can_draw_sequence_card()">
 <button type="button" ng-click="c.draw_sequence_card_clicked()">Draw Sequence Card</button>
 </div>
-<div class="button_container play_special_event_button_container">
+<div class="button_container" ng-show="game.can_play_special_event()">
 <button type="button" ng-click="c.play_special_event_clicked()">Play Special Event</button>
 </div>
-<div class="button_container retrieve_special_event_button_container">
+<div class="button_container" ng-show="game.can_retrieve_special_event()">
 <button type="button" ng-click="c.retrieve_special_event_clicked()">Retrieve Special Event</button>
 </div>
 <div class="detail_level_1">
@@ -46,10 +46,10 @@ Perform your actions.
 <button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
 </div>
 </div>
-<div class="button_container defeat_button_container">
+<div class="button_container" ng-show="game.can_admit_defeat()">
 <button type="button" ng-click="c.admit_defeat_clicked()">Admit Defeat</button>
 </div>
-<div class="continue_button_container">
+<div ng-show="game.can_continue()">
 <div class="button_container">
 <button type="button" class="goto_draw_cards_btn" ng-click="c.continue_player_turn()">Next: <small>Draw Cards Step</small></button>
 <button type="button" class="goto_mutation_btn" ng-click="c.continue_player_turn()">Next: <small>Mutation</small></button>

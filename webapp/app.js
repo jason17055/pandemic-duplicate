@@ -661,6 +661,31 @@ app.controller('ShowDiscardsPageController',
 
 app.controller('CurrentGameController',
   function($state, isPlaying, gameData) {
+    this.can_draw_sequence_card = function() {
+      return G.has_control && G.rules.lab_challenge && G.step == 'actions';
+    };
+    this.can_play_special_event = function() {
+      return G.has_control && G.has_any_special_event();
+    };
+    this.can_retrieve_special_event = function() {
+      return G.has_control && !G.contingency_event && G.roles[G.active_player] == 'Contingency Planner' && G.step == 'actions';
+    };
+    this.can_admit_defeat = function() {
+      var at_end_of_game = (
+          G.step == 'actions' &&
+          G.turns >= G.game_length_in_turns);
+      var getting_infected = (
+          G.step == 'infection' || G.step == 'epidemic');
+
+      return G.has_control && (at_end_of_game || getting_infected);
+    };
+    this.can_continue = function() {
+      var at_end_of_game = (
+          G.step == 'actions' &&
+          G.turns >= G.game_length_in_turns);
+      return G.has_control && !at_end_of_game;
+    };
+
     this.get_infection_discards = function() {
       return G.infection_discards;
     };

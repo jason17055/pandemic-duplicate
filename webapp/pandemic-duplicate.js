@@ -1049,89 +1049,18 @@ function init_draw_cards_page($pg)
 	set_continue_btn_caption($pg);
 }
 
-function can_continue()
-{
-	var at_end_of_game = (
-		G.step == 'actions' &&
-		G.turns >= G.game_length_in_turns);
-
-	return G.has_control && !at_end_of_game;
-}
-
-function can_draw_sequence_card()
-{
-	return G.has_control && G.rules.lab_challenge && G.step == 'actions';
-}
-
-function can_play_special_event()
-{
-	return G.has_control && G.has_any_special_event();
-}
-
-function can_retrieve_special_event()
-{
-	return G.has_control && !G.contingency_event && G.roles[G.active_player] == 'Contingency Planner' && G.step == 'actions';
-}
-
 function can_declare_victory()
 {
 	return G.has_control && G.step == 'actions';
 }
 
-function can_admit_defeat()
-{
-	var at_end_of_game = (
-		G.step == 'actions' &&
-		G.turns >= G.game_length_in_turns);
-	var getting_infected = (
-		G.step == 'infection' || G.step == 'epidemic'
-		);
-
-	return G.has_control && (at_end_of_game || getting_infected);
-}
-
 function set_buttons_visibility($pg)
 {
-	if (can_draw_sequence_card()) {
-		$('.draw_sequence_card_button_container', $pg).show();
-	}
-	else {
-		$('.draw_sequence_card_button_container', $pg).hide();
-	}
-
-	if (can_play_special_event()) {
-		$('.play_special_event_button_container', $pg).show();
-	}
-	else {
-		$('.play_special_event_button_container', $pg).hide();
-	}
-
-	if (can_retrieve_special_event()) {
-		$('.retrieve_special_event_button_container', $pg).show();
-	}
-	else {
-		$('.retrieve_special_event_button_container', $pg).hide();
-	}
-
 	if (can_declare_victory()) {
 		$('.victory_button_container', $pg).show();
 	}
 	else {
 		$('.victory_button_container', $pg).hide();
-	}
-
-	if (can_admit_defeat()) {
-		$('.defeat_button_container', $pg).show();
-	}
-	else {
-		$('.defeat_button_container', $pg).hide();
-	}
-
-	if (can_continue()) {
-		$('.continue_button_container', $pg).show();
-	}
-	else {
-		$('.continue_button_container', $pg).hide();
 	}
 }
 
