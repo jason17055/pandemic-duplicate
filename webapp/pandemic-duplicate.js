@@ -281,23 +281,6 @@ function show_current_game(xtra)
 	}
 }
 
-function do_search_results(q)
-{
-	var onSuccess = function(data) {
-		var $pg = show_page('found_completed_games_page');
-		init_found_completed_games_page($pg, data);
-	};
-
-	var u = 's/results?q='+escape(q);
-	$.ajax({
-		type: "GET",
-		url: u,
-		dataType: "json",
-		success: onSuccess,
-		error: handle_ajax_error
-		});
-}
-
 function submit_generate_game_form()
 {
 	var f = document.generate_game_form;

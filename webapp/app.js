@@ -70,9 +70,15 @@ app.config(
         }})
       .state('search_results', {
         url: '/search_results/:q',
-        onEnter: function($stateParams) {
-          show_blank_page();
-          do_search_results($stateParams['q']);
+        templateUrl: 'pages/found_completed_games.ng',
+        controller: 'FoundCompletedGamesPageController',
+        controllerAs: 'c',
+        resolve: {
+          'data': function($http, $stateParams) {
+            return $http
+              .get('/s/results', {params: {'q': $stateParams['q']}})
+              .then(function(httpResponse) { return httpResponse.data; });
+          }
         }})
       .state('watch_game', {
         url: '/:game_id/watch/:xtra',
@@ -393,10 +399,12 @@ app.controller('ReviewResultsPageController',
   });
 
 app.controller('FoundCompletedGamesPageController',
-  function($window) {
+  function($window, data) {
     this.back = function() {
       $window.history.back();
     };
+    var $pg = show_page('found_completed_games_page');
+    init_found_completed_games_page($pg, data);
   });
 
 app.controller('PlayerNamesPageController',
