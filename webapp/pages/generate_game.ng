@@ -1,3 +1,4 @@
+<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
 <div class="page" id="generate_game_page">
 
 <div class="page_header">
@@ -6,9 +7,7 @@
 
 <div class="page_body">
 
-<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
 <input type="hidden" name="player_count">
-<div class="flex_container">
 <table width="100%">
 <tr>
 <td><label>Players:</label></td>
@@ -57,13 +56,14 @@
 <label for="superbug_checkbox">Superbug Challenge *NYI*</label>
 </td>
 </table>
-</div><!--/flex_container-->
+</div><!--/page_body-->
+<div class="page_nav">
 
 <div class="button_container">
 <button type="submit">Generate Game</button>
 </div>
-</form>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/generate_game_page-->
+</form>
 

@@ -2,8 +2,6 @@
 <div class="page_header"><h1>Player Setup</h1></div>
 <div class="page_body">
 
-<div class="flex_container">
-
 <p>Scenario: "<span class="scenario_name">{{c.get_scenario_name()}}</span>"</p>
 <p>Rules: <span class="rules">{{c.get_rules()}}</span></p>
 
@@ -17,12 +15,13 @@
 </ul>
 </div>
 
-</div><!--/flex_container-->
+</div><!--/page_body-->
+<div class="page_nav">
 
 <div class="button_container">
 <button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
 </div>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/player_setup_page-->
 

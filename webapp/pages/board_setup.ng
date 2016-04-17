@@ -2,7 +2,6 @@
 <div class="page_header"><h1>Board Setup</h1></div>
 <div class="page_body">
 
-<div class="flex_container">
 <div>Cities w/ 3 cubes:</div>
 <ul class="3cube_cities card_list">
 <li><pd-infection-card card="c.infections[0]"></pd-infection-card>
@@ -31,11 +30,12 @@
 <div>Initial Sequence Card:</div>
 <ul class="sequence_card card_list"></ul>
 </div><!--/initial_lab_sequence_card-->
-</div><!--/flex_container-->
+</div><!--/page_body-->
 
+<div class="page_nav">
 <div class="button_container">
 <button type="button" ng-click="c.continue()">Next: <small>First Turn</small></button>
 </div>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/board_setup_page-->

@@ -1,3 +1,4 @@
+<form name="create_game_form" method="post" ng-submit="c.submit_create_game_form()">
 <div class="page" id="create_game_page">
 
 <div class="page_header">
@@ -6,8 +7,6 @@
 
 <div class="page_body">
 
-<form name="create_game_form" method="post" ng-submit="c.submit_create_game_form()">
-<div class="flex_container">
 <table width="100%">
 <tr>
 <td><label for="player_count_cb">Players:</label></td>
@@ -20,13 +19,13 @@
 </tr>
 
 </table>
-</div><!--/flex_container-->
+</div><!--/page_body-->
+<div class="page_nav">
 
 <div class="button_container">
 <button type="submit">Next: <small>Players</small></button>
 </div>
-</form>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/create_game_page-->
-
+</form>

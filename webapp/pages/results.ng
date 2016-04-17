@@ -2,7 +2,6 @@
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
 
-<div class="flex_container">
 <p>Scenario: "<span class="scenario_name"></span>"</p>
 
 <table class="results_table" border="1">
@@ -22,11 +21,12 @@
 </tr>
 </table>
 
-</div><!--/flex_container-->
+</div><!--/page_body-->
+<div class="page_nav">
 
 <div class="button_container">
 <button type="button" ng-click="c.go_home_page()">Finish</button>
 </div>
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/results_page-->

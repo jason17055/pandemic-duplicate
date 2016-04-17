@@ -1,11 +1,10 @@
+<form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
 <div class="page" id="player_names_page">
 <div class="page_header">
 <h1>Player Names</h1>
 </div><!--/page_header-->
-<div class="page_body">
 
-<form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
-<div class="flex_container">
+<div class="page_body">
 
 <div><label>Location:
 <input type="text" name="location"></label></div>
@@ -27,14 +26,14 @@ Randomize:
 <option value="full">Turn order</option>
 </select></label>
 </div>
-</div><!--/flex_container-->
+</div><!--/page_body-->
 
+<div class="page_nav">
 <div class="button_container">
 <button type="submit">Next: <small>Pick Game</small></button>
 </div>
 
-</form><!--/player_names_form-->
 
-</div><!--/page_body-->
+</div><!--/page_nav-->
 </div><!--/player_names_page-->
-
+</form><!--/player_names_form-->
