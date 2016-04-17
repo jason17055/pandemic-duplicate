@@ -161,7 +161,7 @@ public class ActivePlayServlet extends HttpServlet
 			q = q.setAncestor(pkey);
 			PreparedQuery pq = datastore.prepare(q);
 
-			String msgString = makeChannelMessage(moves);
+			String msgString = makeChannelMessage(game_id, moves);
 			for (Entity subscriberEnt : pq.asIterable()) {
 				String channelKey = Long.toString(subscriberEnt.getKey().getId());
 				channelService.sendMessage(
@@ -190,7 +190,7 @@ public class ActivePlayServlet extends HttpServlet
 		}
 	}
 
-	String makeChannelMessage(List<String> moves)
+	String makeChannelMessage(String game_id, List<String> moves)
 		throws IOException
 	{
 		StringWriter sw = new StringWriter();
@@ -198,6 +198,7 @@ public class ActivePlayServlet extends HttpServlet
 			createJsonGenerator(sw);
 
 		out.writeStartObject();
+		out.writeStringField("game_id", game_id);
 		out.writeFieldName("moves");
 		out.writeStartArray();
 		for (String mv : moves) {
