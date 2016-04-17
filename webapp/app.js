@@ -400,7 +400,7 @@ app.controller('PlayerTurnPageController',
         G.player_names[G.active_player] = p_name;
         save_player_names();
         $('.page_header .player_name').text(p_name);
-        on_state_init();
+        show_current_game('');
       }
     };
     this.show_discards_clicked = function() {
