@@ -69,31 +69,6 @@ function load_scenario(scenario_id)
 	return Pandemic.GameState.deserialize(scenario_id, s);
 }
 
-function init_options_page($pg)
-{
-	var f = document.options_form;
-	var tmp = localStorage.getItem(PACKAGE+'.base_game_version');
-	f.base_game_version.value = tmp || '2007';
-
-	f.has_on_the_brink.checked = localStorage.getItem(PACKAGE+'.has_on_the_brink')=='true';
-	f.has_in_the_lab.checked = localStorage.getItem(PACKAGE+'.has_in_the_lab')=='true';
-	f.has_state_of_emergency.checked = localStorage.getItem(PACKAGE+'.has_state_of_emergency')=='true';
-
-	var tmp1 = localStorage.getItem(PACKAGE+'.game_detail_level');
-	f.game_detail_level.value = tmp1 || '0';
-}
-
-function save_options_form()
-{
-	var f = document.options_form;
-	localStorage.setItem(PACKAGE+'.base_game_version', f.base_game_version.value);
-	localStorage.setItem(PACKAGE+'.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
-	localStorage.setItem(PACKAGE+'.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
-	localStorage.setItem(PACKAGE+'.has_state_of_emergency', f.has_state_of_emergency.checked ? 'true' : 'false');
-	localStorage.setItem(PACKAGE+'.game_detail_level', f.game_detail_level.value);
-	load_options();
-}
-
 function init_join_game_pick_page($pg, search_results)
 {
 	var list = search_results.results;

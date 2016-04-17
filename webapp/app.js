@@ -32,8 +32,7 @@ app.config(
       .state('options', {
         url: '/options',
         onEnter: function() {
-          var $pg = show_page('options_page');
-          init_options_page($pg);
+          show_page('options_page');
         }})
       .state('subscription', {
         url: '/subscription',
@@ -228,8 +227,26 @@ app.controller('WelcomePageController',
   });
 
 app.controller('OptionsPageController',
-  function(StateService, $window) {
+  function(StateService, Storage, $window) {
     var f = document.options_form;
+
+    var save_options_form = function() {
+      Storage.set('.base_game_version', f.base_game_version.value);
+      Storage.set('.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
+      Storage.set('.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
+      Storage.set('.has_state_of_emergency', f.has_state_of_emergency.checked ? 'true' : 'false');
+      Storage.set('.game_detail_level', f.game_detail_level.value);
+      load_options();
+    };
+
+    // Populate form based on values in Storage.
+    f.base_game_version.value = Storage.get('.base_game_version') || '2007';
+    f.has_on_the_brink.checked = Storage.get('.has_on_the_brink')=='true';
+    f.has_in_the_lab.checked = Storage.get('.has_in_the_lab')=='true';
+    f.has_state_of_emergency.checked = Storage.get('.has_state_of_emergency')=='true';
+    f.game_detail_level.value = Storage.get('.game_detail_level') || '0';
+
+    // Watch the form for changes.
     f.base_game_version.onchange = save_options_form;
     f.has_on_the_brink.onchange = save_options_form;
     f.has_in_the_lab.onchange = save_options_form;
