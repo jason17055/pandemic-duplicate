@@ -58,9 +58,15 @@ app.config(
         }})
       .state('join_network_game', {
         url: '/join_network_game/:q',
-        onEnter: function($stateParams) {
-          show_blank_page();
-          do_search_network_game($stateParams['q']);
+        templateUrl: 'pages/join_game_pick.ng',
+        controller: 'JoinGamePickPageController',
+        controllerAs: 'c',
+        resolve: {
+          'data': function($http, $stateParams) {
+            return $http
+              .get('/s/games', {params: {'search_player': $stateParams['q']}})
+              .then(function(httpResponse) { return httpResponse.data; });
+          }
         }})
       .state('search_results', {
         url: '/search_results/:q',
@@ -358,10 +364,13 @@ app.controller('JoinGamePageController',
   });
 
 app.controller('JoinGamePickPageController',
-  function($window) {
+  function($window, data) {
     this.cancel = function() {
+      console.log('cancel clicked');
       $window.history.back();
     };
+    show_page('join_game_pick_page');
+    init_join_game_pick_page($('#join_game_pick_page'), data);
   });
 
 app.controller('PickScenarioPageController',

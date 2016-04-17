@@ -24,37 +24,6 @@
 
 <ui-view></ui-view>
 
-<div class="page" id="join_game_pick_page" ng-controller="JoinGamePickPageController as c">
-
-<div class="page_header">
-<h1>Join Network Game</h1>
-</div><!--/page_header-->
-
-<div class="page_body">
-
-<form name="join_game_pick_form" method="post" onsubmit="return false">
-
-<p class="no_results_found">Sorry, no games found.</p>
-
-<div class="button_container join_game_btn template">
-<button type="button">
-	<span class="scenario_name_container"></span>
-	<span class="scenario_description_container">
-	<span class="module_list_container"></span>
-	<span class="epidemics_ind"><img class="epidemic_icon" src=""></span>
-	</span>
-	with <span class="player_list"></span>
-	<span class="location_container" style="display:none"> (<span class="location"></span>)</span>
-</button>
-</div>
-<div class="button_container">
-<button type="button" ng-click="c.cancel()">Go Back</button>
-</div>
-</form>
-
-</div><!--/page_body-->
-</div><!--/join_game_pick_page-->
-
 <div class="page" id="found_completed_games_page" ng-controller="FoundCompletedGamesPageController as c">
 <div class="page_header"><h1>Completed Games</h1></div>
 <div class="page_body">

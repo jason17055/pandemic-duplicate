@@ -298,23 +298,6 @@ function do_search_results(q)
 		});
 }
 
-function do_search_network_game(name)
-{
-	var onSuccess = function(data) {
-		var $pg = show_page('join_game_pick_page');
-		init_join_game_pick_page($pg, data);
-	};
-
-	var u = 's/games?search_player='+escape(name);
-	$.ajax({
-		type: "GET",
-		url: u,
-		dataType: "json",
-		success: onSuccess,
-		error: handle_ajax_error
-		});
-}
-
 function submit_generate_game_form()
 {
 	var f = document.generate_game_form;
