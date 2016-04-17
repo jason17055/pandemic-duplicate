@@ -543,8 +543,20 @@ app.controller('VirulentStrainPageController',
   });
 
 app.controller('SpecialEventPageController',
-  function($window) {
+  function($window, GameService) {
+    console.log('making special event page');
+    this.get_choices = function() {
+      var specials = get_deck('Specials', G.rules);
+      var list = specials.filter(function(s) {
+        return G.has_special_event(s);
+      });
+      return list;
+    };
+    this.select = function(choice) {
+      on_special_event_clicked(GameService, choice);
+    };
     this.cancel = function() {
+      console.log('Cancel clicked');
       $window.history.back();
     };
   });

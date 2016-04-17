@@ -1567,10 +1567,8 @@ function on_infection_rumor_selected()
 	return set_move('special "Infection Rumor" "' + c + '"');
 }
 
-function on_special_event_clicked()
+function on_special_event_clicked(GameService, s)
 {
-	var s =  this.getAttribute('data-special-event');
-
 	if (s == 'Resilient Population') {
 
 		var $pg = show_page('resilient_population_page');
@@ -1589,7 +1587,7 @@ function on_special_event_clicked()
 		return;
 	}
 
-	return set_move('special '+s);
+	GameService.set_move('special '+s);
 }
 
 function on_special_event_retrieve_clicked()
@@ -1656,20 +1654,6 @@ function init_discover_cure_page($pg)
 function init_play_special_event_page($pg)
 {
 	$('.special_action_name').text("Play");
-	$('.special_event_btn_row:not(.template)').remove();
-	var specials = get_deck('Specials', G.rules);
-	for (var i = 0; i < specials.length; i++) {
-		var s = specials[i];
-		if (!G.has_special_event(s)) {
-			continue;
-		}
-		var $s = $('.special_event_btn_row.template').clone();
-		$('button', $s).text(s);
-		$('button', $s).attr('data-special-event', s);
-		$('button', $s).click(on_special_event_clicked);
-		$s.removeClass('template');
-		$('#special_event_none_row').before($s);
-	}
 }
 
 function init_retrieve_special_event_page($pg)

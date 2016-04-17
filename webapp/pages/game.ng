@@ -174,8 +174,8 @@ Previously drawn epidemics:
 
 
 <div class="special_event_btns_container">
-<div class="template special_event_btn_row button_container">
-<button type="button"></button>
+<div class="special_event_btn_row button_container" ng-repeat="choice in c.get_choices()">
+<button type="button" ng-click="c.select(choice)">{{choice}}</button>
 </div>
 <div id="special_event_none_row" class="button_container">
 <button type="button" ng-click="c.cancel()">None</button>
