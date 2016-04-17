@@ -355,7 +355,7 @@ function init_game_completed_page($pg)
 		if (G.is_unnecessary('purple')) {
 			victory_type = "cured all four diseases";
 		}
-		else if (is_cured(G, 'purple')) {
+		else if (G.is_cured('purple')) {
 			victory_type = "cured all five diseases";
 		}
 		else {
