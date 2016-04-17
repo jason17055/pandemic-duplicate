@@ -137,7 +137,7 @@ Subscribers get these privileges:
 
 <div class="page_body">
 
-<form name="create_game_form" method="post" onsubmit="return submit_create_game_form()">
+<form name="create_game_form" method="post" ng-submit="c.submit_create_game_form()">
 <div class="flex_container">
 <table width="100%">
 <tr>
@@ -345,7 +345,7 @@ Or generate a new game:
 </div>
 </div>
 
-<form name="search_results_form" method="post" onsubmit="return submit_search_results_form()">
+<form name="search_results_form" method="post" ng-submit="c.submit_search_results_form()">
 <div>
 Or search for a game:
 </div>

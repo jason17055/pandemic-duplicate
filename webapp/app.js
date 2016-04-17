@@ -159,7 +159,12 @@ app.controller('SubscriptionPageController',
   });
 
 app.controller('CreateGamePageController',
-  function() {
+  function(StateService) {
+    this.submit_create_game_form = function() {
+      var f = document.create_game_form;
+      var pcount = f.player_count.value;
+      StateService.go('names/' + pcount + 'p');
+    };
   });
 
 app.controller('GenerateGamePageController',
@@ -190,7 +195,12 @@ app.controller('PickScenarioPageController',
   });
 
 app.controller('ReviewResultsPageController',
-  function() {
+  function(StateService) {
+    this.submit_search_results_form = function() {
+      var f = document.search_results_form;
+      var q = f.q.value;
+      StateService.go('search_results/' + escape(q));
+    };
   });
 
 app.controller('FoundCompletedGamesPageController',

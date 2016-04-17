@@ -350,23 +350,6 @@ function submit_join_game_form()
 	return false;
 }
 
-function submit_search_results_form()
-{
-	var f = document.search_results_form;
-	var q = f.q.value;
-
-	goto_state('search_results/' + escape(q));
-	return false;
-}
-
-function submit_create_game_form()
-{
-	var f = document.create_game_form;
-	var pcount = f.player_count.value;
-	goto_state('names/' + pcount + 'p');
-	return false;
-}
-
 function submit_generate_game_form()
 {
 	var f = document.generate_game_form;
