@@ -1,0 +1,43 @@
+<div class="page" id="options_page">
+
+<div class="page_header">
+<h1>Options Menu</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="options_form">
+
+<p>
+<label>Base Game Version:
+<select name="base_game_version">
+<option value="2007">2007 Original</option>
+<option value="2013">2013 Reprint</option>
+</select>
+</label>
+</p>
+
+<p>Expansions:
+<label><input type="checkbox" name="has_on_the_brink">On The Brink</label>
+<label><input type="checkbox" name="has_in_the_lab">In The Lab</label>
+<label><input type="checkbox" name="has_state_of_emergency">State of Emergency</label>
+</p>
+
+<p>
+<label>Detail Level:
+<select name="game_detail_level">
+<option value="0">Minimal</option>
+<option value="1">Cure Discoveries</option>
+</select>
+</label>
+</p>
+
+<div class="button_container"><button type="button" ng-click="c.subscription_clicked()">Subscription</button></div>
+<div class="button_container"><button type="button" ng-click="c.clear_storage_clicked()">Clear localStorage</button></div>
+<div class="button_container"><button type="button" ng-click="c.back_clicked()">Back</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/options_page-->
+

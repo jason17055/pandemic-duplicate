@@ -1,0 +1,69 @@
+<div class="page" id="generate_game_page">
+
+<div class="page_header">
+<h1>Generate Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
+<input type="hidden" name="player_count">
+<div class="flex_container">
+<table width="100%">
+<tr>
+<td><label>Players:</label></td>
+<td><span class="player_count"></span></td>
+</tr>
+
+<tr>
+<td><label for="level_cb">Level:</label></td>
+<td>
+<select id="level_cb" name="level">
+<option value="4">Introductory (4 epidemics)</option>
+<option value="5" selected>Normal (5 epidemics)</option>
+<option value="6">Heroic (6 epidemics)</option>
+<option value="7">Legendary (7 epidemics)</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td><label>Expansions:</label></td>
+<td>
+<div><label><input type="checkbox" id="on_the_brink_checkbox" name="on_the_brink" onclick="validate_modules()">On The Brink</label></div>
+<div><label><input type="checkbox" id="in_the_lab_checkbox" name="in_the_lab" onclick="validate_modules()">In The Lab</label></div>
+<div><label><input type="checkbox" id="state_of_emergency_checkbox" name="state_of_emergency" onclick="validate_modules()">State of Emergency</label></div>
+</td>
+</tr>
+
+<tr>
+<td>Modules:</td>
+<td>
+<input type="checkbox" id="vs_checkbox" name="virulent_strain" onclick='validate_modules();'/>
+<label for="vs_checkbox">Virulent Strain</label><br>
+<input type="checkbox" id="lab_checkbox" name="lab_challenge" onclick='validate_modules();'/>
+<label for="lab_checkbox">Lab Challenge</label><br>
+<input type="checkbox" id="mut_checkbox" name="mutation_challenge" onclick='validate_modules();'/>
+<label for="mut_checkbox">Mutation Challenge</label><br>
+<input type="checkbox" id="wp_checkbox" name="worldwide_panic" onclick='validate_modules();'/>
+<label for="wp_checkbox">Worldwide Panic</label><br>
+<input type="checkbox" id="quarantines_checkbox" name="quarantines" onclick='validate_modules();'/>
+<label for="quarantines_checkbox">Quarantines</label><br>
+<input type="checkbox" id="hinterlands_checkbox" name="hinterlands_challenge" onclick='validate_modules();'/>
+<label for="hinterlands_checkbox">Hinterlands Challenge</label><br>
+<input type="checkbox" id="emergency_event_checkbox" name="emergency_event_challenge" onclick='validate_modules();'/>
+<label for="emergency_event_checkbox">Emergency Event Challenge *NYI*</label><br>
+<input type="checkbox" id="superbug_checkbox" name="superbug_challenge" onclick='validate_modules();'/>
+<label for="superbug_checkbox">Superbug Challenge *NYI*</label>
+</td>
+</table>
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="submit">Generate Game</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/generate_game_page-->
+

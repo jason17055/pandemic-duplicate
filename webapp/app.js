@@ -3,8 +3,11 @@ app = angular.module('pandemicDuplicateApp', ['pandemicStore', 'ui.router']);
 app.config(
   function($stateProvider, $urlRouterProvider) {
     $stateProvider
-      .state('home', {
+      .state('welcome', {
         url: '/',
+        templateUrl: 'pages/welcome.ng',
+        controller: 'WelcomePageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('welcome_page');
         }})
@@ -15,26 +18,41 @@ app.config(
         }})
       .state('create_game', {
         url: '/params',
+        templateUrl: 'pages/create_game.ng',
+        controller: 'CreateGamePageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('create_game_page');
         }})
       .state('review_results', {
         url: '/review_results',
+        templateUrl: 'pages/review_results.ng',
+        controller: 'ReviewResultsPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('review_results_page');
         }})
       .state('join_game', {
         url: '/join_network_game',
+        templateUrl: 'pages/join_game.ng',
+        controller: 'JoinGamePageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('join_game_page');
         }})
       .state('options', {
         url: '/options',
+        templateUrl: 'pages/options.ng',
+        controller: 'OptionsPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('options_page');
         }})
       .state('subscription', {
         url: '/subscription',
+        templateUrl: 'pages/subscription.ng',
+        controller: 'SubscriptionPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('subscription_page');
         }})
@@ -58,36 +76,57 @@ app.config(
         }})
       .state('player_names', {
         url: '/names/:rulespec',
+        templateUrl: 'pages/player_names.ng',
+        controller: 'PlayerNamesPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('player_names_page');
         }})
       .state('pick_scenario', {
         url: '/pick_scenario/:rulespec',
+        templateUrl: 'pages/pick_scenario.ng',
+        controller: 'PickScenarioPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('pick_scenario_page');
         }})
       .state('generate_game', {
         url: '/generate_game/:rulespec',
+        templateUrl: 'pages/generate_game.ng',
+        controller: 'GenerateGamePageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('generate_game_page');
         }})
       .state('deck_setup', {
         url: '/:game_id/deck_setup',
+        templateUrl: 'pages/deck_setup.ng',
+        controller: 'DeckSetupPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('deck_setup_page');
         }})
       .state('board_setup', {
         url: '/:game_id/board_setup',
+        templateUrl: 'pages/board_setup.ng',
+        controller: 'BoardSetupPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('board_setup_page');
         }})
       .state('player_setup', {
         url: '/:game_id/player_setup',
+        templateUrl: 'pages/player_setup.ng',
+        controller: 'PlayerSetupPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('player_setup_page');
         }})
       .state('results', {
         url: '/:scenario_id/results',
+        templateUrl: 'pages/results.ng',
+        controller: 'ResultsPageController',
+        controllerAs: 'c',
         onEnter: function() {
           show_page('results_page');
         }})

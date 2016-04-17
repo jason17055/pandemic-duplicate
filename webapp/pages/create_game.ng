@@ -1,0 +1,32 @@
+<div class="page" id="create_game_page">
+
+<div class="page_header">
+<h1>Get Started</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="create_game_form" method="post" ng-submit="c.submit_create_game_form()">
+<div class="flex_container">
+<table width="100%">
+<tr>
+<td><label for="player_count_cb">Players:</label></td>
+<td><select id="player_count_cb" name="player_count">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select></td>
+</tr>
+
+</table>
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="submit">Next: <small>Players</small></button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/create_game_page-->
+

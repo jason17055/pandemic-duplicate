@@ -1,0 +1,26 @@
+<div id="board_setup_page" class="page">
+<div class="page_header"><h1>Board Setup</h1></div>
+<div class="page_body">
+
+<div class="flex_container">
+<div>Cities w/ 3 cubes:</div>
+<ul class="3cube_cities card_list"></ul>
+
+<div>Cities w/ 2 cubes:</div>
+<ul class="2cube_cities card_list"></ul>
+
+<div>Cities w/ 1 cubes:</div>
+<ul class="1cube_cities card_list"></ul>
+
+<div class="initial_lab_sequence_card">
+<div>Initial Sequence Card:</div>
+<ul class="sequence_card card_list"></ul>
+</div><!--/initial_lab_sequence_card-->
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="button" ng-click="c.continue()">Next: <small>First Turn</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/board_setup_page-->

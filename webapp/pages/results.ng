@@ -1,0 +1,32 @@
+<div id="results_page" class="page">
+<div class="page_header"><h1>Results for this Game</h1></div>
+<div class="page_body">
+
+<div class="flex_container">
+<p>Scenario: "<span class="scenario_name"></span>"</p>
+
+<table class="results_table" border="1">
+<tr>
+<th>Pl</th>
+<th>Score</th>
+<th>Players</th>
+<th>Location</th>
+<th>Submitted</th>
+</tr>
+<tr class="result_row template">
+<td class="place_col"></td>
+<td class="score_col"></td>
+<td class="players_col"></td>
+<td class="location_col"></td>
+<td class="submitted_col"></td>
+</tr>
+</table>
+
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="button" ng-click="c.go_home_page()">Finish</button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/results_page-->

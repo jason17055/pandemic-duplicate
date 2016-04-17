@@ -1,0 +1,28 @@
+<div id="player_setup_page" class="page">
+<div class="page_header"><h1>Player Setup</h1></div>
+<div class="page_body">
+
+<div class="flex_container">
+
+<p>Scenario: "<span class="scenario_name">{{c.get_scenario_name()}}</span>"</p>
+<p>Rules: <span class="rules">{{c.get_rules()}}</span></p>
+
+<div ng-repeat="seat in c.get_seats()">
+<div>{{seat}}. <span class="player_name">{{c.get_player_name(seat)}}</span></div>
+<div>Role: <img ng-src="{{c.get_player_role_icon(seat)}}" alt="" class="role_icon"><span class="role">{{c.get_player_role(seat)}}</span></div>
+<ul class="card_list">
+  <li ng-repeat="card in c.get_player_cards(seat)">
+    <pd-player-card card="card"></pd-player-card>
+  </li>
+</ul>
+</div>
+
+</div><!--/flex_container-->
+
+<div class="button_container">
+<button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/player_setup_page-->
+

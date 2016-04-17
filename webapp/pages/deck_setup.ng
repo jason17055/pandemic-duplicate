@@ -1,0 +1,19 @@
+<div id="deck_setup_page" class="page">
+<div class="page_header">
+<h1>Deck Setup</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+<div>Player Cards:</div>
+<ol id="player_cards_list"></ol>
+
+<div>Infection Cards:</div>
+<ol id="infection_cards_list"></ol>
+
+<div class="button_container">
+<button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
+</div>
+
+</div><!--/page_body-->
+</div><!--/deck_setup_page-->
+

@@ -1,0 +1,41 @@
+<div class="page" id="subscription_page">
+
+<div class="page_header">
+<h1>Subscription</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<p>
+Subscriptions keep Pandemic-Duplicate alive on the Internet.
+Subscribers get these privileges:
+</p>
+<ul><li>TODO</li></ul>
+
+<form name="subscription_form">
+
+<div ng-hide="c.is_logged_in()">
+  <div>
+    You must log in (using a Gmail/Google account)
+    to purchase or use a subscription.
+  </div>
+  <div class="button_container">
+    <button type="button" ng-click="c.login_clicked()">Login</button>
+  </div>
+</div>
+
+<div ng-show="c.is_logged_in()">
+  <div>You are logged in as <b>{{c.get_username()}}</b>.</div>
+  <div>Subscription level: <span class="subscription_level">None</span></div>
+  <div class="subscribed">Good until: <span class="subscription_date">N/A</span></div>
+  <p>Sorry- purchase of new subscriptions is not available at this time.</p>
+  <div class="button_container"><button type="button" ng-click="c.logout_clicked()">Logout</button></div>
+</div>
+
+<div class="button_container"><button type="button" ng-click="c.back()">Back</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/subscription_page-->
+

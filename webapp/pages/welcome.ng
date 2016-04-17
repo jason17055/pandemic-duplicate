@@ -1,0 +1,23 @@
+<div class="page" id="welcome_page">
+
+<div class="page_header">
+<h1>Pandemic Duplicate</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<p>
+Welcome to Pandemic Duplicate!
+</p>
+
+<form name="welcome_form">
+<div class="button_container"><button type="button" ng-click="c.start_game_clicked()">Start Game</button></div>
+<div class="button_container"><button type="button" ng-click="c.resume_game_clicked()" ng-disabled="!c.has_current_game()">Resume Game</button></div>
+<div class="button_container"><button type="button" ng-click="c.review_results_clicked()">Review Results</button></div>
+<div class="button_container"><button type="button" ng-click="c.join_network_game_clicked()">Join Network Game</button></div>
+<div class="button_container"><button type="button" ng-click="c.options_clicked()">Options</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/welcome_page-->

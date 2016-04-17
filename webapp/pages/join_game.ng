@@ -1,0 +1,26 @@
+<div class="page" id="join_game_page">
+
+<div class="page_header">
+<h1>Join Network Game</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form name="join_game_form" method="post" ng-submit="c.submit_join_game_form()">
+<p>
+Enter your name as it appears in the host's game.
+</p>
+<p>
+<label>Name:
+<input type="text" id="name_entry" name="name" ng-model="c.name">
+</label>
+</p>
+
+<div class="button_container">
+<button type="submit">Find Game</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/join_game_page-->
+
