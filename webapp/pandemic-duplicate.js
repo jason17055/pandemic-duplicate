@@ -115,28 +115,6 @@ function init_join_game_pick_page($pg, search_results)
 
 var channel = {};
 
-function setup_channel(token)
-{
-	channel.channel = new goog.appengine.Channel(token);
-	channel.sock = channel.channel.open();
-	channel.sock.onopen = function() {
-			channel.connected = true;
-			console.log("channel: opened");
-		};
-	channel.sock.onmessage = function(msg) {
-			console.log("channel: message received");
-			console.log(msg.data);
-			handle_channel_message(msg.data);
-		};
-	channel.sock.onerror = function(errObj) {
-			console.log("channel: error "+errObj);
-		};
-	channel.sock.onclose = function() {
-			channel.connected = false;
-			console.log("channel: closed");
-		};
-}
-
 function handle_channel_message(raw_message)
 {
 	var msg = JSON.parse(raw_message);

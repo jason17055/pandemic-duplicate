@@ -17,8 +17,36 @@ app.service('Storage',
     };
   });
 
+app.service('Channel',
+  function() {
+    this.channel = null;
+    this.connected = false;
+    this.sock = null;
+
+    this.setup_channel = function(token, message_handler) {
+      this.channel = new goog.appengine.Channel(token);
+      this.sock = this.channel.open();
+      this.sock.onopen = function() {
+        this.connected = true;
+        console.log("channel: opened");
+      }.bind(this);
+      this.sock.onmessage = function(msg) {
+        console.log("channel: message received");
+        console.log(msg.data);
+        message_handler(msg.data);
+      };
+      this.sock.onerror = function(errObj) {
+        console.log("channel: error "+errObj);
+      };
+      this.sock.onclose = function() {
+        this.connected = false;
+        console.log("channel: closed");
+      }.bind(this);
+    }.bind(this);
+  });
+
 app.service('GameStore',
-  function($http, Storage) {
+  function($http, Channel, Storage) {
     this.do_watch_game = function(game_id) {
       var onSuccess = function(httpResponse) {
         var data = httpResponse.data;
@@ -27,7 +55,7 @@ app.service('GameStore',
 
         console.log("subscribe: got id "+data.subscriber_id);
         console.log("subscribe: channel token is "+data.channel);
-        setup_channel(data.channel);
+        Channel.setup_channel(data.channel, handle_channel_message);
 
         return data.game;
       };
