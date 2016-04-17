@@ -18,7 +18,7 @@ app.service('Storage',
   });
 
 app.service('Channel',
-  function() {
+  function($rootScope) {
     this.channel = null;
     this.connected = false;
     this.sock = null;
@@ -33,7 +33,7 @@ app.service('Channel',
       this.sock.onmessage = function(msg) {
         console.log("channel: message received");
         console.log(msg.data);
-        message_handler(msg.data);
+        $rootScope.$apply(function() { message_handler(msg.data); });
       };
       this.sock.onerror = function(errObj) {
         console.log("channel: error "+errObj);
