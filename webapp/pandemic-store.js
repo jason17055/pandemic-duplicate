@@ -2,6 +2,10 @@ var app = angular.module('pandemicStore', []);
 
 app.service('Storage',
   function($window) {
+    this.clear_all_data_and_reload_page = function() {
+      $window.localStorage.clear();
+      $window.location.href = BASE_URL;
+    };
     this.get = function(key) {
       return $window.localStorage.getItem(PACKAGE + key);
     };

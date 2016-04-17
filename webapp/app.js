@@ -1,4 +1,21 @@
-app = angular.module('pandemicDuplicateApp', ['pandemicStore']);
+app = angular.module('pandemicDuplicateApp', ['pandemicStore', 'ui.router']);
+
+app.config(
+  function($stateProvider) {
+    $stateProvider
+      .state('home', {
+        onEnter: function() {
+          show_page('welcome_page');
+        }})
+      .state('clear', {
+        onEnter: function(Storage) {
+          Storage.clear_all_data_and_reload_page();
+        }})
+      .state('create_game', {
+        onEnter: function() {
+          show_page('create_game_page');
+        }});
+  });
 
 app.factory('Options',
   function() {
@@ -49,7 +66,7 @@ app.factory('GameService',
   });
 
 app.controller('TopController',
-  function($scope, StateService, Options, GameService) {
+  function($scope, $state, StateService, Options, GameService) {
     this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
         StateService.go(rel_url);
@@ -60,6 +77,7 @@ app.controller('TopController',
         GameService.set_move(m);
       });
     };
+    this.$state = $state;
     window.addEventListener('popstate', function() {
       $scope.$apply(on_state_init);
     });

@@ -2249,17 +2249,18 @@ function on_state_init()
 		path = path.substring(1);
 	}
 
+	var go = function(newState) {
+		$('body').controller().$state.go(newState);
+	};
 	var m;
 	if (!path) {
-		show_page('welcome_page');
+		go('home');
 	}
 	else if (path == 'clear') {
-		localStorage.clear();
-		location.href = BASE_URL;
-		return;
+		go('clear');
 	}
 	else if (path == 'params') {
-		show_page('create_game_page');
+		go('create_game');
 	}
 	else if (path == 'review_results') {
 		var $pg = show_page('review_results_page');
