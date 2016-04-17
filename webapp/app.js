@@ -1,16 +1,4 @@
-app = angular.module('pandemicDuplicateApp', []);
-
-app.service('Storage', function($window) {
-    this.get = function(key) {
-      return $window.localStorage.getItem(PACKAGE + key);
-    };
-    this.set = function(key, value) {
-      $window.localStorage.setItem(PACKAGE + key, value);
-    };
-    this.remove = function(key) {
-      $window.localStorage.removeItem(PACKAGE + key);
-    };
-  });
+app = angular.module('pandemicDuplicateApp', ['pandemicStore']);
 
 app.factory('Options',
   function() {
