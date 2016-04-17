@@ -661,6 +661,12 @@ app.controller('CurrentGameController',
     this.get_infection_discards = function() {
       return G.infection_discards;
     };
+    this.get_epidemic_discards = function() {
+      // FIXME- I don't think epidemic cards are in the player_discards array.
+      return G.player_discards.filter(function(card) {
+          return is_epidemic(card);
+        });
+    };
     if (isPlaying) {
       load_game_at($state.params['game_id'], $state.params['turn']);
       show_current_game($state.params['xtra']);

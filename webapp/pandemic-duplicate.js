@@ -1735,27 +1735,6 @@ function record_game_finished()
 
 function init_show_discards_page($pg)
 {
-	$('.epidemic_discards_list', $pg).empty();
-
-	var ep_count = 0;
-
-	for (var i = 0; i < G.player_discards.length; i++) {
-		var c = G.player_discards[i];
-
-		if (is_epidemic(c)) {
-			$('.epidemic_discards_list', $pg).append(
-				make_player_card_li(c)
-				);
-			ep_count++;
-		}
-	}
-
-	if (ep_count > 0) {
-		$('.virulent_epidemic_discards', $pg).show();
-	}
-	else {
-		$('.virulent_epidemic_discards', $pg).hide();
-	}
 }
 
 function init_virulent_strain_page($pg)
