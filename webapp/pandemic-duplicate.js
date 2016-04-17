@@ -1735,16 +1735,6 @@ function record_game_finished()
 
 function init_show_discards_page($pg)
 {
-	$('.infection_discards_list', $pg).empty();
-
-	for (var i = 0; i < G.infection_discards.length; i++) {
-		var c = G.infection_discards[i];
-
-		$('.infection_discards_list', $pg).append(
-			make_infection_card_li(c)
-			);
-	}
-
 	$('.epidemic_discards_list', $pg).empty();
 
 	var ep_count = 0;

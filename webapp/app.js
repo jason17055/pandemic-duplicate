@@ -658,6 +658,9 @@ app.controller('ShowDiscardsPageController',
 
 app.controller('CurrentGameController',
   function($state, isPlaying, gameData) {
+    this.get_infection_discards = function() {
+      return G.infection_discards;
+    };
     if (isPlaying) {
       load_game_at($state.params['game_id'], $state.params['turn']);
       show_current_game($state.params['xtra']);
@@ -716,5 +719,41 @@ app.directive('pdPlayerCard',
       },
       controller: 'PlayerCardController',
       controllerAs: 'pcc'
+    };
+  });
+
+app.controller('InfectionCardController',
+  function($scope) {
+    this.reload = function() {
+      var c = $scope.card;
+      var text = is_mutation(c);
+      if (text) {
+        this.card_name = text + '!';
+        this.card_icon_src = 'purple_icon.png';
+        this.html_class = 'mutation_card';
+      } else {
+        var ci = Pandemic.Cities[c];
+        this.card_name = ci.name;
+        this.card_icon_src = ci.color + '_icon.png';
+        this.html_class = ci.color + '_card';
+      }
+    };
+    this.reload();
+    $scope.$watch('card',
+      function(newValue, oldValue) {
+        this.reload();
+      }.bind(this));
+  });
+
+app.directive('pdInfectionCard',
+  function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/infection-card.ng',
+      scope: {
+        card: '='
+      },
+      controller: 'InfectionCardController',
+      controllerAs: 'cc'
     };
   });

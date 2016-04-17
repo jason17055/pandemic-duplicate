@@ -145,6 +145,7 @@ Perform your actions.
 <div class="page_body">
 
 <ul class="infection_discards_list">
+<li ng-repeat="c in game.get_infection_discards()"><pd-infection-card card="c"></pd-infection-card></li>
 </ul>
 <div class="virulent_epidemic_discards">
 Previously drawn epidemics:

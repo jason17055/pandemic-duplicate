@@ -1,0 +1,3 @@
+<span class="infection_card" ng-class="cc.html_class">
+  <img ng-src="{{cc.card_icon_src}}" class="card_icon">{{cc.card_name}}
+</span>
