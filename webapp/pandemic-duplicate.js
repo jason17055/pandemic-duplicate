@@ -1013,24 +1013,6 @@ function init_player_turn_page($pg)
 	$('.in_action_phase', $pg).show();
 	$('.in_infection_phase', $pg).hide();
 
-	if (G.roles[G.active_player] == 'Troubleshooter') {
-		$('.troubleshooter_only', $pg).show();
-		$('.troubleshooter_card_list', $pg).empty();
-
-		var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
-		for (var i = 0; i < eff_infection_rate; i++) {
-			var c = G.infection_deck[G.infection_deck.length-1-i];
-			if (c) {
-				$('.troubleshooter_card_list', $pg).append(
-					make_infection_card_li(c)
-				);
-			}
-		}
-	}
-	else {
-		$('.troubleshooter_only', $pg).hide();
-	}
-
 	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }

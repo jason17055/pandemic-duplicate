@@ -12,13 +12,14 @@
 <div class="page_nav">
 
 <div class="in_action_phase">
-<div class="troubleshooter_only">
+<div ng-show="game.get_active_player_role() == 'Troubleshooter'">
 <div>
 Troubleshooter's peek of infection deck:
 </div>
 <ul class="troubleshooter_card_list">
+<li ng-repeat="c in game.get_troubleshooter_preview()"><pd-infection-card card="c"></pd-infection-card></li>
 </ul>
-</div><!--/.troubleshooter_only-->
+</div><!--/role=troubleshooter-->
 <p>
 Perform your actions.
 </p>

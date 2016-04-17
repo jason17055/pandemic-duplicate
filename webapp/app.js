@@ -695,6 +695,20 @@ app.controller('CurrentGameController',
           return is_epidemic(card);
         });
     };
+    this.get_active_player_role = function() {
+      return G.roles[G.active_player];
+    };
+    this.get_troubleshooter_preview = function() {
+      var list = [];
+      var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
+      for (var i = 0; i < eff_infection_rate; i++) {
+        var c = G.infection_deck[G.infection_deck.length-1-i];
+        if (c) {
+          list.push(c);
+        }
+      }
+      return list;
+    };
     if (isPlaying) {
       load_game_at($state.params['game_id'], $state.params['turn']);
       show_current_game($state.params['xtra']);
