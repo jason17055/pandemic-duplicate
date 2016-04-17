@@ -2476,14 +2476,11 @@ function check_for_downloads()
 	delete pending_sync.download_index;
 
 	var onSuccess = function(data) {
+
+		// TODO- refresh data displayed on Subscription page
 		S.loginUrl = data.loginUrl;
 		S.logoutUrl = data.logoutUrl;
 		S.userName = data.userName;
-
-		if (S.currentPage == 'subscription_page') {
-			// TODO- refresh list of available games
-			//on_state_init();
-		}
 
 		for (var i = 0; i < data.scenarios.length; i++) {
 			var d = data.scenarios[i];
