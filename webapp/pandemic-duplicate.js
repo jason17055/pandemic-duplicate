@@ -475,47 +475,11 @@ function init_board_setup_page($pg, game_id)
 {
 	G = load_game(game_id);
 
-	$('.3cube_cities').empty();
-	for (var i = 0; i < 3; i++) {
-		var c = G.infection_discards[i];
-		if (G.rules.worldwide_panic && i == 0) {
-			$('.3cube_cities').append(make_infection_card_li(c).append(' (plus 1 purple cube)'));
-		}
-		else {
-			$('.3cube_cities').append(make_infection_card_li(c));
-		}
-	}
-
-	$('.2cube_cities').empty();
-	for (var i = 3; i < 6; i++) {
-		var c = G.infection_discards[i];
-		if (G.rules.worldwide_panic && i == 3) {
-			$('.2cube_cities').append(make_infection_card_li(c).append(' (plus 2 purple cubes)'));
-		}
-		else {
-			$('.2cube_cities').append(make_infection_card_li(c));
-		}
-	}
-
-	$('.1cube_cities').empty();
-	for (var i = 6; i < 9; i++) {
-		var c = G.infection_discards[i];
-		if (G.rules.worldwide_panic && i == 6) {
-			$('.1cube_cities').append(make_infection_card_li(c).append(' (plus 3 purple cubes)'));
-		}
-		else {
-			$('.1cube_cities').append(make_infection_card_li(c));
-		}
-	}
-
 	if (G.rules.lab_challenge) {
-		var c = G.sequence_discards[0];
-		$('.initial_lab_sequence_card').show();
 		$('.sequence_card').empty();
-		$('.sequence_card').append(make_sequence_card_li(c));
-	}
-	else {
-		$('.initial_lab_sequence_card').hide();
+		for (var i = 0, c; c = G.sequence_discards[i]; i++) {
+			$('.sequence_card', $pg).append(make_sequence_card_li(c));
+		}
 	}
 }
 

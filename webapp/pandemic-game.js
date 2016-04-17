@@ -1025,7 +1025,7 @@ Pandemic.GameState.prototype.initialize = function() {
 	}
 
 	this.sequence_discards = [];
-	if (this.rules.lab_challenge) {
+	if (this.rules.lab_challenge && this.sequence_deck.length > 0) {
 		var c = this.sequence_deck.shift();
 		this.sequence_discards.push(c);
 	}

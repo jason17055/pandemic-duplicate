@@ -4,15 +4,30 @@
 
 <div class="flex_container">
 <div>Cities w/ 3 cubes:</div>
-<ul class="3cube_cities card_list"></ul>
+<ul class="3cube_cities card_list">
+<li><pd-infection-card card="c.infections[0]"></pd-infection-card>
+<span ng-if="c.rules.worldwide_panic"> (plus 1 purple cube)</span></li>
+<li><pd-infection-card card="c.infections[1]"></pd-infection-card></li>
+<li><pd-infection-card card="c.infections[2]"></pd-infection-card></li>
+</ul>
 
 <div>Cities w/ 2 cubes:</div>
-<ul class="2cube_cities card_list"></ul>
+<ul class="2cube_cities card_list">
+<li><pd-infection-card card="c.infections[3]"></pd-infection-card>
+<span ng-if="c.rules.worldwide_panic"> (plus 2 purple cubes)</span></li>
+<li><pd-infection-card card="c.infections[4]"></pd-infection-card></li>
+<li><pd-infection-card card="c.infections[5]"></pd-infection-card></li>
+</ul>
 
 <div>Cities w/ 1 cubes:</div>
-<ul class="1cube_cities card_list"></ul>
+<ul class="1cube_cities card_list">
+<li><pd-infection-card card="c.infections[6]"></pd-infection-card>
+<span ng-if="c.rules.worldwide_panic"> (plus 3 purple cubes)</span></li>
+<li><pd-infection-card card="c.infections[7]"></pd-infection-card></li>
+<li><pd-infection-card card="c.infections[8]"></pd-infection-card></li>
+</ul>
 
-<div class="initial_lab_sequence_card">
+<div class="initial_lab_sequence_card" ng-show="c.rules.lab_challenge">
 <div>Initial Sequence Card:</div>
 <ul class="sequence_card card_list"></ul>
 </div><!--/initial_lab_sequence_card-->

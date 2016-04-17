@@ -431,6 +431,9 @@ app.controller('BoardSetupPageController',
       GameService.navigate_to_current_turn();
     };
     init_board_setup_page($('#board_setup_page'), $state.params['game_id']);
+
+    this.rules = G.rules;
+    this.infections = G.infection_discards;
   });
 
 app.controller('PlayerSetupPageController',
