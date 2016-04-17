@@ -152,29 +152,6 @@ function on_join_game_picked()
 	return false;
 }
 
-function do_watch_game(game_id, xtra)
-{
-	var onSuccess = function(data) {
-		localStorage.setItem(PACKAGE+'.current_game', game_id);
-		localStorage.setItem(PACKAGE+'.current_game.subscriber', data.subscriber_id);
-
-		console.log("subscribe: got id "+data.subscriber_id);
-		console.log("subscribe: channel token is "+data.channel);
-		setup_channel(data.channel);
-
-		console.log("got game data "+JSON.stringify(data.game));
-		show_watched_game(game_id, data.game, xtra);
-	};
-
-	$.ajax({
-		type: 'POST',
-		url: 's/games?subscribe='+escape(game_id),
-		dataType: 'json',
-		success: onSuccess,
-		error: handle_ajax_error
-		});
-}
-
 var watched_game_info = {};
 var watched_game_data = null;
 

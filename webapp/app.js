@@ -86,7 +86,10 @@ app.config(
         controller: 'CurrentGameController',
         controllerAs: 'game',
         resolve: {
-          'isPlaying': function() { return false; }
+          'isPlaying': function() { return false; },
+          'gameData': function($stateParams, GameStore) {
+            return GameStore.do_watch_game($stateParams['game_id']);
+          }
         }})
       .state('player_names', {
         url: '/names/:rulespec',
@@ -150,7 +153,8 @@ app.config(
         controller: 'CurrentGameController',
         controllerAs: 'game',
         resolve: {
-          'isPlaying': function() { return true; }
+          'isPlaying': function() { return true; },
+          'gameData': function() { return null; }
         }})
       .state('404', {
         onEnter: function() {
@@ -653,13 +657,13 @@ app.controller('ShowDiscardsPageController',
   });
 
 app.controller('CurrentGameController',
-  function($state, isPlaying) {
+  function($state, isPlaying, gameData) {
     if (isPlaying) {
       load_game_at($state.params['game_id'], $state.params['turn']);
       show_current_game($state.params['xtra']);
     } else {
-      show_blank_page();
-      do_watch_game($state.params['game_id'], $state.params['xtra']);
+      console.log("got game data "+JSON.stringify(gameData));
+      show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
     }
     check_screen_size();
   });
