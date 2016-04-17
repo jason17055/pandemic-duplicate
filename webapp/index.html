@@ -238,13 +238,13 @@ Subscribers get these privileges:
 
 <div class="page_body">
 
-<form name="join_game_form" method="post" onsubmit="return submit_join_game_form()">
+<form name="join_game_form" method="post" ng-submit="c.submit_join_game_form()">
 <p>
 Enter your name as it appears in the host's game.
 </p>
 <p>
 <label>Name:
-<input type="text" id="name_entry" name="name" value="">
+<input type="text" id="name_entry" name="name" ng-model="c.name">
 </label>
 </p>
 

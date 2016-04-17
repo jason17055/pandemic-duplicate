@@ -1,5 +1,17 @@
 app = angular.module('pandemicDuplicateApp', []);
 
+app.service('Storage', function($window) {
+    this.get = function(key) {
+      return $window.localStorage.getItem(PACKAGE + key);
+    };
+    this.set = function(key, value) {
+      $window.localStorage.setItem(PACKAGE + key, value);
+    };
+    this.remove = function(key) {
+      $window.localStorage.removeItem(PACKAGE + key);
+    };
+  });
+
 app.factory('Options',
   function() {
     load_options();
@@ -172,11 +184,17 @@ app.controller('GenerateGamePageController',
   });
 
 app.controller('JoinGamePageController',
-  function() {
-    var n = localStorage.getItem(PACKAGE+'.my_player_name');
-    if (n) {
-      document.join_game_form.name.value = n;
-    }
+  function(Storage, StateService) {
+    /** @export */
+    this.name = Storage.get('.my_player_name');
+
+    /** @export */
+    this.submit_join_game_form = function() {
+      var name = this.name;
+      Storage.set('.my_player_name', name);
+
+      StateService.go('join_network_game/' + escape(name));
+    }.bind(this);
   });
 
 app.controller('JoinGamePickPageController',

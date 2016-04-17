@@ -339,17 +339,6 @@ function do_search_network_game(name)
 		});
 }
 
-function submit_join_game_form()
-{
-	var f = document.join_game_form;
-	var name = f.name.value;
-
-	localStorage.setItem(PACKAGE+'.my_player_name', name);
-
-	goto_state('join_network_game/' + escape(name));
-	return false;
-}
-
 function submit_generate_game_form()
 {
 	var f = document.generate_game_form;
