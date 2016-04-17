@@ -6,7 +6,7 @@
 </div>
 <div class="page_body">
 
-<div class="history_container flex_container"></div>
+<div class="history_container" pd-flex-fill-height></div>
 <div class="in_action_phase">
 <div class="troubleshooter_only">
 <div>
@@ -144,6 +144,7 @@ Perform your actions.
 <div class="page_header"><h1>Discarded Infection Cards</h1></div>
 <div class="page_body">
 
+<div pd-flex-fill-height>
 <ul class="infection_discards_list">
 <li ng-repeat="c in game.get_infection_discards()"><pd-infection-card card="c"></pd-infection-card></li>
 </ul>
@@ -153,6 +154,8 @@ Previously drawn epidemics:
 <li ng-repeat="c in game.get_epidemic_discards()"><pd-player-card card="c"></pd-player-card></li>
 </ul>
 </div>
+</div><!--/pd-flex-fill-height-->
+
 <div class="button_container">
 <button type="button" ng-click="c.back_clicked()">Go Back</button>
 </div>

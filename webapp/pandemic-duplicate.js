@@ -170,8 +170,6 @@ function reload_watched_game()
 
 	G.has_control = false;
 	show_current_game(watched_game_info.xtra);
-
-	check_screen_size();
 }
 
 function show_current_game(xtra)
@@ -2370,22 +2368,3 @@ $(trigger_sync_process);
 //
 // END SYNCHRONIZATION CODE
 //
-
-function check_screen_size()
-{
-	$('.page').each(function(idx, el) {
-
-		var $f = $('.flex_container', el);
-		if ($f.length == 0) { return; }
-
-		var h = $(el).height();
-		var hh = window.innerHeight - h + $f.height() - 16;
-		$('.flex_container', el).css({
-			'min-height': hh+'px'
-			});
-	});
-}
-
-$(function() {
-	window.onresize = check_screen_size;
-});

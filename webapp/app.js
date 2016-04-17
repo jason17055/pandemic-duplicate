@@ -220,7 +220,7 @@ app.controller('TopController',
   function($rootScope, $scope, $state, StateService, Options, GameService) {
     $rootScope.$on('$stateChangeSuccess',
       function(evt) {
-        check_screen_size();
+        // Nothing for now...
       });
     this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
@@ -702,7 +702,6 @@ app.controller('CurrentGameController',
       console.log("got game data "+JSON.stringify(gameData));
       show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
     }
-    check_screen_size();
   });
 
 app.controller('PlayerCardController',
@@ -789,5 +788,24 @@ app.directive('pdInfectionCard',
       },
       controller: 'InfectionCardController',
       controllerAs: 'cc'
+    };
+  });
+
+app.directive('pdFlexFillHeight',
+  function($window) {
+    return {
+      restrict: 'A',
+      link: function(scope, element) {
+        angular.element($window).on('resize.pdFlexFillHeight',
+          function() {
+            scope.$apply();
+          });
+        var pageElement = angular.element('body');
+        scope.$watch(
+          function() { return $window.innerHeight - pageElement.height() + element.height() - 16; },
+          function(newValue, oldValue) {
+            element.css('min-height', newValue + 'px');
+          });
+      }
     };
   });
