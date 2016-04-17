@@ -81,7 +81,7 @@ app.config(
           }
         }})
       .state('watch_game', {
-        url: '/:game_id/watch/:xtra',
+        url: '/:game_id/watch{xtra:/?.*}',
         templateUrl: 'pages/game.ng',
         controller: 'CurrentGameController',
         controllerAs: 'game',
