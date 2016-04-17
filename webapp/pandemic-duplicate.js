@@ -113,8 +113,6 @@ function init_join_game_pick_page($pg, search_results)
 	console.log('found '+list.length+' results');
 }
 
-var channel = {};
-
 function handle_channel_message(raw_message)
 {
 	var msg = JSON.parse(raw_message);
