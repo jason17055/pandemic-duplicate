@@ -150,7 +150,11 @@ app.factory('GameService',
   });
 
 app.controller('TopController',
-  function($scope, $state, StateService, Options, GameService) {
+  function($rootScope, $scope, $state, StateService, Options, GameService) {
+    $rootScope.$on('$stateChangeSuccess',
+      function(evt) {
+        check_screen_size();
+      });
     this.goto_state_async = function(rel_url) {
       $scope.$apply(function() {
         StateService.go(rel_url);

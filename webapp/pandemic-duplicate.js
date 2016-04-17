@@ -246,6 +246,7 @@ function reload_watched_game()
 
 function show_current_game(xtra)
 {
+	console.log('in show_current_game');
 	if (xtra == '/discards') {
 		var $pg = show_page('show_discards_page');
 		return init_show_discards_page($pg);
@@ -2318,7 +2319,6 @@ function on_state_init()
 		alert('unrecognized url');
 		return;
 	}
-	check_screen_size();
 }
 
 function goto_state(rel_url)
