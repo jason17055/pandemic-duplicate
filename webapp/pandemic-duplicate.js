@@ -1272,53 +1272,6 @@ function init_epidemic_page($pg)
 	set_continue_btn_caption($pg);
 }
 
-function is_epidemic(c)
-{
-	return (/^Epidemic/).test(c);
-}
-
-function is_mutation(c)
-{
-	var m = /^Mutation(?:{\d+})?: (.*)/.exec(c);
-	if (!m) {
-		return null;
-	}
-	else {
-		return m[1];
-	}
-}
-
-function is_emergency(c)
-{
-	var m = /^Emergency(?:{\d+})?: (.*)/.exec(c);
-	if (!m) {
-		return null;
-	}
-	else {
-		return m[1];
-	}
-}
-
-function is_special(c)
-{
-	if (Pandemic.Cities[c]) {
-		return false;
-	}
-	if (c == 'Epidemic') {
-		return false;
-	}
-	if (is_epidemic(c)) {
-		return false;
-	}
-	if (is_mutation(c)) {
-		return false;
-	}
-	if (is_emergency(c)) {
-		return false;
-	}
-	return true;
-}
-
 function init_infection_page($pg)
 {
 	set_game_state_summary($pg);
@@ -1346,7 +1299,6 @@ function show_blank_page()
 
 function show_page(page_name)
 {
-	S.currentPage = page_name;
 	$(".page").hide();
 	return $("#"+page_name).show();
 }

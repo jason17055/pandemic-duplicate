@@ -249,6 +249,53 @@ Pandemic = {
 	'MAX_PLAYERS': 5
 	};
 
+function is_emergency(c)
+{
+	var m = /^Emergency(?:{\d+})?: (.*)/.exec(c);
+	if (!m) {
+		return null;
+	}
+	else {
+		return m[1];
+	}
+}
+
+function is_epidemic(c)
+{
+	return (/^Epidemic/).test(c);
+}
+
+function is_mutation(c)
+{
+	var m = /^Mutation(?:{\d+})?: (.*)/.exec(c);
+	if (!m) {
+		return null;
+	}
+	else {
+		return m[1];
+	}
+}
+
+function is_special(c)
+{
+	if (Pandemic.Cities[c]) {
+		return false;
+	}
+	if (c == 'Epidemic') {
+		return false;
+	}
+	if (is_epidemic(c)) {
+		return false;
+	}
+	if (is_mutation(c)) {
+		return false;
+	}
+	if (is_emergency(c)) {
+		return false;
+	}
+	return true;
+}
+
 function is_valid_card(card, rules)
 {
 	return (!Pandemic.Conditions[card] || Pandemic.Conditions[card](rules));
