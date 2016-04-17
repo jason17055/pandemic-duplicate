@@ -1,104 +1,122 @@
 app = angular.module('pandemicDuplicateApp', ['pandemicStore', 'ui.router']);
 
 app.config(
-  function($stateProvider) {
+  function($stateProvider, $urlRouterProvider) {
     $stateProvider
       .state('home', {
+        url: '/',
         onEnter: function() {
           show_page('welcome_page');
         }})
       .state('clear', {
+        url: '/clear',
         onEnter: function(Storage) {
           Storage.clear_all_data_and_reload_page();
         }})
       .state('create_game', {
+        url: '/params',
         onEnter: function() {
           show_page('create_game_page');
         }})
       .state('review_results', {
+        url: '/review_results',
         onEnter: function() {
           var $pg = show_page('review_results_page');
           init_review_results_page($pg);
         }})
       .state('join_game', {
+        url: '/join_network_game',
         onEnter: function() {
           show_page('join_game_page');
         }})
       .state('options', {
+        url: '/options',
         onEnter: function() {
           var $pg = show_page('options_page');
           init_options_page($pg);
         }})
       .state('subscription', {
+        url: '/subscription',
         onEnter: function() {
           show_page('subscription_page');
         }})
       .state('join_network_game', {
-        params: {'q': {}},
+        url: '/join_network_game/:q',
         onEnter: function($stateParams) {
           show_blank_page();
           do_search_network_game($stateParams['q']);
         }})
       .state('search_results', {
-        params: {'q': {}},
+        url: '/search_results/:q',
         onEnter: function($stateParams) {
           show_blank_page();
           do_search_results($stateParams['q']);
         }})
       .state('watch_game', {
-        params: {'game_id': {}, 'xtra': null},
+        url: '/:game_id/watch/:xtra',
         onEnter: function($stateParams) {
           show_blank_page();
           do_watch_game($stateParams['game_id'], $stateParams['xtra']);
         }})
       .state('player_names', {
-        params: {'rulespec': {}},
+        url: '/names/:rulespec',
         onEnter: function($stateParams) {
           var $pg = show_page('player_names_page');
           init_player_names_page($pg, $stateParams['rulespec']);
         }})
       .state('pick_scenario', {
-        params: {'rulespec': {}},
+        url: '/pick_scenario/:rulespec',
         onEnter: function($stateParams) {
           var $pg = show_page('pick_scenario_page');
           init_pick_scenario_page($pg, $stateParams['rulespec']);
         }})
       .state('generate_game', {
-        params: {'rulespec': {}},
+        url: '/generate_game/:rulespec',
         onEnter: function($stateParams) {
           var $pg = show_page('generate_game_page');
           init_generate_game_page($pg, $stateParams['rulespec']);
         }})
       .state('deck_setup', {
-        params: {'game_id': {}},
+        url: '/:game_id/deck_setup',
         onEnter: function($stateParams) {
           var $pg = show_page('deck_setup_page');
           init_deck_setup_page($pg, $stateParams['game_id']);
         }})
       .state('board_setup', {
-        params: {'game_id': {}},
+        url: '/:game_id/board_setup',
         onEnter: function($stateParams) {
           var $pg = show_page('board_setup_page');
           init_board_setup_page($pg, $stateParams['game_id']);
         }})
       .state('player_setup', {
-        params: {'game_id': {}},
+        url: '/:game_id/player_setup',
         onEnter: function($stateParams) {
           var $pg = show_page('player_setup_page');
           init_player_setup_page($pg, $stateParams['game_id']);
         }})
       .state('results', {
-        params: {'scenario_id': {}},
+        url: '/:scenario_id/results',
         onEnter: function($stateParams) {
           var $pg = show_page('results_page');
           init_results_page($pg, $stateParams['scenario_id']);
         }})
       .state('active_game', {
-        params: {'game_id': {}, 'turn': 0, 'xtra': null},
+        url: '/:game_id/T{turn:[0-9]+}{xtra:/?.*}',
         onEnter: function($stateParams) {
           load_game_at($stateParams['game_id'], $stateParams['turn']);
           show_current_game($stateParams['xtra']);
+        }})
+      .state('404', {
+        onEnter: function() {
+          show_blank_page();
         }});
+    $urlRouterProvider.when('', '/');
+    $urlRouterProvider.otherwise(
+      function($injector, $location) {
+        $injector.invoke(function($state) {
+          $state.go('404');
+        });
+      });
   });
 
 app.factory('Options',
@@ -116,7 +134,6 @@ app.factory('StateService',
         } else {
           history.pushState(null, null, BASE_URL);
         }
-        on_state_init();
       }
     };
   });
@@ -166,10 +183,6 @@ app.controller('TopController',
       });
     };
     this.$state = $state;
-    window.addEventListener('popstate', function() {
-      $scope.$apply(on_state_init);
-    });
-    on_state_init();
   });
 
 app.controller('WelcomePageController',
