@@ -2249,8 +2249,8 @@ function on_state_init()
 		path = path.substring(1);
 	}
 
-	var go = function(newState) {
-		$('body').controller().$state.go(newState);
+	var go = function(to, toParams) {
+		$('body').controller().$state.go(to, toParams);
 	};
 	var m;
 	if (!path) {
@@ -2263,66 +2263,56 @@ function on_state_init()
 		go('create_game');
 	}
 	else if (path == 'review_results') {
-		var $pg = show_page('review_results_page');
-		init_review_results_page($pg);
+		go('review_results');
 	}
 	else if (path == 'join_network_game') {
-		show_page('join_game_page');
+		go('join_game');
 	}
 	else if (path == 'options') {
-		var $pg = show_page('options_page');
-		init_options_page($pg);
+		go('options');
 	}
 	else if (path == 'subscription') {
-		show_page('subscription_page');
+		go('subscription');
 	}
 	else if (m = path.match(/^join_network_game\/(.*)$/)) {
 		var q = unescape(m[1]);
-		show_blank_page();
-		do_search_network_game(q);
+		go('join_network_game', {'q': q});
 	}
 	else if (m = path.match(/^search_results\/(.*)$/)) {
 		var q = unescape(m[1]);
-		show_blank_page();
-		do_search_results(q);
+		go('search_results', {'q': q});
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/watch(\/.*)?$/)) {
 		var game_id = unescape(m[1]);
 		var xtra = m[2];
-		show_blank_page();
-		do_watch_game(game_id, xtra);
+		go('watch_game', {'game_id': game_id, 'xtra': xtra});
 	}
 	else if (m = path.match(/^names\/(.*)$/)) {
-		var $pg = show_page('player_names_page');
-		init_player_names_page($pg, m[1]);
+		go('player_names', {'rulespec': m[1]});
 	}
 	else if (m = path.match(/^pick_scenario\/(.*)$/)) {
-		var $pg = show_page('pick_scenario_page');
-		init_pick_scenario_page($pg, m[1]);
+		go('pick_scenario', {'rulespec': m[1]});
 	}
 	else if (m = path.match(/^generate_game\/(.*)$/)) {
-		var $pg = show_page('generate_game_page');
-		init_generate_game_page($pg, m[1]);
+		go('generate_game', {'rulespec': m[1]});
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/deck_setup$/)) {
-		var $pg = show_page('deck_setup_page');
-		init_deck_setup_page($pg, m[1]);
+		go('deck_setup', {'game_id': m[1]});
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/board_setup$/)) {
-		var $pg = show_page('board_setup_page');
-		init_board_setup_page($pg, m[1]);
+		go('board_setup', {'game_id': m[1]});
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/player_setup$/)) {
-		var $pg = show_page('player_setup_page');
-		init_player_setup_page($pg, m[1]);
+		go('player_setup', {'game_id': m[1]});
 	}
 	else if (m = path.match(/^([0-9a-z.-]+)\/results$/)) {
-		var $pg = show_page('results_page');
-		init_results_page($pg, m[1]);
+		go('results', {'scenario_id': m[1]});
 	}
 	else if (m = path.match(/^([0-9a-f]+)\/T([\d-]+)(\/.*)?$/)) {
-		load_game_at(m[1], m[2]);
-		show_current_game(m[3]);
+		go('active_game', {
+                  'game_id': m[1],
+                  'turn': m[2],
+                  'xtra': m[3]});
 	}
 	else {
 		alert('unrecognized url');

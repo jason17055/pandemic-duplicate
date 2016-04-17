@@ -14,6 +14,90 @@ app.config(
       .state('create_game', {
         onEnter: function() {
           show_page('create_game_page');
+        }})
+      .state('review_results', {
+        onEnter: function() {
+          var $pg = show_page('review_results_page');
+          init_review_results_page($pg);
+        }})
+      .state('join_game', {
+        onEnter: function() {
+          show_page('join_game_page');
+        }})
+      .state('options', {
+        onEnter: function() {
+          var $pg = show_page('options_page');
+          init_options_page($pg);
+        }})
+      .state('subscription', {
+        onEnter: function() {
+          show_page('subscription_page');
+        }})
+      .state('join_network_game', {
+        params: {'q': {}},
+        onEnter: function($stateParams) {
+          show_blank_page();
+          do_search_network_game($stateParams['q']);
+        }})
+      .state('search_results', {
+        params: {'q': {}},
+        onEnter: function($stateParams) {
+          show_blank_page();
+          do_search_results($stateParams['q']);
+        }})
+      .state('watch_game', {
+        params: {'game_id': {}, 'xtra': null},
+        onEnter: function($stateParams) {
+          show_blank_page();
+          do_watch_game($stateParams['game_id'], $stateParams['xtra']);
+        }})
+      .state('player_names', {
+        params: {'rulespec': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('player_names_page');
+          init_player_names_page($pg, $stateParams['rulespec']);
+        }})
+      .state('pick_scenario', {
+        params: {'rulespec': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('pick_scenario_page');
+          init_pick_scenario_page($pg, $stateParams['rulespec']);
+        }})
+      .state('generate_game', {
+        params: {'rulespec': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('generate_game_page');
+          init_generate_game_page($pg, $stateParams['rulespec']);
+        }})
+      .state('deck_setup', {
+        params: {'game_id': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('deck_setup_page');
+          init_deck_setup_page($pg, $stateParams['game_id']);
+        }})
+      .state('board_setup', {
+        params: {'game_id': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('board_setup_page');
+          init_board_setup_page($pg, $stateParams['game_id']);
+        }})
+      .state('player_setup', {
+        params: {'game_id': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('player_setup_page');
+          init_player_setup_page($pg, $stateParams['game_id']);
+        }})
+      .state('results', {
+        params: {'scenario_id': {}},
+        onEnter: function($stateParams) {
+          var $pg = show_page('results_page');
+          init_results_page($pg, $stateParams['scenario_id']);
+        }})
+      .state('active_game', {
+        params: {'game_id': {}, 'turn': 0, 'xtra': null},
+        onEnter: function($stateParams) {
+          load_game_at($stateParams['game_id'], $stateParams['turn']);
+          show_current_game($stateParams['xtra']);
         }});
   });
 
