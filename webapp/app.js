@@ -701,6 +701,34 @@ app.controller('CurrentGameController',
       return G.has_control && !at_end_of_game;
     };
 
+    this.get_continue_button_type = function() {
+      if (G.step == 'actions') {
+        return 'draw_cards';
+      }
+      else if (G.pending_mutations.length > 0) {
+        return 'mutation';
+      }
+      else if (G.pending_epidemics > 0) {
+        return 'epidemic';
+      }
+      else if (G.step == "epidemic" && G.rules.virulent_strain && !G.virulent_strain) {
+        return 'virulent_strain';
+      }
+      else if (G.pending_infection > 0) {
+        return 'infection';
+      }
+      else if ((G.step == 'draw_cards' || G.step == 'epidemic' || G.step == 'mutation') && !G.one_quiet_night) {
+        if (G.rules.hinterlands_challenge) {
+          return 'hinterlands';
+        }
+        else {
+          return 'infection';
+        }
+      }
+      else {
+        return 'player_turn';
+      }
+    };
     this.get_infection_discards = function() {
       return G.infection_discards;
     };
@@ -709,6 +737,9 @@ app.controller('CurrentGameController',
       return G.player_discards.filter(function(card) {
           return is_epidemic(card);
         });
+    };
+    this.get_next_player_name = function() {
+      return G.player_names[1+(G.active_player%G.rules.player_count)];
     };
     this.get_active_player_name = function() {
       return G.player_names[G.active_player];
