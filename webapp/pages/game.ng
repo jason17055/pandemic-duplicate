@@ -1,3 +1,4 @@
+<div id="current_game_page">
 <div id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
 <div class="page_header">
 <div class="game_state_summary_pane">T: {{game.get_turn_ind()}}</span></div>
@@ -374,3 +375,4 @@ without prior knowledge of the sequence of cards shown.
 
 </div><!--/page_body-->
 </div><!--/game_completed_page-->
+</div>

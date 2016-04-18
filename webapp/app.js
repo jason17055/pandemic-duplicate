@@ -156,10 +156,7 @@ app.config(
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
         }})
-      .state('404', {
-        onEnter: function() {
-          show_blank_page();
-        }});
+      .state('404', {});
     $urlRouterProvider.when('', '/');
     $urlRouterProvider.otherwise(
       function($injector, $location) {

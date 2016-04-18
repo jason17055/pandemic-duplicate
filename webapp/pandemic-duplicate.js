@@ -1025,14 +1025,11 @@ function init_infection_page($pg)
 	}
 }
 
-function show_blank_page()
-{
-	$(".page").hide();
-}
-
 function show_page(page_name)
 {
-	$(".page").hide();
+	var cgp = $('#current_game_page');
+	cgp.controller().page = page_name;
+	$(".page", cgp).hide();
 	return $("#"+page_name).show();
 }
 
