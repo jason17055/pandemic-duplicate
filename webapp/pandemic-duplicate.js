@@ -994,7 +994,6 @@ function init_player_turn_page($pg)
 	$('.in_action_phase', $pg).show();
 	$('.in_infection_phase', $pg).hide();
 
-	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 
@@ -1004,23 +1003,7 @@ function init_draw_cards_page($pg)
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).hide();
 
-	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
-}
-
-function can_declare_victory()
-{
-	return G.has_control && G.step == 'actions';
-}
-
-function set_buttons_visibility($pg)
-{
-	if (can_declare_victory()) {
-		$('.victory_button_container', $pg).show();
-	}
-	else {
-		$('.victory_button_container', $pg).hide();
-	}
 }
 
 function set_continue_btn_caption($pg)
@@ -1073,7 +1056,6 @@ function init_epidemic_page($pg)
 	$('.in_infection_phase', $pg).show();
 	$('.pending_infection_div', $pg).hide();
 
-	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 
@@ -1091,7 +1073,6 @@ function init_infection_page($pg)
 		$('.pending_infection_div', $pg).hide();
 	}
 
-	set_buttons_visibility($pg);
 	set_continue_btn_caption($pg);
 }
 

@@ -673,6 +673,9 @@ app.controller('ShowDiscardsPageController',
 
 app.controller('CurrentGameController',
   function($state, isPlaying, gameData) {
+    this.can_declare_victory = function() {
+      return G.has_control && G.step == 'actions';
+    };
     this.can_draw_sequence_card = function() {
       return G.has_control && G.rules.lab_challenge && G.step == 'actions';
     };

@@ -42,12 +42,12 @@ Perform your actions.
 <button type="button" ng-click="c.retrieve_special_event_clicked()">Retrieve Special Event</button>
 </div>
 <div class="detail_level_1">
-<div class="button_container victory_button_container">
+<div class="button_container" ng-show="game.can_declare_victory()">
 <button type="button" ng-click="c.discover_cure_clicked()">Cure / Eradicate Disease</button>
 </div>
 </div>
 <div class="no_detail_level_1">
-<div class="button_container victory_button_container">
+<div class="button_container" ng-show="game.can_declare_victory()">
 <button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
 </div>
 </div>
@@ -106,7 +106,7 @@ Perform your actions.
 <div class="button_container">
 <button type="button" class="eradicate_btn" data-disease="purple" ng-click="c.on_eradicate_clicked('purple')">Eradicate <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
 </div>
-<div class="button_container victory_button_container">
+<div class="button_container" ng-show="game.can_declare_victory()">
 <button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
 </div>
 <div id="discover_cure_none_row" class="button_container">
