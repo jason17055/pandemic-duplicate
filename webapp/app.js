@@ -582,23 +582,36 @@ app.controller('InfectionRumorPageController',
 
 app.controller('ForecastPageController',
   function(GameService) {
+    this.reset = function() {
+      this.forecast = [];
+      for (var i = 0; i < 6; i++) {
+        var c = G.infection_deck[G.infection_deck.length-1-i];
+        if (!c) { continue; }
+        this.forecast.push(c);
+      }
+      this.returned = [];
+    };
+    this.city_clicked = function(card) {
+      this.returned.unshift(card);
+      for (var i = this.forecast.length-1; i >= 0; i--) {
+        if (this.forecast[i] == card) {
+          this.forecast.splice(i, 1);
+        }
+      }
+      if (this.forecast.length == 1) {
+        this.returned.unshift(this.forecast[0]);
+        this.forecast = [];
+      }
+    }.bind(this);
     this.on_forecast_confirm_clicked = function() {
-      var sel = [];
-      $('#forecast_page .forecast_cards_list li').each(function(idx,el) {
-        var c = el.getAttribute('data-city-name');
-        sel.push(c);
-      });
-
       var m = "forecast";
-      for (var i = 0; i < sel.length; i++) {
-        m += ' "' + sel[i] + '"';
+      for (var i = 0; i < this.returned.length; i++) {
+        m += ' "' + this.returned[i] + '"';
       }
 
       GameService.set_move(m);
-    };
-    this.on_forecast_reset_clicked = function() {
-      init_forecast_page($('#forecast_page'));
-    };
+    }.bind(this);
+    this.reset();
   });
 
 app.controller('ResourcePlanningPageController',

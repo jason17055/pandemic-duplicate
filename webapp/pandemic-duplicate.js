@@ -215,8 +215,7 @@ function show_current_game(xtra)
 		init_infection_page($pg);
 	}
 	else if (G.step == 'forecast') {
-		var $pg = show_page('forecast_page');
-		init_forecast_page($pg);
+		show_page('forecast_page');
 	}
 	else if (G.step == 'resource_planning') {
 		var $pg = show_page('resource_planning_page');
@@ -1288,54 +1287,6 @@ function order_infection_discards()
 		}
 		});
 	return A;
-}
-
-function init_forecast_page($pg)
-{
-	var pick_city = function(c) {
-		$('.forecast_cards_list',$pg).prepend(make_infection_card_li(c));
-	};
-
-	var on_forecast_city_selected = function() {
-		var c = this.getAttribute('data-city-name');
-		pick_city(c);
-
-		var $s = $('.city_btn_row:has([data-city-name="'+c+'"])', $pg);
-		$s.remove();
-
-		var left = $('.city_btn_row:not(.template)', $pg);
-		if (left.length == 1) {
-
-			left.each(function(idx,el) {
-				var c = $('button',el).attr('data-city-name');
-				pick_city(c);
-				});
-			left.remove();
-			$('.choosing', $pg).hide();
-			$('.confirming', $pg).show();
-		}
-
-		$('.reset_btn_container', $pg).show();
-	};
-
-	$('.forecast_cards_list', $pg).empty();
-
-	$('.city_btn_row:not(.template)',$pg).remove();
-	for (var i = 0; i < 6; i++) {
-		var c = G.infection_deck[G.infection_deck.length-1-i];
-		if (!c) { continue; }
-
-		var $s = $('.city_btn_row.template', $pg).clone();
-
-		$('button', $s).append(make_infection_card(c));
-		$('button', $s).attr('data-city-name', c);
-		$('button', $s).click(on_forecast_city_selected);
-		$s.removeClass('template');
-		$('.reset_btn_container', $pg).before($s);
-	}
-	$('.choosing', $pg).show();
-	$('.confirming', $pg).hide();
-	$('.reset_btn_container', $pg).hide();
 }
 
 function init_resource_planning_page($pg)
