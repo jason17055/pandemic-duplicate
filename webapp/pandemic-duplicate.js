@@ -988,25 +988,8 @@ function find_and_remove_card_any_hand(c)
 	return null;
 }
 
-function set_game_state_summary($pg)
-{
-	var r = G.roles[G.active_player];
-	$('.page_header .role_icon', $pg).
-		attr('alt', r).
-		attr('src', get_role_icon(r));
-	$('.page_header .player_name', $pg).text(
-			G.player_names[G.active_player]
-			);
-
-	$('.game_state_summary_pane .turn_number', $pg).text(
-			G.turns + '/' + G.game_length_in_turns
-			);
-}
-
 function init_player_turn_page($pg)
 {
-	set_game_state_summary($pg);
-
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).show();
 	$('.in_infection_phase', $pg).hide();
@@ -1017,8 +1000,6 @@ function init_player_turn_page($pg)
 
 function init_draw_cards_page($pg)
 {
-	set_game_state_summary($pg);
-
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).hide();
@@ -1087,8 +1068,6 @@ function set_continue_btn_caption($pg)
 
 function init_epidemic_page($pg)
 {
-	set_game_state_summary($pg);
-
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).show();
@@ -1100,8 +1079,6 @@ function init_epidemic_page($pg)
 
 function init_infection_page($pg)
 {
-	set_game_state_summary($pg);
-
 	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).show();

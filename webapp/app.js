@@ -707,8 +707,14 @@ app.controller('CurrentGameController',
           return is_epidemic(card);
         });
     };
+    this.get_active_player_name = function() {
+      return G.player_names[G.active_player];
+    };
     this.get_active_player_role = function() {
       return G.roles[G.active_player];
+    };
+    this.get_active_player_role_icon = function() {
+      return get_role_icon(G.roles[G.active_player]);
     };
     this.get_troubleshooter_preview = function() {
       var list = [];
@@ -720,6 +726,9 @@ app.controller('CurrentGameController',
         }
       }
       return list;
+    };
+    this.get_turn_ind = function() {
+      return G.turns + '/' + G.game_length_in_turns;
     };
     if (isPlaying) {
       load_game_at($state.params['game_id'], $state.params['turn']);
