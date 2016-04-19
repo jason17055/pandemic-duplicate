@@ -1384,13 +1384,6 @@ function on_special_event_clicked(GameService, s, gameController)
 	GameService.set_move('special '+s);
 }
 
-function on_special_event_retrieve_clicked()
-{
-	var s =  this.getAttribute('data-special-event');
-
-	return set_move('retrieve '+s);
-}
-
 function record_game_finished()
 {
 	var timestr = new Date().toISOString();
@@ -1442,30 +1435,6 @@ function init_discover_cure_page($pg)
 	}
 	else {
 		$('.victory_button_container', $pg).hide();
-	}
-}
-
-function init_play_special_event_page($pg)
-{
-	$('.special_action_name').text("Play");
-}
-
-function init_retrieve_special_event_page($pg)
-{
-	$('.special_action_name').text("Retrieve");
-	$('.special_event_btn_row:not(.template)').remove();
-	var specials = get_deck('Specials', G.rules);
-	for (var i = 0; i < specials.length; i++) {
-		var s = specials[i];
-		if (!G.discarded_special_event(s)) {
-			continue;
-		}
-		var $s = $('.special_event_btn_row.template').clone();
-		$('button', $s).text(s);
-		$('button', $s).attr('data-special-event', s);
-		$('button', $s).click(on_special_event_retrieve_clicked);
-		$s.removeClass('template');
-		$('#special_event_none_row').before($s);
 	}
 }
 

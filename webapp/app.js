@@ -556,27 +556,29 @@ app.controller('VirulentStrainPageController',
 
 app.controller('SpecialEventPageController',
   function($window, $scope, $state, GameService) {
-    console.log('making special event page');
-    this.get_choices = function() {
-      var specials = get_deck('Specials', G.rules);
-      var list = specials.filter(function(s) {
-        return G.has_special_event(s);
-      });
-      return list;
-    };
-    this.select = function(choice) {
-      on_special_event_clicked(GameService, choice, $scope.game);
-    };
     this.cancel = function() {
-      console.log('Cancel clicked');
       $window.history.back();
     };
     if ($state.params['xtra'] == '/play_special') {
-      init_play_special_event_page($('#special_event_page'));
+      this.action_name = 'Play';
+      this.choices = get_deck('Specials', G.rules).filter(
+          function(s) {
+            return G.has_special_event(s);
+          });
+      this.select = function(choice) {
+        on_special_event_clicked(GameService, choice, $scope.game);
+      };
     } else if ($state.params['xtra'] == '/retrieve_special') {
-      init_retrieve_special_event_page($('#special_event_page'));
+      this.action_name = 'Retrieve';
+      this.choices = get_deck('Specials', G.rules).filter(
+          function(s) {
+            return G.discarded_special_event(s);
+          });
+      this.select = function(choice) {
+        GameService.set_move('retrieve ' + choice);
+      };
     } else {
-      console.log('unknown url extra: ' + urlExtra);
+      console.log('unknown url extra: ' + $state.params['xtra']);
     }
   });
 
@@ -810,7 +812,13 @@ app.controller('CurrentGameController',
     }
 
     if ($state.params['xtra']) {
-      this.page = $state.params['xtra'];
+      if ($state.params['xtra'] == '/play_special') {
+        this.page = 'special_event';
+      } else if ($state.params['xtra'] == '/retrieve_special') {
+        this.page = 'special_event';
+      } else {
+        this.page = $state.params['xtra'];
+      }
     } else if (G.step == 'forecast') {
       this.page = 'forecast';
     } else if (G.step == 'resource_planning') {

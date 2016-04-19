@@ -170,13 +170,13 @@ Previously drawn epidemics:
 </div><!--/page_nav-->
 </div><!--/show_discards_page-->
 
-<div ng-switch-when="/play_special" id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
-	<div class="page_header"><h1><span class="special_action_name"></span> Special Event</h1></div>
+<div ng-switch-when="special_event" id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
+	<div class="page_header"><h1>{{c.action_name}} Special Event</h1></div>
 <div class="page_body">
 
 
 <div class="special_event_btns_container">
-<div class="special_event_btn_row button_container" ng-repeat="choice in c.get_choices()">
+<div class="special_event_btn_row button_container" ng-repeat="choice in c.choices">
 <button type="button" ng-click="c.select(choice)">{{choice}}</button>
 </div>
 <div id="special_event_none_row" class="button_container">
