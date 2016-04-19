@@ -290,50 +290,7 @@ function init_game_completed_page($pg)
 	f.scenario_id.value = G.scenario_id;
 	f.game_id.value = G.game_id;
 
-	$('.turns', $pg).text(G.turns);
-	$('.turns_left', $pg).text(Math.floor(G.player_deck.length/2));
-	$('.level', $pg).text(G.rules.level);
-	if (G.result == 'victory') {
-		var victory_type;
-		if (G.is_unnecessary('purple')) {
-			victory_type = "cured all four diseases";
-		}
-		else if (G.is_cured('purple')) {
-			victory_type = "cured all five diseases";
-		}
-		else {
-			victory_type = "cured all four normal diseases and wiped purple off the board";
-		}
-		$('.victory_type', $pg).text(victory_type);
-		$('.victory_only', $pg).show();
-		$('.defeat_only', $pg).hide();
-	}
-	else {
-		$('.victory_only', $pg).hide();
-		$('.defeat_only', $pg).show();
-	}
 	update_game_score();
-
-	if (G.rules.player_count <= 2) {
-		$('.player3', $pg).hide();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (G.rules.player_count == 3) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (G.rules.player_count == 4) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).hide();
-	}
-	else {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).show();
-	}
 
 	for (var i = 1; i <= G.rules.player_count; i++) {
 		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);

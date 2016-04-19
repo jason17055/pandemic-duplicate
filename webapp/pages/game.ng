@@ -320,14 +320,14 @@ This is the order the next 4 player cards will appear.
 <input type="hidden" name="rules" value="">
 <input type="hidden" name="scenario_id" value="">
 <input type="hidden" name="game_id" value="">
-<div class="victory_only">
+<div ng-if="c.result == 'victory'">
 <p>
-With <span class="level"></span> epidemics,
-you <span class="victory_type"></span> in <span class="turns"></span> turns
-(<span class="turns_left"></span> turn(s) left).
+With {{c.level}} epidemics,
+you {{c.victory_type}} in {{c.turns}} turns
+({{c.turns_left}} turn(s) left).
 </p>
 </div>
-<div class="defeat_only">
+<div ng-show="c.result != 'victory'">
 <p>
 With <span class="level"></span> epidemics,
 you survived <span class="turns"></span> turns.
@@ -350,9 +350,9 @@ Score:
 <table>
 <tr class="player1"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player1" value="Player 1"></td></tr>
 <tr class="player2"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player2" value="Player 2"></td></tr>
-<tr class="player3"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player3" value="Player 3"></td></tr>
-<tr class="player4"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player4" value="Player 4"></td></tr>
-<tr class="player5"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player5" value="Player 5"></td></tr>
+<tr class="player3" ng-show="c.player_count >= 3"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player3" value="Player 3"></td></tr>
+<tr class="player4" ng-show="c.player_count >= 4"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player4" value="Player 4"></td></tr>
+<tr class="player5" ng-show="c.player_count >= 5"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player5" value="Player 5"></td></tr>
 </table>
 
 <div>

@@ -688,6 +688,16 @@ app.controller('GameCompletedPageController',
 
       StateService.go(G.scenario_id + '/results');
     };
+    this.player_count = G.rules.player_count;
+    this.turns = G.turns;
+    this.turns_left = Math.floor(G.player_deck.length / 2);
+    this.level = G.rules.level;
+    this.result = G.result;
+    if (G.result == 'victory') {
+      this.victory_type = G.is_unnecessary('purple') ? 'cured all four diseases' :
+          G.is_cured('purple') ? 'cured all five diseases' :
+          'cured all four normal diseases and wiped purple off the board';
+    }
     init_game_completed_page($('#game_completed_page'));
   });
 
