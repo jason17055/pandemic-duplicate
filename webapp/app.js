@@ -512,6 +512,20 @@ app.controller('PlayerTurnPageController',
     this.on_determine_virulent_strain_clicked = function() {
       GameService.goto_current_game_state('/virulent_strain');
     };
+    var $pg = $('#player_turn_page');
+    if (G.step == 'actions') {
+      init_player_turn_page($pg);
+    } else if (G.step == 'draw_cards') {
+      init_draw_cards_page($pg);
+    } else if (G.step == 'mutation') {
+      init_epidemic_page($pg);
+    } else if (G.step == 'epidemic') {
+      init_epidemic_page($pg);
+    } else if (G.step == 'infection') {
+      init_infection_page($pg);
+    } else {
+      console.log('unrecognized game state ' + G.step);
+    }
   });
 
 app.controller('DiscoverCurePageController',
@@ -529,7 +543,7 @@ app.controller('DiscoverCurePageController',
     this.cancel = function() {
       $window.history.back();
     };
-
+    init_discover_cure_page($('#discover_cure_page'));
   });
 
 app.controller('VirulentStrainPageController',
@@ -537,10 +551,11 @@ app.controller('VirulentStrainPageController',
     this.on_virulent_strain_clicked = function(disease_color) {
       GameService.set_move('virulent ' + disease_color);
     }
+    init_virulent_strain_page($('#virulent_strain_page'));
   });
 
 app.controller('SpecialEventPageController',
-  function($window, GameService) {
+  function($window, $scope, $state, GameService) {
     console.log('making special event page');
     this.get_choices = function() {
       var specials = get_deck('Specials', G.rules);
@@ -550,12 +565,19 @@ app.controller('SpecialEventPageController',
       return list;
     };
     this.select = function(choice) {
-      on_special_event_clicked(GameService, choice);
+      on_special_event_clicked(GameService, choice, $scope.game);
     };
     this.cancel = function() {
       console.log('Cancel clicked');
       $window.history.back();
     };
+    if ($state.params['xtra'] == '/play_special') {
+      init_play_special_event_page($('#special_event_page'));
+    } else if ($state.params['xtra'] == '/retrieve_special') {
+      init_retrieve_special_event_page($('#special_event_page'));
+    } else {
+      console.log('unknown url extra: ' + urlExtra);
+    }
   });
 
 app.controller('NewAssignmentPageController',
@@ -569,15 +591,17 @@ app.controller('NewAssignmentPageController',
     this.cancel = function() {
       $window.history.back();
     };
-
+    init_new_assignment_page($('#new_assignment_page'));
   });
 
 app.controller('ResilientPopulationPageController',
   function() {
+    init_resilient_population_page($('#resilient_population_page'));
   });
 
 app.controller('InfectionRumorPageController',
   function() {
+    init_infection_rumor_page($('#infection_rumor_page'));
   });
 
 app.controller('ForecastPageController',
@@ -634,6 +658,7 @@ app.controller('ResourcePlanningPageController',
 
       GameService.set_move(m);
     };
+    init_resource_planning_page($('#resource_planning_page'));
   });
 
 app.controller('GameCompletedPageController',
@@ -661,6 +686,7 @@ app.controller('GameCompletedPageController',
 
       StateService.go(G.scenario_id + '/results');
     };
+    init_game_completed_page($('#game_completed_page'));
   });
 
 app.controller('ResultsPageController',
@@ -679,6 +705,7 @@ app.controller('ShowDiscardsPageController',
     this.back_clicked = function() {
       $window.history.back();
     };
+    init_show_discards_page($('#show_discards_page'));
   });
 
 app.controller('CurrentGameController',
@@ -780,6 +807,18 @@ app.controller('CurrentGameController',
     } else {
       console.log("got game data "+JSON.stringify(gameData));
       show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
+    }
+
+    if ($state.params['xtra']) {
+      this.page = $state.params['xtra'];
+    } else if (G.step == 'forecast') {
+      this.page = 'forecast';
+    } else if (G.step == 'resource_planning') {
+      this.page = 'resource_planning';
+    } else if (G.step == 'end') {
+      this.page = 'game_completed';
+    } else {
+      this.page = 'player_turn';
     }
   });
 

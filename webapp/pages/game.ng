@@ -1,5 +1,6 @@
-<div id="current_game_page">
-<div id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
+<div id="current_game_page" ng-switch="game.page">
+<div>Page is {{game.page}}</div>
+<div ng-switch-when="player_turn" id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
 <div class="page_header">
 <div class="game_state_summary_pane">T: {{game.get_turn_ind()}}</span></div>
 <h1><img ng-src="{{game.get_active_player_role_icon()}}" alt="{{game.get_active_player_role()}}" class="role_icon" ng-click="c.rename_player()"><span class="player_name">{{game.get_active_player_name()}}</span></h1>
@@ -70,7 +71,7 @@ Perform your actions.
 </div><!--/page_nav-->
 </div><!--/player_turn_page-->
 
-<div id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
+<div ng-switch-when="/discover_cure" id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
 <div class="page_header"><h1>Cure / Eradicate Disease</h1></div>
 <div class="page_body">
 
@@ -118,7 +119,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/discover_cure_page-->
 
-<div id="virulent_strain_page" class="page" ng-controller="VirulentStrainPageController as c">
+<div ng-switch-when="/virulent_strain" id="virulent_strain_page" class="page" ng-controller="VirulentStrainPageController as c">
 <div class="page_header"><h1>Virulent Strain</h1></div>
 <div class="page_body">
 
@@ -145,7 +146,7 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/virulent_strain_page-->
 
-<div id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
+<div ng-switch-when="/discards" id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
 <div class="page_header"><h1>Discarded Infection Cards</h1></div>
 <div class="page_body">
 
@@ -169,7 +170,7 @@ Previously drawn epidemics:
 </div><!--/page_nav-->
 </div><!--/show_discards_page-->
 
-<div id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
+<div ng-switch-when="/play_special" id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
 	<div class="page_header"><h1><span class="special_action_name"></span> Special Event</h1></div>
 <div class="page_body">
 
@@ -186,7 +187,7 @@ Previously drawn epidemics:
 </div><!--/page_body-->
 </div><!--/special_event_page-->
 
-<div id="new_assignment_page" class="page" ng-controller="NewAssignmentPageController as c">
+<div ng-switch-when="/new_assignment" id="new_assignment_page" class="page" ng-controller="NewAssignmentPageController as c">
 <div class="page_header"><h1>Play New Assignment</h1></div>
 <div class="page_body">
 
@@ -216,7 +217,7 @@ Choose a new role for that player.
 </div><!--/page_body-->
 </div><!--/new_assignment_page-->
 
-<div id="resilient_population_page" class="page" ng-controller="ResilientPopulationPageController as c">
+<div ng-switch-when="/resilient_population" id="resilient_population_page" class="page" ng-controller="ResilientPopulationPageController as c">
 <div class="page_header"><h1>Play Resilient Population</h1></div>
 <div class="page_body">
 
@@ -233,7 +234,7 @@ Choose a city to remove from the Infection deck.
 </div><!--/page_body-->
 </div><!--/resilient_population_page-->
 
-<div id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
+<div ng-switch-when="/infection_rumor" id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
 <div class="page_header"><h1>Play Infection Rumor</h1></div>
 <div class="page_body">
 
@@ -250,7 +251,7 @@ Choose a card to discard from the Infection deck.
 </div><!--/page_body-->
 </div><!--/infection_rumor_page-->
 
-<div id="forecast_page" class="page" ng-controller="ForecastPageController as c">
+<div ng-switch-when="forecast" id="forecast_page" class="page" ng-controller="ForecastPageController as c">
 <div class="page_header"><h1>Forecast</h1></div>
 <div class="page_body">
 
@@ -280,7 +281,7 @@ This is the order the next 6 infection cards will appear.
 </div><!--/page_body-->
 </div><!--/forecast_page-->
 
-<div id="resource_planning_page" class="page" ng-controller="ResourcePlanningPageController as c">
+<div ng-switch-when="resource_planning" id="resource_planning_page" class="page" ng-controller="ResourcePlanningPageController as c">
 <div class="page_header"><h1>Resource Planning</h1></div>
 <div class="page_body">
 
@@ -308,7 +309,7 @@ This is the order the next 4 player cards will appear.
 </div><!--/page_body-->
 </div><!--/resource_planning_page-->
 
-<div id="game_completed_page" class="page" ng-controller="GameCompletedPageController as c">
+<div ng-switch-when="game_completed" id="game_completed_page" class="page" ng-controller="GameCompletedPageController as c">
 <div class="page_header"><h1>Game Completed</h1></div>
 <div class="page_body">
 

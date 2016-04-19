@@ -172,63 +172,6 @@ function reload_watched_game()
 
 function show_current_game(xtra)
 {
-	console.log('in show_current_game');
-	if (xtra == '/discards') {
-		var $pg = show_page('show_discards_page');
-		return init_show_discards_page($pg);
-	}
-	else if (xtra == '/play_special') {
-		var $pg = show_page('special_event_page');
-		return init_play_special_event_page($pg);
-	}
-	else if (xtra == '/retrieve_special') {
-		var $pg = show_page('special_event_page');
-		return init_retrieve_special_event_page($pg);
-	}
-	else if (xtra == '/virulent_strain') {
-		var $pg = show_page('virulent_strain_page');
-		return init_virulent_strain_page($pg);
-	}
-	else if (xtra == '/discover_cure') {
-		var $pg = show_page('discover_cure_page');
-		return init_discover_cure_page($pg);
-	}
-
-	if (G.step == 'actions') {
-		var $pg = show_page('player_turn_page');
-		init_player_turn_page($pg);
-	}
-	else if (G.step == 'draw_cards') {
-		var $pg = show_page('player_turn_page');
-		init_draw_cards_page($pg);
-	}
-	else if (G.step == 'mutation') {
-		var $pg = show_page('player_turn_page');
-		init_epidemic_page($pg);
-	}
-	else if (G.step == 'epidemic') {
-		var $pg = show_page('player_turn_page');
-		init_epidemic_page($pg);
-	}
-	else if (G.step == 'infection') {
-		var $pg = show_page('player_turn_page');
-		init_infection_page($pg);
-	}
-	else if (G.step == 'forecast') {
-		show_page('forecast_page');
-	}
-	else if (G.step == 'resource_planning') {
-		var $pg = show_page('resource_planning_page');
-		init_resource_planning_page($pg);
-	}
-	else if (G.step == 'end') {
-		var $pg = show_page('game_completed_page');
-		init_game_completed_page($pg);
-	}
-	else {
-		alert('unrecognized game state');
-		return;
-	}
 }
 
 function submit_generate_game_form()
@@ -1026,10 +969,7 @@ function init_infection_page($pg)
 
 function show_page(page_name)
 {
-	var cgp = $('#current_game_page');
-	cgp.controller().page = page_name;
-	$(".page", cgp).hide();
-	return $("#"+page_name).show();
+	return $("#"+page_name);
 }
 
 function stor_add_to_set(key, value)
@@ -1420,23 +1360,21 @@ function on_infection_rumor_selected()
 	return set_move('special "Infection Rumor" "' + c + '"');
 }
 
-function on_special_event_clicked(GameService, s)
+function on_special_event_clicked(GameService, s, gameController)
 {
 	if (s == 'Resilient Population') {
 
-		var $pg = show_page('resilient_population_page');
-		init_resilient_population_page($pg);
+		gameController.page = '/resilient_population';
 		return;
 	}
 	if (s == 'Infection Rumor') {
-		var $pg = show_page('infection_rumor_page');
-		init_infection_rumor_page($pg);
+
+		gameController.page = '/infection_rumor';
 		return;
 	}
 	else if (s == 'New Assignment') {
 
-		var $pg = show_page('new_assignment_page');
-		init_new_assignment_page($pg);
+		gameController.page = '/new_assignment';
 		return;
 	}
 
