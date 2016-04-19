@@ -301,13 +301,16 @@ function is_valid_card(card, rules)
 	return (!Pandemic.Conditions[card] || Pandemic.Conditions[card](rules));
 }
 
-function get_deck(name, rules)
+function get_deck(name, rules, gen_options)
 {
 	deck = [];
 
 	var expansions = [];
 	for (var i = 0; i < Expansions.length; i++) {
 		if (Expansions[i] == 'base' || rules[Expansions[i]]) {
+			expansions.push(Expansions[i]);
+		}
+		if (Expansions[i] == 'base2013' && !(gen_options && gen_options.nobase2013)) {
 			expansions.push(Expansions[i]);
 		}
 	}
@@ -1248,7 +1251,7 @@ Pandemic.GameState.prototype.vs_dud = function(epidemic_name) {
 		});
 };
 
-function generate_scenario_real(rules)
+function generate_scenario_real(rules, gen_options)
 {
 	var G = new Pandemic.GameState();
 	G.rules = rules;
@@ -1272,7 +1275,7 @@ function generate_scenario_real(rules)
 		A.push(S[i]);
 	}
 
-	var R = get_deck('Roles', G.rules);
+	var R = get_deck('Roles', G.rules, gen_options);
 	shuffle_array(R);
 
 	shuffle_array(A);
@@ -1376,9 +1379,9 @@ function generate_scenario_real(rules)
 	return G;
 }
 
-function generate_scenario(rules)
+function generate_scenario(rules, gen_options)
 {
-	var G = generate_scenario_real(rules);
+	var G = generate_scenario_real(rules, gen_options);
 
 	var X = {
 	'initial_hands': G.initial_hands,

@@ -55,6 +55,12 @@
 <input type="checkbox" id="superbug_checkbox" name="superbug_challenge" onclick='validate_modules();'/>
 <label for="superbug_checkbox">Superbug Challenge *NYI*</label>
 </td>
+</tr>
+<tr>
+<td>Options:</td>
+<td>
+<div><label><input type="checkbox" name="nobase2013">Avoid 2013-edition roles</label></div>
+</td>
 </table>
 </div><!--/page_body-->
 <div class="page_nav">

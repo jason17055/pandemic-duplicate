@@ -192,7 +192,10 @@ function submit_generate_game_form()
 		'emergency_event_challenge': f.emergency_event_challenge.checked,
 		'superbug_challenge': f.superbug_challenge.checked
 		};
-	G = generate_scenario(rules);
+	var gen_options = {
+		'nobase2013': f.nobase2013.checked
+		};
+	G = generate_scenario(rules, gen_options);
 	trigger_upload_scenario(G.scenario_id);
 
 	// create game
