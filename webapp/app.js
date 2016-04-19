@@ -664,11 +664,37 @@ app.controller('ResourcePlanningPageController',
   });
 
 app.controller('GameCompletedPageController',
-  function(StateService) {
+  function(StateService, Storage, ResultStore) {
     $('.cure_count').change(update_game_score);
 
+    var f = document.game_completed_form;
+    this.save = function(for_submission) {
+
+      Storage.set('.game_location', f.location.value);
+
+      var V = {};
+      V.version = Version;
+      V.rules = f.rules.value;
+      V.shuffle_id = f.scenario_id.value;
+      V.scenario_id = f.scenario_id.value;
+      V.game_id = f.game_id.value;
+      V.score = f.score.value;
+      V.cures = f.cures.value;
+      V.turns = f.turns.value;
+      V.location = f.location.value;
+      V.comments = f.comments.value;
+      for (var i = 1; i <= G.rules.player_count; i++) {
+        V['player'+i] = this.player_names[i];
+      }
+      V.time = new Date().toISOString();
+      if (!for_submission) {
+        V.localOnly = true;
+      }
+      return ResultStore.create(V);
+    };
+
     this.submit_result_clicked = function() {
-      var result_id = save_current_result(true);
+      var result_id = this.save(true);
 
       stor_add_to_set(PACKAGE + '.game_results.' + G.scenario_id, result_id);
       stor_add_to_set(PACKAGE + '.pending_results', result_id);
@@ -681,7 +707,7 @@ app.controller('GameCompletedPageController',
 
     this.dont_submit_clicked = function()
     {
-      var result_id = save_current_result(false);
+      var result_id = this.save(false);
 
       // this makes this game show up in the "Review Results" page
       stor_add_to_set(PACKAGE + '.my_results', result_id);
@@ -698,6 +724,11 @@ app.controller('GameCompletedPageController',
           G.is_cured('purple') ? 'cured all five diseases' :
           'cured all four normal diseases and wiped purple off the board';
     }
+    this.player_names = {};
+    for (var i = 1; i <= G.rules.player_count; i++) {
+      this.player_names[i] = G.player_names[i];
+    }
+
     init_game_completed_page($('#game_completed_page'));
   });
 
@@ -799,6 +830,12 @@ app.controller('CurrentGameController',
     this.get_active_player_role_icon = function() {
       return get_role_icon(G.roles[G.active_player]);
     };
+    this.get_player_role = function(seat) {
+      return G.roles[seat];
+    };
+    this.get_player_role_icon = function(seat) {
+      return get_role_icon(G.roles[seat]);
+    };
     this.get_troubleshooter_preview = function() {
       var list = [];
       var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
@@ -819,6 +856,11 @@ app.controller('CurrentGameController',
     } else {
       console.log("got game data "+JSON.stringify(gameData));
       show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
+    }
+
+    this.seats = [];
+    for (var i = 1; i <= G.rules.player_count; i++) {
+      this.seats.push(i);
     }
 
     if ($state.params['xtra']) {

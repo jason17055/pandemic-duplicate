@@ -329,8 +329,8 @@ you {{c.victory_type}} in {{c.turns}} turns
 </div>
 <div ng-show="c.result != 'victory'">
 <p>
-With <span class="level"></span> epidemics,
-you survived <span class="turns"></span> turns.
+With {{c.level}} epidemics,
+you survived {{c.turns}} turns.
 </p>
 <p>
 How many diseases cured?
@@ -348,11 +348,12 @@ Score:
 <span class="score_ind"></span>
 </p>
 <table>
-<tr class="player1"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player1" value="Player 1"></td></tr>
-<tr class="player2"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player2" value="Player 2"></td></tr>
-<tr class="player3" ng-show="c.player_count >= 3"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player3" value="Player 3"></td></tr>
-<tr class="player4" ng-show="c.player_count >= 4"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player4" value="Player 4"></td></tr>
-<tr class="player5" ng-show="c.player_count >= 5"><td class="role_col"><img src="" alt="" class="role_icon"><span class="role"></span></td><td><input type="text" name="player5" value="Player 5"></td></tr>
+<tr ng-repeat="seat in game.seats">
+  <td class="role_col">
+    <img ng-src="{{game.get_player_role_icon(seat)}}" alt="" class="role_icon">{{game.get_player_role(seat)}}
+  </td>
+  <td><input type="text" ng-model="c.player_names[seat]"></td>
+</tr>
 </table>
 
 <div>

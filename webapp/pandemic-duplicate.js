@@ -291,12 +291,6 @@ function init_game_completed_page($pg)
 	f.game_id.value = G.game_id;
 
 	update_game_score();
-
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		$('.player'+i+' input', $pg).attr('value', G.player_names[i]);
-		$('.player'+i+' .role_icon', $pg).attr('src', get_role_icon(G.roles[i]));
-		$('.player'+i+' .role', $pg).text(G.roles[i]);
-	}
 }
 
 function submit_player_names_form()
@@ -1681,39 +1675,6 @@ function load_result(result_id)
 		return null;
 	}
 	return r;
-}
-
-function save_current_result(for_submission)
-{
-	var f = document.game_completed_form;
-
-	localStorage.setItem(PACKAGE + '.game_location', f.location.value);
-
-	var V = {};
-	V.version = Version;
-	V.rules = f.rules.value;
-	V.shuffle_id = f.scenario_id.value;
-	V.scenario_id = f.scenario_id.value;
-	V.game_id = f.game_id.value;
-	V.score = f.score.value;
-	V.cures = f.cures.value;
-	V.turns = f.turns.value;
-	V.location = f.location.value;
-	V.comments = f.comments.value;
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		V['player'+i] = f['player'+i].value;
-	}
-	V.time = new Date().toISOString();
-	if (!for_submission) {
-		V.localOnly = true;
-	}
-
-	var VV = JSON.stringify(V);
-	var result_id = (""+CryptoJS.SHA1(VV)).substring(0,18);
-	localStorage.setItem(PACKAGE + '.result.' + result_id, VV);
-	localStorage.setItem(PACKAGE + '.my_result.' + V.scenario_id, result_id);
-
-	return result_id;
 }
 
 //

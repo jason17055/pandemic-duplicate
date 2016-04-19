@@ -69,8 +69,14 @@ app.service('GameStore',
   });
 
 app.service('ResultStore',
-  function() {
-    // TODO
+  function(Storage) {
+    this.create = function(V) {
+      var VV = JSON.stringify(V);
+      var result_id = (""+CryptoJS.SHA1(VV)).substring(0,18);
+      Storage.set('.result.' + result_id, VV);
+      Storage.set('.my_result.' + V.scenario_id, result_id);
+      return result_id;
+    };
   });
 
 app.service('ScenarioStore',
