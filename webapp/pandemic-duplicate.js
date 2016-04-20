@@ -163,7 +163,9 @@ function reload_watched_game()
 	}
 
 	G.has_control = false;
-	show_current_game(watched_game_info.xtra);
+
+	// trigger game page reload
+	G.serial = (G.serial || 0) + 1;
 }
 
 function show_current_game(xtra)

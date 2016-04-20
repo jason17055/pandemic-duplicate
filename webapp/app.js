@@ -544,20 +544,24 @@ app.controller('PlayerTurnPageController',
     this.on_determine_virulent_strain_clicked = function() {
       GameService.goto_current_game_state('/virulent_strain');
     };
-    var $pg = $('#player_turn_page');
-    if (G.step == 'actions') {
-      init_player_turn_page($pg);
-    } else if (G.step == 'draw_cards') {
-      init_draw_cards_page($pg);
-    } else if (G.step == 'mutation') {
-      init_epidemic_page($pg);
-    } else if (G.step == 'epidemic') {
-      init_epidemic_page($pg);
-    } else if (G.step == 'infection') {
-      init_infection_page($pg);
-    } else {
-      console.log('unrecognized game state ' + G.step);
-    }
+    var initFunc = function() {
+      var $pg = $('#player_turn_page');
+      if (G.step == 'actions') {
+        init_player_turn_page($pg);
+      } else if (G.step == 'draw_cards') {
+        init_draw_cards_page($pg);
+      } else if (G.step == 'mutation') {
+        init_epidemic_page($pg);
+      } else if (G.step == 'epidemic') {
+        init_epidemic_page($pg);
+      } else if (G.step == 'infection') {
+        init_infection_page($pg);
+      } else {
+        console.log('unrecognized game state ' + G.step);
+      }
+    };
+    initFunc();
+    $scope.$watch(function() { return G.serial; }, initFunc);
   });
 
 app.controller('DiscoverCurePageController',
@@ -784,7 +788,7 @@ app.controller('ShowDiscardsPageController',
   });
 
 app.controller('CurrentGameController',
-  function($state, isPlaying, gameData) {
+  function($scope, $state, isPlaying, gameData) {
     this.can_declare_victory = function() {
       return G.has_control && G.step == 'actions';
     };
@@ -895,23 +899,27 @@ app.controller('CurrentGameController',
       this.seats.push(i);
     }
 
-    if ($state.params['xtra']) {
-      if ($state.params['xtra'] == '/play_special') {
-        this.page = 'special_event';
-      } else if ($state.params['xtra'] == '/retrieve_special') {
-        this.page = 'special_event';
+    var initFunc = function() {
+      if ($state.params['xtra']) {
+        if ($state.params['xtra'] == '/play_special') {
+          this.page = 'special_event';
+        } else if ($state.params['xtra'] == '/retrieve_special') {
+          this.page = 'special_event';
+        } else {
+          this.page = $state.params['xtra'];
+        }
+      } else if (G.step == 'forecast') {
+        this.page = 'forecast';
+      } else if (G.step == 'resource_planning') {
+        this.page = 'resource_planning';
+      } else if (G.step == 'end') {
+        this.page = 'game_completed';
       } else {
-        this.page = $state.params['xtra'];
+        this.page = 'player_turn';
       }
-    } else if (G.step == 'forecast') {
-      this.page = 'forecast';
-    } else if (G.step == 'resource_planning') {
-      this.page = 'resource_planning';
-    } else if (G.step == 'end') {
-      this.page = 'game_completed';
-    } else {
-      this.page = 'player_turn';
-    }
+    };
+    initFunc();
+    $scope.$watch(function() { return G.serial; }, initFunc);
   });
 
 app.controller('PlayerCardController',
