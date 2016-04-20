@@ -107,9 +107,10 @@ public class AdminServlet extends HttpServlet
 			}
 
 			ent.setProperty("created", new Date());
-			ent.setProperty("nameLC", name.toLowerCase());
 			ent.setProperty("createdBy", user);
 			ent.setProperty("owner", user);
+			ent.setProperty("title", name);
+			ent.setProperty("titleLC", name.toLowerCase());
 			ds.put(ent);
 
 			txn.commit();

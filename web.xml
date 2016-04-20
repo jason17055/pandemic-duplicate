@@ -24,6 +24,11 @@
 </servlet-mapping>
 
 <servlet-mapping>
+	<url-pattern>/s/tournaments</url-pattern>
+	<servlet-name>Tournament</servlet-name>
+</servlet-mapping>
+
+<servlet-mapping>
 	<url-pattern>/s/cron/generate_scenario</url-pattern>
 	<servlet-name>GenerateScenario</servlet-name>
 </servlet-mapping>
@@ -56,6 +61,11 @@
 <servlet>
 	<servlet-name>Scenario</servlet-name>
 	<servlet-class>pandemic.ScenarioServlet</servlet-class>
+</servlet>
+
+<servlet>
+	<servlet-name>Tournament</servlet-name>
+	<servlet-class>pandemic.TournamentServlet</servlet-class>
 </servlet>
 
 <servlet>

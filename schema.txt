@@ -5,10 +5,11 @@ name: string, the user's email address
 
 ==Tournament==
 name: string
-nameLC: string
 created: date
 createdBy: User
 owner: User
+title: string
+titleLC: string
 
 ==Deal==
 (deprecated, use Scenario instead)
