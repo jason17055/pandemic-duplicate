@@ -1,5 +1,15 @@
 Documents entity types and properties on server-side datastore.
 
+==User==
+name: string, the user's email address
+
+==Tournament==
+name: string
+nameLC: string
+created: date
+createdBy: User
+owner: User
+
 ==Deal==
 (deprecated, use Scenario instead)
 
@@ -45,7 +55,7 @@ playerNamesLC: string[]
 location: string
 locationLC: string
 
-==Subscriber==
+==Subscriber== (watches games)
 id: int, auto-generated
 created: date
 createdBy: IP address
