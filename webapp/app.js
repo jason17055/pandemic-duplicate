@@ -210,6 +210,12 @@ app.controller('TopController',
       });
     };
     this.$state = $state;
+    $scope.$watch(
+      function() { return Options.game_detail_level; },
+      function(newValue, oldValue) {
+        this.game_detail_level = newValue;
+      }.bind(this));
+    this.game_detail_level = Options.game_detail_level;
   });
 
 app.controller('WelcomePageController',
@@ -255,24 +261,30 @@ app.controller('WelcomePageController',
   });
 
 app.controller('OptionsPageController',
-  function(StateService, Storage, $window) {
+  function(StateService, Options, Storage, $window) {
     var f = document.options_form;
 
     var save_options_form = function() {
-      Storage.set('.base_game_version', f.base_game_version.value);
-      Storage.set('.has_on_the_brink', f.has_on_the_brink.checked ? 'true' : 'false');
-      Storage.set('.has_in_the_lab', f.has_in_the_lab.checked ? 'true' : 'false');
-      Storage.set('.has_state_of_emergency', f.has_state_of_emergency.checked ? 'true' : 'false');
-      Storage.set('.game_detail_level', f.game_detail_level.value);
+      Options.base_game_version = f.base_game_version.value;
+      Options.has_on_the_brink = f.has_on_the_brink.checked;
+      Options.has_in_the_lab = f.has_in_the_lab.checked;
+      Options.has_state_of_emergency = f.has_state_of_emergency.checked;
+      Options.game_detail_level = +f.game_detail_level.value;
+
+      Storage.set('.base_game_version', Options.base_game_version);
+      Storage.set('.has_on_the_brink', Options.has_on_the_brink ? 'true' : 'false');
+      Storage.set('.has_in_the_lab', Options.has_in_the_lab ? 'true' : 'false');
+      Storage.set('.has_state_of_emergency', Options.has_state_of_emergency ? 'true' : 'false');
+      Storage.set('.game_detail_level', Options.game_detail_level);
       load_options();
     };
 
     // Populate form based on values in Storage.
-    f.base_game_version.value = Storage.get('.base_game_version') || '2007';
-    f.has_on_the_brink.checked = Storage.get('.has_on_the_brink')=='true';
-    f.has_in_the_lab.checked = Storage.get('.has_in_the_lab')=='true';
-    f.has_state_of_emergency.checked = Storage.get('.has_state_of_emergency')=='true';
-    f.game_detail_level.value = Storage.get('.game_detail_level') || '0';
+    f.base_game_version.value = Options.base_game_version;
+    f.has_on_the_brink.checked = Options.has_on_the_brink;
+    f.has_in_the_lab.checked = Options.has_in_the_lab;
+    f.has_state_of_emergency.checked = Options.has_state_of_emergency;
+    f.game_detail_level.value = Options.game_detail_level;
 
     // Watch the form for changes.
     f.base_game_version.onchange = save_options_form;

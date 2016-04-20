@@ -43,12 +43,12 @@ Perform your actions.
 <div class="button_container" ng-show="game.can_retrieve_special_event()">
 <button type="button" ng-click="c.retrieve_special_event_clicked()">Retrieve Special Event</button>
 </div>
-<div class="detail_level_1">
+<div ng-if="top.game_detail_level >= 1">
 <div class="button_container" ng-show="game.can_declare_victory()">
 <button type="button" ng-click="c.discover_cure_clicked()">Cure / Eradicate Disease</button>
 </div>
 </div>
-<div class="no_detail_level_1">
+<div ng-if="top.game_detail_level < 1">
 <div class="button_container" ng-show="game.can_declare_victory()">
 <button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
 </div>

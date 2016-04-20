@@ -27,10 +27,6 @@ function load_options()
 	CFG.has_state_of_emergency = localStorage.getItem(PACKAGE+'.has_state_of_emergency')=='true';
 
 	CFG.game_detail_level = +localStorage.getItem(PACKAGE+'.game_detail_level');
-	if (CFG.game_detail_level >= 1) {
-		$('.detail_level_1').show();
-		$('.no_detail_level_1').hide();
-	}
 }
 
 function handle_ajax_error(jqx, status, errMsg)
