@@ -2,16 +2,27 @@
 <div class="page" id="generate_game_page">
 
 <div class="page_header">
-<h1>Generate Game</h1>
+<h1>Generate Scenario</h1>
 </div><!--/page_header-->
 
 <div class="page_body">
 
-<input type="hidden" name="player_count">
 <table width="100%">
+<tr ng-if="c.for_tournament">
+<td>Tournament:</td>
+<td>{{c.for_tournament}}</td>
+</tr>
+
 <tr>
 <td><label>Players:</label></td>
-<td><span class="player_count"></span></td>
+<td>
+<select name="player_count" ng-model="c.player_count" ng-disabled="c.player_count_fixed">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+</select>
+</td>
 </tr>
 
 <tr>
@@ -66,7 +77,7 @@
 <div class="page_nav">
 
 <div class="button_container">
-<button type="submit">Generate Game</button>
+<button type="submit">Generate Scenario</button>
 </div>
 
 </div><!--/page_nav-->

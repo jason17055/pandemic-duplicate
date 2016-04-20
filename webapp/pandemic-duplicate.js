@@ -1483,15 +1483,6 @@ function on_review_result_game_clicked()
 
 function init_generate_game_page($pg, xtra)
 {
-	var pcount = 2;
-	var m = xtra.match(/^(\d+)p$/);
-	if (m) {
-		pcount = m[1];
-	}
-
-	$('.player_count', $pg).text(pcount);
-	document.generate_game_form.player_count.value = pcount;
-
 	validate_modules();
 }
 

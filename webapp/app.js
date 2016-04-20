@@ -97,6 +97,12 @@ app.config(
         controller: 'GenerateGamePageController',
         controllerAs: 'c'
         })
+      .state('generate', {
+        url: '/generate_scenario?tournament',
+        templateUrl: 'pages/generate_game.ng',
+        controller: 'GenerateGamePageController',
+        controllerAs: 'c'
+        })
       .state('deck_setup', {
         url: '/:game_id/deck_setup',
         templateUrl: 'pages/deck_setup.ng',
@@ -328,6 +334,23 @@ app.controller('CreateGamePageController',
 app.controller('GenerateGamePageController',
   function($state) {
     init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
+    if ($state.params['tournament']) {
+      this.for_tournament = $state.params['tournament'];
+    } else {
+      this.for_tournament = null;
+    }
+    if ($state.params['rulespec']) {
+      var m = $state.params['rulespec'].match(/^(\d+)p$/);
+      if (m) {
+        this.player_count = m[1];
+      } else {
+        this.player_count = '2';
+      }
+      this.player_count_fixed = true;
+    } else {
+      this.player_count = '2';
+      this.player_count_fixed = false;
+    }
   });
 
 app.controller('JoinGamePageController',
