@@ -1,4 +1,4 @@
-<form name="generate_game_form" method="post" onsubmit="return submit_generate_game_form()">
+<form name="generate_game_form" method="post" ng-submit="c.submit()">
 <div class="page" id="generate_game_page">
 
 <div class="page_header">

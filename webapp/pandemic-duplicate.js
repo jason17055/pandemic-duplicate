@@ -174,27 +174,8 @@ function show_current_game(xtra)
 {
 }
 
-function submit_generate_game_form()
+function submit_generate_game_form(rules, gen_options)
 {
-	var f = document.generate_game_form;
-	var rules = {
-		'player_count': +f.player_count.value,
-		'level': +f.level.value,
-		'on_the_brink': f.on_the_brink.checked,
-		'in_the_lab': f.in_the_lab.checked,
-		'state_of_emergency': f.state_of_emergency.checked,
-		'virulent_strain': f.virulent_strain.checked,
-		'lab_challenge': f.lab_challenge.checked,
-		'mutation_challenge': f.mutation_challenge.checked,
-		'worldwide_panic': f.worldwide_panic.checked,
-		'quarantines': f.quarantines.checked,
-		'hinterlands_challenge': f.hinterlands_challenge.checked,
-		'emergency_event_challenge': f.emergency_event_challenge.checked,
-		'superbug_challenge': f.superbug_challenge.checked
-		};
-	var gen_options = {
-		'nobase2013': f.nobase2013.checked
-		};
 	G = generate_scenario(rules, gen_options);
 	trigger_upload_scenario(G.scenario_id);
 
@@ -208,8 +189,7 @@ function submit_generate_game_form()
 	G = load_game(G.game_id);
 	start_publishing_game(G.game_id);
 
-	goto_state(G.game_id+'/player_setup');
-	return false;
+	return G.game_id;
 }
 
 function init_player_names_page($pg, xtra)
