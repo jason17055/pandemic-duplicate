@@ -80,6 +80,25 @@ public class TournamentServlet extends HttpServlet
 		out.writeStringField("title", (String)ent.getProperty("title"));
 		out.writeBooleanField("can_admin", isUser(req, (Key) ent.getProperty("owner")));
 
+		// list open events for this tournament
+		{
+			out.writeFieldName("open_events");
+			out.writeStartArray();
+
+			Query q = new Query("TournamentEvent");
+			q.setAncestor(key);
+			PreparedQuery pq = datastore.prepare(q);
+			for (Entity eventEnt : pq.asIterable()) {
+				out.writeStartObject();
+				long eventId = eventEnt.getKey().getId();
+				out.writeStringField("id", Long.toString(eventId));
+				out.writeStringField("name", (String) eventEnt.getProperty("name"));
+				out.writeStringField("scenario", ((Key) eventEnt.getProperty("scenario")).getName());
+				out.writeEndObject();
+			}
+			out.writeEndArray();
+		}
+
 		if (adminAccess) {
 			// list events for this tournament
 			out.writeFieldName("all_events");

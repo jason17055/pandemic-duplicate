@@ -47,6 +47,11 @@ app.service('Channel',
 
 app.service('GameStore',
   function($http, Channel, Storage) {
+    this.create_tournament_game = function(tournament_id, event_id, scenario_id) {
+      // TODO
+      return 'TODO';
+    };
+
     this.do_watch_game = function(game_id) {
       var onSuccess = function(httpResponse) {
         var data = httpResponse.data;
@@ -105,6 +110,13 @@ app.service('ScenarioStore',
 
 app.service('TournamentStore',
   function($http) {
+    this.get = function(tournament_id) {
+      return $http
+        .get('/s/tournaments', {params: {'id': tournament_id}})
+        .then(function(httpResponse) {
+          return httpResponse.data;
+        });
+    };
     this.getAsAdmin = function(tournament_id) {
       return $http
         .get('/s/tournaments', {params: {'id': tournament_id, 'admin': '1'}})

@@ -136,6 +136,17 @@ app.config(
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
         }})
+      .state('tournament_pick_scenario', {
+        url: '/tournament/:tournament',
+        templateUrl: 'pages/tournament_pick_scenario.ng',
+        controller: 'TournamentPickScenarioPageController',
+        controllerAs: 'c',
+        resolve: {
+          'tournament':
+            function(TournamentStore, $stateParams) {
+              return TournamentStore.get($stateParams['tournament']);
+            }
+        }})
       .state('manage_tournament', {
         url: '/manage_tournament/:tournament',
         templateUrl: 'pages/tournament_manage.ng',
@@ -460,6 +471,19 @@ app.controller('ReviewResultsPageController',
       StateService.go('search_results/' + escape(q));
     };
     init_review_results_page($('#review_results_page'));
+  });
+
+app.controller('TournamentPickScenarioPageController',
+  function($scope, $state, tournament, GameStore) {
+    $scope['tournament'] = tournament;
+    this.get_scenario_name = function(scenario_id) {
+      return scenario_name(scenario_id);
+    };
+    this.selected = function(evt) {
+      // TODO- start a game with the selected event
+      var game_id = GameStore.create_tournament_game(tournament.id, evt.id, evt.scenario);
+      $state.go('player_setup', {'game_id': game_id});
+    };
   });
 
 app.controller('TournamentManagePageController',

@@ -1,0 +1,15 @@
+<div class="page">
+<div class="page_header"><h1>{{tournament.title}}</h1></div>
+<div class="page_body">
+
+<div>
+Choose an event:
+</div>
+<div class="scenarios_list">
+<div class="button_container" ng-repeat="evt in tournament.open_events">
+<button type="button" ng-click="c.selected(evt)">{{evt.name}}</button>
+</div>
+</div><!--/scenarios_list-->
+
+</div><!--/page_body-->
+</div>
