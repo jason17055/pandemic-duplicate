@@ -10,6 +10,13 @@ createdBy: User
 owner: User
 title: string
 titleLC: string
+nextEventId: int
+
+==TournamentEvent==
+parent: Key<Tournament>
+id: monotonically-increasing number
+scenario: Key<Scenario>
+name: string
 
 ==Deal==
 (deprecated, use Scenario instead)

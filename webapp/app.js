@@ -136,6 +136,17 @@ app.config(
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
         }})
+      .state('tournament_add_scenario', {
+        url: '/manage_tournament/:tournament/add_scenario?scenario',
+        templateUrl: 'pages/tournament_add_scenario.ng',
+        controller: 'TournamentAddScenarioPageController',
+        controllerAs: 'c',
+        resolve: {
+          'scenario':
+            function(ScenarioStore, $stateParams) {
+              return ScenarioStore.get($stateParams['scenario']);
+            }
+        }})
       .state('404', {});
     $urlRouterProvider.when('', '/');
     $urlRouterProvider.otherwise(
@@ -383,8 +394,17 @@ app.controller('GenerateGamePageController',
       var gen_options = {
           'nobase2013': f.nobase2013.checked
           };
-      var game_id = submit_generate_game_form(rules, gen_options);
-      StateService.go(game_id + '/player_setup');
+      if (this.for_tournament) {
+        var G = generate_scenario(rules, gen_options);
+        trigger_upload_scenario(G.scenario_id);
+
+        $state.go('tournament_add_scenario',
+            {'tournament': this.for_tournament,
+             'scenario': G.scenario_id});
+      } else {
+        var game_id = submit_generate_game_form(rules, gen_options);
+        StateService.go(game_id + '/player_setup');
+      }
     };
   });
 
@@ -429,6 +449,28 @@ app.controller('ReviewResultsPageController',
       StateService.go('search_results/' + escape(q));
     };
     init_review_results_page($('#review_results_page'));
+  });
+
+app.controller('TournamentAddScenarioPageController',
+  function($http, $scope, $state, $window, scenario) {
+    $scope['scenario'] = scenario;
+    this.scenario = scenario;
+    this.name = 'Round 1';
+    this.submit = function() {
+      var data = {
+        'scenario': scenario.scenario_id,
+        'tournament': $state.params['tournament'],
+        'name': this.name
+        };
+      return $http
+        .post('/s/tournaments/add_scenario', data)
+        .then(function(httpResponse) {
+          console.log('got reply of ' + JSON.stringify(httpResponse.data));
+        });
+    };
+    this.go_back = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('FoundCompletedGamesPageController',

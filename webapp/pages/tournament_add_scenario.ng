@@ -1,0 +1,35 @@
+<div class="page">
+
+<div class="page_header">
+<h1>Add Scenario</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<form ng-submit="c.submit()">
+<p>
+Scenario: {{scenario.get_caption()}}
+</p>
+<p>
+Roles:
+<ul>
+<li ng-repeat="seat in scenario.get_seats()">
+<img class="role_icon" ng-src="{{scenario.get_role_icon(seat)}}" alt="">{{scenario.get_role(seat)}}</li>
+</ul>
+</p>
+<p>
+<label>Name:
+<input type="text" id="name_entry" name="name" ng-model="c.name">
+</label>
+</p>
+
+<div class="button_container">
+<button type="submit">Add Scenario</button>
+</div>
+<div class="button_container">
+<button type="button" ng-click="c.go-back()">Go Back</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div>

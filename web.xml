@@ -29,6 +29,11 @@
 </servlet-mapping>
 
 <servlet-mapping>
+	<url-pattern>/s/tournaments/*</url-pattern>
+	<servlet-name>Tournament</servlet-name>
+</servlet-mapping>
+
+<servlet-mapping>
 	<url-pattern>/s/cron/generate_scenario</url-pattern>
 	<servlet-name>GenerateScenario</servlet-name>
 </servlet-mapping>

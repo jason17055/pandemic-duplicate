@@ -81,5 +81,24 @@ app.service('ResultStore',
 
 app.service('ScenarioStore',
   function() {
-    // TODO
+    this.get = function(scenario_id) {
+      var s = load_scenario(scenario_id);
+      s.get_caption = function() {
+        return scenario_name(scenario_id);
+      };
+      s.get_seats = function() {
+        var list = [];
+        for (var i = 1; i <= s.rules.player_count; i++) {
+          list.push(i);
+        }
+        return list;
+      };
+      s.get_role = function(pid) {
+        return s.roles[pid];
+      };
+      s.get_role_icon = function(pid) {
+        return get_role_icon(s.roles[pid]);
+      };
+      return s;
+    };
   });

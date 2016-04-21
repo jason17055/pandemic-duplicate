@@ -91,4 +91,111 @@ public class TournamentServlet extends HttpServlet
 		out.writeEndArray();
 		out.close();
 	}
+
+	@Override
+	public void doPost(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		String pathInfo = req.getPathInfo();
+		if ("/add_scenario".equals(pathInfo)) {
+			doAddScenario(req, resp);
+		}
+		else {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+		}
+	}
+
+	void doAddScenario(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		Principal p = req.getUserPrincipal();
+		if (p == null) {
+			log.warning("user is not logged in");
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		String scenarioId = null, tournamentId = null, name = null;
+		JsonParser json = new JsonFactory().createJsonParser(req.getReader());
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("scenario")) {
+				json.nextToken();
+				scenarioId = json.getText();
+			}
+			else if (json.getCurrentName().equals("tournament")) {
+				json.nextToken();
+				tournamentId = json.getText();
+			}
+			else if (json.getCurrentName().equals("name")) {
+				json.nextToken();
+				name = json.getText();
+			}
+		}
+
+		log.info("got scenario " + scenarioId);
+		log.info("got tournament " + tournamentId);
+		log.info("got name " + name);
+
+		if (scenarioId == null || tournamentId == null || name == null) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key tournamentKey = KeyFactory.createKey("Tournament", tournamentId);
+
+		Transaction txn = datastore.beginTransaction();
+		try {
+			Entity tournamentEnt;
+			try {
+				tournamentEnt = datastore.get(tournamentKey);
+			}
+			catch (EntityNotFoundException e) {
+				log.warning("tournament " + tournamentId + " not found");
+				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+
+			Key ownerKey = (Key) tournamentEnt.getProperty("owner");
+			if (!p.getName().equals(ownerKey.getName())) {
+				log.warning(p.getName() + " is not the owner for this tournament");
+				resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+
+			long nextEventId;
+			if (tournamentEnt.hasProperty("nextEventId")) {
+				nextEventId = ((Long) tournamentEnt.getProperty("nextEventId")).longValue();
+			} else {
+				nextEventId = 1L;
+			}
+
+			tournamentEnt.setProperty("nextEventId", new Long(nextEventId+1));
+			datastore.put(tournamentEnt);
+
+			Key scenarioKey = KeyFactory.createKey("Scenario", scenarioId);
+			Key eventKey = KeyFactory.createKey(tournamentKey, "TournamentEvent", nextEventId);
+			Entity eventEnt = new Entity(eventKey);
+			eventEnt.setProperty("scenario", scenarioKey);
+			eventEnt.setProperty("name", name);
+			datastore.put(eventEnt);
+
+			txn.commit();
+
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeStringField("event_id", Long.toString(nextEventId));
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
 }
