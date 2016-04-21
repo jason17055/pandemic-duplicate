@@ -1,0 +1,21 @@
+<div class="page">
+
+<div class="page_header">
+<h1>Manage Tournament</h1>
+</div><!--/page_header-->
+
+<div class="page_body">
+
+<p>
+Tournament: {{tournament.title}}
+</p>
+<p>
+Events:
+<ul>
+<li ng-repeat="evt in tournament.all_events">
+{{evt.id}}. {{evt.scenario}} "{{evt.name}}"
+</ul>
+</p>
+
+</div><!--/page_body-->
+</div>

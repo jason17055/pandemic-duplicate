@@ -102,3 +102,14 @@ app.service('ScenarioStore',
       return s;
     };
   });
+
+app.service('TournamentStore',
+  function($http) {
+    this.getAsAdmin = function(tournament_id) {
+      return $http
+        .get('/s/tournaments', {params: {'id': tournament_id, 'admin': '1'}})
+        .then(function(httpResponse) {
+          return httpResponse.data;
+        });
+    };
+  });

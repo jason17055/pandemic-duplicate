@@ -136,6 +136,17 @@ app.config(
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
         }})
+      .state('manage_tournament', {
+        url: '/manage_tournament/:tournament',
+        templateUrl: 'pages/tournament_manage.ng',
+        controller: 'TournamentManagePageController',
+        controllerAs: 'c',
+        resolve: {
+          'tournament':
+            function(TournamentStore, $stateParams) {
+              return TournamentStore.getAsAdmin($stateParams['tournament']);
+            }
+        }})
       .state('tournament_add_scenario', {
         url: '/manage_tournament/:tournament/add_scenario?scenario',
         templateUrl: 'pages/tournament_add_scenario.ng',
@@ -449,6 +460,11 @@ app.controller('ReviewResultsPageController',
       StateService.go('search_results/' + escape(q));
     };
     init_review_results_page($('#review_results_page'));
+  });
+
+app.controller('TournamentManagePageController',
+  function($scope, tournament) {
+    $scope['tournament'] = tournament;
   });
 
 app.controller('TournamentAddScenarioPageController',
