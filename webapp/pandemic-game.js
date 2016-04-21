@@ -249,6 +249,17 @@ Pandemic = {
 	'MAX_PLAYERS': 5
 	};
 
+function find_and_remove_card(pile, card_name)
+{
+	for (var i = 0; i < pile.length; i++) {
+		if (pile[i] == card_name) {
+			pile.splice(i, 1);
+			return card_name;
+		}
+	}
+	return null;
+}
+
 function is_emergency(c)
 {
 	var m = /^Emergency(?:{\d+})?: (.*)/.exec(c);
@@ -829,7 +840,7 @@ Pandemic.GameState.prototype.do_special_event = function(c) {
 			}
 		}
 		else {
-			pid = find_and_remove_card_any_hand(cc);
+			pid = this.find_and_remove_card_any_hand(cc);
 		}
 		if (!pid) { return null; }
 
@@ -932,6 +943,18 @@ Pandemic.GameState.prototype.epidemic_drawn = function(c) {
 		this.player_discards.push(c);
 		this.current_epidemic = c.substring(10);
 	}
+};
+
+//returns the player-id of the player who had it
+Pandemic.GameState.prototype.find_and_remove_card_any_hand = function(c) {
+	for (var i = 1; i <= this.rules.player_count; i++) {
+		var cc = find_and_remove_card(this.hands[i], c);
+		if (cc) {
+			this.player_discards.push(cc);
+			return i;
+		}
+	}
+	return null;
 };
 
 // Note: this function is called when the user clicks Next after an

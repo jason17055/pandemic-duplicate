@@ -565,17 +565,6 @@ function get_move(scenario_id, game_id, time)
 	return mv != null ? mv : 'pass';
 }
 
-function find_and_remove_card(pile, card_name)
-{
-	for (var i = 0; i < pile.length; i++) {
-		if (pile[i] == card_name) {
-			pile.splice(i, 1);
-			return card_name;
-		}
-	}
-	return null;
-}
-
 function make_history_item(evt)
 {
 	if (evt.type == 'infection') {
@@ -847,19 +836,6 @@ var Role_icons = {
 function get_role_icon(r)
 {
 	return 'images/'+Role_icons[r];
-}
-
-//returns the player-id of the player who had it
-function find_and_remove_card_any_hand(c)
-{
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		var cc = find_and_remove_card(G.hands[i], c);
-		if (cc) {
-			G.player_discards.push(cc);
-			return i;
-		}
-	}
-	return null;
 }
 
 function init_player_turn_page($pg)
