@@ -15,6 +15,9 @@ Documents what localStorage keys are used client-side.
 .game.X.time
 	integer, where X is a game id
 
+.game.X.tournament
+	string "tournament/event", if game is played as part of tournament
+
 .game.X.T#
 	a move string, X is a game id, # is an integer
 
