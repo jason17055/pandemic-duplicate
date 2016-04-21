@@ -561,7 +561,7 @@ app.controller('PlayerTurnPageController',
       }
     };
     initFunc();
-    $scope.$watch(function() { return G.serial; }, initFunc);
+    $scope.$watch(function() { return G; }, initFunc);
   });
 
 app.controller('DiscoverCurePageController',
@@ -919,7 +919,7 @@ app.controller('CurrentGameController',
       }
     }.bind(this);
     initFunc();
-    $scope.$watch(function() { return G.serial; }, initFunc);
+    $scope.$watch(function() { return G; }, initFunc);
   });
 
 app.controller('PlayerCardController',
