@@ -53,6 +53,23 @@ public class TournamentServlet extends HttpServlet
 			return;
 		}
 
+		boolean adminAccess = false;
+		if (req.getParameter("admin") != null) {
+			Principal p = req.getUserPrincipal();
+			if (p == null) {
+				log.warning("user is not logged in");
+				resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			Key ownerKey = (Key) ent.getProperty("owner");
+			if (!p.getName().equals(ownerKey.getName())) {
+				log.warning(p.getName() + " is not the owner for this tournament");
+				resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+				return;
+			}
+			adminAccess = true;
+		}
+
 		resp.setContentType("text/json;charset=UTF-8");
 		JsonGenerator out = new JsonFactory().
 			createJsonGenerator(resp.getWriter()
@@ -62,6 +79,26 @@ public class TournamentServlet extends HttpServlet
 		out.writeStringField("id", id);
 		out.writeStringField("title", (String)ent.getProperty("title"));
 		out.writeBooleanField("can_admin", isUser(req, (Key) ent.getProperty("owner")));
+
+		if (adminAccess) {
+			// list events for this tournament
+			out.writeFieldName("all_events");
+			out.writeStartArray();
+
+			Query q = new Query("TournamentEvent");
+			q.setAncestor(key);
+			PreparedQuery pq = datastore.prepare(q);
+			for (Entity eventEnt : pq.asIterable()) {
+				out.writeStartObject();
+				long eventId = eventEnt.getKey().getId();
+				out.writeStringField("id", Long.toString(eventId));
+				out.writeStringField("name", (String) eventEnt.getProperty("name"));
+				out.writeStringField("scenario", ((Key) eventEnt.getProperty("scenario")).getName());
+				out.writeEndObject();
+			}
+			out.writeEndArray();
+		}
+
 		out.writeEndObject();
 		out.close();
 	}
