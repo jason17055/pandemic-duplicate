@@ -503,7 +503,7 @@ app.controller('PlayerSetupPageController',
   });
 
 app.controller('PlayerTurnPageController',
-  function(GameService) {
+  function(GameService, $scope) {
     this.rename_player = function() {
       var p_name = G.player_names[G.active_player];
       var p_role = G.roles[G.active_player];
@@ -917,7 +917,7 @@ app.controller('CurrentGameController',
       } else {
         this.page = 'player_turn';
       }
-    };
+    }.bind(this);
     initFunc();
     $scope.$watch(function() { return G.serial; }, initFunc);
   });

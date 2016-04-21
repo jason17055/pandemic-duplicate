@@ -1,5 +1,4 @@
 <div id="current_game_page" ng-switch="game.page">
-<div>Page is {{game.page}}</div>
 <div ng-switch-when="player_turn" id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
 <div class="page_header">
 <div class="game_state_summary_pane">T: {{game.get_turn_ind()}}</span></div>
