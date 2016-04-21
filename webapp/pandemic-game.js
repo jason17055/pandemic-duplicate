@@ -1430,9 +1430,6 @@ function generate_scenario(rules, gen_options)
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id, XX);
 	stor_add_to_set(PACKAGE + '.scenarios_by_rules.' + stringify_rules(G.rules), G.scenario_id);
 	stor_add_to_set(PACKAGE + '.scenarios_by_player_count.' + G.rules.player_count, G.scenario_id);
-	stor_add_to_set(PACKAGE + '.pending_scenarios', G.scenario_id);
-
-	trigger_sync_process();
 
 	return G;
 }
