@@ -105,9 +105,19 @@ public class ScenarioServlet extends HttpServlet
 		out.writeFieldName("scenarios");
 		out.writeStartArray();
 
+		Date cutoff = new Date();
+		cutoff.setTime(cutoff.getTime() - 90L * 86400L * 1000L);
+
 		for (Entity ent : pq.asIterable()) {
-			out.writeStartObject();
 			String id = ent.getKey().getName();
+			if (!id.matches("^\\d{4}-.*")) {
+				continue;
+			}
+			Date created = (Date) ent.getProperty("created");
+			if (created == null || created.before(cutoff)) {
+				continue;
+			}
+			out.writeStartObject();
 			out.writeStringField("id", id);
 			String rules = (String) ent.getProperty("rules");
 			out.writeStringField("rules", rules);
