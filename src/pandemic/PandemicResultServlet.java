@@ -43,7 +43,8 @@ public class PandemicResultServlet extends HttpServlet
 		for (Entity ent : pq.asIterable()) {
 			out.writeStartObject();
 			String result_id = ent.getKey().getName();
-			String scenario_id = ent.getKey().getParent().getName();
+			Key scenarioKey = (Key) ent.getProperty("scenario");
+			String scenario_id = scenarioKey.getName();
 
 			out.writeStringField("id", result_id);
 			out.writeStringField("scenario", scenario_id);
@@ -221,7 +222,8 @@ public class PandemicResultServlet extends HttpServlet
 
 	static void notifyCustomers(Entity resultEntity)
 	{
-		String scenarioId = resultEntity.getKey().getParent().getName();
+		Key scenarioKey = (Key) resultEntity.getProperty("scenario");
+		String scenarioId = scenarioKey.getName();
 
 		String msgBody = "Scenario: "+scenarioId;
 		msgBody += "\n";
