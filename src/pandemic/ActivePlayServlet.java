@@ -361,6 +361,10 @@ log.info("created subscription "+skey.getId());
 			String tournamentEvent;
 		}
 		NewGameInfo ngi = new NewGameInfo();
+		for (int i = 0; i < MAX_PLAYERS; i++) {
+			ngi.player_names[i] = "";
+		}
+
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
 
