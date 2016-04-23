@@ -1760,6 +1760,10 @@ function upload_current_game()
 			st['player'+pid] = G.player_names[pid];
 		}
 		st.location = localStorage.getItem(PACKAGE+'.game_location');
+		var tournamentInfo = localStorage.getItem(PACKAGE+'.game.'+game_id+'.tournament');
+		if (tournamentInfo) {
+			st['tournament_event'] = tournamentInfo;
+		}
 		var s = JSON.stringify(st);
 
 		var onSuccess = function(data) {

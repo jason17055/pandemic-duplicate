@@ -41,6 +41,8 @@ playerNamesLC: string[]
 player_count: int
 location: string
 secret: string
+tournament: Key<Tournament>
+tournamentEvent: Key<TournamentEvent>
 
 ==GameState==
 id: int, always 1, always a child to a Play entity

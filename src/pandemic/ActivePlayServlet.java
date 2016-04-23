@@ -357,6 +357,8 @@ log.info("created subscription "+skey.getId());
 			String [] player_names = new String[MAX_PLAYERS];
 			String location;
 			String secret;
+			String tournament;
+			String tournamentEvent;
 		}
 		NewGameInfo ngi = new NewGameInfo();
 		while (json.nextToken() != null) {
@@ -383,6 +385,13 @@ log.info("created subscription "+skey.getId());
 				if (json.getIntValue() <= MAX_PLAYERS) {
 					ngi.player_count = json.getIntValue();
 				}
+			}
+			else if (json.getCurrentName().equals("tournament_event")) {
+				json.nextToken();
+				String tmp = json.getText();
+				int slash = tmp.indexOf('/');
+				ngi.tournament = tmp.substring(0, slash);
+				ngi.tournamentEvent = tmp.substring(slash + 1);
 			}
 			else if (json.getCurrentName().equals("player1")) {
 				json.nextToken();
@@ -437,6 +446,16 @@ log.info("created subscription "+skey.getId());
 				tmp.add(ngi.player_names[i].toLowerCase());
 			}
 			ent.setProperty("playerNamesLC", tmp);
+
+			if (ngi.tournament != null) {
+				Key key = KeyFactory.createKey("Tournament", ngi.tournament);
+				ent.setProperty("tournament", key);
+
+				if (ngi.tournamentEvent != null) {
+					Key ekey = KeyFactory.createKey(key, "TournamentEvent", Long.parseLong(ngi.tournamentEvent));
+					ent.setProperty("tournamentEvent", ekey);
+				}
+			}
 
 			datastore.put(ent);
 
