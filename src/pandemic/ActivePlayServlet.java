@@ -56,10 +56,10 @@ public class ActivePlayServlet extends HttpServlet
 			out.writeStartObject();
 			String id = ent.getKey().getName();
 			out.writeStringField("id", id);
-			String deal_id = (String) ent.getProperty("deal");
-			out.writeStringField("deal", deal_id);
-			out.writeStringField("scenario", deal_id);
-			out.writeStringField("scenario_id", deal_id);
+			String scenario_id = (String) ent.getProperty("scenario");
+			out.writeStringField("deal", scenario_id);
+			out.writeStringField("scenario", scenario_id);
+			out.writeStringField("scenario_id", scenario_id);
 
 			List<?> l = (List<?>) ent.getProperty("playerNames");
 			out.writeFieldName("players");
