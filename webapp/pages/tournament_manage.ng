@@ -7,7 +7,16 @@
 <div class="page_body">
 
 <p>
-Tournament: {{tournament.title}}
+Tournament ID: {{tournament.id}}
+</p>
+<p>
+<label>Title:
+<input type="text" ng-model="tournament.title">
+</p>
+<p>
+<label>
+<input type="checkbox" ng-model="tournament.visible">Visible
+</label>
 </p>
 <p>
 Events:

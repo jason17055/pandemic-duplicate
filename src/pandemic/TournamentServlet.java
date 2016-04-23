@@ -73,6 +73,15 @@ public class TournamentServlet extends HttpServlet
 			adminAccess = true;
 		}
 
+		boolean tournamentVisible = false;
+		if (ent.hasProperty("visible")) {
+			tournamentVisible = ((Boolean) ent.getProperty("visible")).booleanValue();
+		}
+		if (!tournamentVisible && !adminAccess) {
+			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
+		}
+
 		resp.setContentType("text/json;charset=UTF-8");
 		JsonGenerator out = new JsonFactory().
 			createJsonGenerator(resp.getWriter()
@@ -81,7 +90,11 @@ public class TournamentServlet extends HttpServlet
 		out.writeStartObject();
 		out.writeStringField("id", id);
 		out.writeStringField("title", (String)ent.getProperty("title"));
-		out.writeBooleanField("can_admin", isUser(req, (Key) ent.getProperty("owner")));
+		out.writeBooleanField("can_admin", adminAccess);
+
+		if (adminAccess) {
+			out.writeBooleanField("visible", tournamentVisible);
+		}
 
 		// list open events for this tournament
 		{

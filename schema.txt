@@ -11,6 +11,7 @@ owner: User
 title: string
 titleLC: string
 nextEventId: int
+visible: boolean
 
 ==TournamentEvent==
 parent: Key<Tournament>
