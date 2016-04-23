@@ -153,6 +153,13 @@ app.service('TournamentStore',
           return httpResponse.data;
         });
     };
+    this.list = function() {
+      return $http
+        .get('/s/tournaments')
+        .then(function(httpResponse) {
+          return httpResponse.data;
+        });
+    };
     this.update = function(tournament_id, data) {
       var formData = {
         'tournament': tournament_id

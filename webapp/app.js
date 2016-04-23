@@ -136,6 +136,17 @@ app.config(
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
         }})
+      .state('tournaments', {
+        url: '/tournament',
+        templateUrl: 'pages/tournaments.ng',
+        controller: 'TournamentsPageController',
+        controllerAs: 'c',
+        resolve: {
+          'tournamentList':
+            function(TournamentStore) {
+              return TournamentStore.list();
+            }
+        }})
       .state('tournament_pick_scenario', {
         url: '/tournament/:tournament',
         templateUrl: 'pages/tournament_pick_scenario.ng',
@@ -471,6 +482,17 @@ app.controller('ReviewResultsPageController',
       StateService.go('search_results/' + escape(q));
     };
     init_review_results_page($('#review_results_page'));
+  });
+
+app.controller('TournamentsPageController',
+  function($state, $window, tournamentList) {
+    this.tournaments = tournamentList;
+    this.selected = function(tourney) {
+      $state.go('tournament_pick_scenario', {'tournament': tourney.id});
+    };
+    this.cancel = function() {
+      $window.history.back();
+    };
   });
 
 app.controller('TournamentPickScenarioPageController',
