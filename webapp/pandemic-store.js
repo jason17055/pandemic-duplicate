@@ -138,7 +138,7 @@ app.service('ScenarioStore',
   });
 
 app.service('TournamentStore',
-  function($http) {
+  function($http, $q) {
     this.get = function(tournament_id) {
       return $http
         .get('/s/tournaments', {params: {'id': tournament_id}})
@@ -152,5 +152,15 @@ app.service('TournamentStore',
         .then(function(httpResponse) {
           return httpResponse.data;
         });
+    };
+    this.update = function(tournament_id, data) {
+      var formData = {
+        'tournament': tournament_id
+      };
+      for (var k in data) {
+        formData[k] = data[k];
+      }
+      return $http
+        .post('/s/tournaments/update', formData);
     };
   });

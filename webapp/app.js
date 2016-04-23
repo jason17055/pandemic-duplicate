@@ -490,7 +490,7 @@ app.controller('TournamentPickScenarioPageController',
   });
 
 app.controller('TournamentManagePageController',
-  function($scope, tournament) {
+  function($scope, TournamentStore, tournament) {
     $scope['tournament'] = tournament;
     this.get_event_name = function(eventId) {
       for (var i = 0, evt; evt = tournament['all_events'][i]; i++) {
@@ -500,6 +500,30 @@ app.controller('TournamentManagePageController',
       }
       return eventId;
     };
+    this.save_changes = function(newValue, oldValue) {
+      if (this.saveStarted) {
+        this.dirty = true;
+        return;
+      }
+      this.saveStarted = true;
+      this.dirty = false;
+      TournamentStore
+        .update(tournament.id, {'title': tournament.title, 'visible': tournament.visible})
+        .finally(
+          function() {
+            this.saveStarted = false;
+            if (this.dirty) {
+              this.save_changes();
+            }
+          }.bind(this));
+    };
+    var check_for_changes = function(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.save_changes();
+      }
+    }.bind(this);
+    $scope.$watch('tournament.title', check_for_changes);
+    $scope.$watch('tournament.visible', check_for_changes);
   });
 
 app.controller('TournamentAddScenarioPageController',

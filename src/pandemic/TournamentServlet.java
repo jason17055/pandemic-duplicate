@@ -207,6 +207,9 @@ public class TournamentServlet extends HttpServlet
 		if ("/add_scenario".equals(pathInfo)) {
 			doAddScenario(req, resp);
 		}
+		else if ("/update".equals(pathInfo)) {
+			doUpdate(req, resp);
+		}
 		else {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
 		}
@@ -296,6 +299,80 @@ public class TournamentServlet extends HttpServlet
 			out.writeStartObject();
 			out.writeStringField("status", "ok");
 			out.writeStringField("event_id", Long.toString(nextEventId));
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
+	void doUpdate(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		Principal p = req.getUserPrincipal();
+		if (p == null) {
+			log.warning("user is not logged in");
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		String tournamentId = null;
+		String title = null;
+		boolean visible = false;
+
+		JsonParser json = new JsonFactory().createJsonParser(req.getReader());
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("tournament")) {
+				json.nextToken();
+				tournamentId = json.getText();
+			}
+			else if (json.getCurrentName().equals("title")) {
+				json.nextToken();
+				title = json.getText();
+			}
+			else if (json.getCurrentName().equals("visible")) {
+				json.nextToken();
+				visible = json.getBooleanValue();
+			}
+		}
+
+		if (tournamentId == null || title == null) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key tournamentKey = KeyFactory.createKey("Tournament", tournamentId);
+
+		Transaction txn = datastore.beginTransaction();
+		try {
+			Entity tournamentEnt;
+			try {
+				tournamentEnt = datastore.get(tournamentKey);
+			}
+			catch (EntityNotFoundException e) {
+				log.warning("tournament " + tournamentId + " not found");
+				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+
+			tournamentEnt.setProperty("title", title);
+			tournamentEnt.setProperty("titleLC", title.toLowerCase());
+			tournamentEnt.setProperty("visible", new Boolean(visible));
+
+			datastore.put(tournamentEnt);
+
+			txn.commit();
+
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
 			out.writeEndObject();
 			out.close();
 		}
