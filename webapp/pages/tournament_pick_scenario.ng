@@ -12,4 +12,10 @@ Choose an event:
 </div><!--/scenarios_list-->
 
 </div><!--/page_body-->
+<div class="page_nav">
+
+<div class="button_container">
+<button type="button" ui-sref="welcome">Home Screen</button>
+</div>
+</div><!--/page_nav-->
 </div>
