@@ -235,3 +235,17 @@ tr.my_result .place_col, tr.my_result .score_col {
 .no_results_found {
 	display: none;
 }
+
+.standard-table {
+	border-collapse: collapse;
+}
+
+.standard-table, .standard-table td, .standard-table th {
+	border: 1px solid black;
+	padding: 2px;
+}
+
+.standard-table th {
+	background-color: #000066;
+	color: white;
+}

@@ -2,10 +2,13 @@ package pandemic;
 
 import java.io.*;
 import java.security.Principal;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.servlet.http.*;
 import com.fasterxml.jackson.core.*;
 import com.google.appengine.api.datastore.*;
+
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 
 public class TournamentServlet extends HttpServlet
 {
@@ -113,6 +116,41 @@ public class TournamentServlet extends HttpServlet
 				out.writeStringField("id", Long.toString(eventId));
 				out.writeStringField("name", (String) eventEnt.getProperty("name"));
 				out.writeStringField("scenario", ((Key) eventEnt.getProperty("scenario")).getName());
+				out.writeEndObject();
+			}
+			out.writeEndArray();
+		}
+		if (adminAccess) {
+			// list current games for this tournament
+			out.writeFieldName("games");
+			out.writeStartArray();
+
+			Query q = new Query("Play");
+			q.setFilter(EQUAL.of("tournament", key));
+			q.addSort("created", Query.SortDirection.DESCENDING);
+			PreparedQuery pq = datastore.prepare(q);
+			for (Entity playEnt : pq.asIterable()) {
+				Key evtKey = (Key) playEnt.getProperty("tournamentEvent");
+				long eventId = evtKey != null ? evtKey.getId() : 0;
+
+				out.writeStartObject();
+				out.writeStringField("event", Long.toString(eventId));
+				out.writeStringField("id", playEnt.getKey().getName());
+				out.writeStringField("scenario", (String) playEnt.getProperty("scenario"));
+
+				List<?> l = (List<?>) playEnt.getProperty("playerNames");
+				out.writeFieldName("players");
+				out.writeStartArray();
+				for (Object o : l) {
+					out.writeString((String) o);
+				}
+				out.writeEndArray();
+
+				if (ent.hasProperty("location")) {
+					String location = playEnt.getProperty("location").toString();
+					out.writeStringField("location", location);
+				}
+
 				out.writeEndObject();
 			}
 			out.writeEndArray();

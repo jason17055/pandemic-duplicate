@@ -17,5 +17,20 @@ Events:
 </ul>
 </p>
 
+<table class="standard-table games-table">
+<tr>
+<th>ID</th>
+<th>Event</th>
+<th>Scenario</th>
+<th>Players</th>
+</tr>
+<tr ng-repeat="g in tournament.games">
+<td>{{g.id}}</td>
+<td>{{g.event}}</td>
+<td>{{g.scenario}}</td>
+<td>{{g.players}}</td>
+</tr>
+</table>
+
 </div><!--/page_body-->
 </div>
