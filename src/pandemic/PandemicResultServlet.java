@@ -118,6 +118,7 @@ public class PandemicResultServlet extends HttpServlet
 		int score = 0;
 		String [] playerNames = new String[MAX_PLAYERS];
 		String location = null;
+		String tournamentEventInfo = null;
 
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
@@ -152,6 +153,10 @@ public class PandemicResultServlet extends HttpServlet
 				json.nextToken();
 				location = json.getText();
 			}
+			else if (k.equals("tournament_event")) {
+				json.nextToken();
+				tournamentEventInfo = json.getText();
+			}
 			else {
 				// unrecognized
 				json.nextToken();
@@ -180,6 +185,16 @@ public class PandemicResultServlet extends HttpServlet
 			if (location != null && location.length() != 0) {
 				ent.setProperty("location", location);
 				ent.setProperty("locationLC", location.toLowerCase());
+			}
+
+			if (tournamentEventInfo != null) {
+				int slash = tournamentEventInfo.indexOf('/');
+				String tournamentId = tournamentEventInfo.substring(0, slash);
+				long eventId = Long.parseLong(tournamentEventInfo.substring(slash + 1));
+				Key tournamentKey = KeyFactory.createKey("Tournament", tournamentId);
+				Key eventKey = KeyFactory.createKey(tournamentKey, "TournamentEvent", eventId);
+				ent.setProperty("tournament", tournamentKey);
+				ent.setProperty("tournamentEvent", eventKey);
 			}
 
 			ArrayList<String> names1 = new ArrayList<String>();

@@ -65,6 +65,8 @@ playerNamesLC: string[]
 location: string
 locationLC: string
 scenario: Key<Scenario>
+tournament: Key<Tournament>
+tournamentEvent: Key<TournamentEvent>
 
 ==Subscriber== (watches games)
 id: int, auto-generated

@@ -28,7 +28,7 @@ POST /s/deals?id=SCENARIOID
  upload a scenario
  still available for backwards-compatibility
 
-POST /s/deals?result=RESULTID
+POST /s/results?result=RESULTID
  upload a result
 
 GET /s/scenarios
@@ -53,6 +53,7 @@ Games
 "location": "Grantham",
 "started": true,
 "moves": ["move1", "move2", ...],
+"tournament_event": "<tournament_id>/<event_id>",
 }
 
 Results
@@ -62,6 +63,7 @@ Results
 "rules": "2p-6x-on_the_brink",
 "scenario_id": "<scenario_id>",
 "game_id": "<game_id>",
+"tournament_event": "<tournament_id>/<event_id>",
 "score": 101,
 "cures": 4,
 "turns": 20,

@@ -816,6 +816,10 @@ app.controller('GameCompletedPageController',
       if (!for_submission) {
         V.localOnly = true;
       }
+      var tournamentInfo = Storage.get('.game.' + V.game_id + '.tournament');
+      if (tournamentInfo) {
+        V['tournament_event'] = tournamentInfo;
+      }
       return ResultStore.create(V);
     };
 
