@@ -56,15 +56,14 @@ public class PandemicResultServlet extends HttpServlet
 		out.close();
 	}
 
-	void doGetResult(String deal_id, String result_id, HttpServletRequest req, HttpServletResponse resp)
+	void doGetResult(String result_id, HttpServletRequest req, HttpServletResponse resp)
 		throws IOException
 	{
 		try {
 
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-		Key key = KeyFactory.createKey("Deal", deal_id);
-		Key key1 = KeyFactory.createKey(key, "Result", result_id);
-		Entity ent = datastore.get(key1);
+		Key key = KeyFactory.createKey("Result", result_id);
+		Entity ent = datastore.get(key);
 
 		Text t = (Text) ent.getProperty("content");
 		
@@ -90,11 +89,9 @@ public class PandemicResultServlet extends HttpServlet
 			return;
 		}
 
-		String scenarioId = req.getParameter("scenario");
 		String resultId = req.getParameter("result");
-
-		if (scenarioId != null && resultId != null) {
-			doGetResult(scenarioId, resultId, req, resp);
+		if (resultId != null) {
+			doGetResult(resultId, req, resp);
 			return;
 		}
 
@@ -169,12 +166,11 @@ public class PandemicResultServlet extends HttpServlet
 
 		try
 		{
-			Key key = KeyFactory.createKey("Deal", scenarioId);
-			Key key1 = KeyFactory.createKey(key, "Result", result_id);
+			Key key = KeyFactory.createKey("Result", result_id);
 			Date createdDate = new Date();
 			String creatorIp = req.getRemoteAddr();
 
-			Entity ent = new Entity(key1);
+			Entity ent = new Entity(key);
 			ent.setProperty("content", new Text(content));
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", rulesString);

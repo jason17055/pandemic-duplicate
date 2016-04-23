@@ -89,19 +89,22 @@ public class AdminServlet extends HttpServlet
 		PreparedQuery pq = datastore.prepare(q);
 		int count = 0;
 		for (Entity ent : pq.asIterable()) {
-			if (ent.hasProperty("scenario")) {
+			Key parentKey = ent.getKey().getParent();
+			if (parentKey == null) {
 				continue;
 			}
 			count++;
 			out.println("<tr>");
 			out.println("<td>" + ent.getKey().toString() + "</td>");
 			if (count <= 10) {
-				Key parentKey = ent.getKey().getParent();
 				if (parentKey != null && parentKey.getKind().equals("Deal")) {
-					Key scenarioKey = KeyFactory.createKey("Scenario", parentKey.getName());
-					out.println("<td>set scenario to " + scenarioKey.toString() + "</td>");
-					ent.setProperty("scenario", scenarioKey);
-					datastore.put(ent);
+					Key newKey = KeyFactory.createKey("Result", ent.getKey().getName());
+					Entity newEnt = new Entity(newKey);
+					newEnt.setPropertiesFrom(ent);
+					datastore.put(newEnt);
+					datastore.delete(ent.getKey());
+
+					out.println("<td>replaced with " + newKey.toString() + "</td>");
 				}
 				else {
 					out.println("<td>Unrecognized parent key</td>");
