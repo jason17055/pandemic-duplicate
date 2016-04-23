@@ -12,4 +12,5 @@ PostScenario: should fail if scenario already exists
 
 retrieve_special_event: is broken due to angularization
 
-PostGameMeta: don't crash when player names are null or missing
+join_network_game:
+  Go Back button doesn't work

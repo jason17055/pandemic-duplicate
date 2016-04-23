@@ -72,8 +72,6 @@ function init_join_game_pick_page($pg, search_results)
 {
 	var list = search_results.results;
 
-	$('.no_results_found').toggle(list.length == 0);
-
 	$('.join_game_btn:not(.template)', $pg).remove();
 	for (var i = 0; i < list.length; i++) {
 		var g = list[i];

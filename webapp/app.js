@@ -425,7 +425,7 @@ app.controller('GenerateGamePageController',
   });
 
 app.controller('JoinGamePageController',
-  function(Storage, StateService) {
+  function($state, Storage) {
     /** @export */
     this.name = Storage.get('.my_player_name');
 
@@ -434,7 +434,7 @@ app.controller('JoinGamePageController',
       var name = this.name;
       Storage.set('.my_player_name', name);
 
-      StateService.go('join_network_game/' + escape(name));
+      $state.go('join_network_game', {'q': name});
     }.bind(this);
   });
 
@@ -444,6 +444,7 @@ app.controller('JoinGamePickPageController',
       console.log('cancel clicked');
       $window.history.back();
     };
+    this.search_results = data['results'];
     show_page('join_game_pick_page');
     init_join_game_pick_page($('#join_game_pick_page'), data);
   });
