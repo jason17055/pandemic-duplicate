@@ -480,9 +480,12 @@ app.controller('TournamentPickScenarioPageController',
       return scenario_name(scenario_id);
     };
     this.selected = function(evt) {
-      // TODO- start a game with the selected event
-      var game_id = GameStore.create_tournament_game(tournament.id, evt.id, evt.scenario);
-      $state.go('player_setup', {'game_id': game_id});
+      GameStore
+          .create_tournament_game(tournament.id, evt.id, evt.scenario)
+          .then(
+            function(gameId) {
+              $state.go('player_setup', {'game_id': gameId});
+            });
     };
   });
 
