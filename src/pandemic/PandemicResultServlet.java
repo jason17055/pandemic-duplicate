@@ -116,7 +116,7 @@ public class PandemicResultServlet extends HttpServlet
 
 		String versionString = null;
 		String rulesString = null;
-		String shuffleId = null;
+		String scenarioId = null;
 		int score = 0;
 		String [] playerNames = new String[MAX_PLAYERS];
 		String location = null;
@@ -129,9 +129,9 @@ public class PandemicResultServlet extends HttpServlet
 				json.nextToken();
 				rulesString = json.getText();
 			}
-			else if (k.equals("shuffle_id")) {
+			else if (k.equals("shuffle_id") || k.equals("scenario_id")) {
 				json.nextToken();
-				shuffleId = json.getText();
+				scenarioId = json.getText();
 			}
 			else if (k.equals("version")) {
 				json.nextToken();
@@ -164,9 +164,11 @@ public class PandemicResultServlet extends HttpServlet
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Transaction txn = datastore.beginTransaction();
 
+		Key scenarioKey = KeyFactory.createKey("Scenario", scenarioId);
+
 		try
 		{
-			Key key = KeyFactory.createKey("Deal", shuffleId);
+			Key key = KeyFactory.createKey("Deal", scenarioId);
 			Key key1 = KeyFactory.createKey(key, "Result", result_id);
 			Date createdDate = new Date();
 			String creatorIp = req.getRemoteAddr();
@@ -176,6 +178,7 @@ public class PandemicResultServlet extends HttpServlet
 			ent.setProperty("version", versionString);
 			ent.setProperty("rules", rulesString);
 			ent.setProperty("score", new Integer(score));
+			ent.setProperty("scenario", scenarioKey);
 
 			if (location != null && location.length() != 0) {
 				ent.setProperty("location", location);

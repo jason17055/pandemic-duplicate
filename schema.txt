@@ -45,6 +45,7 @@ tournament: Key<Tournament>
 tournamentEvent: Key<TournamentEvent>
 
 ==GameState==
+parent: Key<Play>
 id: int, always 1, always a child to a Play entity
 created: date
 createdBy: IP address
@@ -64,6 +65,7 @@ playerNames: string[]
 playerNamesLC: string[]
 location: string
 locationLC: string
+scenario: Key<Scenario>
 
 ==Subscriber== (watches games)
 id: int, auto-generated
