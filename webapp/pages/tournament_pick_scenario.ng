@@ -15,6 +15,7 @@ Choose an event:
 <div class="page_nav">
 
 <div class="button_container">
+<button type="button" ui-sref="manage_tournament({tournament: tournament.id})" ng-if="tournament.can_admin">Manage</button>
 <button type="button" ui-sref="welcome">Home Screen</button>
 </div>
 </div><!--/page_nav-->

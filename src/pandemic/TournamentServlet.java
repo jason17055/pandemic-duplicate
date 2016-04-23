@@ -90,7 +90,7 @@ public class TournamentServlet extends HttpServlet
 		out.writeStartObject();
 		out.writeStringField("id", id);
 		out.writeStringField("title", (String)ent.getProperty("title"));
-		out.writeBooleanField("can_admin", adminAccess);
+		out.writeBooleanField("can_admin", isUser(req, (Key)ent.getProperty("owner")));
 
 		if (adminAccess) {
 			out.writeBooleanField("visible", tournamentVisible);
@@ -178,6 +178,7 @@ public class TournamentServlet extends HttpServlet
 	{
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 		Query q = new Query("Tournament");
+		q.setFilter(EQUAL.of("visible", Boolean.TRUE));
 		PreparedQuery pq = datastore.prepare(q);
 
 		resp.setContentType("text/json;charset=UTF-8");
@@ -192,6 +193,7 @@ public class TournamentServlet extends HttpServlet
 			String id = ent.getKey().getName();
 			out.writeStringField("id", id);
 			out.writeStringField("title", (String) ent.getProperty("title"));
+			out.writeBooleanField("can_admin", isUser(req, (Key) ent.getProperty("owner")));
 			out.writeEndObject();
 		}
 
