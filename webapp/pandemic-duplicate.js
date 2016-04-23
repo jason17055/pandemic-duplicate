@@ -47,6 +47,9 @@ function load_game(game_id)
 	var s = localStorage.getItem(PACKAGE + '.player_names');
 	if (s) {
 		game.player_names = JSON.parse(s);
+	} else {
+		// TODO- default player names
+		game.player_names = {};
 	}
 
 	game.game_id = game_id;
@@ -982,8 +985,8 @@ function scenario_name(scenario_id)
 
 function generate_new_game_id(scenario_id)
 {
-	var tmp = Math.random()+'-'+Math.random()+'-'+
-		JSON.stringify(G.player_names)+'-'+
+	var tmpNames = localStorage.getItem(PACKAGE + '.player_names') || '';
+	var tmp = Math.random()+'-'+Math.random()+'-'+tmpNames+'-'+
 		scenario_id;
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
