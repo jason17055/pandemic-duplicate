@@ -269,10 +269,6 @@ app.controller('WelcomePageController',
       return Boolean(scenario_id);
     };
 
-    this.start_game_clicked = function() {
-      StateService.go('params');
-    };
-
     this.resume_game_clicked = function() {
       var game_id = localStorage.getItem(PACKAGE + '.current_game');
       if (game_id == null) {
@@ -289,19 +285,6 @@ app.controller('WelcomePageController',
 
       return;
     };
-
-    this.review_results_clicked = function() {
-      StateService.go('review_results');
-    };
-
-    this.join_network_game_clicked = function() {
-      StateService.go('join_network_game');
-    };
-
-    this.options_clicked = function() {
-      StateService.go('options');
-    };
-
   });
 
 app.controller('OptionsPageController',
