@@ -19,16 +19,14 @@ Events:
 
 <table class="standard-table games-table">
 <tr>
-<th>ID</th>
 <th>Event</th>
-<th>Scenario</th>
 <th>Players</th>
+<th></th>
 </tr>
 <tr ng-repeat="g in tournament.games">
-<td>{{g.id}}</td>
-<td>{{g.event}}</td>
-<td>{{g.scenario}}</td>
+<td>{{c.get_event_name(g.event)}}</td>
 <td>{{g.players}}</td>
+<td><a ui-sref="watch_game({game_id: g.id})">Watch</a></td>
 </tr>
 </table>
 

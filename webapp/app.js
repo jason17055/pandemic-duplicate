@@ -489,6 +489,14 @@ app.controller('TournamentPickScenarioPageController',
 app.controller('TournamentManagePageController',
   function($scope, tournament) {
     $scope['tournament'] = tournament;
+    this.get_event_name = function(eventId) {
+      for (var i = 0, evt; evt = tournament['all_events'][i]; i++) {
+        if (evt['id'] == eventId) {
+          return evt['name'];
+        }
+      }
+      return eventId;
+    };
   });
 
 app.controller('TournamentAddScenarioPageController',
