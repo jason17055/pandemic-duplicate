@@ -55,6 +55,61 @@ public class AdminServlet extends HttpServlet
 		out.println("</label>");
 		out.println("<button type=\"submit\" name=\"action:create_tournament\">Create Tournament</button>");
 		out.println("</form>");
+
+		doShowResults(datastore, out);
+	}
+
+	void doShowResults(DatastoreService datastore, PrintWriter out)
+	{
+		out.println("<h2>Results</h2>");
+		out.println("<table border=\"1\">");
+		Query q = new Query("Result");
+		PreparedQuery pq = datastore.prepare(q);
+		for (Entity ent : pq.asIterable()) {
+			out.println("<tr>");
+			out.println("<td>" + ent.getKey().toString() + "</td>");
+			Key scenarioKey = (Key) ent.getProperty("scenario");
+			out.println("<td>" + (scenarioKey != null ? scenarioKey.toString() : "") + "</td>");
+			out.println("</tr>");
+		}
+		out.println("</table>");
+		out.println("<form method=\"post\">");
+		out.println("<button type=\"submit\" name=\"action:fix_results_schema\">Fix Schema</button>");
+		out.println("</form>");
+	}
+
+	void doFixResultsSchema(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		PrintWriter out = resp.getWriter();
+		out.println("<table border=\"1\">");
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("Result");
+		PreparedQuery pq = datastore.prepare(q);
+		int count = 0;
+		for (Entity ent : pq.asIterable()) {
+			if (ent.hasProperty("scenario")) {
+				continue;
+			}
+			count++;
+			out.println("<tr>");
+			out.println("<td>" + ent.getKey().toString() + "</td>");
+			if (count <= 10) {
+				Key parentKey = ent.getKey().getParent();
+				if (parentKey != null && parentKey.getKind().equals("Deal")) {
+					Key scenarioKey = KeyFactory.createKey("Scenario", parentKey.getName());
+					out.println("<td>set scenario to " + scenarioKey.toString() + "</td>");
+					ent.setProperty("scenario", scenarioKey);
+					datastore.put(ent);
+				}
+				else {
+					out.println("<td>Unrecognized parent key</td>");
+				}
+			}
+			out.println("</tr>");
+		}
+		out.println("</table>");
 	}
 
 	@Override
@@ -71,6 +126,10 @@ public class AdminServlet extends HttpServlet
 		}
 		else if (req.getParameter("action:promote_user") != null) {
 			doPromoteUser(req, resp);
+			return;
+		}
+		else if (req.getParameter("action:fix_results_schema") != null) {
+			doFixResultsSchema(req, resp);
 			return;
 		}
 		else {
