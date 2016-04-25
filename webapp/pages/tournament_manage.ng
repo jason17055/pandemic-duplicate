@@ -24,6 +24,7 @@ Tournament ID: {{tournament.id}}
 <li ng-repeat="evt in tournament.all_events">
 {{evt.id}}. {{evt.scenario}} "{{evt.name}}"
 </ul>
+<div><a ui-sref="generate({tournament: tournament.id})">Generate Scenario</a></div>
 
 <h3>Games</h3>
 <table class="standard-table games-table">

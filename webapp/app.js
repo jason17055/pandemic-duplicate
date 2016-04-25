@@ -538,15 +538,16 @@ app.controller('TournamentAddScenarioPageController',
     this.scenario = scenario;
     this.name = 'Round 1';
     this.submit = function() {
+      var tournamentId = $state.params['tournament'];
       var data = {
         'scenario': scenario.scenario_id,
-        'tournament': $state.params['tournament'],
+        'tournament': tournamentId,
         'name': this.name
         };
       return $http
         .post('/s/tournaments/add_scenario', data)
         .then(function(httpResponse) {
-          console.log('got reply of ' + JSON.stringify(httpResponse.data));
+          $state.go('manage_tournament', {tournament: tournamentId});
         });
     };
     this.go_back = function() {
