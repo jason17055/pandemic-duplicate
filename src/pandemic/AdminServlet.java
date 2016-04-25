@@ -41,8 +41,9 @@ public class AdminServlet extends HttpServlet
 		Query q = new Query("Tournament");
 		PreparedQuery pq = datastore.prepare(q);
 		for (Entity ent : pq.asIterable()) {
+			String url = "/#/manage_tournament/" + ent.getKey().getName();
 			out.println("<tr>");
-			out.println("<td>" + ent.getKey().getName() + "</td>");
+			out.println("<td><a href=\"" + url + "\">" + ent.getKey().getName() + "</a></td>");
 			Key owner = (Key) ent.getProperty("owner");
 			out.println("<td>" + owner.getName() + "</td>");
 			out.println("</tr>");
