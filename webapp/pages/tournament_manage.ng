@@ -21,8 +21,15 @@ Tournament ID: {{tournament.id}}
 
 <h3>Events</h3>
 <table class="standard-table events-table">
+<tr>
+<th>Event Name</th>
+<th>Visible</th>
+<th>Scenario</th>
+<th></th>
+</tr>
 <tr ng-repeat="evt in tournament.all_events">
 <td>{{evt.name}}</td>
+<td align="center">{{evt.visible ? '\u2713' : ''}}</td>
 <td>{{evt.scenario}}</td>
 <td><a ui-sref="tournament_manage_event({tournament: tournament.id, event: evt.id})">Edit</a></td>
 </tr>
