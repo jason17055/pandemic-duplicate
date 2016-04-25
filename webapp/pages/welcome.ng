@@ -11,7 +11,7 @@ Welcome to Pandemic Duplicate!
 </p>
 
 <form name="welcome_form">
-<div class="button_container"><button type="button" ui-sref="params">Start Game</button></div>
+<div class="button_container"><button type="button" ui-sref="create_game">Start Game</button></div>
 <div class="button_container"><button type="button" ng-click="c.resume_game_clicked()" ng-disabled="!c.has_current_game()">Resume Game</button></div>
 <div class="button_container"><button type="button" ui-sref="review_results">Review Results</button></div>
 <div class="button_container"><button type="button" ui-sref="join_game">Watch Game</button></div>

@@ -307,7 +307,7 @@ app.controller('TopController',
   });
 
 app.controller('WelcomePageController',
-  function(StateService, Storage) {
+  function($state, StateService, Storage) {
     this.has_current_game = function() {
       var scenario_id = Storage.get('.current_game.scenario');
       return Boolean(scenario_id);
@@ -324,7 +324,7 @@ app.controller('WelcomePageController',
         StateService.go(game_id + '/T' + time_str);
       }
       else {
-        StateService.go(game_id + '/player_setup');
+        $state.go('player_setup', {game_id: game_id});
       }
 
       return;
@@ -332,7 +332,7 @@ app.controller('WelcomePageController',
   });
 
 app.controller('OptionsPageController',
-  function(StateService, Options, Storage, $window) {
+  function($state, $window, Options, Storage) {
     var f = document.options_form;
 
     var save_options_form = function() {
@@ -365,7 +365,7 @@ app.controller('OptionsPageController',
     f.game_detail_level.onchange = save_options_form;
 
     this.subscription_clicked = function() {
-      StateService.go('subscription');
+      $state.go('subscription');
     };
     this.clear_storage_clicked = function() {
       var r = confirm("Clear localStorage? This will erase all settings saved on this device.");
@@ -406,16 +406,16 @@ app.controller('SubscriptionPageController',
   });
 
 app.controller('CreateGamePageController',
-  function(StateService) {
+  function($state) {
     this.submit_create_game_form = function() {
       var f = document.create_game_form;
       var pcount = f.player_count.value;
-      StateService.go('names/' + pcount + 'p');
+      $state.go('player_names', {rulespec: pcount + 'p'});
     };
   });
 
 app.controller('GenerateGamePageController',
-  function($state, StateService) {
+  function($state) {
     init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
     if ($state.params['tournament']) {
       this.for_tournament = $state.params['tournament'];
@@ -463,7 +463,7 @@ app.controller('GenerateGamePageController',
              'scenario': G.scenario_id});
       } else {
         var game_id = submit_generate_game_form(rules, gen_options);
-        StateService.go(game_id + '/player_setup');
+        $state.go('player_setup', {game_id: game_id});
       }
     };
   });
@@ -493,10 +493,10 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function(StateService, $state) {
+  function($state) {
     this.generate_game_clicked = function() {
       var pcount = document.pick_scenario_form.player_count.value;
-      StateService.go('generate_game/' + pcount + 'p');
+      $state.go('generate_game', {rulespec: pcount + 'p'});
     }.bind(this);
     init_pick_scenario_page($('#pick_scenario_page'), $state.params['rulespec']);
   });
@@ -631,9 +631,9 @@ app.controller('PlayerNamesPageController',
   });
 
 app.controller('DeckSetupPageController',
-  function(StateService, $state) {
+  function($state) {
     this.continue = function() {
-      StateService.go(G.scenario_id+'/board_setup');
+      $state.go('board_setup', {game_id: G.scenario_id});
       return false;
     };
     init_deck_setup_page($('#deck_setup_page'), $state.params['game_id']);
@@ -651,7 +651,7 @@ app.controller('BoardSetupPageController',
   });
 
 app.controller('PlayerSetupPageController',
-  function(GameService, StateService, $state) {
+  function($state, GameService) {
     var seats_by_player_count = {
       2: [1,2],
       3: [1,2,3],
@@ -681,7 +681,7 @@ app.controller('PlayerSetupPageController',
       return G && G.initial_hands && G.initial_hands[pid];
     };
     this.continue = function() {
-      StateService.go(G.game_id+'/board_setup');
+      $state.go('board_setup', {game_id: G.game_id});
       return false;
     };
     init_player_setup_page($('#player_setup_page'), $state.params['game_id']);
@@ -892,7 +892,7 @@ app.controller('ResourcePlanningPageController',
   });
 
 app.controller('GameCompletedPageController',
-  function(StateService, Storage, ResultStore) {
+  function($state, StateService, Storage, ResultStore) {
     $('.cure_count').change(update_game_score);
 
     var f = document.game_completed_form;
@@ -934,7 +934,7 @@ app.controller('GameCompletedPageController',
 
       trigger_sync_process();
 
-      StateService.go(G.scenario_id + '/results');
+      $state.go('results', {scenario_id: G.scenario_id});
     };
 
     this.dont_submit_clicked = function()
@@ -944,7 +944,7 @@ app.controller('GameCompletedPageController',
       // this makes this game show up in the "Review Results" page
       stor_add_to_set(PACKAGE + '.my_results', result_id);
 
-      StateService.go(G.scenario_id + '/results');
+      $state.go('results', {scenario_id: G.scenario_id});
     };
     this.player_count = G.rules.player_count;
     this.turns = G.turns;
@@ -965,12 +965,12 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function($state, StateService, Storage) {
+  function($state, Storage) {
     this.go_home_page = function() {
       Storage.remove('.current_game');
       Storage.remove('.current_game.scenario');
 
-      StateService.go(null);
+      $state.go('welcome');
     };
     init_results_page($('#results_page'), $state.params['scenario_id']);
   });
