@@ -169,10 +169,10 @@ app.config(
               return TournamentStore.getAsAdmin($stateParams['tournament']);
             }
         }})
-      .state('tournament_add_scenario', {
-        url: '/manage_tournament/:tournament/add_scenario?scenario',
-        templateUrl: 'pages/tournament_add_scenario.ng',
-        controller: 'TournamentAddScenarioPageController',
+      .state('tournament_manage_event', {
+        url: '/manage_tournament/:tournament/event?scenario',
+        templateUrl: 'pages/tournament_manage_event.ng',
+        controller: 'TournamentManageEventPageController',
         controllerAs: 'c',
         resolve: {
           'scenario':
@@ -414,7 +414,7 @@ app.controller('GenerateGamePageController',
         var G = generate_scenario(rules, gen_options);
         trigger_upload_scenario(G.scenario_id);
 
-        $state.go('tournament_add_scenario',
+        $state.go('tournament_manage_event',
             {'tournament': this.for_tournament,
              'scenario': G.scenario_id});
       } else {
@@ -532,7 +532,7 @@ app.controller('TournamentManagePageController',
     $scope.$watch('tournament.visible', check_for_changes);
   });
 
-app.controller('TournamentAddScenarioPageController',
+app.controller('TournamentManageEventPageController',
   function($http, $scope, $state, $window, scenario) {
     $scope['scenario'] = scenario;
     this.scenario = scenario;
