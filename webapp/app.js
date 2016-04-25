@@ -104,7 +104,7 @@ app.config(
         controllerAs: 'c'
         })
       .state('deck_setup', {
-        url: '/:game_id/deck_setup',
+        url: '/:scenario_id/deck_setup',
         templateUrl: 'pages/deck_setup.ng',
         controller: 'DeckSetupPageController',
         controllerAs: 'c'
@@ -634,9 +634,8 @@ app.controller('DeckSetupPageController',
   function($state) {
     this.continue = function() {
       $state.go('board_setup', {game_id: G.scenario_id});
-      return false;
     };
-    init_deck_setup_page($('#deck_setup_page'), $state.params['game_id']);
+    init_deck_setup_page($('#deck_setup_page'), $state.params['scenario_id']);
   });
 
 app.controller('BoardSetupPageController',
