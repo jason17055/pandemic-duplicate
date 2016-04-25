@@ -237,7 +237,7 @@ app.factory('StateService',
   });
 
 app.factory('GameService',
-  function(StateService) {
+  function(StateService, Storage) {
     var g = {};
     g.navigate_to_current_turn = function() {
       StateService.go(G.game_id + '/T' + G.time);
@@ -251,15 +251,32 @@ app.factory('GameService',
     };
     g.set_move = function(m) {
       var timestr = new Date().toISOString();
-      localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.last_played', timestr);
+      Storage.set('.scenario.' + G.scenario_id + '.last_played', timestr);
       if (!scenario_started(G.scenario_id)) {
-        localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.first_played', timestr);
+        Storage.set('.scenario.' + G.scenario_id + '.first_played', timestr);
       }
 
-      localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.T' + G.time, m);
+      var lastTime = +Storage.get('.game.' + G.game_id + '.last_time') || 0;
+      if (G.time > lastTime) {
+        Storage.set('.game.' + G.game_id + '.last_time', G.time);
+        Storage.set('.game.' + G.game_id + '.last_played', timestr);
+      }
+
+      Storage.set('.game.' + G.game_id + '.T' + G.time, m);
 
       G.do_move(m);
       g.navigate_to_current_turn();
+    };
+    g.should_confirm = function() {
+      var lastTime = +Storage.get('.game.' + G.game_id + '.last_time');
+      if (G.time < lastTime) {
+        return false;
+      }
+      var today = new Date();
+      var d = new Date();
+      d.setTime(Date.parse(Storage.get('.game.' + G.game_id + '.last_played')));
+      var secondsAgo = Math.ceil((today.getTime() - d.getTime()) / 1000);
+      return secondsAgo < 6;
     };
     return g;
   });
@@ -709,6 +726,13 @@ app.controller('PlayerTurnPageController',
       GameService.set_move('give_up');
     };
     this.continue_player_turn = function() {
+      if ($scope.game.get_continue_button_type() == 'draw_cards') {
+        if (GameService.should_confirm()) {
+          if (!confirm('Really draw cards?')) {
+            return;
+          }
+        }
+      }
       GameService.set_move('pass');
     };
     this.on_determine_virulent_strain_clicked = function() {
