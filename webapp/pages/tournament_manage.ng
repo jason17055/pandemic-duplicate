@@ -18,14 +18,14 @@ Tournament ID: {{tournament.id}}
 <input type="checkbox" ng-model="tournament.visible">Visible
 </label>
 </p>
-<p>
-Events:
+
+<h3>Events</h3>
 <ul>
 <li ng-repeat="evt in tournament.all_events">
 {{evt.id}}. {{evt.scenario}} "{{evt.name}}"
 </ul>
-</p>
 
+<h3>Games</h3>
 <table class="standard-table games-table">
 <tr>
 <th>Event</th>
@@ -36,6 +36,20 @@ Events:
 <td>{{c.get_event_name(g.event)}}</td>
 <td>{{g.players}}</td>
 <td><a ui-sref="watch_game({game_id: g.id})">Watch</a></td>
+</tr>
+</table>
+
+<h3>Results</h3>
+<table class="standard-table results-table">
+<tr>
+<th>Event</th>
+<th>Players</th>
+<th>Score</th>
+</tr>
+<tr ng-repeat="result in tournament.results">
+<td>{{c.get_event_name(result.event)}}</td>
+<td>{{result.players}}</td>
+<td>{{result.score}}</td>
 </tr>
 </table>
 

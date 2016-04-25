@@ -168,6 +168,48 @@ public class TournamentServlet extends HttpServlet
 			}
 			out.writeEndArray();
 		}
+		if (adminAccess) {
+			// list results for this tournament
+			out.writeFieldName("results");
+			out.writeStartArray();
+
+			Query q = new Query("Result");
+			q.setFilter(EQUAL.of("tournament", key));
+			q.addSort("created", Query.SortDirection.DESCENDING);
+			PreparedQuery pq = datastore.prepare(q);
+			for (Entity resultEnt : pq.asIterable()) {
+				Key evtKey = (Key) resultEnt.getProperty("tournamentEvent");
+				long eventId = evtKey != null ? evtKey.getId() : 0;
+
+				out.writeStartObject();
+				out.writeStringField("event", Long.toString(eventId));
+				out.writeStringField("id", resultEnt.getKey().getName());
+				out.writeStringField("scenario", ((Key)resultEnt.getProperty("scenario")).getName());
+
+				List<?> l = (List<?>) resultEnt.getProperty("playerNames");
+				if (l != null) {
+					out.writeFieldName("players");
+					out.writeStartArray();
+					for (Object o : l) {
+						out.writeString((String) o);
+					}
+					out.writeEndArray();
+				}
+
+				if (resultEnt.hasProperty("location")) {
+					String location = resultEnt.getProperty("location").toString();
+					out.writeStringField("location", location);
+				}
+
+				if (resultEnt.hasProperty("score")) {
+					Long lv = (Long) resultEnt.getProperty("score");
+					out.writeNumberField("score", lv.longValue());
+				}
+
+				out.writeEndObject();
+			}
+			out.writeEndArray();
+		}
 
 		out.writeEndObject();
 		out.close();
