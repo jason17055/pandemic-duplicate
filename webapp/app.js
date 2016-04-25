@@ -489,7 +489,6 @@ app.controller('JoinGamePickPageController',
       $window.history.back();
     };
     this.search_results = data['results'];
-    show_page('join_game_pick_page');
     init_join_game_pick_page($('#join_game_pick_page'), data);
   });
 
@@ -623,8 +622,7 @@ app.controller('FoundCompletedGamesPageController',
     this.back = function() {
       $window.history.back();
     };
-    var $pg = show_page('found_completed_games_page');
-    init_found_completed_games_page($pg, data);
+    init_found_completed_games_page($('#found_completed_games_page'), data);
   });
 
 app.controller('PlayerNamesPageController',

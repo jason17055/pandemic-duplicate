@@ -870,11 +870,6 @@ function init_infection_page($pg)
 	}
 }
 
-function show_page(page_name)
-{
-	return $("#"+page_name);
-}
-
 function stor_add_to_set(key, value)
 {
 	var a = stor_get_list(key);
