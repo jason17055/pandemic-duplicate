@@ -277,6 +277,7 @@ public class TournamentServlet extends HttpServlet
 		}
 
 		String scenarioId = null, tournamentId = null, name = null;
+		boolean visible = true;
 		JsonParser json = new JsonFactory().createJsonParser(req.getReader());
 		while (json.nextToken() != null) {
 			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
@@ -292,6 +293,10 @@ public class TournamentServlet extends HttpServlet
 			else if (json.getCurrentName().equals("name")) {
 				json.nextToken();
 				name = json.getText();
+			}
+			else if (json.getCurrentName().equals("visible")) {
+				json.nextToken();
+				visible = json.getBooleanValue();
 			}
 		}
 
@@ -341,6 +346,7 @@ public class TournamentServlet extends HttpServlet
 			Entity eventEnt = new Entity(eventKey);
 			eventEnt.setProperty("scenario", scenarioKey);
 			eventEnt.setProperty("name", name);
+			eventEnt.setProperty("visible", new Boolean(visible));
 			datastore.put(eventEnt);
 
 			txn.commit();
