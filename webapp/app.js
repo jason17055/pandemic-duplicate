@@ -269,7 +269,7 @@ app.factory('GameService',
     };
     g.should_confirm = function() {
       var lastTime = +Storage.get('.game.' + G.game_id + '.last_time');
-      if (G.time < lastTime) {
+      if (G.time <= lastTime) {
         return false;
       }
       var today = new Date();
