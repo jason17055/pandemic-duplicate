@@ -307,19 +307,19 @@ app.controller('TopController',
   });
 
 app.controller('WelcomePageController',
-  function(StateService) {
+  function(StateService, Storage) {
     this.has_current_game = function() {
-      var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
+      var scenario_id = Storage.get('.current_game.scenario');
       return Boolean(scenario_id);
     };
 
     this.resume_game_clicked = function() {
-      var game_id = localStorage.getItem(PACKAGE + '.current_game');
+      var game_id = Storage.get('.current_game');
       if (game_id == null) {
         return false;
       }
 
-      var time_str = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
+      var time_str = Storage.get('.game.' + game_id + '.time');
       if (time_str != null) {
         StateService.go(game_id + '/T' + time_str);
       }
@@ -967,10 +967,10 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function(StateService, $state) {
+  function($state, StateService, Storage) {
     this.go_home_page = function() {
-      localStorage.removeItem(PACKAGE + '.current_game');
-      localStorage.removeItem(PACKAGE + '.current_game.scenario');
+      Storage.remove('.current_game');
+      Storage.remove('.current_game.scenario');
 
       StateService.go(null);
     };
