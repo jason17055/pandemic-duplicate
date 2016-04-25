@@ -170,14 +170,41 @@ app.config(
             }
         }})
       .state('tournament_manage_event', {
-        url: '/manage_tournament/:tournament/event?scenario',
+        url: '/manage_tournament/:tournament/event?scenario&event',
         templateUrl: 'pages/tournament_manage_event.ng',
         controller: 'TournamentManageEventPageController',
         controllerAs: 'c',
         resolve: {
-          'scenario':
-            function(ScenarioStore, $stateParams) {
-              return ScenarioStore.get($stateParams['scenario']);
+          'eventData':
+            function(ScenarioStore, TournamentStore, $stateParams) {
+              return TournamentStore
+                .getAsAdmin($stateParams['tournament'])
+                .then(function(tournament) {
+                  var eventData = null;
+                  var scenarioId = null;
+                  var eventId = $stateParams['event'];
+                  if (eventId) {
+                    for (var i = 0; i < tournament.all_events.length; i++) {
+                      if (tournament.all_events[i].id == eventId) {
+                        eventData = tournament.all_events[i];
+                        scenarioId = eventData.scenario;
+                      }
+                    }
+                  }
+                  if ($stateParams['scenario']) {
+                    scenarioId = $stateParams['scenario'];
+                  }
+                  if (scenarioId) {
+                    return ScenarioStore.get(scenarioId)
+                      .then(function(scenarioData) {
+                        return {
+                          tournament: tournament,
+                          event: eventData,
+                          scenario: scenarioData
+                        };
+                      });
+                  }
+                });
             }
         }})
       .state('404', {});
@@ -533,23 +560,42 @@ app.controller('TournamentManagePageController',
   });
 
 app.controller('TournamentManageEventPageController',
-  function($http, $scope, $state, $window, scenario) {
+  function($http, $scope, $state, $window, eventData) {
+    var scenario = eventData.scenario;
     $scope['scenario'] = scenario;
+    $scope['event'] = eventData.event;
     this.scenario = scenario;
-    this.name = 'Round 1';
-    this.submit = function() {
-      var tournamentId = $state.params['tournament'];
-      var data = {
-        'scenario': scenario.scenario_id,
-        'tournament': tournamentId,
-        'name': this.name
+    this.name = eventData.event ? eventData.event.name : 'Unnamed Event';
+    this.visible = eventData.event ? eventData.event.visible : true;
+    this.submit = eventData.event ?
+      function() {
+        var tournamentId = $state.params['tournament'];
+        var data = {
+          'tournament': tournamentId,
+          'event': eventData.event.id,
+          'name': this.name,
+          'visible': this.visible
         };
-      return $http
-        .post('/s/tournaments/add_scenario', data)
-        .then(function(httpResponse) {
-          $state.go('manage_tournament', {tournament: tournamentId});
-        });
-    };
+        return $http
+          .post('/s/tournaments/update_event', data)
+          .then(function(httpResponse) {
+            $state.go('manage_tournament', {tournament: tournamentId});
+          });
+      } :
+      function() {
+        var tournamentId = $state.params['tournament'];
+        var data = {
+          'scenario': scenario.scenario_id,
+          'tournament': tournamentId,
+          'name': this.name,
+          'visible': this.visible
+          };
+        return $http
+          .post('/s/tournaments/add_scenario', data)
+          .then(function(httpResponse) {
+            $state.go('manage_tournament', {tournament: tournamentId});
+          });
+      };
     this.go_back = function() {
       $window.history.back();
     };

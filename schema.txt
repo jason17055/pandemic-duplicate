@@ -18,6 +18,7 @@ parent: Key<Tournament>
 id: monotonically-increasing number
 scenario: Key<Scenario>
 name: string
+visible: boolean
 
 ==Deal==
 (deprecated, use Scenario instead)

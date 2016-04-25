@@ -1,7 +1,7 @@
 <div class="page">
 
 <div class="page_header">
-<h1>Add Scenario</h1>
+<h1>{{event ? 'Edit Event' : 'Add Event'}}</h1>
 </div><!--/page_header-->
 
 <div class="page_body">
@@ -18,16 +18,21 @@ Roles:
 </ul>
 </p>
 <p>
-<label>Name:
+<label>Event Name:
 <input type="text" id="name_entry" name="name" ng-model="c.name">
+</label>
+</p>
+<p>
+<label>
+<input type="checkbox" ng-model="c.visible">Visible
 </label>
 </p>
 
 <div class="button_container">
-<button type="submit">Add Scenario</button>
+<button type="submit">{{event ? 'Save Changes' : 'Add Scenario'}}</button>
 </div>
 <div class="button_container">
-<button type="button" ng-click="c.go-back()">Go Back</button>
+<button type="button" ng-click="c.go_back()">Go Back</button>
 </div>
 </form>
 

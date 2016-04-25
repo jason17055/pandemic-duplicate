@@ -103,6 +103,7 @@ public class TournamentServlet extends HttpServlet
 
 			Query q = new Query("TournamentEvent");
 			q.setAncestor(key);
+			q.setFilter(EQUAL.of("visible", Boolean.TRUE));
 			PreparedQuery pq = datastore.prepare(q);
 			for (Entity eventEnt : pq.asIterable()) {
 				out.writeStartObject();
@@ -129,6 +130,9 @@ public class TournamentServlet extends HttpServlet
 				out.writeStringField("id", Long.toString(eventId));
 				out.writeStringField("name", (String) eventEnt.getProperty("name"));
 				out.writeStringField("scenario", ((Key) eventEnt.getProperty("scenario")).getName());
+				if (eventEnt.hasProperty("visible")) {
+					out.writeBooleanField("visible", ((Boolean) eventEnt.getProperty("visible")).booleanValue());
+				}
 				out.writeEndObject();
 			}
 			out.writeEndArray();
@@ -253,6 +257,9 @@ public class TournamentServlet extends HttpServlet
 		}
 		else if ("/update".equals(pathInfo)) {
 			doUpdate(req, resp);
+		}
+		else if ("/update_event".equals(pathInfo)) {
+			doUpdateEvent(req, resp);
 		}
 		else {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -410,6 +417,85 @@ public class TournamentServlet extends HttpServlet
 			tournamentEnt.setProperty("visible", new Boolean(visible));
 
 			datastore.put(tournamentEnt);
+
+			txn.commit();
+
+			JsonGenerator out = new JsonFactory().
+				createJsonGenerator(resp.getWriter());
+			out.writeStartObject();
+			out.writeStringField("status", "ok");
+			out.writeEndObject();
+			out.close();
+		}
+		finally {
+			if (txn.isActive()) {
+				txn.rollback();
+			}
+		}
+	}
+
+	void doUpdateEvent(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		Principal p = req.getUserPrincipal();
+		if (p == null) {
+			log.warning("user is not logged in");
+			resp.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		String tournamentId = null;
+		String eventId = null;
+		String name = null;
+		boolean visible = false;
+
+		JsonParser json = new JsonFactory().createJsonParser(req.getReader());
+		while (json.nextToken() != null) {
+			if (json.getCurrentToken() != JsonToken.FIELD_NAME) { continue; }
+
+			if (json.getCurrentName().equals("tournament")) {
+				json.nextToken();
+				tournamentId = json.getText();
+			}
+			else if (json.getCurrentName().equals("event")) {
+				json.nextToken();
+				eventId = json.getText();
+			}
+			else if (json.getCurrentName().equals("name")) {
+				json.nextToken();
+				name = json.getText();
+			}
+			else if (json.getCurrentName().equals("visible")) {
+				json.nextToken();
+				visible = json.getBooleanValue();
+			}
+		}
+
+		if (tournamentId == null || eventId == null || name == null) {
+			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
+		}
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Key tournamentKey = KeyFactory.createKey("Tournament", tournamentId);
+		Key eventKey = KeyFactory.createKey(tournamentKey, "TournamentEvent", Long.parseLong(eventId));
+
+		Transaction txn = datastore.beginTransaction();
+		try {
+			Entity eventEnt;
+			try {
+				eventEnt = datastore.get(eventKey);
+			}
+			catch (EntityNotFoundException e) {
+				log.warning("tournament event " + eventKey.toString() + " not found");
+				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+				return;
+			}
+
+			eventEnt.setProperty("name", name);
+			eventEnt.setProperty("visible", new Boolean(visible));
+
+			datastore.put(eventEnt);
 
 			txn.commit();
 

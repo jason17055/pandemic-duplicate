@@ -20,10 +20,13 @@ Tournament ID: {{tournament.id}}
 </p>
 
 <h3>Events</h3>
-<ul>
-<li ng-repeat="evt in tournament.all_events">
-{{evt.id}}. {{evt.scenario}} "{{evt.name}}"
-</ul>
+<table class="standard-table events-table">
+<tr ng-repeat="evt in tournament.all_events">
+<td>{{evt.name}}</td>
+<td>{{evt.scenario}}</td>
+<td><a ui-sref="tournament_manage_event({tournament: tournament.id, event: evt.id})">Edit</a></td>
+</tr>
+</table>
 <div><a ui-sref="generate({tournament: tournament.id})">Generate Scenario</a></div>
 
 <h3>Games</h3>
