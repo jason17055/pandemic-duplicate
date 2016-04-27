@@ -4,20 +4,40 @@
 </div><!--/page_header-->
 
 <div class="page_body">
-<div>Player Cards:</div>
-<ol id="player_cards_list">
+<h3>Player Cards:</h3>
+<div>From first-drawn to last-drawn</div>
+<ol class="player_cards_list">
 <li ng-repeat="card in c.player_deck track by $index"><pd-player-card card="card"></pd-player-card></li>
 </ol>
 
-<div>Infection Cards:</div>
-<ol id="infection_cards_list">
-<li ng-repeat="card in c.infection_deck track by $index"><pd-infection-card card="card"></pd-infection-card></li>
+<h3>Infection Cards:</h3>
+<div>From first-drawn to last-drawn</div>
+<ol class="infection_cards_list">
+<li ng-repeat="card in c.infection_deck track by $index">
+  <span ng-switch="!c.is_initial_infection(card)">
+    <pd-infection-card ng-switch-when="true" card="card"></pd-infection-card>
+    <span ng-switch-default class="unlikely_infection">{{card}}</span>
+  </span>
+</li>
 </ol>
 
-<div class="button_container">
-<button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
+<div ng-repeat="e in c.epidemics">
+<h3>Epidemic {{e.id}}</h3>
+<ol class="infection_cards_list">
+<li ng-repeat="card in e.deck track by $index">
+  <span ng-switch="e.is_likely_in_reshuffle(card)">
+    <pd-infection-card ng-switch-when="true" card="card"></pd-infection-card>
+    <span ng-switch-default class="unlikely_infection">{{card}}</span>
+  </span>
+</li>
+</ol>
 </div>
 
 </div><!--/page_body-->
+<div class="page_nav">
+<div class="button_container">
+<button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
+</div>
+</div><!--/page_nav-->
 </div><!--/deck_setup_page-->
 

@@ -637,8 +637,30 @@ app.controller('DeckSetupPageController',
     };
     this.scenario_id = $state.params['scenario_id'];
     this.scenario = load_scenario(this.scenario_id);
-    this.player_deck = this.scenario.player_deck;
-    this.infection_deck = this.scenario.infection_deck;
+    this.player_deck = this.scenario.player_deck.slice().reverse();
+    this.infection_deck = this.scenario.infection_deck.slice().reverse();
+
+    var game = load_scenario(this.scenario_id);
+    game.initialize();
+    this.initial_infection_discards = game.infection_discards.slice();
+    this.is_initial_infection = function(card) {
+      return this.initial_infection_discards.indexOf(card) != -1;
+    };
+    this.epidemics = [];
+    for (var k = 1; k <= this.scenario.rules.level; k++) {
+      while (game.epidemic_count < k && game.step != 'end') {
+        game.do_move('pass');
+      }
+      var epidemicInfo = {
+        id: k,
+        deck: this.scenario['epidemic.' + k].slice().reverse(),
+        discards: game.infection_discards.slice()
+      };
+      epidemicInfo.is_likely_in_reshuffle = function(card) {
+        return this.discards.indexOf(card) != -1;
+      };
+      this.epidemics.push(epidemicInfo);
+    }
   });
 
 app.controller('BoardSetupPageController',
