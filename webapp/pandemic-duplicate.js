@@ -319,29 +319,6 @@ function save_player_names()
 		);
 }
 
-function init_deck_setup_page($pg, scenario_id)
-{
-	G = load_scenario(scenario_id);
-
-	$('#player_cards_list').empty();
-	for (var i = 0; i < G.player_deck.length; i++) {
-		var c = G.player_deck[G.player_deck.length-1-i];
-		var $x = $('<li></li>');
-		$x.text(c);
-		$('#player_cards_list').append($x);
-	}
-
-	$('#infection_cards_list').empty();
-	for (var i = 0; i < G.infection_deck.length; i++) {
-		var c = G.infection_deck[G.infection_deck.length-1-i];
-		var $x = $('<li></li>');
-		$x.text(c);
-		$('#infection_cards_list').append($x);
-	}
-
-	return false;
-}
-
 function init_board_setup_page($pg, game_id)
 {
 	G = load_game(game_id);

@@ -633,9 +633,12 @@ app.controller('PlayerNamesPageController',
 app.controller('DeckSetupPageController',
   function($state) {
     this.continue = function() {
-      $state.go('board_setup', {game_id: G.scenario_id});
+      $state.go('board_setup', {game_id: this.scenario_id});
     };
-    init_deck_setup_page($('#deck_setup_page'), $state.params['scenario_id']);
+    this.scenario_id = $state.params['scenario_id'];
+    this.scenario = load_scenario(this.scenario_id);
+    this.player_deck = this.scenario.player_deck;
+    this.infection_deck = this.scenario.infection_deck;
   });
 
 app.controller('BoardSetupPageController',

@@ -5,10 +5,14 @@
 
 <div class="page_body">
 <div>Player Cards:</div>
-<ol id="player_cards_list"></ol>
+<ol id="player_cards_list">
+<li ng-repeat="card in c.player_deck track by $index"><pd-player-card card="card"></pd-player-card></li>
+</ol>
 
 <div>Infection Cards:</div>
-<ol id="infection_cards_list"></ol>
+<ol id="infection_cards_list">
+<li ng-repeat="card in c.infection_deck track by $index"><pd-infection-card card="card"></pd-infection-card></li>
+</ol>
 
 <div class="button_container">
 <button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
