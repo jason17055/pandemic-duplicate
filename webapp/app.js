@@ -113,12 +113,37 @@ app.config(
             return ScenarioStore.get($stateParams['scenario_id']);
           }
         }})
+      .state('scenario_board_setup', {
+        url: '/scenario/:scenario_id/board_setup',
+        templateUrl: 'pages/board_setup.ng',
+        controller: 'BoardSetupPageController',
+        controllerAs: 'c',
+        resolve: {
+          'data': function($stateParams, ScenarioStore) {
+            return ScenarioStore.get($stateParams['scenario_id'])
+              .then(function(scenarioData) {
+                return {scenario: scenarioData};
+              });
+          }
+        }})
       .state('board_setup', {
         url: '/:game_id/board_setup',
         templateUrl: 'pages/board_setup.ng',
         controller: 'BoardSetupPageController',
-        controllerAs: 'c'
-        })
+        controllerAs: 'c',
+        resolve: {
+          'data': function($stateParams, ScenarioStore) {
+            var game_id = $stateParams['game_id'];
+            var gameData = load_game(game_id);
+            return ScenarioStore.get(gameData.scenario_id)
+              .then(function(scenarioData) {
+                return {
+                  'scenario': scenarioData,
+                  'game': gameData
+                };
+              });
+          }
+        }})
       .state('player_setup', {
         url: '/:game_id/player_setup',
         templateUrl: 'pages/player_setup.ng',
@@ -637,7 +662,7 @@ app.controller('PlayerNamesPageController',
 app.controller('DeckSetupPageController',
   function($state, scenarioData) {
     this.continue = function() {
-      alert('Not implemented');
+      $state.go('scenario_board_setup', {scenario_id: this.scenario_id});
     };
     this.scenario = scenarioData;
     this.scenario_id = scenarioData.scenario_id;
@@ -668,14 +693,18 @@ app.controller('DeckSetupPageController',
   });
 
 app.controller('BoardSetupPageController',
-  function(GameService, $state) {
+  function($state, GameService, data) {
     this.continue = function() {
       GameService.navigate_to_current_turn();
     };
-    init_board_setup_page($('#board_setup_page'), $state.params['game_id']);
 
-    this.rules = G.rules;
-    this.infections = G.infection_discards;
+    var scenario = data.scenario;
+    this.rules = scenario.rules;
+    this.infections = scenario.infection_deck.slice(-9).reverse();
+
+    if (data.game) {
+      init_board_setup_page($('#board_setup_page'), scenario, data.game);
+    }
   });
 
 app.controller('PlayerSetupPageController',

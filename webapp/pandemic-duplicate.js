@@ -319,13 +319,11 @@ function save_player_names()
 		);
 }
 
-function init_board_setup_page($pg, game_id)
+function init_board_setup_page($pg, scenario, game)
 {
-	G = load_game(game_id);
-
-	if (G.rules.lab_challenge) {
+	if (scenario.rules.lab_challenge) {
 		$('.sequence_card').empty();
-		for (var i = 0, c; c = G.sequence_discards[i]; i++) {
+		for (var i = 0, c; c = game.sequence_discards[i]; i++) {
 			$('.sequence_card', $pg).append(make_sequence_card_li(c));
 		}
 	}
