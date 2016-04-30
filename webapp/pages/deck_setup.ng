@@ -23,6 +23,7 @@
 
 <div ng-repeat="e in c.epidemics">
 <h3>Epidemic {{e.id}}</h3>
+<div><small>(Top to bottom)</small></div>
 <ol class="infection_cards_list">
 <li ng-repeat="card in e.deck track by $index">
   <span ng-switch="e.is_likely_in_reshuffle(card)">

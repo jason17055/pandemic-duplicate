@@ -707,7 +707,7 @@ app.controller('DeckSetupPageController',
       }
       var epidemicInfo = {
         id: k,
-        deck: this.scenario['epidemic.' + k].slice().reverse(),
+        deck: this.scenario['epidemic.' + k].slice(),
         discards: game.infection_discards.slice()
       };
       epidemicInfo.is_likely_in_reshuffle = function(card) {
