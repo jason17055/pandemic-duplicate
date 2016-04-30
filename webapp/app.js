@@ -126,6 +126,19 @@ app.config(
               });
           }
         }})
+      .state('scenario_player_setup', {
+        url: '/scenario/:scenario_id/player_setup',
+        templateUrl: 'pages/player_setup.ng',
+        controller: 'PlayerSetupPageController',
+        controllerAs: 'c',
+        resolve: {
+          'data': function($stateParams, ScenarioStore) {
+            return ScenarioStore.get($stateParams['scenario_id'])
+              .then(function(scenarioData) {
+                return {scenario: scenarioData};
+              });
+          }
+        }})
       .state('board_setup', {
         url: '/:game_id/board_setup',
         templateUrl: 'pages/board_setup.ng',
@@ -672,9 +685,9 @@ app.controller('PlayerNamesPageController',
   });
 
 app.controller('DeckSetupPageController',
-  function($state, scenarioData) {
+  function($state, $window, scenarioData) {
     this.continue = function() {
-      $state.go('scenario_board_setup', {scenario_id: this.scenario_id});
+      $window.history.go(-3);
     };
     this.scenario = scenarioData;
     this.scenario_id = scenarioData.scenario_id;
@@ -707,12 +720,17 @@ app.controller('DeckSetupPageController',
 app.controller('BoardSetupPageController',
   function($state, GameService, data) {
     this.continue = function() {
-      GameService.navigate_to_current_turn();
+      if (data.game) {
+        GameService.navigate_to_current_turn();
+      } else {
+        $state.go('deck_setup', {scenario_id: $state.params['scenario_id']});
+      }
     };
 
     var scenario = data.scenario;
     this.rules = scenario.rules;
     this.infections = scenario.infection_deck.slice(-9).reverse();
+    this.game = data.game;
 
     if (data.game) {
       init_board_setup_page($('#board_setup_page'), scenario, data.game);
@@ -754,7 +772,11 @@ app.controller('PlayerSetupPageController',
       return scenario.initial_hands[pid];
     };
     this.continue = function() {
-      $state.go('board_setup', {game_id: $state.params['game_id']});
+      if (data.game) {
+        $state.go('board_setup', {game_id: $state.params['game_id']});
+      } else {
+        $state.go('scenario_board_setup', {scenario_id: $state.params['scenario_id']});
+      }
     };
   });
 

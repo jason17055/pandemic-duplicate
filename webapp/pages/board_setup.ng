@@ -33,8 +33,11 @@
 </div><!--/page_body-->
 
 <div class="page_nav">
-<div class="button_container">
+<div class="button_container" ng-show="c.game">
 <button type="button" ng-click="c.continue()">Next: <small>First Turn</small></button>
+</div>
+<div class="button_container" ng-hide="c.game">
+<button type="button" ng-click="c.continue()">Next: <small>Deck Setup</small></button>
 </div>
 
 </div><!--/page_nav-->

@@ -36,7 +36,7 @@
 </div><!--/page_body-->
 <div class="page_nav">
 <div class="button_container">
-<button type="button" ng-click="c.continue()">Next: <small>Board Setup</small></button>
+<button type="button" ng-click="c.continue()">Done</button>
 </div>
 </div><!--/page_nav-->
 </div><!--/deck_setup_page-->
