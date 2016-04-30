@@ -104,11 +104,15 @@ app.config(
         controllerAs: 'c'
         })
       .state('deck_setup', {
-        url: '/:scenario_id/deck_setup',
+        url: '/scenario/:scenario_id/deck_setup',
         templateUrl: 'pages/deck_setup.ng',
         controller: 'DeckSetupPageController',
-        controllerAs: 'c'
-        })
+        controllerAs: 'c',
+        resolve: {
+          'scenarioData': function($stateParams, ScenarioStore) {
+            return ScenarioStore.get($stateParams['scenario_id']);
+          }
+        }})
       .state('board_setup', {
         url: '/:game_id/board_setup',
         templateUrl: 'pages/board_setup.ng',
@@ -631,12 +635,12 @@ app.controller('PlayerNamesPageController',
   });
 
 app.controller('DeckSetupPageController',
-  function($state) {
+  function($state, scenarioData) {
     this.continue = function() {
-      $state.go('board_setup', {game_id: this.scenario_id});
+      alert('Not implemented');
     };
-    this.scenario_id = $state.params['scenario_id'];
-    this.scenario = load_scenario(this.scenario_id);
+    this.scenario = scenarioData;
+    this.scenario_id = scenarioData.scenario_id;
     this.player_deck = this.scenario.player_deck.slice().reverse();
     this.infection_deck = this.scenario.infection_deck.slice().reverse();
 
