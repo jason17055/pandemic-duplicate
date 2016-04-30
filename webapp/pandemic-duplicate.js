@@ -329,11 +329,6 @@ function init_board_setup_page($pg, scenario, game)
 	}
 }
 
-function init_player_setup_page($pg, game_id)
-{
-	G = load_game(game_id);
-}
-
 function init_results_page($pg, scenario_id)
 {
 	G = load_scenario(scenario_id);

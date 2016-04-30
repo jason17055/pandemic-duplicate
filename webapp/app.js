@@ -148,8 +148,20 @@ app.config(
         url: '/:game_id/player_setup',
         templateUrl: 'pages/player_setup.ng',
         controller: 'PlayerSetupPageController',
-        controllerAs: 'c'
-        })
+        controllerAs: 'c',
+        resolve: {
+          'data': function($stateParams, ScenarioStore) {
+            var game_id = $stateParams['game_id'];
+            var gameData = load_game(game_id);
+            return ScenarioStore.get(gameData.scenario_id)
+              .then(function(scenarioData) {
+                return {
+                  'scenario': scenarioData,
+                  'game': gameData
+                };
+              });
+          }
+        }})
       .state('results', {
         url: '/:scenario_id/results',
         templateUrl: 'pages/results.ng',
@@ -708,40 +720,42 @@ app.controller('BoardSetupPageController',
   });
 
 app.controller('PlayerSetupPageController',
-  function($state, GameService) {
+  function($state, GameService, data) {
     var seats_by_player_count = {
       2: [1,2],
       3: [1,2,3],
       4: [1,2,3,4],
       5: [1,2,3,4,5]
     };
-    var empty = [];
+    var scenario = data.scenario;
     this.get_seats = function() {
-      return (G && G.rules && seats_by_player_count[G.rules.player_count]) || empty;
+      return seats_by_player_count[scenario.rules.player_count];
     };
     this.get_scenario_name = function() {
-      return G && G.scenario_id && scenario_name(G.scenario_id);
+      return scenario_name(scenario.scenario_id);
     };
     this.get_rules = function() {
-      return G && G.rules && stringify_rules(G.rules);
+      return stringify_rules(scenario.rules);
     };
     this.get_player_name = function(pid) {
-      return G && G.player_names && G.player_names[pid];
+      if (data.game) {
+        return data.game.player_names[pid];
+      } else {
+        return 'Player ' + pid;
+      }
     };
     this.get_player_role = function(pid) {
-      return G && G.roles && G.roles[pid];
+      return scenario.roles[pid];
     };
     this.get_player_role_icon = function(pid) {
-      return G && G.roles && get_role_icon(G.roles[pid]);
+      return get_role_icon(scenario.roles[pid]);
     };
     this.get_player_cards = function(pid) {
-      return G && G.initial_hands && G.initial_hands[pid];
+      return scenario.initial_hands[pid];
     };
     this.continue = function() {
-      $state.go('board_setup', {game_id: G.game_id});
-      return false;
+      $state.go('board_setup', {game_id: $state.params['game_id']});
     };
-    init_player_setup_page($('#player_setup_page'), $state.params['game_id']);
   });
 
 app.controller('PlayerTurnPageController',
