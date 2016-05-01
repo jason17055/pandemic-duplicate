@@ -721,6 +721,7 @@ app.controller('BoardSetupPageController',
   function($state, GameService, data) {
     this.continue = function() {
       if (data.game) {
+        G = data.game;
         GameService.navigate_to_current_turn();
       } else {
         $state.go('deck_setup', {scenario_id: $state.params['scenario_id']});
