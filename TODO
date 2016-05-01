@@ -1,18 +1,22 @@
 make it possible to filter out scenarios that use a role
 from new printing of base game
 
+make new edition the default
+
 pick_game: show how many results are recorded for each scenario
 
 params: replace player_count drop down with four separate
 buttons
 
-refactor Result entities to be singleton children of Game entities
+Result entities:
+ * require game_id to be provided
+ * refactor to be children of Game entities
 
-PostScenario: should fail if scenario already exists
-
-PostScenario: enforce scenario_id equal SHA-1 hash of scenario data
-
-retrieve_special_event: is broken due to angularization (maybe fixed?)
+PostScenario:
+ * should fail if scenario already exists
+ * enforce scenario_id equal SHA-1 hash of scenario data
+ * use scenario entity attribute to indicate "daily" scenarios
+ * include "daily" labels in /s/scenarios index.
 
 join_network_game:
   Go Back button doesn't work
