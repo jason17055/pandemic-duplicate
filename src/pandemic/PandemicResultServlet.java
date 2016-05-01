@@ -112,6 +112,7 @@ public class PandemicResultServlet extends HttpServlet
 		JsonParser json = new JsonFactory().
 			createJsonParser(new StringReader(content));
 
+		String gameId = null;
 		String versionString = null;
 		String rulesString = null;
 		String scenarioId = null;
@@ -127,6 +128,10 @@ public class PandemicResultServlet extends HttpServlet
 			if (k.equals("rules")) {
 				json.nextToken();
 				rulesString = json.getText();
+			}
+			else if (k.equals("game_id")) {
+				json.nextToken();
+				gameId = json.getText();
 			}
 			else if (k.equals("shuffle_id") || k.equals("scenario_id")) {
 				json.nextToken();
@@ -185,6 +190,11 @@ public class PandemicResultServlet extends HttpServlet
 			if (location != null && location.length() != 0) {
 				ent.setProperty("location", location);
 				ent.setProperty("locationLC", location.toLowerCase());
+			}
+
+			if (gameId != null) {
+				Key gameKey = KeyFactory.createKey("Play", gameId);
+				ent.setProperty("game", gameKey);
 			}
 
 			if (tournamentEventInfo != null) {
