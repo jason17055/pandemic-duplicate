@@ -57,7 +57,27 @@ public class AdminServlet extends HttpServlet
 		out.println("<button type=\"submit\" name=\"action:create_tournament\">Create Tournament</button>");
 		out.println("</form>");
 
+		doShowScenarios(datastore, out);
 		doShowResults(datastore, out);
+	}
+
+	void doShowScenarios(DatastoreService datastore, PrintWriter out)
+	{
+		out.println("<h2>Scenarios</h2>");
+		out.println("<table border=\"1\">");
+		Query q = new Query("Scenario");
+		PreparedQuery pq = datastore.prepare(q);
+		for (Entity ent : pq.asIterable()) {
+			out.println("<tr>");
+			out.println("<td>" + ent.getKey().toString() + "</td>");
+			String tmpDaily = (String) ent.getProperty("dailyPandemic");
+			out.println("<td>" + (tmpDaily != null ? tmpDaily : "") + "</td>");
+			out.println("</tr>");
+		}
+		out.println("</table>");
+		out.println("<form method=\"post\">");
+		out.println("<button type=\"submit\" name=\"action:fix_scenario_schema\">Fix Schema</button>");
+		out.println("</form>");
 	}
 
 	void doShowResults(DatastoreService datastore, PrintWriter out)
@@ -77,6 +97,41 @@ public class AdminServlet extends HttpServlet
 		out.println("<form method=\"post\">");
 		out.println("<button type=\"submit\" name=\"action:fix_results_schema\">Fix Schema</button>");
 		out.println("</form>");
+	}
+
+	void doFixScenarioSchema(HttpServletRequest req, HttpServletResponse resp)
+		throws IOException
+	{
+		PrintWriter out = resp.getWriter();
+		out.println("<table border=\"1\">");
+
+		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+		Query q = new Query("Scenario");
+		PreparedQuery pq = datastore.prepare(q);
+		int count = 0;
+		for (Entity ent : pq.asIterable()) {
+			String scenarioId = ent.getKey().getName();
+			if (scenarioId.indexOf('-') == -1) {
+				// not a daily-pandemic scenario
+				continue;
+			}
+			if (ent.hasProperty("dailyPandemic")) {
+				// already fixed
+				continue;
+			}
+
+			count++;
+			out.println("<tr>");
+			out.println("<td>" + ent.getKey().toString() + "</td>");
+			if (count <= 10) {
+				ent.setProperty("dailyPandemic", scenarioId);
+				datastore.put(ent);
+
+				out.println("<td>set dailyPandemic to " + scenarioId + "</td>");
+			}
+			out.println("</tr>");
+		}
+		out.println("</table>");
 	}
 
 	void doFixResultsSchema(HttpServletRequest req, HttpServletResponse resp)
@@ -130,6 +185,10 @@ public class AdminServlet extends HttpServlet
 		}
 		else if (req.getParameter("action:promote_user") != null) {
 			doPromoteUser(req, resp);
+			return;
+		}
+		else if (req.getParameter("action:fix_scenario_schema") != null) {
+			doFixScenarioSchema(req, resp);
 			return;
 		}
 		else if (req.getParameter("action:fix_results_schema") != null) {
