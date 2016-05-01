@@ -136,6 +136,7 @@ public class GenerateScenarioServlet extends HttpServlet
 		ent.setProperty("version", scenario.version);
 		ent.setProperty("rules", scenario.rules.toString());
 		ent.setProperty("playerCount", scenario.rules.playerCount);
+		ent.setProperty("dailyPandemic", name);
 
 		ArrayList<String> playerRoles = new ArrayList<String>();
 		for (String s : scenario.roles) {
