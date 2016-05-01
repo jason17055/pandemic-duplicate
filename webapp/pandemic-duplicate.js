@@ -1277,7 +1277,7 @@ function init_discover_cure_page($pg)
 {
 	$('.discover_cure_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (is_cured(G, disease_color) || G.is_unnecessary(disease_color)) {
+		if (G.is_cured(disease_color) || G.is_unnecessary(disease_color)) {
 			$(el).hide();
 		}
 		else {
@@ -1287,7 +1287,7 @@ function init_discover_cure_page($pg)
 
 	$('.eradicate_btn', $pg).each(function(idx,el) {
 		var disease_color = el.getAttribute('data-disease');
-		if (G.is_eradicated(disease_color) || !is_cured(G, disease_color) || G.is_unnecessary(disease_color)) {
+		if (G.is_eradicated(disease_color) || !G.is_cured(disease_color) || G.is_unnecessary(disease_color)) {
 			$(el).hide();
 		}
 		else {
@@ -1295,7 +1295,7 @@ function init_discover_cure_page($pg)
 		}
 		});
 
-	if (G.count_uncured_diseases() == 1 && !G.is_unnecessary('purple') && !is_cured(G, 'purple')) {
+	if (G.count_uncured_diseases() == 1 && !G.is_unnecessary('purple') && !G.is_cured('purple')) {
 		$('.victory_button_container', $pg).show();
 	}
 	else {

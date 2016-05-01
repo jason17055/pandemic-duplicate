@@ -14,8 +14,6 @@ PostScenario: enforce scenario_id equal SHA-1 hash of scenario data
 
 retrieve_special_event: is broken due to angularization (maybe fixed?)
 
-cure/eradicate one disease page: broken due to angularization
-
 join_network_game:
   Go Back button doesn't work
 
