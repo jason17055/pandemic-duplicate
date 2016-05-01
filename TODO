@@ -10,7 +10,25 @@ refactor Result entities to be singleton children of Game entities
 
 PostScenario: should fail if scenario already exists
 
-retrieve_special_event: is broken due to angularization
+PostScenario: enforce scenario_id equal SHA-1 hash of scenario data
+
+retrieve_special_event: is broken due to angularization (maybe fixed?)
+
+cure/eradicate one disease page: broken due to angularization
 
 join_network_game:
   Go Back button doesn't work
+
+watch game: on some pages (e.g. forecast), gives users buttons to
+rearrange cards
+
+watch game: can we make a way to simply mirror what the controller
+is doing? (e.g. if the controller clicks 'play special event', the
+watcher will see the list of special events)
+
+usability: text is a bit smaller than it needs to be on nexus 5/5x
+browser
+
+tournament events: always list in alphabetical order
+
+tournament events: allow deleting
