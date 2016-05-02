@@ -549,11 +549,32 @@ app.controller('JoinGamePickPageController',
 
 app.controller('PickScenarioPageController',
   function($state) {
+    var pcount = 2;
+    var m = $state.params['rulespec'].match(/^(\d+)p$/);
+    if (m) {
+      pcount = m[1];
+    }
+
     this.generate_game_clicked = function() {
-      var pcount = document.pick_scenario_form.player_count.value;
       $state.go('generate_game', {rulespec: pcount + 'p'});
-    }.bind(this);
-    init_pick_scenario_page($('#pick_scenario_page'), $state.params['rulespec']);
+    };
+    this.load_scenarios = function() {
+      this.scenarios = [];
+      this.not_shown = 0;
+
+      var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + pcount);
+      for (var i = 0; i < a.length; i++) {
+        var scenario = load_scenario(a[i]);
+        if (!scenario_compatible(scenario)) {
+          this.not_shown++;
+          continue;
+        }
+        this.scenarios.push(scenario);
+      }
+    };
+    this.load_scenarios();
+
+    init_pick_scenario_page($('#pick_scenario_page'), pcount, this.scenarios);
   });
 
 app.controller('ReviewResultsPageController',

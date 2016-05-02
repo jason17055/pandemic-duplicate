@@ -19,9 +19,9 @@ Choose a scenario to play:
 </div>
 </div><!--/scenarios_list-->
 
-<div class="not_shown_list">
-Not shown: <span class="not_shown_count"></span> that requires
-expansion(s) <a href="#options">you do not have</a>.
+<div ng-if="c.not_shown">
+Not shown: {{c.not_shown}} scenarios that require
+expansion(s) <a ui-sref="options">you do not have</a>.
 </div>
 
 <div>

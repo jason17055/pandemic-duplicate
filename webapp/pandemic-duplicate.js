@@ -1432,31 +1432,18 @@ function update_scenario_description($g, R)
 	$('.epidemic_icon', $g).attr('alt', R.level + ' epidemics');
 }
 
-function init_pick_scenario_page($pg, xtra)
+function init_pick_scenario_page($pg, pcount, scenarios)
 {
-	var pcount = 2;
-	var m = xtra.match(/^(\d+)p$/);
-	if (m) {
-		pcount = m[1];
-	}
-
 	document.pick_scenario_form.player_count.value = pcount;
 
 	$('.scenario_row:not(.template)', $pg).remove();
-	var a = stor_get_list(PACKAGE + '.scenarios_by_player_count.' + pcount);
-	var not_shown = 0;
-	for (var i = 0; i < a.length; i++) {
+	for (var i = 0; i < scenarios.length; i++) {
 
-		G = load_scenario(a[i]);
-		if (!scenario_compatible(G)) {
-			not_shown++;
-			continue;
-		}
-
+		G = scenarios[i];
 		var $tr = $('.scenario_row.template').clone();
 		$tr.removeClass('template');
-		$('.scenario_name_container',$tr).append(make_scenario_label(a[i]));
-		$('button',$tr).attr('data-scenario-id', a[i]);
+		$('.scenario_name_container',$tr).append(make_scenario_label(G.scenario_id));
+		$('button',$tr).attr('data-scenario-id', G.scenario_id);
 		$('button',$tr).click(on_pick_scenario_scenario_clicked);
 
 		var $g = $tr;
@@ -1469,7 +1456,7 @@ function init_pick_scenario_page($pg, xtra)
 			$('.player_list', $g).append($p_name);
 		}
 
-		var results_info = summarize_results_for_scenario(a[i]);
+		var results_info = summarize_results_for_scenario(G.scenario_id);
 		var description = 'Played '+(
 			results_info.play_count == 1 ? '1 time' :
 			(results_info.play_count+' times')
@@ -1484,24 +1471,16 @@ function init_pick_scenario_page($pg, xtra)
 		}
 
 		description +=
-			scenario_finished(a[i]) ? ('; Completed ' + format_time(scenario_finish_time(a[i]))) :
-			scenario_started(a[i]) ? ('; Started ' + format_time(scenario_first_played_time(a[i]))) :
+			scenario_finished(G.scenario_id) ? ('; Completed ' + format_time(scenario_finish_time(G.scenario_id))) :
+			scenario_started(G.scenario_id) ? ('; Started ' + format_time(scenario_first_played_time(G.scenario_id))) :
 			'';
-		if (results_info.maximum_score > 0 && scenario_finished(a[i])) {
+		if (results_info.maximum_score > 0 && scenario_finished(G.scenario_id)) {
 			description += '; best score: '+results_info.maximum_score;
 		}
 
 		$('.scenario_status_col', $tr).text(description);
 
 		$('.scenarios_list', $pg).append($tr);
-	}
-
-	if (not_shown != 0) {
-		$('.not_shown_count', $pg).text(not_shown + (not_shown != 1 ? ' scenarios' : ' scenario'));
-		$('.not_shown_list', $pg).show();
-	}
-	else {
-		$('.not_shown_list', $pg).hide();
 	}
 }
 
