@@ -944,7 +944,6 @@ function on_pick_scenario_scenario_clicked(scenario_id)
 	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
 
 	G = load_game(G.game_id);
-	start_publishing_game(G.game_id);
 	return G.game_id;
 }
 

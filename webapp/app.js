@@ -561,6 +561,7 @@ app.controller('PickScenarioPageController',
 
     this.select = function(scenario) {
       var game_id = on_pick_scenario_scenario_clicked(scenario.scenario_id);
+      start_publishing_game(game_id);
       StateService.go(game_id+'/player_setup');
     };
 
