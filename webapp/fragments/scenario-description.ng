@@ -1,0 +1,14 @@
+<span class="module_list_container">
+  <span class="expansion_ind" ng-repeat="e in sdc.expansions">
+    <img ng-src="{{e.icon}}" alt="{{e.name}}">
+  </span>
+  <span class="module_ind" ng-repeat="m in sdc.modules">
+    <img ng-src="{{m.icon}}" alt="{{m.name}}">
+  </span>
+</span>
+<span class="epidemics_ind"><img class="epidemic_icon" ng-src="{{sdc.level_icon}}" alt="{{sdc.level}} epidemics"></span>
+<span class="player_list">
+  <span ng-repeat="seat in sdc.seats">
+    <img class="role_icon" ng-src="{{sdc.get_role_icon(seat)}}" alt="{{sdc.get_role(seat)}}">
+  </span>
+</span>

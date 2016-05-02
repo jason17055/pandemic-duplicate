@@ -1,0 +1,8 @@
+<span ng-if="snc.new_scenario_name" class="scenario_name new_scenario_name">
+  <div>{{snc.month_day}}</div>
+  <div>{{snc.year}}</div>
+  <div>{{snc.suffix}}</div>
+</span>
+<span ng-if="!snc.new_scenario_name" class="scenario_name">
+  <div ng-repeat="p in snc.parts">{{p}}</div>
+</span>

@@ -857,6 +857,7 @@ function stor_get_list(key)
 	}
 }
 
+// @deprecated in favor of pd-scenario-description directive
 function make_modules_label(rules)
 {
 	var $m = $('<span></span>');
@@ -932,11 +933,8 @@ function generate_new_game_id(scenario_id)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function on_pick_scenario_scenario_clicked(evt)
+function on_pick_scenario_scenario_clicked(scenario_id)
 {
-	var el = this;
-	var scenario_id = el.getAttribute('data-scenario-id');
-
 	// create game
 	G = load_scenario(scenario_id);
 	G.game_id = generate_new_game_id(scenario_id);
@@ -947,8 +945,7 @@ function on_pick_scenario_scenario_clicked(evt)
 
 	G = load_game(G.game_id);
 	start_publishing_game(G.game_id);
-
-	goto_state(G.game_id+'/player_setup');
+	return G.game_id;
 }
 
 function navigate_to_current_turn()
@@ -1425,6 +1422,7 @@ function scenario_compatible(G)
 	return true;
 }
 
+// @deprecated in favor of pd-scenario-description directive
 function update_scenario_description($g, R)
 {
 	$('.epidemic_count', $g).text(R.level);
@@ -1435,31 +1433,6 @@ function update_scenario_description($g, R)
 function init_pick_scenario_page($pg, pcount, scenarios, c)
 {
 	document.pick_scenario_form.player_count.value = pcount;
-
-	$('.scenario_row:not(.template)', $pg).remove();
-	for (var i = 0; i < scenarios.length; i++) {
-
-		G = scenarios[i];
-		var $tr = $('.scenario_row.template').clone();
-		$tr.removeClass('template');
-		$('.scenario_name_container',$tr).append(make_scenario_label(G.scenario_id));
-		$('button',$tr).attr('data-scenario-id', G.scenario_id);
-		$('button',$tr).click(on_pick_scenario_scenario_clicked);
-
-		var $g = $tr;
-		$('.module_list_container',$tr).append(make_modules_label(G.rules));
-		update_scenario_description($tr, G.rules);
-
-		for (var pid = 1; pid <= G.rules.player_count; pid++) {
-			var $p_name = $('<span><img class="role_icon"></span>');
-			$('.role_icon',$p_name).attr('src', get_role_icon(G.roles[pid]));
-			$('.player_list', $g).append($p_name);
-		}
-
-		$('.scenario_status_col', $tr).text(c.get_scenario_description(G.scenario_id));
-
-		$('.scenarios_list', $pg).append($tr);
-	}
 }
 
 function goto_state(rel_url)

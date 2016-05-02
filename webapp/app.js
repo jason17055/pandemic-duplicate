@@ -548,7 +548,7 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function($state) {
+  function($state, StateService) {
     var pcount = 2;
     var m = $state.params['rulespec'].match(/^(\d+)p$/);
     if (m) {
@@ -557,6 +557,11 @@ app.controller('PickScenarioPageController',
 
     this.generate_game_clicked = function() {
       $state.go('generate_game', {rulespec: pcount + 'p'});
+    };
+
+    this.select = function(scenario) {
+      var game_id = on_pick_scenario_scenario_clicked(scenario.scenario_id);
+      StateService.go(game_id+'/player_setup');
     };
 
     this.get_scenario_description = function(scenario_id) {
@@ -1344,5 +1349,100 @@ app.directive('pdInfectionCard',
       },
       controller: 'InfectionCardController',
       controllerAs: 'cc'
+    };
+  });
+
+app.controller('ScenarioNameController',
+  function($scope) {
+    this.reload = function() {
+      var scenario_id = $scope.scenarioId;
+
+      var m;
+      if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
+        this.new_scenario_name = true;
+        this.month_day = m[2];
+        this.year = m[1];
+        this.suffix = m[3];
+      }
+      else {
+        this.new_scenario_name = false;
+        this.parts = scenario_name(scenario_id).split(/ /);
+      }
+    };
+    this.reload();
+    $scope.$watch('scenarioId',
+      function(newValue, oldValue) {
+        this.reload();
+      }.bind(this));
+  });
+
+app.directive('pdScenarioName',
+  function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/scenario-name.ng',
+      scope: {
+        scenarioId: '='
+      },
+      controller: 'ScenarioNameController',
+      controllerAs: 'snc'
+    };
+  });
+
+app.controller('ScenarioDescriptionController',
+  function($scope) {
+    this.reload = function() {
+      this.scenario = $scope.scenario;
+      var rules = this.scenario.rules;
+
+      this.expansions = [];
+      for (var i = 0; i < Pandemic.Expansions.length; i++) {
+        var expansion_name = Pandemic.Expansions[i];
+        if (rules[expansion_name]) {
+          this.expansions.push({
+            icon: 'images/' + expansion_name + '.png',
+            name: expansion_name});
+        }
+      }
+      this.modules = [];
+      for (var i = 0; i < Pandemic.Module_Names.length; i++) {
+        var module_name = Pandemic.Module_Names[i];
+        if (rules[module_name]) {
+          this.modules.push({
+            icon: 'images/module_icons/' + module_name + '.png',
+            name: module_name});
+        }
+      }
+      this.level = rules.level;
+      this.level_icon = 'images/epidemic_count_icons/' + rules.level + '.png';
+      this.seats = [];
+      for (var i = 1; i <= rules.player_count; i++) {
+        this.seats.push(i);
+      }
+    };
+    this.reload();
+    $scope.$watch('scenario',
+      function(newValue, oldValue) {
+        this.reload();
+      }.bind(this));
+
+    this.get_role = function(pid) {
+      return this.scenario.roles[pid];
+    };
+    this.get_role_icon = function(pid) {
+      return get_role_icon(this.scenario.roles[pid]);
+    };
+  });
+
+app.directive('pdScenarioDescription',
+  function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/scenario-description.ng',
+      scope: {
+        scenario: '='
+      },
+      controller: 'ScenarioDescriptionController',
+      controllerAs: 'sdc'
     };
   });
