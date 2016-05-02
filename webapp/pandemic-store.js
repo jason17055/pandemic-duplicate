@@ -45,6 +45,10 @@ app.service('Channel',
     }.bind(this);
   });
 
+app.service('SyncService',
+  function() {
+  });
+
 app.service('GameStore',
   function($http, Channel, ScenarioStore, Storage) {
     /** @return {Promise<string>} */
@@ -82,7 +86,6 @@ app.service('GameStore',
         .then(onSuccess, handle_ajax_error);
     };
 
-    // TODO- more
     this.load_game_at = function(game_id, target_time) {
       G = load_game(game_id);
 

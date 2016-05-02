@@ -517,6 +517,7 @@ app.controller('GenerateGamePageController',
              'scenario': G.scenario_id});
       } else {
         var game_id = submit_generate_game_form(rules, gen_options);
+        start_publishing_game(game_id);
         $state.go('player_setup', {game_id: game_id});
       }
     };
