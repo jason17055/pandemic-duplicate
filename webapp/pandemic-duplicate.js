@@ -1432,7 +1432,7 @@ function update_scenario_description($g, R)
 	$('.epidemic_icon', $g).attr('alt', R.level + ' epidemics');
 }
 
-function init_pick_scenario_page($pg, pcount, scenarios)
+function init_pick_scenario_page($pg, pcount, scenarios, c)
 {
 	document.pick_scenario_form.player_count.value = pcount;
 
@@ -1456,29 +1456,7 @@ function init_pick_scenario_page($pg, pcount, scenarios)
 			$('.player_list', $g).append($p_name);
 		}
 
-		var results_info = summarize_results_for_scenario(G.scenario_id);
-		var description = 'Played '+(
-			results_info.play_count == 1 ? '1 time' :
-			(results_info.play_count+' times')
-			);
-		var played_by = results_info.played_by;
-		if (played_by.length) {
-			description += ' (by';
-			for (var j = 0; j < played_by.length; j++) {
-				description += ' ' + played_by[j];
-			}
-			description += ')';
-		}
-
-		description +=
-			scenario_finished(G.scenario_id) ? ('; Completed ' + format_time(scenario_finish_time(G.scenario_id))) :
-			scenario_started(G.scenario_id) ? ('; Started ' + format_time(scenario_first_played_time(G.scenario_id))) :
-			'';
-		if (results_info.maximum_score > 0 && scenario_finished(G.scenario_id)) {
-			description += '; best score: '+results_info.maximum_score;
-		}
-
-		$('.scenario_status_col', $tr).text(description);
+		$('.scenario_status_col', $tr).text(c.get_scenario_description(G.scenario_id));
 
 		$('.scenarios_list', $pg).append($tr);
 	}

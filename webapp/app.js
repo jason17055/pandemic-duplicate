@@ -558,6 +558,32 @@ app.controller('PickScenarioPageController',
     this.generate_game_clicked = function() {
       $state.go('generate_game', {rulespec: pcount + 'p'});
     };
+
+    this.get_scenario_description = function(scenario_id) {
+      var results_info = summarize_results_for_scenario(scenario_id);
+      var description = 'Played '+(
+          results_info.play_count == 1 ? '1 time' :
+          (results_info.play_count+' times')
+          );
+      var played_by = results_info.played_by;
+      if (played_by.length) {
+        description += ' (by';
+        for (var j = 0; j < played_by.length; j++) {
+          description += ' ' + played_by[j];
+        }
+        description += ')';
+      }
+
+      description +=
+          scenario_finished(scenario_id) ? ('; Completed ' + format_time(scenario_finish_time(scenario_id))) :
+          scenario_started(scenario_id) ? ('; Started ' + format_time(scenario_first_played_time(scenario_id))) :
+          '';
+      if (results_info.maximum_score > 0 && scenario_finished(scenario_id)) {
+        description += '; best score: '+results_info.maximum_score;
+      }
+      return description;
+    };
+
     this.load_scenarios = function() {
       this.scenarios = [];
       this.not_shown = 0;
@@ -574,7 +600,7 @@ app.controller('PickScenarioPageController',
     };
     this.load_scenarios();
 
-    init_pick_scenario_page($('#pick_scenario_page'), pcount, this.scenarios);
+    init_pick_scenario_page($('#pick_scenario_page'), pcount, this.scenarios, this);
   });
 
 app.controller('ReviewResultsPageController',
