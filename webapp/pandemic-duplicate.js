@@ -504,26 +504,6 @@ function make_sequence_card(c)
 	return $x;
 }
 
-function load_game_at(game_id, target_time)
-{
-	G = load_game(game_id);
-
-	target_time = +target_time;
-	while (G.time < target_time) {
-
-		var mv = get_move(G.game_id, G.time);
-		G.do_move(mv);
-	}
-
-	G.has_control = true;
-
-	var prior_time = localStorage.getItem(PACKAGE + '.game.' + game_id + '.time');
-	if (G.time != +prior_time) {
-		localStorage.setItem(PACKAGE + '.game.' + game_id + '.time', G.time);
-		trigger_upload_game_state();
-	}
-}
-
 function get_move(game_id, time)
 {
 	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);

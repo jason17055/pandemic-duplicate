@@ -83,6 +83,27 @@ app.service('GameStore',
     };
 
     // TODO- more
+    this.load_game_at = function(game_id, target_time) {
+      G = load_game(game_id);
+
+      target_time = +target_time;
+      while (G.time < target_time) {
+
+        var mv = get_move(G.game_id, G.time);
+        G.do_move(mv);
+      }
+
+      G.has_control = true;
+
+      var prior_time = Storage.get('.game.' + game_id + '.time');
+      if (G.time != +prior_time) {
+        Storage.set('.game.' + game_id + '.time', G.time);
+        trigger_upload_game_state();
+      }
+
+      return G;
+    };
+
   });
 
 app.service('ResultStore',

@@ -68,17 +68,6 @@ app.config(
               .then(function(httpResponse) { return httpResponse.data; });
           }
         }})
-      .state('watch_game', {
-        url: '/:game_id/watch{xtra:/?.*}',
-        templateUrl: 'pages/game.ng',
-        controller: 'CurrentGameController',
-        controllerAs: 'game',
-        resolve: {
-          'isPlaying': function() { return false; },
-          'gameData': function($stateParams, GameStore) {
-            return GameStore.do_watch_game($stateParams['game_id']);
-          }
-        }})
       .state('player_names', {
         url: '/names/:rulespec',
         templateUrl: 'pages/player_names.ng',
@@ -189,6 +178,17 @@ app.config(
         resolve: {
           'isPlaying': function() { return true; },
           'gameData': function() { return null; }
+        }})
+      .state('watch_game', {
+        url: '/:game_id/watch{xtra:/?.*}',
+        templateUrl: 'pages/game.ng',
+        controller: 'CurrentGameController',
+        controllerAs: 'game',
+        resolve: {
+          'isPlaying': function() { return false; },
+          'gameData': function($stateParams, GameStore) {
+            return GameStore.do_watch_game($stateParams['game_id']);
+          }
         }})
       .state('tournaments', {
         url: '/tournament',
@@ -1078,7 +1078,7 @@ app.controller('ShowDiscardsPageController',
   });
 
 app.controller('CurrentGameController',
-  function($scope, $state, isPlaying, gameData) {
+  function($scope, $state, GameStore, isPlaying, gameData) {
     this.can_declare_victory = function() {
       return G.has_control && G.step == 'actions';
     };
@@ -1177,7 +1177,7 @@ app.controller('CurrentGameController',
       return G.turns + '/' + G.game_length_in_turns;
     };
     if (isPlaying) {
-      load_game_at($state.params['game_id'], $state.params['turn']);
+      G = GameStore.load_game_at($state.params['game_id'], $state.params['turn']);
       show_current_game($state.params['xtra']);
     } else {
       console.log("got game data "+JSON.stringify(gameData));

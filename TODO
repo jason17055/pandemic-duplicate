@@ -34,3 +34,10 @@ browser
 tournament events: always list in alphabetical order
 
 tournament events: allow deleting
+
+player_setup: provide way to switch to an equaivalent scenario with
+  a different player count. Ideas:
+   - keep infection deck the same
+   - keep position of epidemics and special events same in draw pile
+   - other cards are shuffled
+   - track scenario equivalencies as a scenario attribute
