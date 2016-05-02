@@ -62,10 +62,10 @@ app.service('GameStore',
           Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
 
           G = load_game(game_id);
-          start_publishing_game(game_id);
+          this.start_publishing_game(game_id);
 
           return game_id;
-        });
+        }.bind(this));
     };
 
     this.do_watch_game = function(game_id) {
@@ -107,6 +107,15 @@ app.service('GameStore',
       return G;
     };
 
+    this.start_publishing_game = function(game_id) {
+      Storage.set('.current_game', game_id);
+      Storage.set('.current_game.scenario', G.scenario_id);
+      Storage.remove('.current_game.published');
+
+      Storage.set('.game.'+game_id+'.owner_secret', generate_secret(game_id));
+
+      trigger_upload_game_state();
+    };
   });
 
 app.service('ResultStore',

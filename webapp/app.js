@@ -469,7 +469,7 @@ app.controller('CreateGamePageController',
   });
 
 app.controller('GenerateGamePageController',
-  function($state) {
+  function($state, GameStore) {
     init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
     if ($state.params['tournament']) {
       this.for_tournament = $state.params['tournament'];
@@ -517,7 +517,7 @@ app.controller('GenerateGamePageController',
              'scenario': G.scenario_id});
       } else {
         var game_id = submit_generate_game_form(rules, gen_options);
-        start_publishing_game(game_id);
+        GameStore.start_publishing_game(game_id);
         $state.go('player_setup', {game_id: game_id});
       }
     };
@@ -548,7 +548,7 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function($state, StateService) {
+  function($state, GameStore, StateService) {
     var pcount = 2;
     var m = $state.params['rulespec'].match(/^(\d+)p$/);
     if (m) {
@@ -561,7 +561,7 @@ app.controller('PickScenarioPageController',
 
     this.select = function(scenario) {
       var game_id = on_pick_scenario_scenario_clicked(scenario.scenario_id);
-      start_publishing_game(game_id);
+      GameStore.start_publishing_game(game_id);
       StateService.go(game_id+'/player_setup');
     };
 

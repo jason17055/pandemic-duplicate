@@ -1024,17 +1024,6 @@ function generate_secret(indata)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function start_publishing_game(game_id)
-{
-	localStorage.setItem(PACKAGE + '.current_game', game_id);
-	localStorage.setItem(PACKAGE + '.current_game.scenario', G.scenario_id);
-	localStorage.removeItem(PACKAGE + '.current_game.published');
-
-	localStorage.setItem(PACKAGE + '.game.'+game_id+'.owner_secret', generate_secret(game_id));
-
-	trigger_upload_game_state();
-}
-
 function set_move(m)
 {
 	$('body').controller().set_move_x(m);
@@ -1611,9 +1600,9 @@ function upload_current_game()
 		return continue_sync();
 	}
 
-	var scenario_id = localStorage.getItem(PACKAGE + '.current_game.scenario');
 	var published = localStorage.getItem(PACKAGE + '.current_game.published');
 	var secret = localStorage.getItem(PACKAGE + '.game.' + game_id + '.owner_secret');
+	var scenario_id = localStorage.getItem(PACKAGE + '.game.' + game_id + '.scenario');
 
 	if (published) {
 

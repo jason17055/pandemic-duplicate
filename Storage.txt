@@ -3,7 +3,7 @@ Documents what localStorage keys are used client-side.
 .current_game
 	the game id currently selected
 
-.current_game.scenario
+.current_game.scenario (deprecated)
 	scenario id
 
 .current_game.subscriber
