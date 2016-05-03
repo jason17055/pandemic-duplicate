@@ -627,7 +627,23 @@ app.controller('ReviewResultsPageController',
       var q = f.q.value;
       StateService.go('search_results/' + escape(q));
     };
-    init_review_results_page($('#review_results_page'));
+    this.game_list = stor_get_list(PACKAGE + '.my_results')
+        .map(function(result_id) {
+          var result = load_result(result_id);
+          if (!result) {
+            return {result_id: result_id};
+          }
+          return {
+            result_id: result_id, 
+            result: result,
+            scenario_id: result.scenario_id,
+            scenario: load_scenario(result.scenario_id)
+          };
+        })
+        .filter(function(gameInfo) {
+          return gameInfo.result && gameInfo.scenario;
+        });
+    init_review_results_page($('#review_results_page'), this.game_list);
   });
 
 app.controller('TournamentsPageController',

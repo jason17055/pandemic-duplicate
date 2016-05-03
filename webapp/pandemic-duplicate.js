@@ -1257,18 +1257,17 @@ function init_found_completed_games_page($pg, search_results)
 	}
 }
 
-function init_review_results_page($pg)
+function init_review_results_page($pg, games)
 {
 	$('.results_game_row:not(.template)', $pg).remove();
 
-	var lis = stor_get_list(PACKAGE + '.my_results');
-	for (var i = 0; i < lis.length; i++) {
-		var result_id = lis[i];
-		var r = load_result(result_id);
-		if (!r) { continue; }
+	for (var i = 0; i < games.length; i++) {
+		var gameInfo = games[i];
+		var result_id = gameInfo.result_id;
+		var r = gameInfo.result;
 
-		var scenario_id = r.scenario_id;
-		G = load_scenario(scenario_id);
+		var scenario_id = gameInfo.scenario_id;
+		G = gameInfo.scenario;
 
 		var $g = $('.results_game_row.template', $pg).clone();
 		$g.removeClass('template');
