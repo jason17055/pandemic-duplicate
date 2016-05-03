@@ -221,6 +221,12 @@ app.config(
         controller: 'NewAssignmentPageController',
         controllerAs: 'c'
         })
+      .state('active_game.resilient_population', {
+        url: '/resilient_population',
+        templateUrl: 'pages/game/resilient_population.ng',
+        controller: 'ResilientPopulationPageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',

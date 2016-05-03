@@ -87,23 +87,6 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/special_event_page-->
 
-<div ng-switch-when="/resilient_population" id="resilient_population_page" class="page" ng-controller="ResilientPopulationPageController as c">
-<div class="page_header"><h1>Play Resilient Population</h1></div>
-<div class="page_body">
-
-<p>
-Choose a city to remove from the Infection deck.
-</p>
-
-<div class="resilient_population_btns_container">
-<div class="template resilient_population_btn_row button_container">
-<button type="button"></button>
-</div>
-</div>
-
-</div><!--/page_body-->
-</div><!--/resilient_population_page-->
-
 <div ng-switch-when="/infection_rumor" id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
 <div class="page_header"><h1>Play Infection Rumor</h1></div>
 <div class="page_body">
