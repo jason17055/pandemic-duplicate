@@ -1,0 +1,23 @@
+<div id="show_discards_page" class="page">
+<div class="page_header"><h1>Discarded Infection Cards</h1></div>
+<div class="page_body">
+
+<ul class="infection_discards_list">
+<li ng-repeat="c in game.get_infection_discards()"><pd-infection-card card="c"></pd-infection-card></li>
+</ul>
+<div ng-if="game.get_epidemics_discards().length">
+Previously drawn epidemics:
+<ul class="epidemic_discards_list">
+<li ng-repeat="c in game.get_epidemic_discards()"><pd-player-card card="c"></pd-player-card></li>
+</ul>
+</div>
+
+</div><!--/page_body-->
+<div class="page_nav">
+
+<div class="button_container">
+<button type="button" ng-click="c.back_clicked()">Go Back</button>
+</div>
+
+</div><!--/page_nav-->
+</div><!--/show_discards_page-->

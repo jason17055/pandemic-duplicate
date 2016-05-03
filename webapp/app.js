@@ -171,7 +171,7 @@ app.config(
         controllerAs: 'c'
         })
       .state('active_game', {
-        url: '/:game_id/{turn:T[0-9]+|watch}{xtra:/?.*}',
+        url: '/:game_id/{turn:T[0-9]+|watch}',
         templateUrl: 'pages/game.ng',
         controller: 'CurrentGameController',
         controllerAs: 'game',
@@ -196,6 +196,12 @@ app.config(
       .state('active_game.main', {
         url: '',
         templateUrl: 'pages/game/main.ng'
+        })
+      .state('active_game.discards', {
+        url: '/discards',
+        templateUrl: 'pages/game/discards.ng',
+        controller: 'ShowDiscardsPageController',
+        controllerAs: 'c'
         })
       .state('tournaments', {
         url: '/tournament',
@@ -922,7 +928,7 @@ app.controller('PlayerSetupPageController',
   });
 
 app.controller('PlayerTurnPageController',
-  function(GameService, $scope) {
+  function(GameService, $scope, $state) {
     this.rename_player = function() {
       var p_name = G.player_names[G.active_player];
       var p_role = G.roles[G.active_player];
@@ -935,7 +941,7 @@ app.controller('PlayerTurnPageController',
       }
     };
     this.show_discards_clicked = function() {
-      GameService.goto_current_game_state('/discards');
+      $state.go('active_game.discards');
     };
     this.draw_sequence_card_clicked = function() {
       GameService.set_move('draw_sequence_card');
