@@ -1,0 +1,26 @@
+<div id="virulent_strain_page" class="page">
+<div class="page_header"><h1>Virulent Strain</h1></div>
+<div class="page_body">
+
+<p>Which disease is the virulent strain?</p>
+
+<div class="virulent_strain_btns_container">
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="black" ng-click="c.on_virulent_strain_clicked('black')"><img src="black_icon.png" class="card_icon" alt="">Black</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="blue" ng-click="c.on_virulent_strain_clicked('blue')"><img src="blue_icon.png" class="card_icon" alt="">Blue</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="red" ng-click="c.on_virulent_strain_clicked('red')"><img src="red_icon.png" class="card_icon" alt="">Red</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="yellow" ng-click="c.on_virulent_strain_clicked('yellow')"><img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="purple" ng-click="c.on_virulent_strain_clicked('purple')"><img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/virulent_strain_page-->

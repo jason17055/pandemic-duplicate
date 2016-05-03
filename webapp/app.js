@@ -209,6 +209,12 @@ app.config(
         controller: 'DiscoverCurePageController',
         controllerAs: 'c'
         })
+      .state('active_game.virulent_strain', {
+        url: '/virulent_strain',
+        templateUrl: 'pages/game/virulent_strain.ng',
+        controller: 'VirulentStrainPageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',
@@ -980,7 +986,7 @@ app.controller('PlayerTurnPageController',
       GameService.set_move('pass');
     };
     this.on_determine_virulent_strain_clicked = function() {
-      GameService.goto_current_game_state('/virulent_strain');
+      $state.go('active_game.virulent_strain');
     };
     var initFunc = function() {
       var $pg = $('#player_turn_page');
