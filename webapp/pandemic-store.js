@@ -127,6 +127,42 @@ app.service('ResultStore',
       Storage.set('.my_result.' + V.scenario_id, result_id);
       return result_id;
     };
+
+    this.summarize_results_for_scenario = function(scenario_id) {
+      var names = {};
+      var best_score = 0;
+
+      var a = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
+      for (var i = 0; i < a.length; i++) {
+
+        var r = load_result(a[i]);
+        if (!r) { continue; }
+
+        for (var pid = 1; pid < 5; pid++) {
+          var nam = r['player'+pid];
+          if (nam) {
+            names[nam] = true;
+          }
+        }
+
+        if (r.score > best_score) {
+          best_score = r.score;
+        }
+      }
+
+      var names_list = [];
+      for (var nam in names) {
+        names_list.push(nam);
+      }
+      names_list.sort();
+
+      return {
+        'played_by': names_list,
+        'maximum_score': best_score,
+        'play_count': a.length
+      };
+    };
+
   });
 
 app.service('ScenarioStore',

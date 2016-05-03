@@ -548,7 +548,7 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function($state, GameStore, StateService) {
+  function($state, GameStore, ResultStore, StateService) {
     var pcount = 2;
     var m = $state.params['rulespec'].match(/^(\d+)p$/);
     if (m) {
@@ -566,7 +566,7 @@ app.controller('PickScenarioPageController',
     };
 
     this.get_scenario_description = function(scenario_id) {
-      var results_info = summarize_results_for_scenario(scenario_id);
+      var results_info = ResultStore.summarize_results_for_scenario(scenario_id);
       var description = 'Played '+(
           results_info.play_count == 1 ? '1 time' :
           (results_info.play_count+' times')
