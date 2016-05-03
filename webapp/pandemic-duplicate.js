@@ -68,61 +68,12 @@ function load_scenario(scenario_id)
 	return Pandemic.GameState.deserialize(scenario_id, s);
 }
 
-function init_join_game_pick_page($pg, search_results)
-{
-	var list = search_results.results;
-
-	$('.join_game_btn:not(.template)', $pg).remove();
-	for (var i = 0; i < list.length; i++) {
-		var g = list[i];
-		var r = load_scenario(list[i].scenario_id);
-		if (!r) { continue; }
-
-		var $g = $('.join_game_btn.template', $pg).clone();
-		$g.removeClass('template');
-
-		$('.scenario_name_container', $g).append(make_scenario_label(g.scenario_id));
-		$('.module_list_container', $g).append(make_modules_label(r.rules));
-		update_scenario_description($g, r.rules);
-
-		for (var pid = 1; pid <= r.rules.player_count; pid++) {
-			var p_name = g.players[pid-1];
-			var $p_name = $('<span><img class="role_icon"><span class="player_name"></span></span>');
-			$('.role_icon',$p_name).attr('src', get_role_icon(r.roles[pid]));
-			$('.player_name',$p_name).text(p_name);
-			$('.player_list', $g).append($p_name);
-			if (pid < r.rules.player_count) {
-				$('.player_list',$g).append(', ');
-			}
-		}
-
-		if (g.location) {
-			$('.location', $g).text(g.location);
-			$('.location_container',$g).show();
-		}
-
-		$('button', $g).attr('data-game-id', g.id);
-		$('button', $g).click(on_join_game_picked);
-
-		$('.join_game_btn.template', $pg).before($g);
-	}
-
-	console.log('found '+list.length+' results');
-}
-
 function handle_channel_message(raw_message)
 {
 	var msg = JSON.parse(raw_message);
 	if (msg.moves) {
 		update_watched_game(msg.moves);
 	}
-}
-
-function on_join_game_picked()
-{
-	var game_id = this.getAttribute('data-game-id');
-	goto_state(escape(game_id) + '/watch');
-	return false;
 }
 
 var watched_game_info = {};

@@ -538,13 +538,24 @@ app.controller('JoinGamePageController',
   });
 
 app.controller('JoinGamePickPageController',
-  function($window, data) {
+  function($window, StateService, data) {
     this.cancel = function() {
       console.log('cancel clicked');
       $window.history.back();
     };
+    this.select = function(gameInfo) {
+      StateService.go(escape(gameInfo.id) + '/watch');
+    };
     this.search_results = data['results'];
-    init_join_game_pick_page($('#join_game_pick_page'), data);
+    this.game_list = data['results'];
+    this.game_list.forEach(
+      function(gameInfo) {
+        gameInfo.scenario = load_scenario(gameInfo.scenario_id);
+      });
+    this.game_list = this.game_list.filter(
+      function(gameInfo) {
+        return gameInfo.scenario;
+      });
   });
 
 app.controller('PickScenarioPageController',
@@ -1420,6 +1431,10 @@ app.controller('ScenarioDescriptionController',
       for (var i = 1; i <= rules.player_count; i++) {
         this.seats.push(i);
       }
+      this.location = $scope.location;
+      this.get_player_name = function(pid) {
+        return $scope.players[pid-1];
+      };
     };
     this.reload();
     $scope.$watch('scenario',
@@ -1441,7 +1456,9 @@ app.directive('pdScenarioDescription',
       restrict: 'E',
       templateUrl: 'fragments/scenario-description.ng',
       scope: {
-        scenario: '='
+        scenario: '=',
+        players: '=',
+        location: '='
       },
       controller: 'ScenarioDescriptionController',
       controllerAs: 'sdc'

@@ -8,7 +8,10 @@
 </span>
 <span class="epidemics_ind"><img class="epidemic_icon" ng-src="{{sdc.level_icon}}" alt="{{sdc.level}} epidemics"></span>
 <span class="player_list">
+  <span ng-if="players">with</span>
   <span ng-repeat="seat in sdc.seats">
     <img class="role_icon" ng-src="{{sdc.get_role_icon(seat)}}" alt="{{sdc.get_role(seat)}}">
+    <span class="player_name" ng-if="players">{{sdc.get_player_name(seat)}}</span>
   </span>
 </span>
+<span class="location_container" ng-if="sdc.location">({{sdc.location}})</span>
