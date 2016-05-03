@@ -171,25 +171,24 @@ app.config(
         controllerAs: 'c'
         })
       .state('active_game', {
-        url: '/:game_id/T{turn:[0-9]+}{xtra:/?.*}',
+        url: '/:game_id/{turn:T[0-9]+|watch}{xtra:/?.*}',
         templateUrl: 'pages/game.ng',
         controller: 'CurrentGameController',
         controllerAs: 'game',
         resolve: {
-          'isPlaying': function() { return true; },
+          'isPlaying': function($stateParams) {
+            return $stateParams['turn'] != 'watch';
+          },
           'gameData': function($stateParams, GameStore) {
-            return GameStore.load_game_at($stateParams['game_id'], $stateParams['turn']);
-          }
-        }})
-      .state('watch_game', {
-        url: '/:game_id/watch{xtra:/?.*}',
-        templateUrl: 'pages/game.ng',
-        controller: 'CurrentGameController',
-        controllerAs: 'game',
-        resolve: {
-          'isPlaying': function() { return false; },
-          'gameData': function($stateParams, GameStore) {
-            return GameStore.do_watch_game($stateParams['game_id']);
+            var m = $stateParams['turn'].match(/^T([0-9]+)$/);
+            if (m) {
+              return GameStore.load_game_at($stateParams['game_id'], m[1]);
+            } else if ($stateParams['turn'] == 'watch') {
+              return GameStore.do_watch_game($stateParams['game_id']);
+            } else {
+              // TODO- return an error
+              alert('invalid url');
+            }
           }
         }})
       .state('tournaments', {
