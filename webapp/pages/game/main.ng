@@ -70,54 +70,6 @@ Perform your actions.
 </div><!--/page_nav-->
 </div><!--/player_turn_page-->
 
-<div ng-switch-when="/discover_cure" id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
-<div class="page_header"><h1>Cure / Eradicate Disease</h1></div>
-<div class="page_body">
-
-<p>Which disease are you curing or eradicating?</p>
-
-<div class="discover_cure_btns_container">
-<div class="button_container">
-<button type="button" class="discover_cure_btn" data-disease="black" ng-click="c.on_discover_cure_clicked('black')">Cure <img src="black_icon.png" class="card_icon" alt="">Black</button>
-</div>
-<div class="button_container">
-<button type="button" class="eradicate_btn" data-disease="black" ng-click="c.on_eradicate_clicked('black')">Eradicate <img src="black_icon.png" class="card_icon" alt="">Black</button>
-</div>
-<div class="button_container">
-<button type="button" class="discover_cure_btn" data-disease="blue" ng-click="c.on_discover_cure_clicked('blue')">Cure <img src="blue_icon.png" class="card_icon" alt="">Blue</button>
-</div>
-<div class="button_container">
-<button type="button" class="eradicate_btn" data-disease="blue" ng-click="c.on_eradicate_clicked('blue')">Eradicate <img src="blue_icon.png" class="card_icon" alt="">Blue</button>
-</div>
-<div class="button_container">
-<button type="button" class="discover_cure_btn" data-disease="red" ng-click="c.on_discover_cure_clicked('red')">Cure <img src="red_icon.png" class="card_icon" alt="">Red</button>
-</div>
-<div class="button_container">
-<button type="button" class="eradicate_btn" data-disease="red" ng-click="c.on_eradicate_clicked('red')">Eradicate <img src="red_icon.png" class="card_icon" alt="">Red</button>
-</div>
-<div class="button_container">
-<button type="button" class="discover_cure_btn" data-disease="yellow" ng-click="c.on_discover_cure_clicked('yellow')">Cure <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
-</div>
-<div class="button_container">
-<button type="button" class="eradicate_btn" data-disease="yellow" ng-click="c.on_eradicate_clicked('yellow')">Eradicate <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
-</div>
-<div class="button_container">
-<button type="button" class="discover_cure_btn" data-disease="purple" ng-click="c.on_discover_cure_clicked('purple')">Cure <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
-</div>
-<div class="button_container">
-<button type="button" class="eradicate_btn" data-disease="purple" ng-click="c.on_eradicate_clicked('purple')">Eradicate <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
-</div>
-<div class="button_container" ng-show="game.can_declare_victory()">
-<button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
-</div>
-<div id="discover_cure_none_row" class="button_container">
-<button type="button" ng-click="c.cancel()">Never Mind</button>
-</div>
-</div>
-
-</div><!--/page_body-->
-</div><!--/discover_cure_page-->
-
 <div ng-switch-when="/virulent_strain" id="virulent_strain_page" class="page" ng-controller="VirulentStrainPageController as c">
 <div class="page_header"><h1>Virulent Strain</h1></div>
 <div class="page_body">

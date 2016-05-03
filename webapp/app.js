@@ -203,6 +203,12 @@ app.config(
         controller: 'ShowDiscardsPageController',
         controllerAs: 'c'
         })
+      .state('active_game.discover_cure', {
+        url: '/discover_cure',
+        templateUrl: 'pages/game/discover_cure.ng',
+        controller: 'DiscoverCurePageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',
@@ -953,7 +959,7 @@ app.controller('PlayerTurnPageController',
       GameService.goto_current_game_state('/retrieve_special');
     };
     this.discover_cure_clicked = function() {
-      GameService.goto_current_game_state('/discover_cure');
+      $state.go('active_game.discover_cure');
     };
     this.declare_victory_clicked = function() {
       record_game_finished();
