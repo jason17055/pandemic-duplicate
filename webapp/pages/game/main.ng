@@ -1,0 +1,381 @@
+<div id="current_game_page" ng-switch="game.page">
+<div ng-switch-when="player_turn" id="player_turn_page" class="page" ng-controller="PlayerTurnPageController as c">
+<div class="page_header">
+<div class="game_state_summary_pane">T: {{game.get_turn_ind()}}</span></div>
+<h1><img ng-src="{{game.get_active_player_role_icon()}}" alt="{{game.get_active_player_role()}}" class="role_icon" ng-click="c.rename_player()"><span class="player_name">{{game.get_active_player_name()}}</span></h1>
+<div style="clear:both"></div>
+</div>
+<div class="page_body">
+
+<div class="history_container"></div>
+
+</div><!--/page_body-->
+<div class="page_nav">
+
+<div class="in_action_phase">
+<div ng-show="game.get_active_player_role() == 'Troubleshooter'">
+<div>
+Troubleshooter's peek of infection deck:
+</div>
+<ul class="troubleshooter_card_list">
+<li ng-repeat="c in game.get_troubleshooter_preview()"><pd-infection-card card="c"></pd-infection-card></li>
+</ul>
+</div><!--/role=troubleshooter-->
+<p>
+Perform your actions.
+</p>
+</div>
+<div class="pending_infection_div in_infection_phase">
+<span class="pending_infection_count">1</span> more to go!
+</div>
+
+
+<div class="button_container">
+<button type="button" ng-click="c.show_discards_clicked()">Show Discards</button>
+</div>
+<div class="button_container" ng-show="game.can_draw_sequence_card()">
+<button type="button" ng-click="c.draw_sequence_card_clicked()">Draw Sequence Card</button>
+</div>
+<div class="button_container" ng-show="game.can_play_special_event()">
+<button type="button" ng-click="c.play_special_event_clicked()">Play Special Event</button>
+</div>
+<div class="button_container" ng-show="game.can_retrieve_special_event()">
+<button type="button" ng-click="c.retrieve_special_event_clicked()">Retrieve Special Event</button>
+</div>
+<div ng-if="top.game_detail_level >= 1">
+<div class="button_container" ng-show="game.can_declare_victory()">
+<button type="button" ng-click="c.discover_cure_clicked()">Cure / Eradicate Disease</button>
+</div>
+</div>
+<div ng-if="top.game_detail_level < 1">
+<div class="button_container" ng-show="game.can_declare_victory()">
+<button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
+</div>
+</div>
+<div class="button_container" ng-show="game.can_admit_defeat()">
+<button type="button" ng-click="c.admit_defeat_clicked()">Admit Defeat</button>
+</div>
+<div ng-show="game.can_continue()">
+<div class="button_container" ng-switch="game.get_continue_button_type()">
+<button type="button" ng-switch-when="draw_cards" ng-click="c.continue_player_turn()">Next: <small>Draw Cards Step</small></button>
+<button type="button" ng-switch-when="mutation" ng-click="c.continue_player_turn()">Next: <small>Mutation</small></button>
+<button type="button" ng-switch-when="epidemic" ng-click="c.continue_player_turn()">Next: <small>Epidemic</small></button>
+<button type="button" ng-switch-when="virulent_strain" ng-click="c.on_determine_virulent_strain_clicked()">Next: <small>Determine Virulent Strain</small></button>
+<button type="button" ng-switch-when="hinterlands" ng-click="c.continue_player_turn()">Next: <small>Hinterlands Infection</small></button>
+<button type="button" ng-switch-when="infection" ng-click="c.continue_player_turn()">Next: <small>Infection</small></button>
+<button type="button" ng-switch-when="player_turn" ng-click="c.continue_player_turn()">Next: <small><span class="player_name">{{game.get_next_player_name()}}</span> turn</small></button>
+</div>
+</div>
+
+</div><!--/page_nav-->
+</div><!--/player_turn_page-->
+
+<div ng-switch-when="/discover_cure" id="discover_cure_page" class="page" ng-controller="DiscoverCurePageController as c">
+<div class="page_header"><h1>Cure / Eradicate Disease</h1></div>
+<div class="page_body">
+
+<p>Which disease are you curing or eradicating?</p>
+
+<div class="discover_cure_btns_container">
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="black" ng-click="c.on_discover_cure_clicked('black')">Cure <img src="black_icon.png" class="card_icon" alt="">Black</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="black" ng-click="c.on_eradicate_clicked('black')">Eradicate <img src="black_icon.png" class="card_icon" alt="">Black</button>
+</div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="blue" ng-click="c.on_discover_cure_clicked('blue')">Cure <img src="blue_icon.png" class="card_icon" alt="">Blue</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="blue" ng-click="c.on_eradicate_clicked('blue')">Eradicate <img src="blue_icon.png" class="card_icon" alt="">Blue</button>
+</div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="red" ng-click="c.on_discover_cure_clicked('red')">Cure <img src="red_icon.png" class="card_icon" alt="">Red</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="red" ng-click="c.on_eradicate_clicked('red')">Eradicate <img src="red_icon.png" class="card_icon" alt="">Red</button>
+</div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="yellow" ng-click="c.on_discover_cure_clicked('yellow')">Cure <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="yellow" ng-click="c.on_eradicate_clicked('yellow')">Eradicate <img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="discover_cure_btn" data-disease="purple" ng-click="c.on_discover_cure_clicked('purple')">Cure <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container">
+<button type="button" class="eradicate_btn" data-disease="purple" ng-click="c.on_eradicate_clicked('purple')">Eradicate <img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+<div class="button_container" ng-show="game.can_declare_victory()">
+<button type="button" ng-click="c.declare_victory_clicked()">Declare Victory</button>
+</div>
+<div id="discover_cure_none_row" class="button_container">
+<button type="button" ng-click="c.cancel()">Never Mind</button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/discover_cure_page-->
+
+<div ng-switch-when="/virulent_strain" id="virulent_strain_page" class="page" ng-controller="VirulentStrainPageController as c">
+<div class="page_header"><h1>Virulent Strain</h1></div>
+<div class="page_body">
+
+<p>Which disease is the virulent strain?</p>
+
+<div class="virulent_strain_btns_container">
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="black" ng-click="c.on_virulent_strain_clicked('black')"><img src="black_icon.png" class="card_icon" alt="">Black</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="blue" ng-click="c.on_virulent_strain_clicked('blue')"><img src="blue_icon.png" class="card_icon" alt="">Blue</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="red" ng-click="c.on_virulent_strain_clicked('red')"><img src="red_icon.png" class="card_icon" alt="">Red</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="yellow" ng-click="c.on_virulent_strain_clicked('yellow')"><img src="yellow_icon.png" class="card_icon" alt="">Yellow</button>
+</div>
+<div class="button_container">
+<button type="button" class="virulent_strain_btn" data-disease="purple" ng-click="c.on_virulent_strain_clicked('purple')"><img src="purple_icon.png" class="card_icon" alt="">Purple</button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/virulent_strain_page-->
+
+<div ng-switch-when="/discards" id="show_discards_page" class="page" ng-controller="ShowDiscardsPageController as c">
+<div class="page_header"><h1>Discarded Infection Cards</h1></div>
+<div class="page_body">
+
+<ul class="infection_discards_list">
+<li ng-repeat="c in game.get_infection_discards()"><pd-infection-card card="c"></pd-infection-card></li>
+</ul>
+<div ng-if="game.get_epidemics_discards().length">
+Previously drawn epidemics:
+<ul class="epidemic_discards_list">
+<li ng-repeat="c in game.get_epidemic_discards()"><pd-player-card card="c"></pd-player-card></li>
+</ul>
+</div>
+
+</div><!--/page_body-->
+<div class="page_nav">
+
+<div class="button_container">
+<button type="button" ng-click="c.back_clicked()">Go Back</button>
+</div>
+
+</div><!--/page_nav-->
+</div><!--/show_discards_page-->
+
+<div ng-switch-when="special_event" id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
+	<div class="page_header"><h1>{{c.action_name}} Special Event</h1></div>
+<div class="page_body">
+
+
+<div class="special_event_btns_container">
+<div class="special_event_btn_row button_container" ng-repeat="choice in c.choices">
+<button type="button" ng-click="c.select(choice)">{{choice}}</button>
+</div>
+<div id="special_event_none_row" class="button_container">
+<button type="button" ng-click="c.cancel()">None</button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/special_event_page-->
+
+<div ng-switch-when="/new_assignment" id="new_assignment_page" class="page" ng-controller="NewAssignmentPageController as c">
+<div class="page_header"><h1>Play New Assignment</h1></div>
+<div class="page_body">
+
+<form name="new_assignment_form">
+<p>
+Choose which current player is getting a new assignment.
+</p>
+<p>
+<select name="old_role"></select>
+</p>
+
+<p>
+Choose a new role for that player.
+</p>
+<p>
+<select name="new_role"></select>
+</p>
+
+<div class="button_container">
+<button type="button" ng-click="c.confirm()">OK</button>
+</div>
+<div class="button_container">
+<button type="button" ng-click="c.cancel()">Cancel</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/new_assignment_page-->
+
+<div ng-switch-when="/resilient_population" id="resilient_population_page" class="page" ng-controller="ResilientPopulationPageController as c">
+<div class="page_header"><h1>Play Resilient Population</h1></div>
+<div class="page_body">
+
+<p>
+Choose a city to remove from the Infection deck.
+</p>
+
+<div class="resilient_population_btns_container">
+<div class="template resilient_population_btn_row button_container">
+<button type="button"></button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/resilient_population_page-->
+
+<div ng-switch-when="/infection_rumor" id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
+<div class="page_header"><h1>Play Infection Rumor</h1></div>
+<div class="page_body">
+
+<p>
+Choose a card to discard from the Infection deck.
+</p>
+
+<div class="infection_rumor_btns_container">
+<div class="template infection_rumor_btn_row button_container">
+<button type="button"></button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/infection_rumor_page-->
+
+<div ng-switch-when="forecast" id="forecast_page" class="page" ng-controller="ForecastPageController as c">
+<div class="page_header"><h1>Forecast</h1></div>
+<div class="page_body">
+
+<div class="choosing" ng-if="c.forecast.length">
+<p>
+Choose cities (in order) to put back on the infection deck.
+Save the cards you want to see this turn for last.
+</p>
+</div>
+<div class="confirming" ng-if="c.forecast.length==0">
+<p>
+This is the order the next 6 infection cards will appear.
+</p>
+<ol class="forecast_cards_list">
+<li ng-repeat="card in c.returned"><pd-infection-card card="card"></pd-infection-card></li>
+</ol>
+</div>
+
+<div class="city_btns_container">
+<div class="button_container" ng-if="c.forecast.length==0"><button type="button" ng-click="c.on_forecast_confirm_clicked()">OK</button></div>
+<div class="city_btn_row button_container" ng-repeat="card in c.forecast">
+<button type="button" ng-click="c.city_clicked(card)"><pd-infection-card card="card"></pd-infection-card></button>
+</div>
+<div class="button_container" ng-if="c.returned.length"><button type="button" ng-click="c.reset()">Reset</button></div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/forecast_page-->
+
+<div ng-switch-when="resource_planning" id="resource_planning_page" class="page" ng-controller="ResourcePlanningPageController as c">
+<div class="page_header"><h1>Resource Planning</h1></div>
+<div class="page_body">
+
+<div class="choosing">
+<p>
+Choose cards (in order) to put back on the player deck.
+Save the cards you want to see this turn for last.
+</p>
+</div>
+<div class="confirming">
+<p>
+This is the order the next 4 player cards will appear.
+</p>
+<ol class="resource_planning_cards_list"></ol>
+</div>
+
+<div class="card_btns_container">
+<div class="confirming button_container"><button type="button" ng-click="c.confirm()">OK</button></div>
+<div class="template card_btn_row button_container">
+<button type="button"></button>
+</div>
+<div class="reset_btn_container button_container"><button type="button" ng-click="c.reset()">Reset</button></div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/resource_planning_page-->
+
+<div ng-switch-when="game_completed" id="game_completed_page" class="page" ng-controller="GameCompletedPageController as c">
+<div class="page_header"><h1>Game Completed</h1></div>
+<div class="page_body">
+
+<form name="game_completed_form">
+<input type="hidden" name="score" value="">
+<input type="hidden" name="cures" value="">
+<input type="hidden" name="turns" value="">
+<input type="hidden" name="rules" value="">
+<input type="hidden" name="scenario_id" value="">
+<input type="hidden" name="game_id" value="">
+<div ng-if="c.result == 'victory'">
+<p>
+With {{c.level}} epidemics,
+you {{c.victory_type}} in {{c.turns}} turns
+({{c.turns_left}} turn(s) left).
+</p>
+</div>
+<div ng-show="c.result != 'victory'">
+<p>
+With {{c.level}} epidemics,
+you survived {{c.turns}} turns.
+</p>
+<p>
+How many diseases cured?
+<select name="cure_count" class="cure_count">
+<option value="0">0</option>
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+</select>
+</p>
+</div>
+<p>
+Score:
+<span class="score_ind"></span>
+</p>
+<table>
+<tr ng-repeat="seat in game.seats">
+  <td class="role_col">
+    <img ng-src="{{game.get_player_role_icon(seat)}}" alt="" class="role_icon">{{game.get_player_role(seat)}}
+  </td>
+  <td><input type="text" ng-model="c.player_names[seat]"></td>
+</tr>
+</table>
+
+<div>
+<label for="comments_box">Comments on this game (optional):</label>
+</div>
+<div>
+<textarea name="comments" id="comments_box" rows="3" cols="44"></textarea>
+</div>
+<p>
+<label>Location: <input type="text" name="location"></label>
+</p>
+
+
+<p>
+By submitting this result, you agree that you played this game
+without prior knowledge of the sequence of cards shown.
+</p>
+
+<div class="button_container"><button type="button" ng-click="c.submit_result_clicked()">Submit Result</button></div>
+<div class="button_container"><button type="button" ng-click="c.dont_submit_clicked()">Skip</button></div>
+
+</form>
+
+</div><!--/page_body-->
+</div><!--/game_completed_page-->
+</div>

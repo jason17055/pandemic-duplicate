@@ -190,7 +190,13 @@ app.config(
               alert('invalid url');
             }
           }
-        }})
+        },
+        abstract: true
+        })
+      .state('active_game.main', {
+        url: '',
+        templateUrl: 'pages/game/main.ng'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',
