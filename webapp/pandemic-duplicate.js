@@ -808,55 +808,6 @@ function stor_get_list(key)
 	}
 }
 
-// @deprecated in favor of pd-scenario-description directive
-function make_modules_label(rules)
-{
-	var $m = $('<span></span>');
-	for (var i = 0; i < Pandemic.Expansions.length; i++) {
-		var expansion_name = Pandemic.Expansions[i];
-		if (rules[expansion_name]) {
-			var $t = $('<span class="expansion_ind"><img src=""></span>');
-			$('img', $t).attr('src', 'images/'+expansion_name+'.png');
-			$('img', $t).attr('alt', expansion_name);
-			$m.append($t);
-		}
-	}
-	for (var i = 0; i < Pandemic.Module_Names.length; i++) {
-		var module_name = Pandemic.Module_Names[i];
-		if (rules[module_name]) {
-			var $t = $('<span class="module_ind"><img src=""></span>');
-			$('img', $t).attr('src', 'images/module_icons/'+module_name+'.png');
-			$('img', $t).attr('alt', module_name);
-			$m.append($t);
-		}
-	}
-	return $m;
-}
-
-function make_scenario_label(scenario_id)
-{
-	var m;
-	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
-		var $s = $('<span class="scenario_name new_scenario_name"></span>');
-		$s.append(m[2]);
-		$s.append('<br>');
-		$s.append(m[1]);
-		if (m[3]) {
-			$s.append('<br>');
-			$s.append(m[3]);
-		}
-		return $s;
-	}
-
-	var parts = scenario_name(scenario_id).split(/ /);
-	var $s = $('<span class="scenario_name"></span>');
-	for (var i = 0; i < parts.length; i++) {
-		if (i!=0) { $s.append('<br>'); }
-		$s.append(parts[i]);
-	}
-	return $s;
-}
-
 function scenario_name(scenario_id)
 {
 	var m;
@@ -1217,17 +1168,6 @@ function init_discover_cure_page($pg)
 	}
 }
 
-function on_review_result_game_clicked()
-{
-	var scenario_id = this.getAttribute('data-scenario-id');
-	var result_id = this.getAttribute('data-result-id');
-
-	// so that the correct row is highlighted
-	localStorage.setItem(PACKAGE + '.my_result.' + scenario_id, result_id);
-
-	goto_state(scenario_id + '/results');
-}
-
 function init_generate_game_page($pg, xtra)
 {
 	validate_modules();
@@ -1278,14 +1218,6 @@ function scenario_compatible(G)
 	}
 
 	return true;
-}
-
-// @deprecated in favor of pd-scenario-description directive
-function update_scenario_description($g, R)
-{
-	$('.epidemic_count', $g).text(R.level);
-	$('.epidemic_icon', $g).attr('src', 'images/epidemic_count_icons/' + R.level + '.png');
-	$('.epidemic_icon', $g).attr('alt', R.level + ' epidemics');
 }
 
 function init_pick_scenario_page($pg, pcount, scenarios, c)
