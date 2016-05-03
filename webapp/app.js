@@ -770,11 +770,46 @@ app.controller('TournamentManageEventPageController',
   });
 
 app.controller('FoundCompletedGamesPageController',
-  function($window, data) {
+  function($window, StateService, Storage, data) {
     this.back = function() {
       $window.history.back();
     };
-    init_found_completed_games_page($('#found_completed_games_page'), data);
+    this.game_list = data.results
+      .map(function(resultInfo) {
+        var gameInfo = {
+          result_id: resultInfo.id,
+          result: load_result(resultInfo.id)
+        };
+        if (!gameInfo.result) {
+          return gameInfo;
+        }
+        gameInfo.scenario_id = gameInfo.result.scenario_id;
+        gameInfo.scenario = load_scenario(gameInfo.result.scenario_id);
+        gameInfo.submitted_time_formatted = format_time(gameInfo.result.time);
+        gameInfo.seats = [];
+        for (var i = 1; i <= gameInfo.scenario.rules.player_count; i++) {
+          gameInfo.seats.push(i);
+        }
+        return gameInfo;
+      })
+      .filter(function(gameInfo) {
+        return gameInfo.result && gameInfo.scenario;
+      });
+    this.get_role = function(gameInfo, seat) {
+      return gameInfo.scenario.roles[seat];
+    };
+    this.get_role_icon = function(gameInfo, seat) {
+      return get_role_icon(gameInfo.scenario.roles[seat]);
+    };
+    this.get_player_name = function(gameInfo, seat) {
+      return gameInfo.result['player' + seat];
+    };
+    this.select = function(gameInfo) {
+      // so that the correct row is highlighted
+      Storage.set('.my_result.' + gameInfo.scenario_id, gameInfo.result_id);
+
+      StateService.go(gameInfo.scenario_id + '/results');
+    };
   });
 
 app.controller('PlayerNamesPageController',
