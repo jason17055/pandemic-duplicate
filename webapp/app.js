@@ -215,6 +215,12 @@ app.config(
         controller: 'VirulentStrainPageController',
         controllerAs: 'c'
         })
+      .state('active_game.new_assignment', {
+        url: '/new_assignment',
+        templateUrl: 'pages/game/new_assignment.ng',
+        controller: 'NewAssignmentPageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',

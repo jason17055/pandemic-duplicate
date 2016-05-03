@@ -41,3 +41,6 @@ player_setup: provide way to switch to an equaivalent scenario with
    - keep position of epidemics and special events same in draw pile
    - other cards are shuffled
    - track scenario equivalencies as a scenario attribute
+
+Testing:
+ * new assigment special event

@@ -1,0 +1,29 @@
+<div id="new_assignment_page" class="page">
+<div class="page_header"><h1>Play New Assignment</h1></div>
+<div class="page_body">
+
+<form name="new_assignment_form">
+<p>
+Choose which current player is getting a new assignment.
+</p>
+<p>
+<select name="old_role"></select>
+</p>
+
+<p>
+Choose a new role for that player.
+</p>
+<p>
+<select name="new_role"></select>
+</p>
+
+<div class="button_container">
+<button type="button" ng-click="c.confirm()">OK</button>
+</div>
+<div class="button_container">
+<button type="button" ng-click="c.cancel()">Cancel</button>
+</div>
+</form>
+
+</div><!--/page_body-->
+</div><!--/new_assignment_page-->
