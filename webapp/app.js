@@ -177,7 +177,9 @@ app.config(
         controllerAs: 'game',
         resolve: {
           'isPlaying': function() { return true; },
-          'gameData': function() { return null; }
+          'gameData': function($stateParams, GameStore) {
+            return GameStore.load_game_at($stateParams['game_id'], $stateParams['turn']);
+          }
         }})
       .state('watch_game', {
         url: '/:game_id/watch{xtra:/?.*}',
@@ -1211,7 +1213,7 @@ app.controller('ShowDiscardsPageController',
   });
 
 app.controller('CurrentGameController',
-  function($scope, $state, GameStore, isPlaying, gameData) {
+  function($scope, $state, isPlaying, gameData) {
     this.can_declare_victory = function() {
       return G.has_control && G.step == 'actions';
     };
@@ -1310,8 +1312,7 @@ app.controller('CurrentGameController',
       return G.turns + '/' + G.game_length_in_turns;
     };
     if (isPlaying) {
-      G = GameStore.load_game_at($state.params['game_id'], $state.params['turn']);
-      show_current_game($state.params['xtra']);
+      G = gameData;
     } else {
       console.log("got game data "+JSON.stringify(gameData));
       show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
@@ -1343,6 +1344,8 @@ app.controller('CurrentGameController',
     }.bind(this);
     initFunc();
     $scope.$watch(function() { return G; }, initFunc);
+
+    console.log('current state is ' + $state.current.name);
   });
 
 app.controller('PlayerCardController',
