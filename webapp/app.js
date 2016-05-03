@@ -621,7 +621,7 @@ app.controller('PickScenarioPageController',
   });
 
 app.controller('ReviewResultsPageController',
-  function(StateService) {
+  function(StateService, Storage) {
     this.submit_search_results_form = function() {
       var f = document.search_results_form;
       var q = f.q.value;
@@ -629,21 +629,38 @@ app.controller('ReviewResultsPageController',
     };
     this.game_list = stor_get_list(PACKAGE + '.my_results')
         .map(function(result_id) {
-          var result = load_result(result_id);
-          if (!result) {
-            return {result_id: result_id};
+          var gameInfo = {result_id: result_id};
+          gameInfo.result = load_result(result_id);
+          if (!gameInfo.result) {
+            return gameInfo;
           }
-          return {
-            result_id: result_id, 
-            result: result,
-            scenario_id: result.scenario_id,
-            scenario: load_scenario(result.scenario_id)
-          };
+          gameInfo.scenario_id = gameInfo.result.scenario_id;
+          gameInfo.scenario = load_scenario(gameInfo.result.scenario_id);
+          gameInfo.submitted_time_formatted = format_time(gameInfo.result.time);
+          gameInfo.seats = [];
+          for (var i = 1; i <= gameInfo.scenario.rules.player_count; i++) {
+            gameInfo.seats.push(i);
+          }
+          return gameInfo;
         })
         .filter(function(gameInfo) {
           return gameInfo.result && gameInfo.scenario;
         });
-    init_review_results_page($('#review_results_page'), this.game_list);
+    this.get_role = function(gameInfo, seat) {
+      return gameInfo.scenario.roles[seat];
+    };
+    this.get_role_icon = function(gameInfo, seat) {
+      return get_role_icon(gameInfo.scenario.roles[seat]);
+    };
+    this.get_player_name = function(gameInfo, seat) {
+      return gameInfo.result['player' + seat];
+    };
+    this.select = function(gameInfo) {
+      // so that the correct row is highlighted
+      Storage.set('.my_result.' + gameInfo.scenario_id, gameInfo.result_id);
+
+      StateService.go(gameInfo.scenario_id + '/results');
+    };
   });
 
 app.controller('TournamentsPageController',
@@ -1474,7 +1491,8 @@ app.directive('pdScenarioDescription',
       scope: {
         scenario: '=',
         players: '=',
-        location: '='
+        location: '=',
+        hideRoles: '='
       },
       controller: 'ScenarioDescriptionController',
       controllerAs: 'sdc'

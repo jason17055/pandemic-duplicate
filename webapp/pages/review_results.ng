@@ -3,19 +3,21 @@
 <div class="page_body">
 
 <div>Pick from games played on this device:</div>
-<div class="results_games_list">
-<div class="results_game_row button_container template">
-<button type="button">
-	<span class="scenario_name_container"></span>
-	<span class="scenario_description_container">
-	<span class="module_list_container"></span>
-	<span class="epidemics_ind"><img class="epidemic_icon" src=""></span>
-	</span>
-	<span class="player_list"></span>
-	(<span class="submitted"></span>; <span class="location"></span>)
-</button>
+<div class="games_list">
+<div class="game_row button_container" ng-repeat="gameInfo in c.game_list">
+  <button type="button" ng-click="c.select(gameInfo)">
+    <pd-scenario-name class="scenario_name_container" scenario-id="gameInfo.scenario_id"></pd-scenario-name>
+    <pd-scenario-description class="scenario_description_container" scenario="gameInfo.scenario" hide-roles="true"></pd-scenario-description>
+    <span class="player_list">
+      <span ng-repeat="seat in gameInfo.seats">
+        <img class="role_icon" ng-src="{{c.get_role_icon(gameInfo, seat)}}" alt="{{c.get_role(gameInfo, seat)}}">
+        {{c.get_player_name(gameInfo, seat)}}
+      </span>
+    </span>
+    (<span class="submitted">{{gameInfo.submitted_time_formatted}}</span>; <span class="location">{{gameInfo.result.location}}</span>)
+  </button>
 </div>
-</div>
+</div><!--/games_list-->
 
 <form name="search_results_form" method="post" ng-submit="c.submit_search_results_form()">
 <div>
