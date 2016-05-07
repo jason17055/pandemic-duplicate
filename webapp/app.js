@@ -227,6 +227,12 @@ app.config(
         controller: 'ResilientPopulationPageController',
         controllerAs: 'c'
         })
+      .state('active_game.infection_rumor', {
+        url: '/infection_rumor',
+        templateUrl: 'pages/game/infection_rumor.ng',
+        controller: 'InfectionRumorPageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',

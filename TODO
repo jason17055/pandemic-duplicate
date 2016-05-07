@@ -45,3 +45,4 @@ player_setup: provide way to switch to an equaivalent scenario with
 Testing:
  * new assigment special event
  * resilient population special event
+ * infection rumor special event

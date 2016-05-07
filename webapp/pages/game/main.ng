@@ -87,23 +87,6 @@ Perform your actions.
 </div><!--/page_body-->
 </div><!--/special_event_page-->
 
-<div ng-switch-when="/infection_rumor" id="infection_rumor_page" class="page" ng-controller="InfectionRumorPageController as c">
-<div class="page_header"><h1>Play Infection Rumor</h1></div>
-<div class="page_body">
-
-<p>
-Choose a card to discard from the Infection deck.
-</p>
-
-<div class="infection_rumor_btns_container">
-<div class="template infection_rumor_btn_row button_container">
-<button type="button"></button>
-</div>
-</div>
-
-</div><!--/page_body-->
-</div><!--/infection_rumor_page-->
-
 <div ng-switch-when="forecast" id="forecast_page" class="page" ng-controller="ForecastPageController as c">
 <div class="page_header"><h1>Forecast</h1></div>
 <div class="page_body">
