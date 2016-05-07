@@ -85,11 +85,10 @@ function update_watched_game(moves_array)
 	reload_watched_game();
 }
 
-function show_watched_game(game_id, game_data, xtra)
+function show_watched_game(game_id, game_data)
 {
 	watched_game_info = {
-		'game_id': game_id,
-		'xtra': xtra
+		'game_id': game_id
 		};
 	watched_game_data = game_data;
 	reload_watched_game();
@@ -118,10 +117,6 @@ function reload_watched_game()
 
 	// trigger game page reload
 	G.serial = (G.serial || 0) + 1;
-}
-
-function show_current_game(xtra)
-{
 }
 
 function submit_generate_game_form(rules, gen_options)

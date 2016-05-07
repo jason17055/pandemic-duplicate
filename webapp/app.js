@@ -979,7 +979,6 @@ app.controller('PlayerTurnPageController',
         G.player_names[G.active_player] = p_name;
         save_player_names();
         $('.page_header .player_name').text(p_name);
-        show_current_game('');
       }
     };
     this.show_discards_clicked = function() {
@@ -1368,7 +1367,7 @@ app.controller('CurrentGameController',
       G = gameData;
     } else {
       console.log("got game data "+JSON.stringify(gameData));
-      show_watched_game($state.params['game_id'], gameData, $state.params['xtra']);
+      show_watched_game($state.params['game_id'], gameData);
     }
 
     this.seats = [];
