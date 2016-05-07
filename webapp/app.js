@@ -233,6 +233,18 @@ app.config(
         controller: 'InfectionRumorPageController',
         controllerAs: 'c'
         })
+      .state('active_game.play_special', {
+        url: '/play_special',
+        templateUrl: 'pages/game/special_event.ng',
+        controller: 'SpecialEventPageController',
+        controllerAs: 'c'
+        })
+      .state('active_game.retrieve_special', {
+        url: '/retrieve_special',
+        templateUrl: 'pages/game/special_event.ng',
+        controller: 'SpecialEventPageController',
+        controllerAs: 'c'
+        })
       .state('tournaments', {
         url: '/tournament',
         templateUrl: 'pages/tournaments.ng',
@@ -1057,7 +1069,7 @@ app.controller('SpecialEventPageController',
     this.cancel = function() {
       $window.history.back();
     };
-    if ($state.params['xtra'] == '/play_special') {
+    if ($state.includes('active_game.play_special')) {
       this.action_name = 'Play';
       this.choices = get_deck('Specials', G.rules).filter(
           function(s) {
@@ -1066,7 +1078,7 @@ app.controller('SpecialEventPageController',
       this.select = function(choice) {
         on_special_event_clicked(GameService, choice, $scope.game);
       };
-    } else if ($state.params['xtra'] == '/retrieve_special') {
+    } else if ($state.includes('active_game.retrieve_special')) {
       this.action_name = 'Retrieve';
       this.choices = get_deck('Specials', G.rules).filter(
           function(s) {
@@ -1076,7 +1088,7 @@ app.controller('SpecialEventPageController',
         GameService.set_move('retrieve ' + choice);
       };
     } else {
-      console.log('unknown url extra: ' + $state.params['xtra']);
+      console.log('unknown state: ' + $state.current.name);
     }
   });
 
@@ -1365,15 +1377,7 @@ app.controller('CurrentGameController',
     }
 
     var initFunc = function() {
-      if ($state.params['xtra']) {
-        if ($state.params['xtra'] == '/play_special') {
-          this.page = 'special_event';
-        } else if ($state.params['xtra'] == '/retrieve_special') {
-          this.page = 'special_event';
-        } else {
-          this.page = $state.params['xtra'];
-        }
-      } else if (G.step == 'forecast') {
+      if (G.step == 'forecast') {
         this.page = 'forecast';
       } else if (G.step == 'resource_planning') {
         this.page = 'resource_planning';

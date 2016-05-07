@@ -70,23 +70,6 @@ Perform your actions.
 </div><!--/page_nav-->
 </div><!--/player_turn_page-->
 
-<div ng-switch-when="special_event" id="special_event_page" class="page" ng-controller="SpecialEventPageController as c">
-	<div class="page_header"><h1>{{c.action_name}} Special Event</h1></div>
-<div class="page_body">
-
-
-<div class="special_event_btns_container">
-<div class="special_event_btn_row button_container" ng-repeat="choice in c.choices">
-<button type="button" ng-click="c.select(choice)">{{choice}}</button>
-</div>
-<div id="special_event_none_row" class="button_container">
-<button type="button" ng-click="c.cancel()">None</button>
-</div>
-</div>
-
-</div><!--/page_body-->
-</div><!--/special_event_page-->
-
 <div ng-switch-when="forecast" id="forecast_page" class="page" ng-controller="ForecastPageController as c">
 <div class="page_header"><h1>Forecast</h1></div>
 <div class="page_body">

@@ -1,0 +1,16 @@
+<div id="special_event_page" class="page">
+	<div class="page_header"><h1>{{c.action_name}} Special Event</h1></div>
+<div class="page_body">
+
+
+<div class="special_event_btns_container">
+<div class="special_event_btn_row button_container" ng-repeat="choice in c.choices">
+<button type="button" ng-click="c.select(choice)">{{choice}}</button>
+</div>
+<div id="special_event_none_row" class="button_container">
+<button type="button" ng-click="c.cancel()">None</button>
+</div>
+</div>
+
+</div><!--/page_body-->
+</div><!--/special_event_page-->
