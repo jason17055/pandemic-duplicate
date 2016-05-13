@@ -1294,13 +1294,34 @@ app.controller('ResultsPageController',
                  +a.score > +b.score ? -1 :
                  a.time < b.time ? -1 :
                  a.time > b.time ? 1 : 0;
-       });
+        });
+      var place = 0;
+      for (var i = 0; i < all_results.length; i++) {
+        var r = all_results[i];
+        var is_a_tie = (i > 0 && all_results[i-1].score == r.score) ||
+            (i+1 < all_results.length && all_results[i+1].score == r.score);
+        place = (i > 0 && all_results[i-1].score == r.score) ? place : i+1;
+        r.place = place;
+        r.is_a_tie = is_a_tie;
+        r.timeFormatted = r.localOnly ? 'no' : format_time(r.time);
+      }
       return all_results;
     };
     this.results = this.get_results();
     this.scenario = load_scenario(scenario_id);
-
-    init_results_page($('#results_page'), $state.params['scenario_id'], this.scenario, this.results);
+    this.get_role = function(seat) {
+      return this.scenario.roles[seat];
+    };
+    this.get_role_icon = function(seat) {
+      return get_role_icon(this.get_role(seat));
+    };
+    this.get_player_name = function(r, seat) {
+      return r['player' + seat];
+    };
+    this.seats = [];
+    for (var i = 1; i <= this.scenario.rules.player_count; i++) {
+      this.seats.push(i);
+    }
   });
 
 app.controller('ShowDiscardsPageController',

@@ -12,12 +12,18 @@
 <th>Location</th>
 <th>Submitted</th>
 </tr>
-<tr class="result_row template">
-<td class="place_col"></td>
-<td class="score_col"></td>
-<td class="players_col"></td>
-<td class="location_col"></td>
-<td class="submitted_col"></td>
+<tr ng-repeat="r in c.results" class="result_row" ng-class="{my_result: r.mine}"
+    ng-class-odd="odd_row" ng-class-even="even_row">
+<td class="place_col">{{r.is_a_tie ? 'T' : ''}}{{r.place}}</td>
+<td class="score_col">{{r.score}}</td>
+<td class="players_col">
+  <nobr ng-repeat="seat in c.seats">
+    <img class="role_icon" ng-src="{{c.get_role_icon(seat)}}"
+         alt="{{c.get_role(seat)}}"><span class="player_name">{{c.get_player_name(r, seat)}}</span>{{$last ? '' : ','}}
+  </nobr>
+</td>
+<td class="location_col">{{r.location}}</td>
+<td class="submitted_col">{{r.timeFormatted}}</td>
 </tr>
 </table>
 

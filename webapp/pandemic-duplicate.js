@@ -234,52 +234,6 @@ function init_board_setup_page($pg, scenario, game)
 	}
 }
 
-function init_results_page($pg, scenario_id, scenario, all_results)
-{
-	var place = 0;
-
-	$('.result_row:not(.template)', $pg).remove();
-	for (var i = 0; i < all_results.length; i++) {
-		var r = all_results[i];
-
-		var $tr = $('.result_row.template', $pg).clone();
-		$tr.removeClass('template');
-		$tr.addClass(i%2==0 ? 'even_row' : 'odd_row');
-		if (r.mine) {
-			$tr.addClass('my_result');
-		}
-
-		var rules = parse_rules(r.rules);
-		var $pcol = $('.players_col', $tr);
-		for (var j = 1; j <= rules.player_count; j++) {
-			var $p = $('<nobr><img class="role_icon"><span class="player_name"></span></nobr>');
-			$('.role_icon', $p).attr('src', get_role_icon(scenario.roles[j])).
-				attr('alt', scenario.roles[j]);
-			$('.player_name', $p).text(r['player'+j]);
-
-			if (j < rules.player_count) {
-				$p.append(', ');
-			}
-			$pcol.append($p);
-		}
-
-		var is_a_tie = (i > 0 && all_results[i-1].score == r.score) ||
-			(i+1 < all_results.length && all_results[i+1].score == r.score);
-		place = (i > 0 && all_results[i-1].score == r.score) ? place : i+1;
-
-		$('.place_col', $tr).text((is_a_tie ? 'T' : '') + place);
-		$('.score_col', $tr).text(r.score);
-		$('.location_col', $tr).text(r.location);
-		if (r.localOnly) {
-			$('.submitted_col', $tr).text('no');
-		} else if (r.time) {
-			$('.submitted_col', $tr).text(format_time(r.time));
-		}
-
-		$('.result_row.template', $pg).before($tr);
-	}
-}
-
 function make_player_card_li(c)
 {
 	var $x = $('<li></li>');
