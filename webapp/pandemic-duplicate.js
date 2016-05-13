@@ -814,20 +814,6 @@ function generate_new_game_id(scenario_id)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function on_pick_scenario_scenario_clicked(scenario_id)
-{
-	// create game
-	G = load_scenario(scenario_id);
-	G.game_id = generate_new_game_id(scenario_id);
-	console.log("new game id is "+G.game_id);
-
-	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
-	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
-
-	G = load_game(G.game_id);
-	return G.game_id;
-}
-
 function navigate_to_current_turn()
 {
 	goto_state(G.game_id + '/T' + G.time);

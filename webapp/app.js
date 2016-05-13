@@ -615,7 +615,7 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function($state, GameStore, ResultStore) {
+  function($state, GameStore, ResultStore, Storage) {
     var pcount = 2;
     var m = $state.params['rulespec'].match(/^(\d+)p$/);
     if (m) {
@@ -627,7 +627,15 @@ app.controller('PickScenarioPageController',
     };
 
     this.select = function(scenario) {
-      var game_id = on_pick_scenario_scenario_clicked(scenario.scenario_id);
+      // create game
+      var scenario_id = scenario.scenario_id;
+      var game_id = generate_new_game_id(scenario_id);
+
+      Storage.set('.game.' + game_id + '.scenario', scenario_id);
+      Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
+
+      G = load_game(game_id);
+
       GameStore.start_publishing_game(game_id);
       $state.go('player_setup', {game_id: game_id});
     };
