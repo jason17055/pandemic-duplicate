@@ -346,17 +346,10 @@ app.factory('StateService',
   });
 
 app.factory('GameService',
-  function(StateService, Storage) {
+  function($state, Storage) {
     var g = {};
     g.navigate_to_current_turn = function() {
-      StateService.go(G.game_id + '/T' + G.time);
-    };
-    g.goto_current_game_state = function(url_suffix) {
-      if (G.has_control) {
-        StateService.go(G.game_id + '/T' + G.time + url_suffix);
-      } else {
-        StateService.go(G.game_id + '/watch' + url_suffix);
-      }
+      $state.go('active_game.main', {game_id: G.game_id, turn: 'T' + G.time});
     };
     g.set_move = function(m) {
       var timestr = new Date().toISOString();
@@ -416,7 +409,7 @@ app.controller('TopController',
   });
 
 app.controller('WelcomePageController',
-  function($state, StateService, Storage) {
+  function($state, Storage) {
     this.has_current_game = function() {
       var scenario_id = Storage.get('.current_game.scenario');
       return Boolean(scenario_id);
@@ -430,7 +423,7 @@ app.controller('WelcomePageController',
 
       var time_str = Storage.get('.game.' + game_id + '.time');
       if (time_str != null) {
-        StateService.go(game_id + '/T' + time_str);
+        $state.go('active_game.main', {game_id: game_id, turn: 'T' + time_str});
       }
       else {
         $state.go('player_setup', {game_id: game_id});
@@ -593,13 +586,13 @@ app.controller('JoinGamePageController',
   });
 
 app.controller('JoinGamePickPageController',
-  function($window, StateService, data) {
+  function($state, $window, data) {
     this.cancel = function() {
       console.log('cancel clicked');
       $window.history.back();
     };
     this.select = function(gameInfo) {
-      StateService.go(escape(gameInfo.id) + '/watch');
+      $state.go('active_game.main', {game_id: gameInfo.id, turn: 'watch'});
     };
     this.search_results = data['results'];
     this.game_list = data['results'];
@@ -614,7 +607,7 @@ app.controller('JoinGamePickPageController',
   });
 
 app.controller('PickScenarioPageController',
-  function($state, GameStore, ResultStore, StateService) {
+  function($state, GameStore, ResultStore) {
     var pcount = 2;
     var m = $state.params['rulespec'].match(/^(\d+)p$/);
     if (m) {
@@ -628,7 +621,7 @@ app.controller('PickScenarioPageController',
     this.select = function(scenario) {
       var game_id = on_pick_scenario_scenario_clicked(scenario.scenario_id);
       GameStore.start_publishing_game(game_id);
-      StateService.go(game_id+'/player_setup');
+      $state.go('player_setup', {game_id: game_id});
     };
 
     this.get_scenario_description = function(scenario_id) {
@@ -676,11 +669,11 @@ app.controller('PickScenarioPageController',
   });
 
 app.controller('ReviewResultsPageController',
-  function(StateService, Storage) {
+  function($state, Storage) {
     this.submit_search_results_form = function() {
       var f = document.search_results_form;
       var q = f.q.value;
-      StateService.go('search_results/' + escape(q));
+      $state.go('search_results', {q: q});
     };
     this.game_list = stor_get_list(PACKAGE + '.my_results')
         .map(function(result_id) {
@@ -714,7 +707,7 @@ app.controller('ReviewResultsPageController',
       // so that the correct row is highlighted
       Storage.set('.my_result.' + gameInfo.scenario_id, gameInfo.result_id);
 
-      StateService.go(gameInfo.scenario_id + '/results');
+      $state.go('results', {scenario_id: gameInfo.scenario_id});
     };
   });
 
@@ -825,7 +818,7 @@ app.controller('TournamentManageEventPageController',
   });
 
 app.controller('FoundCompletedGamesPageController',
-  function($window, StateService, Storage, data) {
+  function($state, $window, Storage, data) {
     this.back = function() {
       $window.history.back();
     };
@@ -863,7 +856,7 @@ app.controller('FoundCompletedGamesPageController',
       // so that the correct row is highlighted
       Storage.set('.my_result.' + gameInfo.scenario_id, gameInfo.result_id);
 
-      StateService.go(gameInfo.scenario_id + '/results');
+      $state.go('results', {scenario_id: gameInfo.scenario_id});
     };
   });
 
@@ -988,10 +981,10 @@ app.controller('PlayerTurnPageController',
       GameService.set_move('draw_sequence_card');
     };
     this.play_special_event_clicked = function() {
-      GameService.goto_current_game_state('/play_special');
+      $state.go('active_game.play_special');
     };
     this.retrieve_special_event_clicked = function() {
-      GameService.goto_current_game_state('/retrieve_special');
+      $state.go('active_game.retrieve_special');
     };
     this.discover_cure_clicked = function() {
       $state.go('active_game.discover_cure');
@@ -1173,7 +1166,7 @@ app.controller('ResourcePlanningPageController',
   });
 
 app.controller('GameCompletedPageController',
-  function($state, StateService, Storage, ResultStore) {
+  function($state, Storage, ResultStore) {
     $('.cure_count').change(update_game_score);
 
     var f = document.game_completed_form;
