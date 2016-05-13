@@ -234,42 +234,8 @@ function init_board_setup_page($pg, scenario, game)
 	}
 }
 
-function init_results_page($pg, scenario_id)
+function init_results_page($pg, scenario_id, scenario, all_results)
 {
-	G = load_scenario(scenario_id);
-	
-	$('.scenario_name', $pg).text(scenario_name(scenario_id));
-
-	var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
-	var my_result_id = localStorage.getItem(PACKAGE + '.my_result.' + scenario_id);
-	if (my_result_id) {
-		all_result_ids.push(my_result_id);
-	}
-
-	var seen = {};
-	var all_results = [];
-	for (var i = 0; i < all_result_ids.length; i++) {
-		if (seen[all_result_ids[i]]) { continue; }
-		seen[all_result_ids[i]] = true;
-
-		var result_id = all_result_ids[i];
-		var r = load_result(result_id);
-		if (!r) { continue; }
-		if (r.scenario_id != scenario_id) { continue; }
-
-		if (all_result_ids[i] == my_result_id) {
-			r.mine = true;
-		}
-		all_results.push(r);
-	}
-
-	all_results.sort(function(a,b) {
-		return +a.score < +b.score ? 1 :
-			+a.score > +b.score ? -1 :
-			a.time < b.time ? -1 :
-			a.time > b.time ? 1 : 0;
-		});
-
 	var place = 0;
 
 	$('.result_row:not(.template)', $pg).remove();
@@ -287,8 +253,8 @@ function init_results_page($pg, scenario_id)
 		var $pcol = $('.players_col', $tr);
 		for (var j = 1; j <= rules.player_count; j++) {
 			var $p = $('<nobr><img class="role_icon"><span class="player_name"></span></nobr>');
-			$('.role_icon', $p).attr('src', get_role_icon(G.roles[j])).
-				attr('alt', G.roles[j]);
+			$('.role_icon', $p).attr('src', get_role_icon(scenario.roles[j])).
+				attr('alt', scenario.roles[j]);
 			$('.player_name', $p).text(r['player'+j]);
 
 			if (j < rules.player_count) {

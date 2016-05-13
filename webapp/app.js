@@ -1256,13 +1256,51 @@ app.controller('GameCompletedPageController',
 
 app.controller('ResultsPageController',
   function($state, Storage) {
+    var scenario_id = $state.params['scenario_id'];
+    this.scenario_name = scenario_name(scenario_id);
+
     this.go_home_page = function() {
       Storage.remove('.current_game');
       Storage.remove('.current_game.scenario');
 
       $state.go('welcome');
     };
-    init_results_page($('#results_page'), $state.params['scenario_id']);
+    this.get_results = function() {
+      var all_result_ids = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
+      var my_result_id = Storage.get('.my_result.' + scenario_id);
+      if (my_result_id) {
+        all_result_ids.push(my_result_id);
+      }
+
+      var seen = {};
+      var all_results = [];
+      for (var i = 0; i < all_result_ids.length; i++) {
+        if (seen[all_result_ids[i]]) { continue; }
+        seen[all_result_ids[i]] = true;
+
+        var result_id = all_result_ids[i];
+        var r = load_result(result_id);
+        if (!r) { continue; }
+        if (r.scenario_id != scenario_id) { continue; }
+
+        if (all_result_ids[i] == my_result_id) {
+          r.mine = true;
+        }
+        all_results.push(r);
+      }
+
+      all_results.sort(function(a,b) {
+          return +a.score < +b.score ? 1 :
+                 +a.score > +b.score ? -1 :
+                 a.time < b.time ? -1 :
+                 a.time > b.time ? 1 : 0;
+       });
+      return all_results;
+    };
+    this.results = this.get_results();
+    this.scenario = load_scenario(scenario_id);
+
+    init_results_page($('#results_page'), $state.params['scenario_id'], this.scenario, this.results);
   });
 
 app.controller('ShowDiscardsPageController',

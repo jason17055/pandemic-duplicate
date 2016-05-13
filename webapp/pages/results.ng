@@ -2,7 +2,7 @@
 <div class="page_header"><h1>Results for this Game</h1></div>
 <div class="page_body">
 
-<p>Scenario: "<span class="scenario_name"></span>"</p>
+<p>Scenario: "{{c.scenario_name}}"</p>
 
 <table class="results_table" border="1">
 <tr>
