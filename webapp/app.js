@@ -517,7 +517,7 @@ app.controller('CreateGamePageController',
   });
 
 app.controller('GenerateGamePageController',
-  function($state, GameStore) {
+  function($state, GameStore, Storage) {
     init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
     if ($state.params['tournament']) {
       this.for_tournament = $state.params['tournament'];
@@ -556,15 +556,23 @@ app.controller('GenerateGamePageController',
       var gen_options = {
           'nobase2013': f.nobase2013.checked
           };
-      if (this.for_tournament) {
-        var G = generate_scenario(rules, gen_options);
-        trigger_upload_scenario(G.scenario_id);
+      var scenario = generate_scenario(rules, gen_options);
+      var scenario_id = scenario.scenario_id;
+      trigger_upload_scenario(scenario_id);
 
+      if (this.for_tournament) {
         $state.go('tournament_manage_event',
             {'tournament': this.for_tournament,
-             'scenario': G.scenario_id});
+             'scenario': scenario_id});
       } else {
-        var game_id = submit_generate_game_form(rules, gen_options);
+        // create game
+        var game_id = generate_new_game_id(scenario_id);
+
+        Storage.set('.game.' + game_id + '.scenario', scenario_id);
+        Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
+
+        G = load_game(game_id);
+
         GameStore.start_publishing_game(game_id);
         $state.go('player_setup', {game_id: game_id});
       }

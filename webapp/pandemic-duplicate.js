@@ -119,22 +119,6 @@ function reload_watched_game()
 	G.serial = (G.serial || 0) + 1;
 }
 
-function submit_generate_game_form(rules, gen_options)
-{
-	G = generate_scenario(rules, gen_options);
-	trigger_upload_scenario(G.scenario_id);
-
-	// create game
-	G.game_id = generate_new_game_id(G.scenario_id);
-	console.log("new game id is "+G.game_id);
-
-	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.scenario', G.scenario_id);
-	localStorage.setItem(PACKAGE + '.scenario.' + G.scenario_id + '.current_game', G.game_id);
-
-	G = load_game(G.game_id);
-	return G.game_id;
-}
-
 function init_player_names_page($pg, xtra)
 {
 	var pcount = 2;
