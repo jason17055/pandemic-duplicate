@@ -34,29 +34,6 @@ function handle_ajax_error(jqx, status, errMsg)
 	console.log('Ajax error: '+jqx.status + ' '+status+' '+errMsg);
 }
 
-function load_game(game_id)
-{
-	var sid = localStorage.getItem(PACKAGE + '.game.' + game_id + '.scenario');
-	if (!sid) {
-		console.log('Fatal: game '+game_id+' is not known');
-		return;
-	}
-
-	var game = load_scenario(sid);
-
-	var s = localStorage.getItem(PACKAGE + '.player_names');
-	if (s) {
-		game.player_names = JSON.parse(s);
-	} else {
-		// TODO- default player names
-		game.player_names = {};
-	}
-
-	game.game_id = game_id;
-	game.initialize();
-	return game;
-}
-
 function load_scenario(scenario_id)
 {
 	var s = localStorage.getItem(PACKAGE + '.scenario.' + scenario_id);

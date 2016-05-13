@@ -61,7 +61,7 @@ app.service('GameStore',
           Storage.set('.game.' + game_id + '.tournament', tournament_id + '/' + event_id);
           Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
 
-          G = load_game(game_id);
+          G = this.load_game(game_id);
           this.start_publishing_game(game_id);
 
           return game_id;
@@ -86,8 +86,30 @@ app.service('GameStore',
         .then(onSuccess, handle_ajax_error);
     };
 
+    this.load_game = function(game_id) {
+      var sid = Storage.get('.game.' + game_id + '.scenario');
+      if (!sid) {
+        console.log('Fatal: game '+game_id+' is not known');
+        return;
+      }
+
+      var game = load_scenario(sid);
+
+      var s = Storage.get('.player_names');
+      if (s) {
+        game.player_names = JSON.parse(s);
+      } else {
+        // TODO- default player names
+        game.player_names = {};
+      }
+
+      game.game_id = game_id;
+      game.initialize();
+      return game;
+    };
+
     this.load_game_at = function(game_id, target_time) {
-      G = load_game(game_id);
+      G = this.load_game(game_id);
 
       target_time = +target_time;
       while (G.time < target_time) {

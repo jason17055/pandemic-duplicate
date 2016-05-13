@@ -134,9 +134,9 @@ app.config(
         controller: 'BoardSetupPageController',
         controllerAs: 'c',
         resolve: {
-          'data': function($stateParams, ScenarioStore) {
+          'data': function($stateParams, GameStore, ScenarioStore) {
             var game_id = $stateParams['game_id'];
-            var gameData = load_game(game_id);
+            var gameData = GameStore.load_game(game_id);
             return ScenarioStore.get(gameData.scenario_id)
               .then(function(scenarioData) {
                 return {
@@ -152,9 +152,9 @@ app.config(
         controller: 'PlayerSetupPageController',
         controllerAs: 'c',
         resolve: {
-          'data': function($stateParams, ScenarioStore) {
+          'data': function($stateParams, GameStore, ScenarioStore) {
             var game_id = $stateParams['game_id'];
-            var gameData = load_game(game_id);
+            var gameData = GameStore.load_game(game_id);
             return ScenarioStore.get(gameData.scenario_id)
               .then(function(scenarioData) {
                 return {
@@ -571,7 +571,7 @@ app.controller('GenerateGamePageController',
         Storage.set('.game.' + game_id + '.scenario', scenario_id);
         Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
 
-        G = load_game(game_id);
+        G = GameStore.load_game(game_id);
 
         GameStore.start_publishing_game(game_id);
         $state.go('player_setup', {game_id: game_id});
@@ -634,7 +634,7 @@ app.controller('PickScenarioPageController',
       Storage.set('.game.' + game_id + '.scenario', scenario_id);
       Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
 
-      G = load_game(game_id);
+      G = GameStore.load_game(game_id);
 
       GameStore.start_publishing_game(game_id);
       $state.go('player_setup', {game_id: game_id});
