@@ -983,10 +983,6 @@ function record_game_finished()
 	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.finished', timestr);
 }
 
-function init_show_discards_page($pg)
-{
-}
-
 function init_virulent_strain_page($pg)
 {
 	$('.virulent_strain_btn', $pg).each(function(idx,el) {

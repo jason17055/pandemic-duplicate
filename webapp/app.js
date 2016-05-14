@@ -1329,7 +1329,6 @@ app.controller('ShowDiscardsPageController',
     this.back_clicked = function() {
       $window.history.back();
     };
-    init_show_discards_page($('#show_discards_page'));
   });
 
 app.controller('CurrentGameController',
