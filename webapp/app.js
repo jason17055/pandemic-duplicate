@@ -1677,6 +1677,18 @@ app.controller('HistoryItemController',
     this.get_player_name = function(seat) {
       return G.player_names[seat];
     };
+    this.get_role = function(seat) {
+      return G.roles[seat];
+    };
+    this.get_role_icon = function(seat) {
+      return get_role_icon(this.get_role(seat));
+    };
+    this.get_disease_name = function(disease) {
+      return Pandemic.Diseases[disease];
+    };
+    this.get_disease_icon = function(disease) {
+      return disease + '_icon.png';
+    };
   });
 
 app.directive('pdHistoryItem',

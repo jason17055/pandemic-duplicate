@@ -28,4 +28,39 @@
   is triggered
 </div>
 
+<div ng-switch-when="next_turn" class="next_turn_event">
+  =====
+  <img class="role_icon" ng-src="{{h.get_role_icon(event.active_player)}}"
+       alt="{{h.get_role(event.active_player)}}"><span class="player_name">{{
+    h.get_player_name(event.active_player)}}</span>'s turn
+  =====
+</div>
+
+<div ng-switch-when="special_event" class="special_event_event">
+  <span class="player_name">{{h.get_player_name(event.player)}}</span>
+  plays
+  <pd-player-card card="event.card"></pd-player-card>
+</div>
+
+<div ng-switch-when="retrieve_special_event" class="special_event_event">
+  <span class="player_name">{{h.get_player_name(event.player)}}</span>
+  retrieves
+  <pd-player-card card="event.card"></pd-player-card>
+</div>
+
+<div ng-switch-when="discover_cure" class="discover_cure_event">
+  <span class="player_name">{{h.get_player_name(event.player)}}</span>
+  cures
+  <span class="disease_name_container">
+    <img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{h.get_disease_name(event.disease)}}
+  </span>
+</div>
+
+<div ng-switch-when="eradicate" class="eradicate_event">
+  <span class="disease_name_container">
+    <img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{h.get_disease_name(event.disease)}}
+  </span>
+  is eradicated
+</div>
+
 </ng-switch>

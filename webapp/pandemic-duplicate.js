@@ -346,20 +346,19 @@ function init_history_item(el, evt)
 function make_history_item(evt)
 {
 	if (evt.type == 'infection') {
+		return null;
 	}
 	else if (evt.type == 'epidemic') {
+		return null;
 	}
 	else if (evt.type == 'draw_card') {
+		return null;
 	}
 	else if (evt.type == 'draw_epidemic') {
+		return null;
 	}
 	else if (evt.type == 'next_turn') {
-		var $e = $('<div class="next_turn_event">===== <img class="role_icon"><span class="player_name"></span>\'s turn =====</div>');
-		var r = G.roles[evt.active_player];
-		$('.role_icon',$e).attr('alt', r).
-			attr('src', get_role_icon(r));
-		$('.player_name',$e).text(G.player_names[evt.active_player]);
-		return $e;
+		return null;
 	}
 	else if (evt.type == 'draw_sequence_card') {
 		var $e = $('<div class="draw_sequence_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
@@ -368,29 +367,16 @@ function make_history_item(evt)
 		return $e;
 	}
 	else if (evt.type == 'special_event') {
-		var $e = $('<div class="special_event_event"><span class="player_name"></span> plays <span class="card_container"></span></div>');
-		$('.player_name',$e).text(G.player_names[evt.player]);
-		$('.card_container',$e).append(make_player_card(evt.card));
-		return $e;
+		return null;
 	}
 	else if (evt.type == 'retrieve_special_event') {
-		var $e = $('<div class="special_event_event"><span class="player_name"></span> retrieves <span class="card_container"></span></div>');
-		$('.player_name',$e).text(G.player_names[evt.player]);
-		$('.card_container',$e).append(make_player_card(evt.card));
-		return $e;
+		return null;
 	}
 	else if (evt.type == 'discover_cure') {
-		var $e = $('<div class="discover_cure_event"><span class="player_name"></span> cures <span class="disease_name_container"><img src="" class="card_icon" alt=""></span></div>');
-		$('.player_name',$e).text(G.player_names[evt.player]);
-		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
-		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
-		return $e;
+		return null;
 	}
 	else if (evt.type == 'eradicate') {
-		var $e = $('<div class="eradicate_event"><span class="disease_name_container"><img src="" class="card_icon" alt=""></span> is eradicated</div>');
-		$('.disease_name_container img',$e).attr('src', evt.disease+'_icon.png');
-		$('.disease_name_container',$e).append(Pandemic.Diseases[evt.disease]);
-		return $e;
+		return null;
 	}
 	else if (evt.type == 'virulent_strain') {
 		var $e = $('<div class="virulent_strain_event">&nbsp; --> <span class="disease_name_container"><img src="" class="card_icon" alt=""></span> becomes the virulent strain</div>');
