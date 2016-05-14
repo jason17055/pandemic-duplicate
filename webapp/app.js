@@ -1665,6 +1665,18 @@ app.directive('pdScenarioDescription',
 
 app.controller('HistoryItemController',
   function($scope) {
+    var evt = $scope['event'];
+    if (evt.type == 'infection') {
+      var ci = Pandemic.Cities[evt.infection];
+      this.eradicated_infection = G.is_eradicated(ci.color);
+      this.virulent_strain_infection = G.chronic_effect && G.virulent_strain == ci.color;
+    } else if (evt.type == 'epidemic') {
+      var ci = Pandemic.Cities[evt.epidemic];
+      this.eradicated_infection = G.is_eradicated(ci.color);
+    }
+    this.get_player_name = function(seat) {
+      return G.player_names[seat];
+    };
   });
 
 app.directive('pdHistoryItem',

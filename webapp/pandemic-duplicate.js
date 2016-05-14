@@ -346,46 +346,12 @@ function init_history_item(el, evt)
 function make_history_item(evt)
 {
 	if (evt.type == 'infection') {
-		var $e = $('<div class="infection_event"></div>');
-		$e.append(make_infection_card(evt.infection));
-		var ci = Pandemic.Cities[evt.infection];
-		if (G.is_eradicated(ci.color)) {
-			$e.append(' is not infected (eradicated)');
-		}
-		else if (G.chronic_effect && G.virulent_strain == ci.color) {
-			$e.append(' is infected (add 1 or 2 cubes)');
-		}
-		else {
-			$e.append(' is infected (add 1 cube)');
-		}
-		return $e;
 	}
 	else if (evt.type == 'epidemic') {
-		var $e = $('<div class="epidemic_event"></div>');
-		$e.append(make_infection_card(evt.epidemic));
-		var ci = Pandemic.Cities[evt.epidemic];
-		if (G.is_eradicated(ci.color)) {
-			$e.append(' is not infected (eradicated)');
-		}
-		else {
-			$e.append(' is infected (<em>add 3 cubes!</em>)');
-		}
-		return $e;
 	}
 	else if (evt.type == 'draw_card') {
-		var $e = $('<div class="draw_card_event"><span class="player_name"></span> draws <span class="card_container"></span></div>');
-		$('.player_name',$e).text(G.player_names[evt.player]);
-		$('.card_container',$e).append(make_player_card(evt.card));
-		return $e;
 	}
 	else if (evt.type == 'draw_epidemic') {
-		var $e = $('<div class="draw_epidemic_event"><span class="first"></span> <span class="card_container"></span> is triggered</div>');
-		$('.first',$e).text(evt.epidemic_count == 1 ? 'First' :
-			evt.epidemic_count == 2 ? 'Second' :
-			evt.epidemic_count == 3 ? 'Third' :
-			(evt.epidemic_count + 'th'));
-		$('.card_container',$e).append(make_player_card(evt.card));
-		return $e;
 	}
 	else if (evt.type == 'next_turn') {
 		var $e = $('<div class="next_turn_event">===== <img class="role_icon"><span class="player_name"></span>\'s turn =====</div>');

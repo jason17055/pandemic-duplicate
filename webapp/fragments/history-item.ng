@@ -1,1 +1,31 @@
-<div></div>
+<ng-switch on="event.type">
+
+<div ng-switch-when="infection" class="infection_event">
+  <pd-infection-card card="event.infection"></pd-infection-card>
+  <span ng-if="h.eradicated_infection">is not infected (eradicated)</span>
+  <span ng-if="!h.eradicated_infection && h.virulent_strain_infection">is infected (add 1 or 2 cubes)</span>
+  <span ng-if="!h.eradicated_infection && !h.virulent_strain_infection">is infected (add 1 cube)</span>
+</div>
+
+<div ng-switch-when="epidemic" class="epidemic_event">
+  <pd-infection-card card="event.epidemic"></pd-infection-card>
+  <span ng-if="h.eradicated_infection">is not infected (eradicated)</span>
+  <span ng-if="!h.eradicated_infection">is infected (<em>add 3 cubes!</em>)</span>
+</div>
+
+<div ng-switch-when="draw_card" class="draw_card_event">
+  <span class="player_name">{{h.get_player_name(event.player)}}</span> draws
+  <pd-player-card card="event.card"></pd-player-card>
+</div>
+
+<div ng-switch-when="draw_epidemic" class="draw_epidemic_event">
+  <span class="first">{{
+      event.epidemic_count == 1 ? 'First' :
+      event.epidemic_count == 2 ? 'Second' :
+      event.epidemic_count == 3 ? 'Third' :
+      (event.epidemic_count + 'th')}}</span>
+  <pd-player-card card="event.card"></pd-player-card>
+  is triggered
+</div>
+
+</ng-switch>
