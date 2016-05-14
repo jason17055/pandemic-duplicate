@@ -7,7 +7,9 @@
 </div>
 <div class="page_body">
 
-<div class="history_container"></div>
+<div class="history_container">
+<pd-history-item event="evt" ng-repeat="evt in c.get_history()"></pd-history-item>
+</div>
 
 </div><!--/page_body-->
 <div class="page_nav">

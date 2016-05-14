@@ -335,6 +335,14 @@ function get_move(game_id, time)
 	return mv != null ? mv : 'pass';
 }
 
+function init_history_item(el, evt)
+{
+	var $e = make_history_item(evt);
+	if ($e) {
+		$(el).append($e);
+	}
+}
+
 function make_history_item(evt)
 {
 	if (evt.type == 'infection') {
@@ -560,25 +568,6 @@ function make_history_item(evt)
 	}
 }
 
-function init_history_pane($h)
-{
-	$h.empty();
-
-	var last = G.history.length;
-	var first = last-1;
-	while (first > 0 && G.history[first].type != 'next_turn') {
-		first--;
-	}
-
-	for (var i = first; i < last; i++) {
-		var evt = G.history[i];
-		var $e = make_history_item(evt);
-		if ($e) {
-			$h.append($e);
-		}
-	}
-}
-
 var Role_icons = {
 	'Dispatcher': 'dispatcher_role_icon.png',
 	'Operations Expert': 'operations_expert_role_icon.png',
@@ -610,21 +599,18 @@ function get_role_icon(r)
 
 function init_player_turn_page($pg)
 {
-	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).show();
 	$('.in_infection_phase', $pg).hide();
 }
 
 function init_draw_cards_page($pg)
 {
-	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).hide();
 }
 
 function init_epidemic_page($pg)
 {
-	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).show();
 	$('.pending_infection_div', $pg).hide();
@@ -632,7 +618,6 @@ function init_epidemic_page($pg)
 
 function init_infection_page($pg)
 {
-	init_history_pane($('.history_container', $pg));
 	$('.in_action_phase', $pg).hide();
 	$('.in_infection_phase', $pg).show();
 

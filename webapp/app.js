@@ -1026,6 +1026,21 @@ app.controller('PlayerTurnPageController',
     this.on_determine_virulent_strain_clicked = function() {
       $state.go('active_game.virulent_strain');
     };
+    this.get_history = function() {
+      var history = [];
+
+      var last = G.history.length;
+      var first = last-1;
+      while (first > 0 && G.history[first].type != 'next_turn') {
+        first--;
+      }
+
+      for (var i = first; i < last; i++) {
+        var evt = G.history[i];
+        history.push(evt);
+      }
+      return history;
+    };
     var initFunc = function() {
       var $pg = $('#player_turn_page');
       if (G.step == 'actions') {
@@ -1645,5 +1660,26 @@ app.directive('pdScenarioDescription',
       },
       controller: 'ScenarioDescriptionController',
       controllerAs: 'sdc'
+    };
+  });
+
+app.controller('HistoryItemController',
+  function($scope) {
+  });
+
+app.directive('pdHistoryItem',
+  function() {
+    var linkFn = function(scope, element) {
+      init_history_item(element, scope['event']);
+    };
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/history-item.ng',
+      scope: {
+        event: '='
+      },
+      controller: 'HistoryItemController',
+      controllerAs: 'h',
+      link: linkFn
     };
   });
