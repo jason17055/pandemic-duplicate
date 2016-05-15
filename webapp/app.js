@@ -1673,6 +1673,9 @@ app.controller('HistoryItemController',
     } else if (evt.type == 'epidemic') {
       var ci = Pandemic.Cities[evt.epidemic];
       this.eradicated_infection = G.is_eradicated(ci.color);
+    } else if (evt.type == 'hinterlands_infection') {
+      this.eradicated_infection = G.is_eradicated(evt.color);
+      this.virulent_strain_infection = G.chronic_effect && G.virulent_strain == evt.color;
     }
     this.get_player_name = function(seat) {
       return G.player_names[seat];
@@ -1693,9 +1696,6 @@ app.controller('HistoryItemController',
 
 app.directive('pdHistoryItem',
   function() {
-    var linkFn = function(scope, element) {
-      init_history_item(element, scope['event']);
-    };
     return {
       restrict: 'E',
       templateUrl: 'fragments/history-item.ng',
@@ -1703,7 +1703,6 @@ app.directive('pdHistoryItem',
         event: '='
       },
       controller: 'HistoryItemController',
-      controllerAs: 'h',
-      link: linkFn
+      controllerAs: 'h'
     };
   });

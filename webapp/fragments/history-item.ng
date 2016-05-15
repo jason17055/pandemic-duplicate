@@ -63,4 +63,162 @@
   is eradicated
 </div>
 
+<div ng-switch-when="draw_sequence_card" class="draw_sequence_card_event">
+  <span class="player_name">{{h.get_player_name(event.player)}}</span>
+  draws
+  <pd-player-card card="event.card"></pd-player-card>
+</div>
+
+<div ng-switch-when="virulent_strain" class="virulent_strain_event_event">
+  &nbsp; --&gt;
+  <span class="disease_name_container">
+    <img ng-src="{{h.get_disease_icon(event.disease)}}" class="card_icon" alt="">
+    {{h.get_disease_name(event.disease)}}
+  </span>
+  becomes the virulent strain
+</div>
+
+<div ng-switch-when="resilient_population" class="resilient_population_event">
+  &nbsp; --&gt;
+  <pd-infection-card card="event.city"></pd-infection-card>
+  is made resilient
+</div>
+
+<div ng-switch-when="infection_rumor" class="infection_rumor_event">
+  &nbsp; --&gt;
+  <pd-infection-card card="event.city"></pd-infection-card>
+  is discarded
+</div>
+
+<div ng-switch-when="vs_epidemic_dud" class="vs_epidemic_dud_event">
+  &nbsp; --&gt;
+  <span class="epidemic_name">{{event.epidemic}}</span>: no effect
+</div>
+
+<div ng-switch-when="chronic_effect_activate" class="chronic_effect_activate_event">
+  &nbsp; --&gt;
+  Chronic Effect activates
+  (<span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>)
+</div>
+
+<div ng-switch-when="complex_molecular_structure_activate" class="complex_molecular_structure_activate_event">
+  &nbsp; --&gt;
+  Complex Molecular Structure:
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  now requires an additional card to cure
+</div>
+
+<div ng-switch-when="government_interference_activate" class="government_interference_activate_event">
+  &nbsp; --&gt;
+  Government Interference activates
+  (<span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>)
+</div>
+
+<div ng-switch-when="hidden_pocket_activate" class="hidden_pocket_activate_event">
+  &nbsp; --&gt;
+  Hidden Pocket:
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  is no longer eradicated
+</div>
+
+<div ng-switch-when="hidden_pocket_infect" class="hidden_pocket_infect_event">
+  <pd-infection-card card="event.city"></pd-infection-card>
+  is infected (add 1 cube)
+</div>
+
+<div ng-switch-when="rate_effect_activate" class="rate_effect_activate_event">
+  &nbsp; --&gt;
+  Rate Effect activates
+  (<span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>)
+</div>
+
+<div ng-switch-when="rate_effect_deactivate" class="rate_effect_deactivate_event">
+  &nbsp; --&gt;
+  Rate Effect is no longer active
+</div>
+
+<div ng-switch-when="rate_effect_trigger" class="rate_effect_trigger_event">
+  &nbsp; --&gt;
+  Rate Effect triggers
+</div>
+
+<div ng-switch-when="slippery_slope_activate" class="slippery_slope_activate_event">
+  &nbsp; --&gt;
+  Slippery Slope:
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  outbreaks now count double
+</div>
+
+<div ng-switch-when="unacceptable_loss" class="unacceptable_loss_event">
+  &nbsp; --&gt;
+  Unacceptable Loss: remove 4
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  cubes from supply
+</div>
+
+<div ng-switch-when="uncounted_populations" class="uncounted_populations_event">
+  &nbsp; --&gt;
+  Uncounted Populations: cities with exactly 1
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  cube get a second
+</div>
+
+<div ng-switch-when="highly_contagious_activate" class="highly_contagious_activate_event">
+  &nbsp; --&gt;
+  Highly Contagious:
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  outbreaks now add two cubes instead of one
+</div>
+
+<div ng-switch-when="resistant_to_treatment_activate" class="resistant_to_treatment_activate_event">
+  &nbsp; --&gt;
+  Resistant to Treatment:
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.disease)}}" alt="">{{
+    h.get_disease_name(event.disease)}}</span>
+  cubes now take two actions to treat
+</div>
+
+<div ng-switch-when="mutation" class="mutation_event">
+  &nbsp; --&gt;
+  <pd-infection-card card="event.city"></pd-infection-card>
+  is infected (add {{event.count}} purple {{event.count > 1 ? 'cubes' : 'cube'}})
+</div>
+
+<div ng-switch-when="draw_mutation" class="draw_mutation_event">
+  <pd-player-card card="event.card"></pd-player-card>
+  is drawn
+</div>
+
+<div ng-switch-when="draw_infection_mutation" class="draw_infection_mutation_event">
+  <pd-infection-card card="event.card"></pd-infection-card>
+  is drawn
+</div>
+
+<div ng-switch-when="mutation_dud" class="mutation_dud_event">
+  &nbsp; --&gt;
+  <span class="mutation_name">{{event.mutation}}</span>: no effect
+</div>
+
+<div ng-switch-when="hinterlands_infection" class="hinterlands_infection_event">
+  &nbsp; --&gt;
+  <span class="disease_name_container"><img class="card_icon" ng-src="{{h.get_disease_icon(event.color)}}" alt="">{{
+    h.get_disease_name(event.color)}}</span>
+  <span ng-if="h.eradicated_infection">is rolled (eradicated)</span>
+  <span ng-if="!h.eradicated_infection && h.virulent_strain_infection">is rolled (add 1 or 2 cubes)</span>
+  <span ng-if="!h.eradicated_infection && !h.virulent_strain_infection">is rolled (add 1 cube)</span>
+</div>
+
+<div ng-switch-when="hinterlands_dud" class="hinterlands_dud_event">
+  Blank result is rolled -- no effect!
+</div>
+
 </ng-switch>
