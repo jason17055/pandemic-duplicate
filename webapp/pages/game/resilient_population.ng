@@ -7,8 +7,8 @@ Choose a city to remove from the Infection deck.
 </p>
 
 <div class="resilient_population_btns_container">
-<div class="template resilient_population_btn_row button_container">
-<button type="button"></button>
+<div class="resilient_population_btn_row button_container" ng-repeat="card in c.cards">
+<button type="button" ng-click="c.select(card)"><pd-infection-card card="card"></pd-infection-card></button>
 </div>
 </div>
 

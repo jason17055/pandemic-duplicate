@@ -1131,12 +1131,26 @@ app.controller('NewAssignmentPageController',
 
 app.controller('ResilientPopulationPageController',
   function() {
-    init_resilient_population_page($('#resilient_population_page'));
+    this.cards = order_infection_discards()
+        .filter(function(card) {
+            return !is_mutation(card);
+          });
+    this.select = function(card) {
+      on_resilient_population_selected(card);
+    };
   });
 
 app.controller('InfectionRumorPageController',
   function() {
-    init_infection_rumor_page($('#infection_rumor_page'));
+    var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
+    this.cards = [];
+    for (var i = 0; i < eff_infection_rate; i++) {
+      var c = G.infection_deck[G.infection_deck.length - 1 - i];
+      if (c) {
+        this.cards.push(c);
+      }
+    }
+    init_infection_rumor_page($('#infection_rumor_page'), this.cards);
   });
 
 app.controller('ForecastPageController',

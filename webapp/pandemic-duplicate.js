@@ -655,41 +655,17 @@ function role_in_use(r)
 	return false;
 }
 
-function init_resilient_population_page($pg)
+function on_resilient_population_selected(c)
 {
-	var A = order_infection_discards();
-
-	$('.resilient_population_btn_row:not(.template)',$pg).remove();
-	for (var i = 0; i < A.length; i++) {
-		var c = A[i];
-		
-		if (is_mutation(c)) {
-			continue;
-		}
-
-		var $s = $('.resilient_population_btn_row.template',$pg).clone();
-		$('button', $s).append(make_infection_card(c));
-		$('button', $s).attr('data-city-name', c);
-		$('button', $s).click(on_resilient_population_selected);
-		$s.removeClass('template');
-		$('.resilient_population_btns_container',$pg).append($s);
-	}
-}
-
-function on_resilient_population_selected()
-{
-	var c = this.getAttribute('data-city-name');
 	return set_move('special "Resilient Population" "'+c+'"');
 }
 
-function init_infection_rumor_page($pg)
+function init_infection_rumor_page($pg, cards)
 {
 	$('.infection_rumor_btn_row:not(.template)',$pg).remove();
 
-	var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
-	for (var i = 0; i < eff_infection_rate; i++) {
-		var c = G.infection_deck[G.infection_deck.length - 1 - i];
-		if (!c) { continue; }
+	for (var i = 0; i < cards.length; i++) {
+		var c = cards[i];
 
 		var $s = $('.infection_rumor_btn_row.template', $pg).clone();
 
