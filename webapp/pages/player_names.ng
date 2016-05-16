@@ -1,4 +1,4 @@
-<form name="player_names_form" method="post" onsubmit="return submit_player_names_form()">
+<form name="player_names_form" method="post" ng-submit="c.submit()">
 <div class="page" id="player_names_page">
 <div class="page_header">
 <h1>Player Names</h1>

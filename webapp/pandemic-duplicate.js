@@ -212,9 +212,6 @@ function submit_player_names_form()
 
 	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
 	save_player_names();
-
-	goto_state('pick_scenario/' + pcount + 'p');
-	return false;
 }
 
 function save_player_names()

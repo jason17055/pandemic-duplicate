@@ -879,6 +879,10 @@ app.controller('FoundCompletedGamesPageController',
 app.controller('PlayerNamesPageController',
   function($state) {
     init_player_names_page($('#player_names_page'), $state.params['rulespec']);
+    this.submit = function() {
+      submit_player_names_form();
+      $state.go('pick_scenario', {rulespec: $state.params['rulespec']});
+    };
   });
 
 app.controller('DeckSetupPageController',
