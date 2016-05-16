@@ -655,11 +655,6 @@ function role_in_use(r)
 	return false;
 }
 
-function on_resilient_population_selected(c)
-{
-	return set_move('special "Resilient Population" "'+c+'"');
-}
-
 function init_infection_rumor_page($pg, cards)
 {
 	$('.infection_rumor_btn_row:not(.template)',$pg).remove();
@@ -683,21 +678,21 @@ function on_infection_rumor_selected()
 	return set_move('special "Infection Rumor" "' + c + '"');
 }
 
-function on_special_event_clicked(GameService, s, gameController)
+function on_special_event_clicked(GameService, s, gameController, $state)
 {
 	if (s == 'Resilient Population') {
 
-		gameController.page = '/resilient_population';
+		$state.go('active_game.resilient_population');
 		return;
 	}
 	if (s == 'Infection Rumor') {
 
-		gameController.page = '/infection_rumor';
+		$state.go('active_game.infection_rumor');
 		return;
 	}
 	else if (s == 'New Assignment') {
 
-		gameController.page = '/new_assignment';
+		$state.go('active_game.new_assignment');
 		return;
 	}
 

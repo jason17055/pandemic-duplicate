@@ -1099,7 +1099,7 @@ app.controller('SpecialEventPageController',
             return G.has_special_event(s);
           });
       this.select = function(choice) {
-        on_special_event_clicked(GameService, choice, $scope.game);
+        on_special_event_clicked(GameService, choice, $scope.game, $state);
       };
     } else if ($state.includes('active_game.retrieve_special')) {
       this.action_name = 'Retrieve';
@@ -1130,13 +1130,13 @@ app.controller('NewAssignmentPageController',
   });
 
 app.controller('ResilientPopulationPageController',
-  function() {
+  function(GameService) {
     this.cards = order_infection_discards()
         .filter(function(card) {
             return !is_mutation(card);
           });
     this.select = function(card) {
-      on_resilient_population_selected(card);
+      GameService.set_move('special "Resilient Population" "'+card+'"');
     };
   });
 
