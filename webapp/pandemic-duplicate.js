@@ -652,29 +652,6 @@ function role_in_use(r)
 	return false;
 }
 
-function init_infection_rumor_page($pg, cards)
-{
-	$('.infection_rumor_btn_row:not(.template)',$pg).remove();
-
-	for (var i = 0; i < cards.length; i++) {
-		var c = cards[i];
-
-		var $s = $('.infection_rumor_btn_row.template', $pg).clone();
-
-		$('button', $s).append(make_infection_card(c));
-		$('button', $s).attr('data-city-name', c);
-		$('button', $s).click(on_infection_rumor_selected);
-		$s.removeClass('template');
-		$('.infection_rumor_btns_container',$pg).append($s);
-	}
-}
-
-function on_infection_rumor_selected()
-{
-	var c = this.getAttribute('data-city-name');
-	return set_move('special "Infection Rumor" "' + c + '"');
-}
-
 function on_special_event_clicked(GameService, s, gameController, $state)
 {
 	if (s == 'Resilient Population') {

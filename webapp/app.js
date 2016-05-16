@@ -1145,7 +1145,7 @@ app.controller('ResilientPopulationPageController',
   });
 
 app.controller('InfectionRumorPageController',
-  function() {
+  function(GameService) {
     var eff_infection_rate = G.travel_ban ? 1 : G.infection_rate;
     this.cards = [];
     for (var i = 0; i < eff_infection_rate; i++) {
@@ -1154,7 +1154,9 @@ app.controller('InfectionRumorPageController',
         this.cards.push(c);
       }
     }
-    init_infection_rumor_page($('#infection_rumor_page'), this.cards);
+    this.select = function(card) {
+      GameService.set_move('special "Infection Rumor" "' + card + '"');
+    };
   });
 
 app.controller('ForecastPageController',
