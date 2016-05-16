@@ -389,16 +389,6 @@ app.controller('TopController',
       function(evt) {
         // Nothing for now...
       });
-    this.goto_state_async = function(rel_url) {
-      $scope.$apply(function() {
-        StateService.go(rel_url);
-      });
-    };
-    this.set_move_x = function(m) {
-      $scope.$apply(function() {
-        GameService.set_move(m);
-      });
-    };
     this.$state = $state;
     $scope.$watch(
       function() { return Options.game_detail_level; },

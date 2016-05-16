@@ -430,12 +430,6 @@ function generate_new_game_id(scenario_id)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function navigate_to_current_turn()
-{
-	goto_state(G.game_id + '/T' + G.time);
-	return;
-}
-
 function scenario_finished(scenario_id)
 {
 	return (localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.finished') != null);
@@ -505,11 +499,6 @@ function generate_secret(indata)
 {
 	var tmp = (indata ? indata : '')+Math.random();
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
-}
-
-function set_move(m)
-{
-	$('body').controller().set_move_x(m);
 }
 
 function order_infection_discards()
@@ -748,11 +737,6 @@ function scenario_compatible(G)
 function init_pick_scenario_page($pg, pcount, scenarios, c)
 {
 	document.pick_scenario_form.player_count.value = pcount;
-}
-
-function goto_state(rel_url)
-{
-	$('body').controller().goto_state_async(rel_url);
 }
 
 function load_result(result_id)
