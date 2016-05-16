@@ -280,36 +280,6 @@ function make_player_card(c)
 	return $x;
 }
 
-function make_infection_card(c)
-{
-	var $x = $('<span class="infection_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
-
-	var text = is_mutation(c);
-
-	if (text) {
-		text += '!';
-		$('.card_icon', $x).attr('src', 'purple_icon.png');
-		$x.addClass('mutation_card');
-	}
-	else {
-		var ci = Pandemic.Cities[c];
-		text = ci.name;
-		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
-		$x.addClass(ci.color + '_card');
-	}
-	
-	$('.card_name', $x).text(text);
-	return $x;
-}
-
-function make_infection_card_li(c)
-{
-	var $x = $('<li></li>');
-	$x.append(make_infection_card(c));
-	$x.attr('data-city-name', c);
-	return $x;
-}
-
 function make_sequence_card_li(c)
 {
 	var $x = $('<li></li>');
