@@ -670,8 +670,6 @@ app.controller('PickScenarioPageController',
       }
     };
     this.load_scenarios();
-
-    init_pick_scenario_page($('#pick_scenario_page'), pcount, this.scenarios, this);
   });
 
 app.controller('ReviewResultsPageController',

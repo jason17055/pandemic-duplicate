@@ -469,11 +469,6 @@ function scenario_compatible(G)
 	return true;
 }
 
-function init_pick_scenario_page($pg, pcount, scenarios, c)
-{
-	document.pick_scenario_form.player_count.value = pcount;
-}
-
 //
 // BEGIN SYNCHRONIZATION CODE
 //
