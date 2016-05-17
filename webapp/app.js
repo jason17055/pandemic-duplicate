@@ -729,11 +729,9 @@ app.controller('TournamentsPageController',
   });
 
 app.controller('TournamentPickScenarioPageController',
-  function($scope, $state, tournament, GameStore) {
+  function($scope, $state, tournament, GameStore, ScenarioStore) {
     $scope['tournament'] = tournament;
-    this.get_scenario_name = function(scenario_id) {
-      return scenario_name(scenario_id);
-    };
+    this.get_scenario_name = ScenarioStore.scenario_name;
     this.selected = function(evt) {
       GameStore
           .create_tournament_game(tournament.id, evt.id, evt.scenario)
@@ -962,7 +960,7 @@ app.controller('BoardSetupPageController',
   });
 
 app.controller('PlayerSetupPageController',
-  function($state, GameService, data) {
+  function($state, GameService, ScenarioStore, data) {
     var seats_by_player_count = {
       2: [1,2],
       3: [1,2,3],
@@ -973,9 +971,7 @@ app.controller('PlayerSetupPageController',
     this.get_seats = function() {
       return seats_by_player_count[scenario.rules.player_count];
     };
-    this.get_scenario_name = function() {
-      return scenario_name(scenario.scenario_id);
-    };
+    this.scenario_name = ScenarioStore.scenario_name(scenario.scenario_id);
     this.get_rules = function() {
       return stringify_rules(scenario.rules);
     };
@@ -1324,9 +1320,9 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function($state, Storage) {
+  function($state, ScenarioStore, Storage) {
     var scenario_id = $state.params['scenario_id'];
-    this.scenario_name = scenario_name(scenario_id);
+    this.scenario_name = ScenarioStore.scenario_name(scenario_id);
 
     this.go_home_page = function() {
       Storage.remove('.current_game');
@@ -1642,7 +1638,7 @@ app.directive('pdSequenceCard',
   });
 
 app.controller('ScenarioNameController',
-  function($scope) {
+  function($scope, ScenarioStore) {
     this.reload = function() {
       var scenario_id = $scope.scenarioId;
 
@@ -1655,7 +1651,7 @@ app.controller('ScenarioNameController',
       }
       else {
         this.new_scenario_name = false;
-        this.parts = scenario_name(scenario_id).split(/ /);
+        this.parts = ScenarioStore.scenario_name(scenario_id).split(/ /);
       }
     };
     this.reload();

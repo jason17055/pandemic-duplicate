@@ -226,6 +226,24 @@ app.service('ScenarioStore',
             return this.parse_scenario(scenario_id, Storage.get('.scenario.' + scenario_id));
           }.bind(this));
     };
+
+    this.scenario_name = function(scenario_id) {
+      var m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/);
+      if (m) {
+        return scenario_id;
+      }
+
+      var A = parseInt(scenario_id.substring(0,6), 16);
+      var i = Math.floor(A * WORDS.length / 0x1000000);
+
+      var B = parseInt(scenario_id.substring(6,12), 16);
+      var j = Math.floor(B * WORDS.length / 0x1000000);
+
+      var C = parseInt(scenario_id.substring(12,18), 16);
+      var k = Math.floor(C * WORDS.length / 0x1000000);
+
+      return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
+    };
   });
 
 app.service('TournamentStore',

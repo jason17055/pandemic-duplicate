@@ -259,25 +259,6 @@ function stor_get_list(key)
 	}
 }
 
-function scenario_name(scenario_id)
-{
-	var m;
-	if (m = scenario_id.match(/^(\d\d\d\d)-(\d\d-\d\d)(?:\.(.*))?$/)) {
-		return scenario_id;
-	}
-
-	var A = parseInt(scenario_id.substring(0,6), 16);
-	var i = Math.floor(A * WORDS.length / 0x1000000);
-
-	var B = parseInt(scenario_id.substring(6,12), 16);
-	var j = Math.floor(B * WORDS.length / 0x1000000);
-
-	var C = parseInt(scenario_id.substring(12,18), 16);
-	var k = Math.floor(C * WORDS.length / 0x1000000);
-
-	return WORDS[i]+' '+WORDS[j]+' '+WORDS[k];
-}
-
 function generate_new_game_id(scenario_id)
 {
 	var tmpNames = localStorage.getItem(PACKAGE + '.player_names') || '';
