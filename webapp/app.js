@@ -867,10 +867,42 @@ app.controller('FoundCompletedGamesPageController',
   });
 
 app.controller('PlayerNamesPageController',
-  function($state) {
-    init_player_names_page($('#player_names_page'), $state.params['rulespec']);
+  function($state, Storage) {
+    var pcount = 2;
+    var m = $state.params['rulespec'].match(/^(\d+)p$/);
+    if (m) {
+      pcount = +m[1];
+    }
+
+    G = new Pandemic.GameState();
+    var s = Storage.get('.player_names');
+    if (s) {
+      G.player_names = JSON.parse(s);
+    } else {
+      G.player_names = {};
+    }
+
+    this.names = G.player_names;
+
+    this.seats = [];
+    for (var i = 1; i <= pcount; i++) {
+      this.seats.push(i);
+      this.names[i] = this.names[i] || 'Player '+i;
+    }
+
+    this.location = Storage.get('.game_location');
+    this.randomize_order = 'start_player';
+
     this.submit = function() {
-      submit_player_names_form();
+      G = new Pandemic.GameState();
+      G.rules = { 'player_count': pcount };
+      G.player_names = this.names;
+
+      this.names = submit_player_names_form(pcount, this.names, this.randomize_order);
+
+      Storage.set('.game_location', this.location);
+      Storage.set('.player_names', JSON.stringify(this.names));
+
       $state.go('pick_scenario', {rulespec: $state.params['rulespec']});
     };
   });

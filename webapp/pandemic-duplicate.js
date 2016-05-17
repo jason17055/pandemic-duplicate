@@ -96,54 +96,6 @@ function reload_watched_game()
 	G.serial = (G.serial || 0) + 1;
 }
 
-function init_player_names_page($pg, xtra)
-{
-	var pcount = 2;
-	var m = xtra.match(/^(\d+)p$/);
-	if (m) {
-		pcount = +m[1];
-	}
-
-	G = new Pandemic.GameState();
-	var s = localStorage.getItem(PACKAGE + '.player_names');
-	if (s) {
-		G.player_names = JSON.parse(s);
-	}
-	else {
-		G.player_names = {};
-	}
-
-	var f = document.player_names_form;
-	f.location.value = localStorage.getItem(PACKAGE+'.game_location');
-	f.player_count.value = pcount;
-	f.player1.value = G.player_names[1] || 'Player 1';
-	f.player2.value = G.player_names[2] || 'Player 2';
-	f.player3.value = G.player_names[3] || 'Player 3';
-	f.player4.value = G.player_names[4] || 'Player 4';
-	f.player5.value = G.player_names[5] || 'Player 5';
-	
-	if (pcount <= 2) {
-		$('.player3', $pg).hide();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (pcount == 3) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).hide();
-		$('.player5', $pg).hide();
-	}
-	else if (pcount == 4) {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).hide();
-	}
-	else {
-		$('.player3', $pg).show();
-		$('.player4', $pg).show();
-		$('.player5', $pg).show();
-	}
-}
-
 function update_game_score()
 {
 	// cure count only used on loss
@@ -177,48 +129,27 @@ function init_game_completed_page($pg)
 	update_game_score();
 }
 
-function submit_player_names_form()
+function submit_player_names_form(pcount, names, randomize)
 {
-	var f = document.player_names_form;
-	var pcount = +f.player_count.value;
-	G = new Pandemic.GameState();
-	G.rules = { 'player_count': pcount };
-	G.player_names = {
-		'1': f.player1.value,
-		'2': f.player2.value,
-		'3': f.player3.value,
-		'4': f.player4.value,
-		'5': f.player5.value
-		};
-	var randomize = f.randomize_order.value;
 	if (randomize == 'full') {
-		for (var i = 0; i < G.rules.player_count; i++) {
-			var j = i+Math.floor(Math.random() * (G.rules.player_count-i));
-			var tmp = G.player_names[1+i];
-			G.player_names[1+i] = G.player_names[1+j];
-			G.player_names[1+j] = tmp;
+		for (var i = 0; i < pcount; i++) {
+			var j = i+Math.floor(Math.random() * (pcount-i));
+			var tmp = names[1+i];
+			names[1+i] = names[1+j];
+			names[1+j] = tmp;
 		}
 	}
 	else if (randomize == 'start_player') {
-		var t = Math.floor(Math.random() * G.rules.player_count);
+		var t = Math.floor(Math.random() * pcount);
 		var p = {};
 		for (var i = 0; i < Pandemic.MAX_PLAYERS; i++) {
-			p[1+i] = i < G.rules.player_count ?
-				G.player_names[1+(i+t)%G.rules.player_count] :
-				G.player_names[1+i];
+			p[1+i] = i < pcount ?
+				names[1+(i+t)%pcount] :
+				names[1+i];
 		}
-		G.player_names = p;
+		names = p;
 	}
-
-	localStorage.setItem(PACKAGE+'.game_location', f.location.value);
-	save_player_names();
-}
-
-function save_player_names()
-{
-	localStorage.setItem(PACKAGE+'.player_names',
-		JSON.stringify(G.player_names)
-		);
+	return names;
 }
 
 function init_board_setup_page($pg, scenario, game)

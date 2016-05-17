@@ -6,23 +6,20 @@
 
 <div class="page_body">
 
-<div><label>Location:
-<input type="text" name="location"></label></div>
+<div><label>Location: <input type="text" ng-model="c.location"></label></div>
 
-<input type="hidden" name="player_count">
 <table>
-<tr class="player1"><td>1</td><td><input type="text" name="player1" value="Player 1"></td></tr>
-<tr class="player2"><td>2</td><td><input type="text" name="player2" value="Player 2"></td></tr>
-<tr class="player3"><td>3</td><td><input type="text" name="player3" value="Player 3"></td></tr>
-<tr class="player4"><td>4</td><td><input type="text" name="player4" value="Player 4"></td></tr>
-<tr class="player5"><td>5</td><td><input type="text" name="player5" value="Player 5"></td></tr>
+<tr ng-repeat="seat in c.seats">
+  <td>{{seat}}</td>
+  <td><input type="text" ng-model="c.names[seat]"></td>
+</tr>
 </table>
 <div>
 <label>
 Randomize:
-<select name="randomize_order">
+<select ng-model="c.randomize_order">
 <option value="">None</option>
-<option value="start_player" selected="selected">Start player only</option>
+<option value="start_player">Start player only</option>
 <option value="full">Turn order</option>
 </select></label>
 </div>
