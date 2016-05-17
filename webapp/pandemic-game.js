@@ -1301,6 +1301,13 @@ Pandemic.GameState.prototype.order_infection_discards = function() {
 	return A;
 };
 
+Pandemic.GameState.prototype.role_in_use = function(r) {
+	for (var i = 1; i <= this.rules.player_count; i++) {
+		if (this.roles[i] == r) { return true; }
+	}
+	return false;
+};
+
 function generate_scenario_real(rules, gen_options)
 {
 	var G = new Pandemic.GameState();

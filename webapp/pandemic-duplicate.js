@@ -345,20 +345,12 @@ function init_new_assignment_page($pg)
 	var roles = get_deck('Roles', G.rules);
 	for (var i = 0; i < roles.length; i++) {
 		var r = roles[i];
-		if (role_in_use(r)) { continue; }
+		if (G.role_in_use(r)) { continue; }
 		var $o = $('<option></option>');
 		$o.attr('value', r);
 		$o.text(r);
 		$('select[name=new_role]', $pg).append($o);
 	}
-}
-
-function role_in_use(r)
-{
-	for (var i = 1; i <= G.rules.player_count; i++) {
-		if (G.roles[i] == r) { return true; }
-	}
-	return false;
 }
 
 function on_special_event_clicked(GameService, s, gameController, $state)
