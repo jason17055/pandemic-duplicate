@@ -507,8 +507,53 @@ app.controller('CreateGamePageController',
   });
 
 app.controller('GenerateGamePageController',
-  function($state, GameStore, Storage) {
-    init_generate_game_page($('#generate_game_page'), $state.params['rulespec']);
+  function($scope, $state, GameStore, Options, Storage) {
+    this.level = '5';
+    this.on_the_brink = Options.has_on_the_brink;
+    this.in_the_lab = Options.has_in_the_lab;
+    this.state_of_emergency = Options.has_state_of_emergency;
+    this.virulent_strain = false;
+    this.lab_challenge = false;
+    this.mutation_challenge = false;
+    this.worldwide_panic = false;
+    this.quarantines = false;
+    this.hinterlands_challenge = false;
+    this.emergency_event_challenge = false;
+    this.superbug_challenge = false;
+    this.nobase2013 = false;
+
+    // When Mutation Challenge is selected, disable incompatible modules.
+    $scope.$watch(
+        function() { return this.mutation_challenge; }.bind(this),
+        function(newValue) {
+          if (newValue) {
+            this.worldwide_panic = false;
+            this.superbug_challenge = false;
+          }
+        }.bind(this));
+
+    // When Worldwide Panic is selected, disable incompatible modules.
+    $scope.$watch(
+        function() { return this.worldwide_panic; }.bind(this),
+        function(newValue) {
+          if (newValue) {
+            this.mutation_challenge = false;
+            this.superbug_challenge = false;
+          }
+        }.bind(this));
+
+    // When Superbug Challenge is selected, disable incompatible modules,
+    // and turn on Quarantines.
+    $scope.$watch(
+        function() { return this.superbug_challenge; }.bind(this),
+        function(newValue) {
+          if (newValue) {
+            this.mutation_challenge = false;
+            this.worldwide_panic = false;
+            this.quarantines = true;
+          }
+        }.bind(this));
+
     if ($state.params['tournament']) {
       this.for_tournament = $state.params['tournament'];
     } else {
@@ -527,24 +572,23 @@ app.controller('GenerateGamePageController',
       this.player_count_fixed = false;
     }
     this.submit = function() {
-      var f = document.generate_game_form;
       var rules = {
           'player_count': +this.player_count,
-          'level': +f.level.value,
-          'on_the_brink': f.on_the_brink.checked,
-          'in_the_lab': f.in_the_lab.checked,
-          'state_of_emergency': f.state_of_emergency.checked,
-          'virulent_strain': f.virulent_strain.checked,
-          'lab_challenge': f.lab_challenge.checked,
-          'mutation_challenge': f.mutation_challenge.checked,
-          'worldwide_panic': f.worldwide_panic.checked,
-          'quarantines': f.quarantines.checked,
-          'hinterlands_challenge': f.hinterlands_challenge.checked,
-          'emergency_event_challenge': f.emergency_event_challenge.checked,
-          'superbug_challenge': f.superbug_challenge.checked
+          'level': +this.level,
+          'on_the_brink': this.on_the_brink,
+          'in_the_lab': this.in_the_lab,
+          'state_of_emergency': this.state_of_emergency,
+          'virulent_strain': this.virulent_strain,
+          'lab_challenge': this.lab_challenge,
+          'mutation_challenge': this.mutation_challenge,
+          'worldwide_panic': this.worldwide_panic,
+          'quarantines': this.quarantines,
+          'hinterlands_challenge': this.hinterlands_challenge,
+          'emergency_event_challenge': this.emergency_event_challenge,
+          'superbug_challenge': this.superbug_challenge
           };
       var gen_options = {
-          'nobase2013': f.nobase2013.checked
+          'nobase2013': this.nobase2013
           };
       var scenario = generate_scenario(rules, gen_options);
       var scenario_id = scenario.scenario_id;

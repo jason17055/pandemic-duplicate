@@ -417,43 +417,6 @@ function init_discover_cure_page($pg)
 	}
 }
 
-function init_generate_game_page($pg, xtra)
-{
-	validate_modules();
-}
-
-function validate_modules()
-{
-	var f = document.generate_game_form;
-
-	if (f.mutation_challenge.checked) {
-		f.worldwide_panic.checked = false;
-		f.worldwide_panic.disabled = true;
-		f.superbug_challenge.checked = false;
-		f.superbug_challenge.disabled = true;
-	}
-	else if (f.worldwide_panic.checked) {
-		f.mutation_challenge.checked = false;
-		f.mutation_challenge.disabled = true;
-		f.superbug_challenge.checked = false;
-		f.superbug_challenge.disabled = true;
-	}
-	else if (f.superbug_challenge.checked) {
-		f.mutation_challenge.checked = false;
-		f.mutation_challenge.disabled = true;
-		f.worldwide_panic.checked = false;
-		f.worldwide_panic.disabled = true;
-		f.quarantines.checked = true;
-		f.quarantines.disabled = true;
-	}
-	else {
-		f.mutation_challenge.disabled = false;
-		f.worldwide_panic.disabled = false;
-		f.superbug_challenge.disabled = false;
-		f.quarantines.disabled = false;
-	}
-}
-
 function scenario_compatible(G)
 {
 	if (G.rules.on_the_brink && !CFG.has_on_the_brink) {
