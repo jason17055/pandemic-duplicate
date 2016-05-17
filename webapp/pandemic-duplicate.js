@@ -152,16 +152,6 @@ function submit_player_names_form(pcount, names, randomize)
 	return names;
 }
 
-function init_board_setup_page($pg, scenario, game)
-{
-	if (scenario.rules.lab_challenge) {
-		$('.sequence_card').empty();
-		for (var i = 0, c; c = game.sequence_discards[i]; i++) {
-			$('.sequence_card', $pg).append(make_sequence_card_li(c));
-		}
-	}
-}
-
 function make_player_card_li(c)
 {
 	var $x = $('<li></li>');

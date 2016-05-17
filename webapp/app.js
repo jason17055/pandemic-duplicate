@@ -956,8 +956,8 @@ app.controller('BoardSetupPageController',
     this.infections = scenario.infection_deck.slice(-9).reverse();
     this.game = data.game;
 
-    if (data.game) {
-      init_board_setup_page($('#board_setup_page'), scenario, data.game);
+    if (scenario.sequence_deck) {
+      this.sequence_cards = scenario.sequence_deck.slice(0, 1);
     }
   });
 
@@ -1599,6 +1599,32 @@ app.directive('pdInfectionCard',
         card: '='
       },
       controller: 'InfectionCardController',
+      controllerAs: 'cc'
+    };
+  });
+
+app.controller('SequenceCardController',
+  function($scope) {
+    this.reload = function() {
+      this.card_name = $scope.card;
+      this.card_icon_src = 'sequence_card_icon.png';
+    };
+    this.reload();
+    $scope.$watch('card',
+      function(newValue, oldValue) {
+        this.reload();
+      }.bind(this));
+  });
+
+app.directive('pdSequenceCard',
+  function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'fragments/sequence-card.ng',
+      scope: {
+        card: '='
+      },
+      controller: 'SequenceCardController',
       controllerAs: 'cc'
     };
   });

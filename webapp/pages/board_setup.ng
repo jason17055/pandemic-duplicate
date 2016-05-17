@@ -28,7 +28,9 @@
 
 <div class="initial_lab_sequence_card" ng-show="c.rules.lab_challenge">
 <div>Initial Sequence Card:</div>
-<ul class="sequence_card card_list"></ul>
+<ul class="sequence_card card_list">
+<li ng-repeat="card in c.sequence_cards"><pd-sequence-card card="card"></pd-sequence-card></li>
+</ul>
 </div><!--/initial_lab_sequence_card-->
 </div><!--/page_body-->
 
