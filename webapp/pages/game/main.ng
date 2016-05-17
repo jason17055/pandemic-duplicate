@@ -106,23 +106,25 @@ This is the order the next 6 infection cards will appear.
 <div class="page_header"><h1>Resource Planning</h1></div>
 <div class="page_body">
 
-<div class="choosing">
+<div class="choosing" ng-if="c.forecast.length">
 <p>
 Choose cards (in order) to put back on the player deck.
 Save the cards you want to see this turn for last.
 </p>
 </div>
-<div class="confirming">
+<div class="confirming" ng-if="c.forecast.length==0">
 <p>
 This is the order the next 4 player cards will appear.
 </p>
-<ol class="resource_planning_cards_list"></ol>
+<ol class="resource_planning_cards_list">
+<li ng-repeat="card in c.returned"><pd-player-card card="card"></pd-player-card></li>
+</ol>
 </div>
 
 <div class="card_btns_container">
-<div class="confirming button_container"><button type="button" ng-click="c.confirm()">OK</button></div>
-<div class="template card_btn_row button_container">
-<button type="button"></button>
+<div class="button_container" ng-if="c.forecast.length == 0"><button type="button" ng-click="c.confirm()">OK</button></div>
+<div class="card_btn_row button_container" ng-repeat="card in c.forecast">
+<button type="button" ng-click="c.card_clicked(card)"><pd-player-card card="card"></pd-player-card></button>
 </div>
 <div class="reset_btn_container button_container"><button type="button" ng-click="c.reset()">Reset</button></div>
 </div>

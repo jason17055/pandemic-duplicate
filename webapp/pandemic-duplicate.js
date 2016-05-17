@@ -437,54 +437,6 @@ function order_infection_discards()
 	return A;
 }
 
-function init_resource_planning_page($pg)
-{
-	var pick_card = function(c) {
-		$('.resource_planning_cards_list',$pg).prepend(make_player_card_li(c));
-	};
-
-	var on_resource_planning_card_selected = function() {
-		var c = this.getAttribute('data-card-name');
-		pick_card(c);
-
-		var $s = $('.card_btn_row:has([data-card-name="'+c+'"])', $pg);
-		$s.remove();
-
-		var left = $('.card_btn_row:not(.template)', $pg);
-		if (left.length == 1) {
-
-			left.each(function(idx,el) {
-				var c = $('button',el).attr('data-card-name');
-				pick_card(c);
-				});
-			left.remove();
-			$('.choosing', $pg).hide();
-			$('.confirming', $pg).show();
-		}
-
-		$('.reset_btn_container', $pg).show();
-	};
-
-	$('.resource_planning_cards_list', $pg).empty();
-
-	$('.card_btn_row:not(.template)',$pg).remove();
-	for (var i = 0; i < 4; i++) {
-		var c = G.player_deck[G.player_deck.length-1-i];
-		if (!c) { continue; }
-
-		var $s = $('.card_btn_row.template', $pg).clone();
-
-		$('button', $s).append(make_player_card(c));
-		$('button', $s).attr('data-card-name', c);
-		$('button', $s).click(on_resource_planning_card_selected);
-		$s.removeClass('template');
-		$('.reset_btn_container', $pg).before($s);
-	}
-	$('.choosing', $pg).show();
-	$('.confirming', $pg).hide();
-	$('.reset_btn_container', $pg).hide();
-}
-
 function init_new_assignment_page($pg)
 {
 	$('select[name=old_role]', $pg).empty();

@@ -1218,24 +1218,36 @@ app.controller('ForecastPageController',
 app.controller('ResourcePlanningPageController',
   function(GameService) {
     this.reset = function() {
-      init_resource_planning_page($('#resource_planning_page'));
+      this.forecast = [];
+      for (var i = 0; i < 4; i++) {
+        var c = G.player_deck[G.player_deck.length-1-i];
+        if (c) {
+          this.forecast.push(c);
+        }
+      }
+      this.returned = [];
     };
-
+    this.reset();
+    this.card_clicked = function(card) {
+      this.returned.unshift(card);
+      for (var i = this.forecast.length-1; i >= 0; i--) {
+        if (this.forecast[i] == card) {
+          this.forecast.splice(i, 1);
+        }
+      }
+      if (this.forecast.length == 1) {
+        this.returned.unshift(this.forecast[0]);
+        this.forecast = [];
+      }
+    };
     this.confirm = function() {
-      var sel = [];
-      $('#resource_planning_page .resource_planning_cards_list li').each(function(idx,el) {
-        var c = el.getAttribute('data-card-name');
-        sel.push(c);
-      });
-
       var m = "resource_planning";
-      for (var i = 0; i < sel.length; i++) {
-        m += ' "' + sel[i] + '"';
+      for (var i = 0; i < this.returned.length; i++) {
+        m += ' "' + this.returned[i] + '"';
       }
 
       GameService.set_move(m);
     };
-    init_resource_planning_page($('#resource_planning_page'));
   });
 
 app.controller('GameCompletedPageController',
