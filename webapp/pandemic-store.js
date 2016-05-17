@@ -55,7 +55,7 @@ app.service('GameStore',
     this.create_tournament_game = function(tournament_id, event_id, scenario_id) {
       return ScenarioStore.get(scenario_id).then(
         function(scenario) {
-          var game_id = generate_new_game_id(scenario_id);
+          var game_id = this.generate_new_game_id(scenario_id);
 
           Storage.set('.game.' + game_id + '.scenario', scenario_id);
           Storage.set('.game.' + game_id + '.tournament', tournament_id + '/' + event_id);
@@ -85,6 +85,13 @@ app.service('GameStore',
         .post('s/games?subscribe=' + escape(game_id), '', {})
         .then(onSuccess, handle_ajax_error);
     };
+
+    this.generate_new_game_id = function(scenario_id) {
+      var tmpNames = Storage.get('.player_names') || '';
+      var tmp = Math.random()+'-'+Math.random()+'-'+tmpNames+'-'+
+          scenario_id;
+      return (""+CryptoJS.SHA1(tmp)).substring(0,18);
+    }
 
     this.load_game = function(game_id) {
       var sid = Storage.get('.game.' + game_id + '.scenario');

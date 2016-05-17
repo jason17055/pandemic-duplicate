@@ -556,7 +556,7 @@ app.controller('GenerateGamePageController',
              'scenario': scenario_id});
       } else {
         // create game
-        var game_id = generate_new_game_id(scenario_id);
+        var game_id = GameStore.generate_new_game_id(scenario_id);
 
         Storage.set('.game.' + game_id + '.scenario', scenario_id);
         Storage.set('.scenario.' + scenario_id + '.current_game', game_id);
@@ -619,7 +619,7 @@ app.controller('PickScenarioPageController',
     this.select = function(scenario) {
       // create game
       var scenario_id = scenario.scenario_id;
-      var game_id = generate_new_game_id(scenario_id);
+      var game_id = GameStore.generate_new_game_id(scenario_id);
 
       Storage.set('.game.' + game_id + '.scenario', scenario_id);
       Storage.set('.scenario.' + scenario_id + '.current_game', game_id);

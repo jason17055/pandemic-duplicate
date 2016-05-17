@@ -259,14 +259,6 @@ function stor_get_list(key)
 	}
 }
 
-function generate_new_game_id(scenario_id)
-{
-	var tmpNames = localStorage.getItem(PACKAGE + '.player_names') || '';
-	var tmp = Math.random()+'-'+Math.random()+'-'+tmpNames+'-'+
-		scenario_id;
-	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
-}
-
 function scenario_finished(scenario_id)
 {
 	return (localStorage.getItem(PACKAGE + '.scenario.' + scenario_id + '.finished') != null);
