@@ -338,37 +338,6 @@ function generate_secret(indata)
 	return (""+CryptoJS.SHA1(tmp)).substring(0,18);
 }
 
-function order_infection_discards()
-{
-	var A = [];
-	for (var i = 0; i < G.infection_discards.length; i++) {
-		A.push(G.infection_discards[i]);
-	}
-	A.sort(function(a,b) {
-
-		if (is_mutation(a) && is_mutation(b)) {
-			return 0;
-		}
-		else if (is_mutation(a)) {
-			return -1;
-		}
-		else if (is_mutation(b)) {
-			return 1;
-		}
-
-		var a_ci = Pandemic.Cities[a];
-		var b_ci = Pandemic.Cities[b];
-		if (a_ci.color != b_ci.color) {
-			return a_ci.color > b_ci.color ? 1 : -1;
-		}
-		else {
-			return a_ci.name > b_ci.name ? 1 :
-				a_ci.name < b_ci.name ? -1 : 0;
-		}
-		});
-	return A;
-}
-
 function init_new_assignment_page($pg)
 {
 	$('select[name=old_role]', $pg).empty();

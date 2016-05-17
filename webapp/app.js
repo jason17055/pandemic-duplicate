@@ -1153,7 +1153,7 @@ app.controller('NewAssignmentPageController',
 
 app.controller('ResilientPopulationPageController',
   function(GameService) {
-    this.cards = order_infection_discards()
+    this.cards = G.order_infection_discards()
         .filter(function(card) {
             return !is_mutation(card);
           });

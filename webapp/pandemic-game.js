@@ -1274,6 +1274,33 @@ Pandemic.GameState.prototype.vs_dud = function(epidemic_name) {
 		});
 };
 
+Pandemic.GameState.prototype.order_infection_discards = function() {
+	var A = this.infection_discards.slice();
+	A.sort(function(a,b) {
+
+		if (is_mutation(a) && is_mutation(b)) {
+			return 0;
+		}
+		else if (is_mutation(a)) {
+			return -1;
+		}
+		else if (is_mutation(b)) {
+			return 1;
+		}
+
+		var a_ci = Pandemic.Cities[a];
+		var b_ci = Pandemic.Cities[b];
+		if (a_ci.color != b_ci.color) {
+			return a_ci.color > b_ci.color ? 1 : -1;
+		}
+		else {
+			return a_ci.name > b_ci.name ? 1 :
+				a_ci.name < b_ci.name ? -1 : 0;
+		}
+		});
+	return A;
+};
+
 function generate_scenario_real(rules, gen_options)
 {
 	var G = new Pandemic.GameState();
