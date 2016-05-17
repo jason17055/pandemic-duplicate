@@ -201,22 +201,6 @@ function make_player_card(c)
 	return $x;
 }
 
-function make_sequence_card_li(c)
-{
-	var $x = $('<li></li>');
-	$x.append(make_sequence_card(c));
-	return $x;
-}
-
-function make_sequence_card(c)
-{
-	var $x = $('<span class="sequence_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
-	$('.card_name', $x).text(c);
-	$('.card_icon', $x).attr('src', 'sequence_card_icon.png');
-
-	return $x;
-}
-
 function get_move(game_id, time)
 {
 	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);
