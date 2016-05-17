@@ -474,20 +474,6 @@ function init_pick_scenario_page($pg, pcount, scenarios, c)
 	document.pick_scenario_form.player_count.value = pcount;
 }
 
-function load_result(result_id)
-{
-	var VV = localStorage.getItem(PACKAGE + '.result.' + result_id);
-	if (!VV) {
-		return null;
-	}
-
-	var r = JSON.parse(VV);
-	if (r.version != Version || !r.scenario_id) {
-		return null;
-	}
-	return r;
-}
-
 //
 // BEGIN SYNCHRONIZATION CODE
 //

@@ -675,7 +675,7 @@ app.controller('PickScenarioPageController',
   });
 
 app.controller('ReviewResultsPageController',
-  function($state, Storage) {
+  function($state, ResultStore, Storage) {
     this.submit_search_results_form = function() {
       var f = document.search_results_form;
       var q = f.q.value;
@@ -684,7 +684,7 @@ app.controller('ReviewResultsPageController',
     this.game_list = stor_get_list(PACKAGE + '.my_results')
         .map(function(result_id) {
           var gameInfo = {result_id: result_id};
-          gameInfo.result = load_result(result_id);
+          gameInfo.result = ResultStore.load_result(result_id);
           if (!gameInfo.result) {
             return gameInfo;
           }
@@ -822,7 +822,7 @@ app.controller('TournamentManageEventPageController',
   });
 
 app.controller('FoundCompletedGamesPageController',
-  function($state, $window, Storage, data) {
+  function($state, $window, ResultStore, Storage, data) {
     this.back = function() {
       $window.history.back();
     };
@@ -830,7 +830,7 @@ app.controller('FoundCompletedGamesPageController',
       .map(function(resultInfo) {
         var gameInfo = {
           result_id: resultInfo.id,
-          result: load_result(resultInfo.id)
+          result: ResultStore.load_result(resultInfo.id)
         };
         if (!gameInfo.result) {
           return gameInfo;
@@ -1320,7 +1320,7 @@ app.controller('GameCompletedPageController',
   });
 
 app.controller('ResultsPageController',
-  function($state, ScenarioStore, Storage) {
+  function($state, ResultStore, ScenarioStore, Storage) {
     var scenario_id = $state.params['scenario_id'];
     this.scenario_name = ScenarioStore.scenario_name(scenario_id);
 
@@ -1344,7 +1344,7 @@ app.controller('ResultsPageController',
         seen[all_result_ids[i]] = true;
 
         var result_id = all_result_ids[i];
-        var r = load_result(result_id);
+        var r = ResultStore.load_result(result_id);
         if (!r) { continue; }
         if (r.scenario_id != scenario_id) { continue; }
 

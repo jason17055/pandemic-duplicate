@@ -165,6 +165,19 @@ app.service('ResultStore',
       return result_id;
     };
 
+    this.load_result = function(result_id) {
+      var VV = Storage.get('.result.' + result_id);
+      if (!VV) {
+        return null;
+      }
+
+      var r = JSON.parse(VV);
+      if (r.version != Version || !r.scenario_id) {
+        return null;
+      }
+      return r;
+    };
+
     this.summarize_results_for_scenario = function(scenario_id) {
       var names = {};
       var best_score = 0;
@@ -172,7 +185,7 @@ app.service('ResultStore',
       var a = stor_get_list(PACKAGE + '.game_results.' + scenario_id);
       for (var i = 0; i < a.length; i++) {
 
-        var r = load_result(a[i]);
+        var r = this.load_result(a[i]);
         if (!r) { continue; }
 
         for (var pid = 1; pid < 5; pid++) {
