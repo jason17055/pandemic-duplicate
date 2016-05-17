@@ -129,6 +129,14 @@ app.service('GameStore',
       return G;
     };
 
+    this.record_game_finished = function(game_id) {
+      var scenario_id = Storage.get('.game.' + game_id + '.scenario');
+      var timestr = new Date().toISOString();
+
+      Storage.set('.game.' + scenario_id + '.finished', timestr);
+      Storage.set('.game.' + game_id + '.finished', timestr);
+    };
+
     this.start_publishing_game = function(game_id) {
       Storage.set('.current_game', game_id);
       Storage.set('.current_game.scenario', G.scenario_id);

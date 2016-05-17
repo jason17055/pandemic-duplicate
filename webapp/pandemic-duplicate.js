@@ -390,13 +390,6 @@ function on_special_event_clicked(GameService, s, gameController, $state)
 	GameService.set_move('special '+s);
 }
 
-function record_game_finished()
-{
-	var timestr = new Date().toISOString();
-	localStorage.setItem(PACKAGE + '.game.' + G.scenario_id + '.finished', timestr);
-	localStorage.setItem(PACKAGE + '.game.' + G.game_id + '.finished', timestr);
-}
-
 function init_virulent_strain_page($pg)
 {
 	$('.virulent_strain_btn', $pg).each(function(idx,el) {

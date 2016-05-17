@@ -1001,7 +1001,7 @@ app.controller('PlayerSetupPageController',
   });
 
 app.controller('PlayerTurnPageController',
-  function(GameService, $scope, $state) {
+  function($scope, $state, GameService, GameStore) {
     this.rename_player = function() {
       var p_name = G.player_names[G.active_player];
       var p_role = G.roles[G.active_player];
@@ -1028,11 +1028,11 @@ app.controller('PlayerTurnPageController',
       $state.go('active_game.discover_cure');
     };
     this.declare_victory_clicked = function() {
-      record_game_finished();
+      GameStore.record_game_finished(G.game_id);
       GameService.set_move('claim_victory');
     };
     this.admit_defeat_clicked = function() {
-      record_game_finished();
+      GameStore.record_game_finished(G.game_id);
       GameService.set_move('give_up');
     };
     this.continue_player_turn = function() {
@@ -1084,7 +1084,7 @@ app.controller('PlayerTurnPageController',
   });
 
 app.controller('DiscoverCurePageController',
-  function($window, GameService) {
+  function($window, GameService, GameStore) {
     this.on_discover_cure_clicked = function(disease_color) {
       GameService.set_move('discover '+disease_color);
     };
@@ -1092,7 +1092,7 @@ app.controller('DiscoverCurePageController',
       GameService.set_move('eradicate '+disease_color);
     };
     this.declare_victory_clicked = function() {
-      record_game_finished();
+      GameStore.record_game_finished(G.game_id);
       GameService.set_move('claim_victory');
     };
     this.cancel = function() {
