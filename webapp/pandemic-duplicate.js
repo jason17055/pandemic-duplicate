@@ -152,55 +152,6 @@ function submit_player_names_form(pcount, names, randomize)
 	return names;
 }
 
-function make_player_card_li(c)
-{
-	var $x = $('<li></li>');
-	$x.append(make_player_card(c));
-	$x.attr('data-card-name', c);
-	return $x;
-}
-
-function make_player_card(c)
-{
-	var ci = Pandemic.Cities[c];
-
-	var $x = $('<span class="player_card"><img src="" class="card_icon"><span class="card_name"></span></span>');
-	if (ci) {
-		$('.card_name', $x).text(ci.name);
-		$('.card_icon', $x).attr('src', ci.color+'_icon.png');
-		$x.addClass(ci.color + '_card');
-	}
-	else if (c == 'Epidemic') {
-		$('.card_name', $x).text('Epidemic!');
-		$('.card_icon', $x).attr('src', 'epidemic_icon.png');
-		$x.addClass('epidemic_card');
-	}
-	else if (is_epidemic(c)) {
-		$('.card_name', $x).text(c + '!');
-		$('.card_icon', $x).attr('src', 'virulent_epidemic_icon.png');
-		$x.addClass('epidemic_card');
-	}
-	else if (is_mutation(c)) {
-		var text = is_mutation(c);
-		$('.card_name', $x).text(text + '!');
-		$('.card_icon', $x).attr('src', 'purple_icon.png');
-		$x.addClass('mutation_card');
-	}
-	else if (is_emergency(c)) {
-		var text = is_emergency(c);
-		$('.card_name', $x).text(text);
-		$('.card_icon', $x).attr('src', 'emergency_event_icon.png');
-		$x.addClass('emergency_card');
-	}
-	else {
-		$('.card_name', $x).text(c);
-		$('.card_icon', $x).attr('src', 'special_event_icon.png');
-		$x.addClass('special_card');
-	}
-
-	return $x;
-}
-
 function get_move(game_id, time)
 {
 	var mv = localStorage.getItem(PACKAGE + '.game.' + game_id + '.T' + time);
