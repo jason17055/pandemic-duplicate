@@ -66,7 +66,7 @@
 <div ng-switch-when="draw_sequence_card" class="draw_sequence_card_event">
   <span class="player_name">{{h.get_player_name(event.player)}}</span>
   draws
-  <pd-player-card card="event.card"></pd-player-card>
+  <pd-sequence-card card="event.card"></pd-sequence-card>
 </div>
 
 <div ng-switch-when="virulent_strain" class="virulent_strain_event_event">
